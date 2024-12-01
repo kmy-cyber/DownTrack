@@ -48,6 +48,7 @@ export default tseslint.config({
   },
 })
 ```
-## How to run?
-npm rum dev
 
+## How to run it?
+
+npm rum dev
