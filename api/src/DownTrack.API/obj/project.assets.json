@@ -107,6 +107,42 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "DownTrack.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DownTrack.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DownTrack.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DownTrack.Application.dll": {}
+        }
+      },
+      "DownTrack.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/DownTrack.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DownTrack.Domain.dll": {}
+        }
+      },
+      "DownTrack.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DownTrack.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DownTrack.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DownTrack.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -473,10 +509,27 @@
         "swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
+    },
+    "DownTrack.Application/1.0.0": {
+      "type": "project",
+      "path": "../DownTrack.Application/DownTrack.Application.csproj",
+      "msbuildProject": "../DownTrack.Application/DownTrack.Application.csproj"
+    },
+    "DownTrack.Domain/1.0.0": {
+      "type": "project",
+      "path": "../DownTrack.Domain/DownTrack.Domain.csproj",
+      "msbuildProject": "../DownTrack.Domain/DownTrack.Domain.csproj"
+    },
+    "DownTrack.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../DownTrack.Infrastructure/DownTrack.Infrastructure.csproj",
+      "msbuildProject": "../DownTrack.Infrastructure/DownTrack.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "DownTrack.Application >= 1.0.0",
+      "DownTrack.Infrastructure >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 8.0.10",
       "Swashbuckle.AspNetCore >= 6.6.2"
     ]
@@ -505,7 +558,14 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
+              "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
+            },
+            "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
