@@ -10,11 +10,12 @@ Progress,
 } from "@material-tailwind/react";
 import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
 import { UserIcon } from "@heroicons/react/24/outline";
-import { userList } from "@/data";
+import { userListData } from "@/data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
 export function Tables() {
+    const [userList, setUserList] = useState(userListData);
     const [onEdit, setOnEdit] = useState(false);
     const [keyEdit, setKeyEdit] = useState(0);
     const [userData, setUserData] = useState({
@@ -31,6 +32,7 @@ export function Tables() {
     
     const handleSave = (updatedUser) => {
         userList[keyEdit] = updatedUser;
+        setUserList(userList);
 
         // Reset the values
         setUserData({
@@ -67,7 +69,7 @@ export function Tables() {
     }
     
     const deleteUser = (id) => {
-        userList = userList.filter(user => user.id !== id);
+        setUserList(userList.filter(user => user.id !== id));
     };
 
     return (

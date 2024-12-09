@@ -1,4 +1,4 @@
-export var userList = [
+export var userListData = [
     {
         name: "Alice Johnson",
         id: "1001",
@@ -91,4 +91,4 @@ export var userList = [
     },
 ];
 
-export default userList;
+export default userListData;
