@@ -20,12 +20,12 @@ export function Tables() {
     const [keyEdit, setKeyEdit] = useState(0);
     const [userData, setUserData] = useState({
         name: "",
-        id: "",
+        username: "",
         role: "",
         department: "",
         experience: "",
         specialty: "",
-        supervisorRating: "",
+        salary: "",
     });
 
     // TODO: Connect with backend and replace static values
@@ -42,7 +42,7 @@ export function Tables() {
             department: "",
             experience: "",
             specialty: "",
-            supervisorRating: "",
+            salary: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -58,11 +58,12 @@ export function Tables() {
         setUserData({
             name: "",
             id: "",
+            username: "",
             role: "",
             department: "",
             experience: "",
             specialty: "",
-            supervisorRating: "",
+            salary: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -94,7 +95,7 @@ export function Tables() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "ID","employee","function"].map((el) => (
+                            {[ "username","employee","function"].map((el) => (
                             <th
                                 key={el}
                                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -124,7 +125,7 @@ export function Tables() {
                                 <div className="flex items-center gap-4">
                                 <div>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.id}
+                                    {user.username}
                                     </Typography>
                                 </div>
                                 </div>

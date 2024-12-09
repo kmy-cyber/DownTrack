@@ -21,11 +21,11 @@ export function SignIn() {
         <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              ID
+              Username:
             </Typography>
             <Input
               size="lg"
-              placeholder="ID"
+              placeholder="Enter your username"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",

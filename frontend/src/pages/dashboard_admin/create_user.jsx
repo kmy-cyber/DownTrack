@@ -9,12 +9,12 @@ import {
 export const UserCreationForm = () => {
     const [formData, setFormData] = useState({
     name: "",
-    id: "",
+    username: "",
     role: "admin",
     department: "",
     experience: "",
     specialty: "",
-    supervisorRating: "",
+    salary: "",
     });
 
     const handleChange = (e) => {
@@ -55,16 +55,16 @@ export const UserCreationForm = () => {
                 </div>
 
                 <div>
-                <label htmlFor="id" className="block text-sm font-medium text-gray-700">
-                    ID Number
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Username
                 </label>
                 <input
                     type="text"
                     id="id"
                     name="id"
-                    value={formData.id}
+                    value={formData.username}
                     onChange={handleChange}
-                    placeholder="Enter identification number"
+                    placeholder="Enter username to assign"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 />
@@ -142,16 +142,16 @@ export const UserCreationForm = () => {
                     </div>
 
                     <div>
-                    <label htmlFor="supervisorRating" className="block text-sm font-medium text-gray-700">
-                        Supervisor Rating
+                    <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
+                        Salary
                     </label>
                     <input
                         type="number"
-                        id="supervisorRating"
-                        name="supervisorRating"
-                        value={formData.supervisorRating}
+                        id="salary"
+                        name="salary"
+                        value={formData.salary}
                         onChange={handleChange}
-                        placeholder="Enter rating (1-5)"
+                        placeholder="Enter money to pay"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                     </div>
