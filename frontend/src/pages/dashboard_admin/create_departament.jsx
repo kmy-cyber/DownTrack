@@ -6,15 +6,11 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
-export const UserCreationForm = () => {
+export const DepartamentCreationForm = () => {
     const [formData, setFormData] = useState({
     name: "",
-    username: "",
-    role: "admin",
-    department: "",
-    experience: "",
-    specialty: "",
-    salary: "",
+    id: "",
+    section: "",
     });
 
     const handleChange = (e) => {
@@ -31,7 +27,7 @@ export const UserCreationForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
             <Typography variant="h6" color="white">
-                Create User
+                Create Departament
             </Typography>
         </CardHeader>
         <CardBody>
@@ -48,23 +44,7 @@ export const UserCreationForm = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Enter full name"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-                </div>
-
-                <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
-                </label>
-                <input
-                    type="text"
-                    id="id"
-                    name="id"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Enter username to assign"
+                    placeholder="Enter departament's name"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 />
@@ -72,21 +52,21 @@ export const UserCreationForm = () => {
 
                 <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                    Role
+                    Section
                 </label>
                 <select
-                    id="role"
-                    name="role"
+                    id="section"
+                    name="section"
                     value={formData.role}
                     onChange={handleChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 >
-                    <option value="admin">Administrator</option>
-                    <option value="section_manager">Section Manager</option>
-                    <option value="technician">Technician</option>
-                    <option value="receptor">Equipment Receptor</option>
-                    <option value="director">Center Director</option>
+                    <option value="admin">Section1</option>
+                    <option value="section_manager">Section2</option>
+                    <option value="technician">Section3</option>
+                    <option value="receptor">Section4</option>
+                    <option value="director">Section5</option>
                 </select>
                 </div>
 
@@ -171,4 +151,4 @@ export const UserCreationForm = () => {
     );
 };
 
-export default UserCreationForm;
+export default DepartamentCreationForm;
