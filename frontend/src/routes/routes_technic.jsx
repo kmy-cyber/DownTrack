@@ -11,7 +11,7 @@ import {
     ArrowDownCircleIcon,
     WrenchIcon,
 } from "@heroicons/react/24/solid";
-import { Home} from "@/pages/dashboard_technic";
+import { Home, MaintenanceHistoryTable, MaintenanceCreationForm, LeaveCreationForm } from "@/pages/dashboard_technic";
 
 const typeUser = 1;
 const icon = {
@@ -31,20 +31,20 @@ export const routesTechnic = [
         {
         icon: <TableCellsIcon {...icon} />,
         name: "maintenance",
-        path: "/tables",
-        element: <Home />,
+        path: "/maintenance",
+        element: <MaintenanceCreationForm />,
         },
         {
         icon: <ArrowDownCircleIcon {...icon} />,
         name: "technical leave",
-        path: "/add_employee",
-        element: <Home />,
+        path: "/leave",
+        element: <LeaveCreationForm />,
         },
         {
         icon: <WrenchIcon {...icon} />,
         name: "Maintenance History",
-        path: "/admin/notifications",
-        element: <Home />,
+        path: "/maintenance_hist",
+        element: <MaintenanceHistoryTable />,
         },
     ],
 },];

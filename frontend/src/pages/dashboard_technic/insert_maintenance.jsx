@@ -6,7 +6,7 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
-export const UserCreationForm = () => {
+export const MaintenanceCreationForm = () => {
     const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -31,7 +31,7 @@ export const UserCreationForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
             <Typography variant="h6" color="white">
-                Create User
+                Register Maintenance
             </Typography>
         </CardHeader>
         <CardBody>
@@ -40,15 +40,15 @@ export const UserCreationForm = () => {
                 {/* General Fields */}
                 <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Name
+                    Equipment
                 </label>
                 <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="equipment"
+                    name="equipment"
+                    value={formData.equipment}
                     onChange={handleChange}
-                    placeholder="Enter full name"
+                    placeholder="Enter the equipment"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 />
@@ -56,21 +56,53 @@ export const UserCreationForm = () => {
 
                 <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
+                    Maintenance's Type
                 </label>
                 <input
                     type="text"
-                    id="id"
-                    name="id"
-                    value={formData.username}
+                    id="type"
+                    name="type"
+                    value={formData.type}
                     onChange={handleChange}
-                    placeholder="Enter username to assign"
+                    placeholder="Enter type"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 />
                 </div>
 
                 <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Date
+                </label>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    placeholder=""
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                />
+                </div>
+
+                <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Cost
+                </label>
+                <input
+                    type="number"
+                    id="cost"
+                    name="cost"
+                    value={formData.cost}
+                    onChange={handleChange}
+                    placeholder="Enter cost"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                />
+                </div>
+
+                {/*<div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                     Role
                 </label>
@@ -88,7 +120,7 @@ export const UserCreationForm = () => {
                     <option value="receptor">Equipment Receptor</option>
                     <option value="director">Center Director</option>
                 </select>
-                </div>
+                </div>*/}
 
                 {formData.role === "section_manager" || formData.role === "receptor" ? (
                 <div>
@@ -171,4 +203,4 @@ export const UserCreationForm = () => {
     );
 };
 
-export default UserCreationForm;
+export default MaintenanceCreationForm;
