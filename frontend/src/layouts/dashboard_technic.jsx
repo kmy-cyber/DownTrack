@@ -18,9 +18,6 @@ export function Dashboard_Technic() {
         <div className="min-h-screen bg-blue-gray-50/50">
         <Sidenav
             routes={routesTechnic}
-            brandImg={
-            sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
-            }
         />
         <div className="p-4 xl:ml-80">
             <DashboardNavbar />

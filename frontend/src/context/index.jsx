@@ -37,7 +37,7 @@ export function MaterialTailwindControllerProvider({ children }) {
   const initialState = {
     openSidenav: false,
     sidenavColor: "dark",
-    sidenavType: "white",
+    sidenavType: "dark",
     transparentNavbar: true,
     fixedNavbar: false,
     openConfigurator: false,
