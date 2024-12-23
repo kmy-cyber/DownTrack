@@ -10,3 +10,15 @@ C:\Users\HP\Desktop\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.
 C:\Users\HP\Desktop\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\refint\DownTrack.Domain.dll
 C:\Users\HP\Desktop\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.pdb
 C:\Users\HP\Desktop\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\ref\DownTrack.Domain.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.AssemblyInfoInputs.cache
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.AssemblyInfo.cs
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.csproj.CoreCompileInputs.cache
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.sourcelink.json
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\refint\DownTrack.Domain.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\DownTrack.Domain.pdb
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\bin\Debug\net8.0\DownTrack.Domain.deps.json
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\bin\Debug\net8.0\DownTrack.Domain.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\bin\Debug\net8.0\DownTrack.Domain.pdb
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Domain\obj\Debug\net8.0\ref\DownTrack.Domain.dll

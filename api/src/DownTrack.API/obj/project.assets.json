@@ -540,11 +540,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
+      "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Api\\DownTrack.API.csproj",
       "projectName": "DownTrack.API",
-      "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
+      "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Api\\DownTrack.API.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\obj\\",
+      "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -559,11 +559,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
-              "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
+            "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
+              "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
             },
-            "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj"
+            "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj"
             }
           }
         }

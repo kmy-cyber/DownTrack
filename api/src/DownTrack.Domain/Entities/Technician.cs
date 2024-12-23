@@ -2,9 +2,11 @@
 
 namespace DownTrack.Domain.Enitites;
 
-public class Technician
+public class Technician : GenericEntity
 {
-    public string Name{get;set;}
-    public string Specialty{get;set;}
-    public double Salary{get;set;}
+    public string Name { get; set; } = "name";
+    public string Specialty { get; set; }="specialty";
+    public double Salary { get; set; }
+    public int ExpYears { get; set; }
+
 }

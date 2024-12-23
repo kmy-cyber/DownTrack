@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
       "projectName": "DownTrack.Domain",
-      "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
+      "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\obj\\",
+      "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
