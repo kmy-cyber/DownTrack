@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/iKLNUqBmxE=",
+  "dgSpecHash": "QIxEqP0U9XY=",
   "success": true,
   "projectFilePath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\HP\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

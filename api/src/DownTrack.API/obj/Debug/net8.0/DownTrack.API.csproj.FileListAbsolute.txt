@@ -78,3 +78,4 @@ C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Api\obj\Debug
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Api\obj\Debug\net8.0\DownTrac.12A04679.Up2Date
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Api\obj\Debug\net8.0\DownTrack.API.genruntimeconfig.cache
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Api\obj\Debug\net8.0\ref\DownTrack.API.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
