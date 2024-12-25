@@ -1,5 +1,9 @@
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using DownTrack.Application.IRespository;
+using DownTrack.Infrastructure.Reposiory;
 
 namespace DownTrack.Infrastructure;
 
@@ -12,10 +16,13 @@ public static class DependencyInjection
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <returns>The modified IServiceCollection.</returns>
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection service)
+    public static void AddInfrastructure(this IServiceCollection service, IConfiguration configuration)
+
     {
         // add infrastructure layer services
+        var connectionString = configuration.GetConnectionString("AppDbConnectionString");
+        var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-        return service;
+        service.AddScoped<ITechnicianRepository,TechnicianRepository>();
     }
 }
