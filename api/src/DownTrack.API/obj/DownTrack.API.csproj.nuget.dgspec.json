@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj": {}
+    "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj": {
+    "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
+        "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
         "projectName": "DownTrack.API",
-        "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
+        "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\DownTrack.API.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\obj\\",
+        "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,11 +26,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
-                "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
+              "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
+                "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
               },
-              "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
-                "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj"
+              "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj"
               }
             }
           }
@@ -53,6 +53,16 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -82,14 +92,14 @@
         }
       }
     },
-    "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
+    "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj",
+        "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj",
         "projectName": "DownTrack.Application",
-        "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj",
+        "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\obj\\",
+        "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -104,8 +114,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj": {
-                "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj"
+              "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj": {
+                "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj"
               }
             }
           }
@@ -124,6 +134,30 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -144,14 +178,14 @@
         }
       }
     },
-    "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj": {
+    "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
         "projectName": "DownTrack.Domain",
-        "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
+        "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\DownTrack.Domain.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\obj\\",
+        "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -202,14 +236,14 @@
         }
       }
     },
-    "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
+    "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj",
         "projectName": "DownTrack.Infrastructure",
-        "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\DownTrack.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -224,8 +258,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
-                "projectPath": "C:\\Users\\HP\\Desktop\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
+              "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj": {
+                "projectPath": "C:\\Users\\HP\\Documents\\GitHub\\DownTrack\\DownTrack\\api\\src\\DownTrack.Application\\DownTrack.Application.csproj"
               }
             }
           }
@@ -244,6 +278,20 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
