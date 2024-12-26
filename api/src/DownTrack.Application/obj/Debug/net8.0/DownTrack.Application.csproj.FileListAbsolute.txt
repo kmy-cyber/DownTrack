@@ -30,3 +30,5 @@ C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\o
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\obj\Debug\net8.0\DownTrack.Application.sourcelink.json
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\obj\Debug\net8.0\DownTrac.34426185.Up2Date
 C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\obj\Debug\net8.0\ref\DownTrack.Application.dll
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\bin\Debug\net8.0\DownTrack.Application.runtimeconfig.json
+C:\Users\HP\Documents\GitHub\DownTrack\DownTrack\api\src\DownTrack.Application\obj\Debug\net8.0\DownTrack.Application.genruntimeconfig.cache

@@ -2,6 +2,7 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
+using DownTrack.Domain.Enitites;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers
@@ -15,18 +16,49 @@ namespace DownTrack.Api.Controllers
         public TechnicianController(ITechnicianServices technicianServices)
         {
             _technicianService = technicianServices;
-
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("POST")]
 
         public async Task<IActionResult> CreateTechnician(TechnicianDto technician)
         {
             await _technicianService.CreateAsync(technician);
 
-            return Ok("Tecnico agregado correctamente");
+            return Ok("Technician added successfully");
         }
 
+        [HttpGet]
+        [Route("GET_ALL")]
+
+        public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
+        {
+            var results = await _technicianService.ListAsync();
+
+            return Ok(results);
+
+        }
+
+        [HttpPut]
+        [Route("PUT")]
+
+        public async Task<IActionResult> UpdateTechnician(TechnicianDto technician)
+        {
+            var result = await _technicianService.UpdateAsync(technician);
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Route("Delete")]
+
+        public async Task<IActionResult> DeleteTechnician(int technicianId)
+        {
+            await _technicianService.DeleteAsync(technicianId);
+
+            return Ok("Technician deleted successfully");
+        }
+
+
     }
+
 }
