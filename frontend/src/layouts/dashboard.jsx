@@ -5,9 +5,8 @@ import {
   Sidenav,
   DashboardNavbar,
   Configurator,
-  Footer,
 } from "@/components/layout";
-import routes from "@/routes";
+import routes from "@/routes1";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 
 export function Dashboard() {
@@ -18,9 +17,6 @@ export function Dashboard() {
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav
         routes={routes}
-        brandImg={
-          sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
-        }
       />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar />
@@ -43,9 +39,6 @@ export function Dashboard() {
               ))
           )}
         </Routes>
-        <div className="text-blue-gray-600">
-          <Footer />
-        </div>
       </div>
     </div>
   );

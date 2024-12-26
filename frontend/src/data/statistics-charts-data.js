@@ -25,12 +25,12 @@ const websiteViewsChart = {
   },
 };
 
-const dailySalesChart = {
+export const dailySalesChart = {
   type: "line",
   height: 220,
   series: [
     {
-      name: "Sales",
+      name: "",
       data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
     },
   ],
