@@ -10,67 +10,42 @@ Progress,
 } from "@material-tailwind/react";
 import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
 import { UserIcon } from "@heroicons/react/24/outline";
-import { userListData } from "@/data";
+import { equipmentTransferData } from "@/data/equipment-transfer-data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 
 export function EquipmentTransferTable() {
-    const [userList, setUserList] = useState(userListData);
     const [onEdit, setOnEdit] = useState(false);
     const [keyEdit, setKeyEdit] = useState(0);
-    const [userData, setUserData] = useState({
-        name: "",
-        username: "",
-        role: "",
-        department: "",
-        experience: "",
-        specialty: "",
-        salary: "",
-    });
+
+    const [transfers, setTransfers] = useState(equipmentTransferData);
 
     // TODO: Connect with backend and replace static values
     
-    const handleSave = (updatedUser) => {
-        userList[keyEdit] = updatedUser;
-        setUserList(userList);
+    const handleSave = (updatedTransfer) => {
+        const updatedTransfers = transfers.map((transfer) =>
+            transfer.id === updatedTransfer.id ? updatedTransfer : transfer
+        );
+        setTransfers(updatedTransfers);
 
-        // Reset the values
-        setUserData({
-            name: "",
-            id: "",
-            role: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
-        });
         setOnEdit(false);
         setKeyEdit(0);
     };
 
-    const editUser = (user, key) => {
+    const editTransfer = (transfer, key) => {
         setKeyEdit(key);
-        setUserData(user);
+        setTransfers(transfers.map(t => t.id === key ? {...t, ...transfer} : t));
         setOnEdit(true);
     };
 
-    const cancelEditUser = () => {
-        setUserData({
-            name: "",
-            id: "",
-            username: "",
-            role: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
-        });
+    const cancelEditTransfer = () => {
+        setTransfers(equipmentTransferData);
         setOnEdit(false);
         setKeyEdit(0);
     }
-    
-    const deleteUser = (id) => {
-        setUserList(userList.filter(user => user.id !== id));
+
+    const deleteTransfer = (id) => {
+        setTransfers(transfers.filter(transfer => transfer.id !== id));
     };
 
     return (
@@ -95,7 +70,7 @@ export function EquipmentTransferTable() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "username","employee","function"].map((el) => (
+                            {[ "Source Section","Equipment","Date"].map((el) => (
                             <th
                                 key={el}
                                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -111,21 +86,21 @@ export function EquipmentTransferTable() {
                         </tr>
                         </thead>
                         <tbody>
-                        {userList.map(
-                            (user, key) => {
+                        {transfers.map(
+                            (transfers, key) => {
                             const className = `py-3 px-5 ${
-                                key === userList.length - 1
+                                key === transfers.length - 1
                                 ? ""
                                 : "border-b border-blue-gray-50"
                             }`;
 
                             return (
-                                <tr key={user.name}>
+                                <tr key={transfers.id}>
                                 <td className={className}>
                                 <div className="flex items-center gap-4">
                                 <div>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.username}
+                                    {transfers.sourceSection}
                                     </Typography>
                                 </div>
                                 </div>
@@ -140,14 +115,14 @@ export function EquipmentTransferTable() {
                                         color="blue-gray"
                                         className="font-semibold"
                                         >
-                                        {user.name}
+                                        {transfers.equipment}
                                         </Typography>
                                     </div>
                                     </div>
                                 </td>
                                 <td className={className}>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.role}
+                                        {transfers.date}
                                     </Typography>
                                 </td>
                                 <td className={className}>
