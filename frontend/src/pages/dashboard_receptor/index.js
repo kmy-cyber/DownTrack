@@ -1,4 +1,3 @@
 export * from "@/pages/dashboard_receptor/home";
-//export * from "@/pages/dashboard_admin/tables_employees";
-//export * from "@/pages/dashboard_admin/create_user";
-//export * from "@/pages/dashboard_admin/notifications";
+export * from "@/pages/dashboard_receptor/register_equipment";
+export * from "@/pages/dashboard_receptor/transfer_equipment";
