@@ -18,7 +18,7 @@ namespace DownTrack.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("DownTrack.Domain.Enitites.Technician", b =>
+            modelBuilder.Entity("DownTrack.Domain.Enitites.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -28,21 +28,11 @@ namespace DownTrack.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("ExpYears")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<double>("Salary")
-                        .HasColumnType("double");
-
-                    b.Property<string>("Specialty")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -55,10 +45,35 @@ namespace DownTrack.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique();
+                    b.ToTable("User", (string)null);
 
-                    b.ToTable("Technicians");
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("DownTrack.Domain.Enitites.Technician", b =>
+                {
+                    b.HasBaseType("DownTrack.Domain.Enitites.User");
+
+                    b.Property<int>("ExpYears")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Salary")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Specialty")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("Technician", (string)null);
+                });
+
+            modelBuilder.Entity("DownTrack.Domain.Enitites.Technician", b =>
+                {
+                    b.HasOne("DownTrack.Domain.Enitites.User", null)
+                        .WithOne()
+                        .HasForeignKey("DownTrack.Domain.Enitites.Technician", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 
 
 
+using System.Text.Json.Serialization;
 using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.DTO;
@@ -12,6 +13,8 @@ public class UserDto
     public string Email { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Role role { get; set; }
 
 }

@@ -1,13 +1,12 @@
 
-
 namespace DownTrack.Domain.Enum;
 
 public enum Role
 {
-    sectionManager,
-    technician,
-    equipmentReceptor,
-    director,
-    shippingSupervisor,
-    administrator
+    SectionManager,
+    Technician,
+    EquipmentReceptor,
+    Director,
+    ShippingSupervisor,
+    Administrator
 }
