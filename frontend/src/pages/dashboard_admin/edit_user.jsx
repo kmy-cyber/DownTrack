@@ -7,7 +7,6 @@ import {
     } from "@material-tailwind/react";
 
 export const EditUserForm = ({ userData, onSave, onCancel }) => {
-    // `userData` contiene la información actual del usuario que se va a editar
     const [formData, setFormData] = useState({
         name: "",
         id: "",
@@ -19,7 +18,6 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
     });
 
     useEffect(() => {
-        // Poblamos el estado inicial con los datos del usuario
         if (userData) {
             setFormData(userData);
         }
@@ -32,7 +30,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData); // Llamada a la función que guarda los cambios
+        onSave(formData);
         console.log("Updated user:", formData);
     };
 

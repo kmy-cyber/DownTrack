@@ -13,6 +13,7 @@ import {
     import { sectionData } from "@/data/sections-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
+import EditSectionForm from "./edit_section";
     
     export function TablesSection() {
         const [sectionList, setSectionList] = useState(sectionData);
@@ -69,10 +70,10 @@ import {
         return (
             <>
                 { onEdit &&
-                    <EditUserForm 
-                        userData={userData} 
+                    <EditSectionForm 
+                        sectionData={sectionData} 
                         onSave={handleSave} 
-                        onCancel={cancelEditUser} 
+                        onCancel={cancelEditSection} 
                     />
                 }
     

@@ -8,13 +8,13 @@ import {
     Tooltip,
     Progress,
     } from "@material-tailwind/react";
-    import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
+    import {EditDepartmentForm} from "@/pages/dashboard_admin/edit_department";
     import { UserIcon } from "@heroicons/react/24/outline";
-    import { departmentData } from "@/data/departament-data";
+    import { departmentData } from "@/data/department-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
     
-    export function TablesDepartament() {
+    export function TablesDepartment() {
         const [departmentList, setDepartmentList] = useState(departmentData);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
@@ -67,10 +67,10 @@ import {
         return (
             <>
                 { onEdit &&
-                    <EditUserForm 
-                        userData={userData} 
+                    <EditDepartmentForm 
+                        departmentData={departmentData} 
                         onSave={handleSave} 
-                        onCancel={cancelEditUser} 
+                        onCancel={cancelEditDepartment} 
                     />
                 }
     
@@ -79,7 +79,7 @@ import {
                     <Card>
                         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                         <Typography variant="h6" color="white">
-                            Departaments Table
+                            Department's Table
                         </Typography>
                         </CardHeader>
                         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -141,7 +141,7 @@ import {
                                         <div className="flex items-center gap-4">
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => editDepartment(user, key)}
+                                                onClick={() => editDepartment(dept, key)}
                                             >
                                                 <Typography
                                                     as="a"
@@ -183,4 +183,4 @@ import {
         );
     }
     
-    export default TablesDepartament;
+    export default TablesDepartment;

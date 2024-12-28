@@ -10,7 +10,7 @@ import {
   UserGroupIcon,
   RectangleGroupIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Tables, UserCreationForm, TablesSection, SectionCreationForm,TablesDepartament, DepartamentCreationForm} from "@/pages/dashboard_admin";
+import { Home, Tables, UserCreationForm, TablesSection, SectionCreationForm,TablesDepartment, DepartmentCreationForm} from "@/pages/dashboard_admin";
 //import { Home } from "@/pages/dashboard";
 
 const typeUser = 1;
@@ -57,13 +57,13 @@ export const routes = [
         icon: <TableCellsIcon {...icon} />,
         name: "Departament tables",
         path: "/tables_departament",
-        element: <TablesDepartament />,
+        element: <TablesDepartment />,
       },
       {
         icon: <RectangleGroupIcon {...icon} />,
-        name: "Add Departament",
-        path: "/add_departament",
-        element: <DepartamentCreationForm />,
+        name: "Add Department",
+        path: "/add_department",
+        element: <DepartmentCreationForm />,
       },
       //{
       //  icon: <InformationCircleIcon {...icon} />,
