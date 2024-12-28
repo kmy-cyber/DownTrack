@@ -10,54 +10,58 @@ import {
     } from "@material-tailwind/react";
     import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
     import { UserIcon } from "@heroicons/react/24/outline";
-    import { userListData } from "@/data";
+    import { departmentData } from "@/data/departament-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
     
     export function TablesDepartament() {
-        const [userList, setUserList] = useState(userListData);
+        const [departmentList, setDepartmentList] = useState(departmentData);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
         const [userData, setUserData] = useState({
             name: "",
             id: "",
             section: "",
+            description: ""
         });
     
         // TODO: Connect with backend and replace static values
         
-        const handleSave = (updatedUser) => {
-            userList[keyEdit] = updatedUser;
-            setUserList(userList);
+        const handleSave = (updatedDepartment) => {
+            departmentList[keyEdit] = updatedDepartment;
+            setDepartmentList(departmentList);
     
             // Reset the values
             setUserData({
                 name: "",
                 id: "",
                 section: "",
+                description: ""
             });
             setOnEdit(false);
             setKeyEdit(0);
-        };
-    
-        const editUser = (user, key) => {
+            };
+            
+        const editDepartment = (dept, key) => {
             setKeyEdit(key);
-            setUserData(user);
+            setUserData(dept);
             setOnEdit(true);
         };
+        
     
-        const cancelEditUser = () => {
+        const cancelEditDepartment = () => {
             setUserData({
                 name: "",
                 id: "",
                 section: "",
+                description: ""
             });
             setOnEdit(false);
             setKeyEdit(0);
         }
         
-        const deleteUser = (id) => {
-            setUserList(userList.filter(user => user.id !== id));
+        const deleteDepartment = (id) => {
+            setDepartmentList(departmentList.filter(dept => dept.id !== id));
         };
     
         return (
@@ -98,21 +102,21 @@ import {
                             </tr>
                             </thead>
                             <tbody>
-                            {userList.map(
-                                (user, key) => {
+                            {departmentList.map(
+                                (dept, key) => {
                                 const className = `py-3 px-5 ${
-                                    key === userList.length - 1
+                                    key === departmentList.length - 1
                                     ? ""
                                     : "border-b border-blue-gray-50"
                                 }`;
     
                                 return (
-                                    <tr key={user.name}>
+                                    <tr key={dept.name}>
                                     <td className={className}>
                                     <div className="flex items-center gap-4">
                                     <div>
                                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                                        {user.username}
+                                        {dept.name}
                                         </Typography>
                                     </div>
                                     </div>
@@ -127,7 +131,7 @@ import {
                                             color="blue-gray"
                                             className="font-semibold"
                                             >
-                                            {user.name}
+                                            {dept.section}
                                             </Typography>
                                         </div>
                                         </div>
@@ -137,7 +141,7 @@ import {
                                         <div className="flex items-center gap-4">
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => editUser(user, key)}
+                                                onClick={() => editDepartment(user, key)}
                                             >
                                                 <Typography
                                                     as="a"
@@ -151,7 +155,7 @@ import {
                                         
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => deleteUser(user.id)}
+                                                onClick={() => deleteDepartment(dept.id)}
                                             >
                                                 <Typography
                                                     as="a"
