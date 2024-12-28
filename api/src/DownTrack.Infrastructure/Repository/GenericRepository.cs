@@ -1,9 +1,9 @@
 
-using DownTrack.Application.IRespository;
-using DownTrack.Domain.Enitites;
+using DownTrack.Application.IRepository;
+using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DownTrack.Infrastructure.Reposiory;
+namespace DownTrack.Infrastructure.Repository;
 
 // "Repository Pattern"
 public abstract class GenericRepository<T> : IGenericRepository<T> where T : GenericEntity

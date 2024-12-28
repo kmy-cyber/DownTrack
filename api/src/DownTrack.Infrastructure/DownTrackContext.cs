@@ -1,7 +1,5 @@
 
 
-using System.Security.Cryptography.X509Certificates;
-using DownTrack.Domain.Enitites;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

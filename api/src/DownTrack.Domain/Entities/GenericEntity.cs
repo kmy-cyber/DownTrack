@@ -1,7 +1,7 @@
 
 
 
-namespace DownTrack.Domain.Enitites;
+namespace DownTrack.Domain.Entities;
 
 public class GenericEntity
 {

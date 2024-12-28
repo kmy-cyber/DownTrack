@@ -1,4 +1,3 @@
-using DownTrack.Domain.Enitites;
 
 namespace DownTrack.Domain.Entities
 {

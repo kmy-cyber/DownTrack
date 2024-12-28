@@ -1,8 +1,6 @@
 
-
-
 using AutoMapper;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.DTO;
 

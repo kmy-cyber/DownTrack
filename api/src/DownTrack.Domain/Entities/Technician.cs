@@ -1,6 +1,6 @@
 
 
-namespace DownTrack.Domain.Enitites;
+namespace DownTrack.Domain.Entities;
 
 public class Technician : GenericEntity
 {

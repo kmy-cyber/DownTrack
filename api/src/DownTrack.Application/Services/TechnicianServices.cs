@@ -3,9 +3,9 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using AutoMapper;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.Services;
 

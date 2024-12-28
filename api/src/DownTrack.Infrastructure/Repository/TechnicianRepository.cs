@@ -1,7 +1,7 @@
-using DownTrack.Application.IRespository;
-using DownTrack.Domain.Enitites;
+using DownTrack.Application.IRepository;
+using DownTrack.Domain.Entities;
 
-namespace DownTrack.Infrastructure.Reposiory;
+namespace DownTrack.Infrastructure.Repository;
 
 public class TechnicianRepository : GenericRepository<Technician>, ITechnicianRepository
 {

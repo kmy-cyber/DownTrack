@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using DownTrack.Application.IRespository;
-using DownTrack.Infrastructure.Reposiory;
-using DownTrack.Application.IRepository;
 using DownTrack.Infrastructure.Repository;
+using DownTrack.Application.IRepository;
+
 
 namespace DownTrack.Infrastructure;
 
