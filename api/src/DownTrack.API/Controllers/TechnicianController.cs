@@ -38,6 +38,20 @@ namespace DownTrack.Api.Controllers
             return Ok(results);
 
         }
+        
+        [HttpGet]
+        [Route("GET")]
+
+        public async Task<ActionResult<Technician>> GetUserById(int technicianId)
+        {
+            var result = await _technicianService.GetByIdAsync(technicianId);
+
+            if (result == null)
+                return NotFound($"User with ID {technicianId} not found");
+
+            return Ok(result);
+
+        }
 
         [HttpPut]
         [Route("PUT")]
@@ -45,6 +59,7 @@ namespace DownTrack.Api.Controllers
         public async Task<IActionResult> UpdateTechnician(TechnicianDto technician)
         {
             var result = await _technicianService.UpdateAsync(technician);
+            
             return Ok(result);
         }
 

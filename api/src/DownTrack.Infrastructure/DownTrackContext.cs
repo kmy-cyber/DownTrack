@@ -17,14 +17,18 @@ public class DownTrackContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        #region User
         modelBuilder.Entity<User>()
             .ToTable("User")
             .HasKey(u => u.Id);
+        #endregion
 
+        #region Technician
         modelBuilder.Entity<Technician>()
             .ToTable("Technician")
             .HasOne<User>() // One-to-one relationship with User
             .WithOne()
             .HasForeignKey<Technician>(t => t.Id);
+        #endregion
     }
 }
