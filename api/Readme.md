@@ -40,3 +40,25 @@ dotnet build
 
 
 ## Authentication
+
+### Login Flow
+
+**1.User Input:**
+
+* **The user (be it a Technician, Administrator, etc.) provides their UserName and Password in the login form**
+
+**2. Credential Validation**
+
+* **Query the User table to check if the user with the given UserName exists**
+* **Compare the provided password with the hash stored in the database.**
+
+**3. JWT generation**
+
+* **If the credentials are valid, generate a JWT containing:**
+  * **"Id"**
+  * **"Role"**
+  * **Additional role specific information**
+
+**4. Return JWT** :
+
+* **The JWT is returned to the web page, which will use it to make authenticated requests**

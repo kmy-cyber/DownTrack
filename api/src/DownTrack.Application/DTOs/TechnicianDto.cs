@@ -2,11 +2,9 @@
 
 namespace DownTrack.Application.DTO;
 
-public class TechnicianDto
+public class TechnicianDto : UserDto
 {
-    public int Id {get;set;}
-    public string Name { get; set; } = "name";
-    public string Specialty { get; set; }="specialty";
+    public string Specialty { get; set; } = string.Empty;
     public double Salary { get; set; }
     public int ExpYears { get; set; }
 
