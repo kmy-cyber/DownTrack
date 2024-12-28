@@ -6,7 +6,7 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
-export const DepartamentCreationForm = () => {
+export const DepartmentCreationForm = () => {
     const [formData, setFormData] = useState({
     name: "",
     id: "",
@@ -27,7 +27,7 @@ export const DepartamentCreationForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
             <Typography variant="h6" color="white">
-                Create Departament
+                Create Department
             </Typography>
         </CardHeader>
         <CardBody>
@@ -151,4 +151,4 @@ export const DepartamentCreationForm = () => {
     );
 };
 
-export default DepartamentCreationForm;
+export default DepartmentCreationForm;
