@@ -2,6 +2,7 @@
 using DownTrack.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DownTrack.Infrastructure.Migrations
 {
     [DbContext(typeof(DownTrackContext))]
-    partial class DownTrackContextModelSnapshot : ModelSnapshot
+    [Migration("20241228023730_UserMigration")]
+    partial class UserMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

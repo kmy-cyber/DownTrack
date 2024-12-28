@@ -18,7 +18,6 @@ dotnet build
 
 ```
 
-
 ##### Steps to Add the Entities
 
 **1. create a new branch from the 'api' branch**
@@ -31,10 +30,13 @@ dotnet build
 
 **5. inject the new service into the application layer in the 'DependencyInjection' file**
 
-**6. create the repository 'TRepository' in the infrastructure layer** 
+**6. create the repository 'TRepository' in the infrastructure layer**
 
 **7. create the controller for the new service in the Api layer**
 
 **8. perform the migrations and check the dataBase**
 
 **9. create a new pull request and wait for the merge to be approved ;)**
+
+
+## Authentication
