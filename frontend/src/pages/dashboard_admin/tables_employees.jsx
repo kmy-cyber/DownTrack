@@ -9,7 +9,7 @@ Tooltip,
 Progress,
 } from "@material-tailwind/react";
 import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
-import { UserIcon } from "@heroicons/react/24/outline";
+import { UserIcon, KeyIcon} from "@heroicons/react/24/outline";
 import { userListData } from "@/data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
@@ -26,6 +26,7 @@ export function Tables() {
         experience: "",
         specialty: "",
         salary: "",
+        password: "",
     });
 
     // TODO: Connect with backend and replace static values
@@ -43,6 +44,7 @@ export function Tables() {
             experience: "",
             specialty: "",
             salary: "",
+            password: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -64,6 +66,7 @@ export function Tables() {
             experience: "",
             specialty: "",
             salary: "",
+            password: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -95,7 +98,7 @@ export function Tables() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "username","employee","function"].map((el) => (
+                            {[ "employee","password","username", "function"].map((el) => (
                             <th
                                 key={el}
                                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -122,15 +125,6 @@ export function Tables() {
                             return (
                                 <tr key={user.name}>
                                 <td className={className}>
-                                <div className="flex items-center gap-4">
-                                <div>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.username}
-                                    </Typography>
-                                </div>
-                                </div>
-                                </td>
-                                <td className={className}>
                                     <div className="flex items-center gap-4">
                                     {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
                                     <UserIcon className="w-5"/>
@@ -145,6 +139,30 @@ export function Tables() {
                                     </div>
                                     </div>
                                 </td>
+                                <td className={className}>
+                                    <div className="flex items-center gap-4">
+                                    <KeyIcon className="w-4"/>
+                                    <div>
+                                        <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-semibold"
+                                        >
+                                        {user.password}
+                                        </Typography>
+                                    </div>
+                                    </div>
+                                </td>
+                                <td className={className}>
+                                <div className="flex items-center gap-4">
+                                <div>
+                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    {user.username}
+                                    </Typography>
+                                </div>
+                                </div>
+                                </td>
+                                
                                 <td className={className}>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
                                     {user.role}
