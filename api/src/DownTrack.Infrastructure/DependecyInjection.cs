@@ -25,5 +25,6 @@ public static class DependencyInjection
 
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
         service.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        service.AddScoped<ISectionRepository, SectionRepository>();
     }
 }

@@ -14,6 +14,8 @@ public class DownTrackContext : DbContext
 
     public DbSet<Equipment> Equipments { get; set; }
 
+    public DbSet<Section> Sections{get; set;}
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
