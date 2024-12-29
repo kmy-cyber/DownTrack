@@ -15,6 +15,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
         experience: "",
         specialty: "",
         supervisorRating: "",
+        password: "",
     });
 
     useEffect(() => {
@@ -63,19 +64,35 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
 
                 <div>
                     <label htmlFor="id" className="block text-sm font-medium text-gray-700">
-                    ID Number
+                    Username
                     </label>
                     <input
                     type="text"
-                    id="id"
-                    name="id"
-                    value={formData.id}
+                    id="username"
+                    name="username"
+                    value={formData.username}
                     onChange={handleChange}
                     placeholder="Enter identification number"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                     disabled // No se puede cambiar el ID
                     />
+                </div>
+
+                <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Password
+                </label>
+                <input
+                    type="text"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter password to assign"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                />
                 </div>
 
                 <div>

@@ -7,6 +7,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "WA3457D",
     },
     {
         name: "Bob Smith",
@@ -16,6 +17,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "45Ytb14",
     },
     {
         name: "Charlie Brown",
@@ -25,6 +27,7 @@ export var userListData = [
         experience: "8",
         specialty: "Electrical Systems",
         salary: "4.5",
+        password: "fT7891PL",
     },
     {
         name: "Diana Prince",
@@ -34,6 +37,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "JKL09763",
     },
     {
         name: "Ethan Hunt",
@@ -43,6 +47,7 @@ export var userListData = [
         experience: "5",
         specialty: "Networking",
         salary: "4.8",
+        password: "PO893SD",
     },
     {
         name: "Fiona Gallagher",
@@ -52,6 +57,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "12JIPLH",
     },
     {
         name: "George Lucas",
@@ -61,6 +67,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "JSQWtyb7",
     },
     {
         name: "Hannah Baker",
@@ -70,6 +77,7 @@ export var userListData = [
         experience: "3",
         specialty: "Software Maintenance",
         salary: "4.2",
+        password: "MK340LS",
     },
     {
         name: "Ian Wright",
@@ -79,6 +87,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "KOPQ8950",
     },
     {
         name: "Julia Roberts",
@@ -88,6 +97,7 @@ export var userListData = [
         experience: "",
         specialty: "",
         salary: "",
+        password: "XY67NM98",
     },
 ];
 
