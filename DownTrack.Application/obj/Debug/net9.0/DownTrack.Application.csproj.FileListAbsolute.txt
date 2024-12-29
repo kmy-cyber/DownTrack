@@ -1,0 +1,16 @@
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/bin/Debug/net9.0/DownTrack.Application.deps.json
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/bin/Debug/net9.0/DownTrack.Application.dll
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/bin/Debug/net9.0/DownTrack.Application.pdb
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/bin/Debug/net9.0/DownTrack.Domain.dll
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/bin/Debug/net9.0/DownTrack.Domain.pdb
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.csproj.AssemblyReference.cache
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.AssemblyInfoInputs.cache
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.AssemblyInfo.cs
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.csproj.CoreCompileInputs.cache
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.sourcelink.json
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrac.34426185.Up2Date
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.dll
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/refint/DownTrack.Application.dll
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/DownTrack.Application.pdb
+/Users/amaliabeatrizvalientehinojosa/Documents/GitHub/DownTrack/DownTrack.Application/obj/Debug/net9.0/ref/DownTrack.Application.dll

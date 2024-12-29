@@ -23,5 +23,8 @@ public class DownTrackContext : DbContext
         modelBuilder.Entity<Technician>().HasIndex(x => x.Id).IsUnique();
 
         modelBuilder.Entity<Equipment>().HasIndex(x => x.Id).IsUnique();
+
+        modelBuilder.Entity<Section>().HasIndex(x => x.Id).IsUnique();
+
     }
 }
