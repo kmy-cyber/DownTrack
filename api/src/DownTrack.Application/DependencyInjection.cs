@@ -21,5 +21,6 @@ public static class DependencyInjection
         service.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         service.AddScoped<ITechnicianServices,TechnicianServices>();
         service.AddScoped<IEquipmentServices, EquipmentServices>();
+        service.AddScoped<IMaintenanceServices, MaintenanceServices>();
     }
 }
