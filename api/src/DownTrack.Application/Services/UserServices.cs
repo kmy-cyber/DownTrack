@@ -39,6 +39,9 @@ public class UserServices : IUserServices
         // method of the repository is called to insert the User entity into the database
         await _userRepository.CreateAsync(result);
 
+        // PONER AQUI EL GENERADOR DE TOKEN
+
+
         // map the new created User entity to a UserDTO
         return _mapper.Map<UserDto>(result);
     }

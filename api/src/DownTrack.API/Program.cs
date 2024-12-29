@@ -17,16 +17,30 @@ services.AddAplication(builder.Configuration);
 
 services.AddInfrastructure(builder.Configuration);
 
+// configurate cors
 services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        builder.AllowAnyOrigin() // permite solicitudes desde cualquier origen
+               .AllowAnyHeader() // permite encabezados HTTP
+               .AllowAnyMethod(); // permite cualquier metodo HTTP (GET,POST,PUT,DELETE)
     });
 });
 
+
+// nueva configuracion de cors
+
+// services.AddCors(options =>
+// {
+//     options.AddPolicy("LocalhostPolicy", builder =>
+//     {
+//         builder.WithOrigins("http://localhost:3000") // Permite solo este origen
+//                .AllowAnyHeader() // Permite cualquier encabezado, como Authorization o Content-Type
+//                .AllowAnyMethod(); // Permite cualquier método HTTP, como GET, POST, PUT, DELETE
+//     });
+// });
+// app.UseCors("LocalhostPolicy");
 
 
 var app = builder.Build();
