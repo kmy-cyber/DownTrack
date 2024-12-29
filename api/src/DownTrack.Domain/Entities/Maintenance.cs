@@ -1,5 +1,4 @@
-
-using DownTrack.Domain.Entities;
+namespace DownTrack.Domain.Entities;
 
 public class Maintenance: GenericEntity
 {
