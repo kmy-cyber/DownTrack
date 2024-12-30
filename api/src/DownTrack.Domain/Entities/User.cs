@@ -1,14 +1,9 @@
 
+using Microsoft.AspNetCore.Identity;
 
-using DownTrack.Domain.Enum;
+namespace DownTrack.Domain.Entities;
 
-namespace DownTrack.Domain.Enitites;
-
-public class User : GenericEntity
+public class User : IdentityUser
 {
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string UserName { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public Role role { get; set; }
+    
 }

@@ -1,8 +1,8 @@
 
 
-namespace DownTrack.Domain.Enitites;
+namespace DownTrack.Domain.Entities;
 
-public class Technician : User
+public class Technician : Employee
 {
     public string Specialty { get; set; } = string.Empty;
     public double Salary { get; set; }

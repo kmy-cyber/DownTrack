@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using DownTrack.Application.Common.Authentication;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DownTrack.Infrastructure.Authentication;
@@ -32,7 +32,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         var claims = new Claim[]
            {
               new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-              new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
+              new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
            };
 

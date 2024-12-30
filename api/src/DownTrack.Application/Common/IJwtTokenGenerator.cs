@@ -1,6 +1,6 @@
 
 
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.Common.Authentication;
 
