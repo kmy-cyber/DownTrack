@@ -14,6 +14,8 @@ public class DownTrackContext : DbContext
 
     public DbSet<Equipment> Equipments { get; set; }
 
+    public DbSet<EquipmentDecommissioning> EquipmentDecommissionings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -21,5 +23,19 @@ public class DownTrackContext : DbContext
         modelBuilder.Entity<Technician>().HasIndex(x => x.Id).IsUnique();
 
         modelBuilder.Entity<Equipment>().HasIndex(x => x.Id).IsUnique();
+
+        // Relationship EquipmentDecommissioning - Technician (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(b => b.Technician) // EquipmentDecommissioning has a Technician
+            .WithMany(t => t.EquipmentDecommissionings) // Technician has many decommissionings
+            .HasForeignKey(b => b.TechnicianId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If a Technician is deleted, set TechnicianId to null
+
+        // Relationship EquipmentDecommissioning - Equipment (one-to-one)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(b => b.Equipment) // EquipmentDecommissioning has an Equipment
+            .WithOne(e => e.EquipmentDecommissioning) // Equipment has a single EquipmentDecommissioning
+            .HasForeignKey<EquipmentDecommissioning>(b => b.EquipmentId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If an Equipment is deleted, set EquipmentId to null
     }
 }
