@@ -47,7 +47,7 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("Delete")]
+    [Route("DELETE")]
 
     public async Task<IActionResult> DeleteEquipment(int equipmentId)
     {

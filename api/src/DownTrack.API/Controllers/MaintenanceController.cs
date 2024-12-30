@@ -47,7 +47,7 @@ public class MaintenanceController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("Delete")]
+    [Route("DELETE")]
 
     public async Task<IActionResult> DeleteMaintenance(int maintenanceId)
     {

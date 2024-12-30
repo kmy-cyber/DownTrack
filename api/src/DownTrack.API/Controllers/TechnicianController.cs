@@ -38,18 +38,19 @@ namespace DownTrack.Api.Controllers
             return Ok(results);
 
         }
-
+        
         [HttpPut]
         [Route("PUT")]
 
         public async Task<IActionResult> UpdateTechnician(TechnicianDto technician)
         {
             var result = await _technicianService.UpdateAsync(technician);
+            
             return Ok(result);
         }
 
         [HttpDelete]
-        [Route("Delete")]
+        [Route("DELETE")]
 
         public async Task<IActionResult> DeleteTechnician(int technicianId)
         {

@@ -48,7 +48,7 @@ namespace DownTrack.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete")]
+        [Route("DELETE")]
 
         public async Task<IActionResult> DeleteSection(int sectionId)
         {
