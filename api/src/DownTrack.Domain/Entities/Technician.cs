@@ -9,4 +9,6 @@ public class Technician : GenericEntity
     public double Salary { get; set; }
     public int ExpYears { get; set; }
 
+    public ICollection<EquipmentDecommissioning> EquipmentDecommissionings { get; set; } = new List<EquipmentDecommissioning>();
+
 }
