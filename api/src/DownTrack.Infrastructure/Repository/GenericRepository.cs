@@ -1,6 +1,6 @@
 
 using DownTrack.Application.IRespository;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Infrastructure.Repository;
