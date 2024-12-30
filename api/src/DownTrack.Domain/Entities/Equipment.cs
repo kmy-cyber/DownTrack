@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Domain.Entities
 {
@@ -6,7 +7,7 @@ namespace DownTrack.Domain.Entities
     {
         public string Name { get; set; } = "name";
         public string Type { get; set; } = "type";
-        public string Status { get; set; } = "status";
+        public EquipmentStatus Status { get; set; }
         public DateTime DateOfadquisition { get; set; } = DateTime.Now;
         
         [JsonIgnore]
