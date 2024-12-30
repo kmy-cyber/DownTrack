@@ -19,8 +19,14 @@ public static class DependencyInjection
     {
         // add application layer services
         service.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+      
         service.AddScoped<ITechnicianServices,TechnicianServices>();
+      
         service.AddScoped<IEquipmentServices, EquipmentServices>();
+
+        service.AddScoped<ISectionServices, SectionServices>();
+      
         service.AddScoped<IMaintenanceServices, MaintenanceServices>();
+
     }
 }
