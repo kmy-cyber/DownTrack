@@ -1,6 +1,0 @@
-@DownTrack.API_HostAddress = http://localhost:5232
-
-GET {{DownTrack.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
