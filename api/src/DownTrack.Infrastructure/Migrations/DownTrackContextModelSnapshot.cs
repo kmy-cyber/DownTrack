@@ -18,25 +18,13 @@ namespace DownTrack.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("DownTrack.Domain.Enitites.User", b =>
+            modelBuilder.Entity("DownTrack.Domain.Entities.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -45,14 +33,14 @@ namespace DownTrack.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("Employee", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("DownTrack.Domain.Enitites.Technician", b =>
+            modelBuilder.Entity("DownTrack.Domain.Entities.Technician", b =>
                 {
-                    b.HasBaseType("DownTrack.Domain.Enitites.User");
+                    b.HasBaseType("DownTrack.Domain.Entities.Employee");
 
                     b.Property<int>("ExpYears")
                         .HasColumnType("int");
@@ -67,11 +55,11 @@ namespace DownTrack.Infrastructure.Migrations
                     b.ToTable("Technician", (string)null);
                 });
 
-            modelBuilder.Entity("DownTrack.Domain.Enitites.Technician", b =>
+            modelBuilder.Entity("DownTrack.Domain.Entities.Technician", b =>
                 {
-                    b.HasOne("DownTrack.Domain.Enitites.User", null)
+                    b.HasOne("DownTrack.Domain.Entities.Employee", null)
                         .WithOne()
-                        .HasForeignKey("DownTrack.Domain.Enitites.Technician", "Id")
+                        .HasForeignKey("DownTrack.Domain.Entities.Technician", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
