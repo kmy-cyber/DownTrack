@@ -24,7 +24,12 @@ public static class DependencyInjection
         var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
+      
         service.AddScoped<IEquipmentRepository, EquipmentRepository>();
+
         service.AddScoped<ISectionRepository, SectionRepository>();
+      
+        service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
+
     }
 }
