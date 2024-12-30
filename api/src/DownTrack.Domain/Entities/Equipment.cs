@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 
 namespace DownTrack.Domain.Entities
 {
@@ -7,6 +8,8 @@ namespace DownTrack.Domain.Entities
         public string Type { get; set; } = "type";
         public string Status { get; set; } = "status";
         public DateTime DateOfadquisition { get; set; } = DateTime.Now;
+        
+        [JsonIgnore]
         public EquipmentDecommissioning? EquipmentDecommissioning { get; set; }
     }
 }
