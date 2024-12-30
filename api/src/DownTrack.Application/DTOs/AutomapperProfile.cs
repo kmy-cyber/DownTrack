@@ -12,5 +12,7 @@ public class AutomapperProfile : Profile
         CreateMap<Technician,TechnicianDto>();
         CreateMap<EquipmentDto, Equipment>();
         CreateMap<Equipment, EquipmentDto>();
+        CreateMap<SectionDto, Section>();
+        CreateMap<Section, SectionDto>();
     }
 }
