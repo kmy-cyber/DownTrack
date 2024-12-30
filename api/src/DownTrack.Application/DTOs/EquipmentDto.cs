@@ -7,5 +7,6 @@ namespace DownTrack.Application.DTO
         public string Type { get; set; } = "type";
         public string Status { get; set; } = "status";
         public DateTime DateOfadquisition { get; set; } = DateTime.Now;
+
     }
 }

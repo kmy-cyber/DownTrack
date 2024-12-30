@@ -9,5 +9,6 @@ public class TechnicianDto
     public string Specialty { get; set; } = "specialty";
     public double Salary { get; set; }
     public int ExpYears { get; set; }
+    public ICollection<EquipmentDto> EquipmentDecommissionings { get; set; } = new List<EquipmentDto>();
 
 }
