@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IRespository;
 using DownTrack.Infrastructure.Repository;
 using DownTrack.Infrastructure.Authentication;
+using DownTrack.Application.Authentication;
+using Microsoft.AspNetCore.Identity;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Infrastructure;
 
@@ -28,6 +31,13 @@ public static class DependencyInjection
         service.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SECTION_NAME));
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
         service.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        service.AddScoped<IIdentityManager, IdentityManager>();
+
+        service.AddAuthentication();
+        service
+        .AddIdentityCore<User>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<DownTrackContext>();
 
     }
 }

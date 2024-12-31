@@ -1,12 +1,13 @@
 
 
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Infrastructure;
 
 
-public class DownTrackContext : DbContext
+public class DownTrackContext : IdentityDbContext<User>
 {
     public DownTrackContext(DbContextOptions options) : base(options) { }
 
