@@ -3,7 +3,6 @@ using AutoMapper;
 using DownTrack.Application.Authentication;
 using DownTrack.Application.Common.Authentication;
 using DownTrack.Application.DTO.Authentication;
-using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Domain.Entities;
 
@@ -14,7 +13,7 @@ public class IdentityService : IIdentityService
     private readonly IIdentityManager _identityManager;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IMapper _mapper;
-    //private readonly IUserServices _userServices;
+    // private readonly IUserServices _userServices;
 
     // falta tmb los servicios para definir las tablas donde insertar
     // de momento no se inserta en la tabla de Empleados
@@ -29,7 +28,7 @@ public class IdentityService : IIdentityService
         _jwtTokenGenerator = jwtTokenGenerator;
         _mapper = mapper;
         _identityManager = identityManager;
-        //_userServices = userServices;
+       // _userServices = userServices;
     }
 
     public async Task<bool> LoginUserAsync(LoginUserDto userDto)
@@ -37,7 +36,6 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<User>(userDto);
         if (user == null)
         {
-            Console.WriteLine("AAAAAAAAAAA");
             return false;
         }
 
@@ -45,7 +43,6 @@ public class IdentityService : IIdentityService
 
         if (savedUser) return savedUser;
 
-        Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
         return false;
     }
 
@@ -56,7 +53,7 @@ public class IdentityService : IIdentityService
             var user = _mapper.Map<User>(userDto);
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
             await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
-           // aqui se define saber a que tabla de empleado agregar usnado su servicio
+          // aqui se define saber a que tabla de empleado agregar usnado su servicio
             var token = _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
