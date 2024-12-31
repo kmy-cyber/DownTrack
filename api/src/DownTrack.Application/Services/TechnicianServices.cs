@@ -33,7 +33,6 @@ public class TechnicianServices : ITechnicianServices
     /// <returns>A Task representing the asynchronous operation, with an TechnicianDto as the result.</returns>
     public async Task<TechnicianDto> CreateAsync(TechnicianDto technicianDto)
     {
-        technicianDto.Role = "Technician";
         // map the DTOs (technicianDto) to a domain entity (Technician) 
         var result = _mapper.Map<Technician>(technicianDto);
         
