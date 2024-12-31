@@ -1,5 +1,7 @@
 
 
+using System.Text.Json.Serialization;
+
 namespace DownTrack.Application.DTO;
 
 public class TechnicianDto
@@ -9,6 +11,8 @@ public class TechnicianDto
     public string Specialty { get; set; } = "specialty";
     public double Salary { get; set; }
     public int ExpYears { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ICollection<EquipmentDto> EquipmentDecommissionings { get; set; } = new List<EquipmentDto>();
 
 }
