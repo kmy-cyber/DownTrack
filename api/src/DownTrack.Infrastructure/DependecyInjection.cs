@@ -31,5 +31,7 @@ public static class DependencyInjection
       
         service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
 
+        service.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
     }
 }

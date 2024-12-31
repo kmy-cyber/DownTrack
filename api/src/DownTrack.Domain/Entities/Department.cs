@@ -6,5 +6,5 @@ public class Department : GenericEntity
 
     public int SectionId {get; set;}
 
-    public Section Section{get; set;}
+    public required Section Section{get; set;}
 }

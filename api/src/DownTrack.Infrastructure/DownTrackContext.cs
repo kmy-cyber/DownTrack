@@ -18,6 +18,8 @@ public class DownTrackContext : DbContext
     
     public DbSet<Maintenance> Maintenances { get; set; }
 
+    public DbSet<Department> Departments { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +32,8 @@ public class DownTrackContext : DbContext
         modelBuilder.Entity<Section>().HasIndex(x => x.Id).IsUnique();
 
         modelBuilder.Entity<Maintenance>().HasIndex(x => x.Id).IsUnique();
+
+        modelBuilder.Entity<Department>().HasIndex(x => x.Id).IsUnique();
 
     }
 }
