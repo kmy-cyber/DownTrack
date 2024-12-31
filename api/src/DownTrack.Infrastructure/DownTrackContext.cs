@@ -29,5 +29,10 @@ public class DownTrackContext : DbContext
             .WithOne()
             .HasForeignKey<Technician>(t => t.Id);
         #endregion
+
+        modelBuilder.Entity<Technician>()
+            .HasBaseType<Employee>();
+        
+        
     }
 }

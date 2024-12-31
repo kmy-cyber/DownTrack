@@ -34,7 +34,7 @@ namespace DownTrack.Api.Controllers
         public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
         {
             var results = await _technicianService.ListAsync();
-
+            
             return Ok(results);
 
         }

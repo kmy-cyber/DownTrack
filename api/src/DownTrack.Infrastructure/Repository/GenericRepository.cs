@@ -21,6 +21,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
 
     public virtual async Task<T> CreateAsync(T element, CancellationToken cancellationToken = default)
     {
+        
         entity.Add(element);
 
         await _context.SaveChangesAsync(cancellationToken);
