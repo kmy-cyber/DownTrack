@@ -1,8 +1,5 @@
 
 
-using System.ComponentModel.DataAnnotations;
-using DownTrack.Domain.Enum;
-
 namespace DownTrack.Application.DTO.Authentication;
 
 public class RegisterUserDto
