@@ -1,9 +1,9 @@
 
-// using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
-// namespace DownTrack.Domain.Entities;
+namespace DownTrack.Domain.Entities;
 
-// public class User : IdentityUser
-// {
+public class User : IdentityUser
+{
     
-// }
+}

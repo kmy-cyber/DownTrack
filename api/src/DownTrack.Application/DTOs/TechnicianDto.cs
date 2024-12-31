@@ -12,4 +12,5 @@ public class TechnicianDto
     public int ExpYears { get; set; }
     public string Name { get; set; } = null!;
     public const string Role = UserRole.Technician;
+    
 }
