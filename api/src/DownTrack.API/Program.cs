@@ -2,6 +2,7 @@
 
 using DownTrack.Application;
 using DownTrack.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ var services = builder.Services;
 
 services.AddHttpContextAccessor();
 services.AddAplication(builder.Configuration);
+
+services.AddDefaultIdentity<IdentityUser>()
+        .AddEntityFrameworkStores<DownTrackContext>();
 
 services.AddInfrastructure(builder.Configuration);
 

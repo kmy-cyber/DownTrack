@@ -4,13 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IRespository;
 using DownTrack.Infrastructure.Repository;
-using DownTrack.Infrastructure.Authentication;
-using DownTrack.Application.Authentication;
 using Microsoft.AspNetCore.Identity;
 using DownTrack.Domain.Entities;
+using DownTrack.Application.Common.Authentication;
+using DownTrack.Infrastructure.Authentication;
+using Microsoft.Extensions.Options;
+using DownTrack.Application.Authentication;
+//using DownTrack.Application.Common.Authentication;
 
 namespace DownTrack.Infrastructure;
-
 
 public static class DependencyInjection
 {
@@ -28,9 +30,23 @@ public static class DependencyInjection
         var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(
                                                         connectionString, ServerVersion.AutoDetect(connectionString)));
 
-        service.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SECTION_NAME));
+
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
         service.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+
+
+
+        service.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SECTION_NAME));
+
+        service.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>(sp =>
+    {
+        var jwtSettings = sp.GetRequiredService<IOptions<JwtSettings>>().Value;
+        return new JwtTokenGenerator(jwtSettings);
+    });
+
+
+
         service.AddScoped<IIdentityManager, IdentityManager>();
 
         service.AddAuthentication();

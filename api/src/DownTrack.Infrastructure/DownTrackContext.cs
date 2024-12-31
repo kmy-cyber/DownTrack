@@ -8,6 +8,7 @@ namespace DownTrack.Infrastructure;
 
 
 public class DownTrackContext : IdentityDbContext<User>
+
 {
     public DownTrackContext(DbContextOptions options) : base(options) { }
 
@@ -33,7 +34,8 @@ public class DownTrackContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Technician>()
             .HasBaseType<Employee>();
-        
-        
+
     }
 }
+
+

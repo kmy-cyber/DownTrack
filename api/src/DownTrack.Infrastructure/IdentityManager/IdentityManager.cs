@@ -37,7 +37,7 @@ public class IdentityManager : IIdentityManager
 
     public async Task AddRoles(string userId, string role)
     {
-        // Verifica si el rol ya existe, si no, lo crea
+        //Verifica si el rol ya existe, si no, lo crea
         var existingRole = await _roleManager.FindByNameAsync(role);
         if (existingRole == null)
         {
@@ -49,7 +49,7 @@ public class IdentityManager : IIdentityManager
             }
         }
 
-        // Asignar el rol al usuario
+        //Asignar el rol al usuario
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
