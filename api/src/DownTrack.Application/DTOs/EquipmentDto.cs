@@ -11,9 +11,7 @@ namespace DownTrack.Application.DTO
         public string Type { get; set; } = "type";
         public EquipmentStatus Status { get; set; }
         public DateTime DateOfadquisition { get; set; } = DateTime.Now;
-        
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public EquipmentDecommissioning? EquipmentDecommissioning { get; set; } = null;
+        public EquipmentDecommissioning? EquipmentDecommissioning { get; set; }
 
     }
 }

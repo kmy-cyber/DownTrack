@@ -11,8 +11,6 @@ public class TechnicianDto
     public string Specialty { get; set; } = "specialty";
     public double Salary { get; set; }
     public int ExpYears { get; set; }
-    
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public ICollection<EquipmentDto> EquipmentDecommissionings { get; set; } = new List<EquipmentDto>();
+    public ICollection<EquipmentDecommissioningDto>? EquipmentDecommissionings { get; set; }
 
 }
