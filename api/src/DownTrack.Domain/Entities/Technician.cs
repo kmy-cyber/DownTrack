@@ -12,6 +12,6 @@ public class Technician : GenericEntity
     public int ExpYears { get; set; }
 
     [JsonIgnore]
-    public ICollection<EquipmentDecommissioning> EquipmentDecommissionings { get; set; } = new List<EquipmentDecommissioning>();
+    public ICollection<EquipmentDecommissioning>? EquipmentDecommissionings { get; set; }
 
 }
