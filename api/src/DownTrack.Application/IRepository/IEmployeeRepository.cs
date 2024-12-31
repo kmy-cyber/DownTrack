@@ -4,7 +4,7 @@ using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IRespository;
 
-public interface ITechnicianRepository : IGenericRepository<Technician>
+public interface IEmployeeRepository : IGenericRepository<Employee>
 {
     
 }

@@ -2,7 +2,7 @@
 
 
 using AutoMapper;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.DTO;
 
@@ -13,7 +13,7 @@ public class AutomapperProfile : Profile
         CreateMap<TechnicianDto, Technician>();
         CreateMap<Technician,TechnicianDto>();
 
-        CreateMap<UserDto,User>();
-        CreateMap<User,UserDto>();
+        CreateMap<EmployeeDto,Employee>();
+        CreateMap<Employee,EmployeeDto>();
     }
 }

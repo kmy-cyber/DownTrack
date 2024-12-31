@@ -3,7 +3,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IRespository;
 using AutoMapper;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.Services;
 
@@ -35,7 +35,7 @@ public class TechnicianServices : ITechnicianServices
     {
         // map the DTOs (technicianDto) to a domain entity (Technician) 
         var result = _mapper.Map<Technician>(technicianDto);
-
+        
         // method of the repository is called to insert the Technician entity into the database
         await _technicianRepository.CreateAsync(result);
 

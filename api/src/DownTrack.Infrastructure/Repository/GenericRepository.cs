@@ -1,6 +1,6 @@
 
 using DownTrack.Application.IRespository;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Infrastructure.Repository;
@@ -21,6 +21,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
 
     public virtual async Task<T> CreateAsync(T element, CancellationToken cancellationToken = default)
     {
+        
         entity.Add(element);
 
         await _context.SaveChangesAsync(cancellationToken);

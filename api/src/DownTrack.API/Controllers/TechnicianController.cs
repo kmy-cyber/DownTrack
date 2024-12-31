@@ -2,7 +2,7 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Enitites;
+using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers
@@ -34,7 +34,7 @@ namespace DownTrack.Api.Controllers
         public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
         {
             var results = await _technicianService.ListAsync();
-
+            
             return Ok(results);
 
         }
