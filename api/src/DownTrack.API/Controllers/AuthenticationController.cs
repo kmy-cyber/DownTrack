@@ -9,7 +9,7 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticationController: ControllerBase
+public class AuthenticationController : ControllerBase
 {
     private readonly IIdentityService _identityService;
 
@@ -19,22 +19,26 @@ public class AuthenticationController: ControllerBase
     }
 
     [HttpPost]
-    [Route("login")]
+    [Route("register")]
 
-    public async Task<IActionResult> Login (LoginUserDto loginDto)
+    public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
-        if(!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        //check credentials
 
-        var token = await _identityService.CheckCredentialAsync(loginDto);
-
-        if(!token)
-            return Unauthorized(new { Message = "Wrong Credentials" });
-        
-        return Ok(new {Token = token});
+        var result = await _identityService.RegisterUserAsync(registerDto);
+        return Ok(result);
 
     }
 
-}   
+    [HttpPost]
+    [Route("login")]
+
+    public async Task<IActionResult> LoginUser(LoginUserDto loginDto)
+    {
+
+        var token = await _identityService.LoginUserAsync(loginDto);
+
+        return Ok(token);
+
+    }
+
+}
