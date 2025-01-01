@@ -4,9 +4,13 @@ namespace DownTrack.Application.DTO.Authentication;
 
 public class RegisterUserDto
 {
-    public string Name{get;set;} = null!;
-    public string UserName{get;set;} = null!;
-    public string Email{get;set;}= null!;
-    public string Password{get;set;}= null!;
-    public string UserRole {get;set;}= null!;
+    public int Id {get;set;}
+    public string Name { get; set; } = null!;
+    public string UserName { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string UserRole { get; set; } = null!;
+    public string Specialty { get; set; } = null!;
+    public double Salary { get; set; }
+    public int ExpYears { get; set; }
 }

@@ -39,15 +39,20 @@ services.AddCors(options =>
 // {
 //     options.AddPolicy("LocalhostPolicy", builder =>
 //     {
-//         builder.WithOrigins("http://localhost:3000") // Permite solo este origen
+//         builder.WithOrigins("http://localhost:5173/") // Permite solo este origen
 //                .AllowAnyHeader() // Permite cualquier encabezado, como Authorization o Content-Type
 //                .AllowAnyMethod(); // Permite cualquier método HTTP, como GET, POST, PUT, DELETE
 //     });
 // });
-// app.UseCors("LocalhostPolicy");
 
 
 var app = builder.Build();
+
+
+
+// app.UseCors("LocalhostPolicy");
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

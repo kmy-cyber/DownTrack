@@ -10,6 +10,18 @@ public class UserRole
     public const string Director = "Director";
     public const string ShippingSupervisor = " ShippingSupervisor";
 
+
+    public static readonly string[] Roles =
+        {
+            "Administrator",
+            "SectionManager",
+            "Technician",
+            "EquipmentReceptor",
+            "Director",
+            "ShippingSupervisor"
+        };
+
+
 }
 
 

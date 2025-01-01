@@ -10,6 +10,7 @@ using DownTrack.Application.Common.Authentication;
 using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
+using DownTrack.Infrastructure.Initializer;
 //using DownTrack.Application.Common.Authentication;
 
 namespace DownTrack.Infrastructure;
@@ -51,9 +52,13 @@ public static class DependencyInjection
 
         service.AddAuthentication();
         service
-        .AddIdentityCore<User>()
-        .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<DownTrackContext>();
+                .AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<DownTrackContext>();
+
+        //Register a service of type IHostedService in the dependency container
+         
+        service.AddHostedService<RoleInitializer>();
 
     }
 }

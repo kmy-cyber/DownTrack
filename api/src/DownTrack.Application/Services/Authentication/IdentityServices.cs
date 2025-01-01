@@ -2,9 +2,12 @@
 using AutoMapper;
 using DownTrack.Application.Authentication;
 using DownTrack.Application.Common.Authentication;
+using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Authentication;
+using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.Services.Authentication;
 
@@ -13,7 +16,9 @@ public class IdentityService : IIdentityService
     private readonly IIdentityManager _identityManager;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IMapper _mapper;
-    // private readonly IUserServices _userServices;
+    private readonly IEmployeeServices _employeeServices;
+
+    private readonly ITechnicianServices _technicianServices;
 
     // falta tmb los servicios para definir las tablas donde insertar
     // de momento no se inserta en la tabla de Empleados
@@ -21,14 +26,16 @@ public class IdentityService : IIdentityService
     public IdentityService(
                 IJwtTokenGenerator jwtTokenGenerator,
                 IMapper mapper,
-                IIdentityManager identityManager
-                //IUserServices userServices
+                IIdentityManager identityManager,
+                IEmployeeServices employeeServices,
+                ITechnicianServices technicianServices
                 )
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _mapper = mapper;
         _identityManager = identityManager;
-       // _userServices = userServices;
+        _employeeServices = employeeServices;
+        _technicianServices = technicianServices;
     }
 
     public async Task<bool> LoginUserAsync(LoginUserDto userDto)
@@ -53,7 +60,21 @@ public class IdentityService : IIdentityService
             var user = _mapper.Map<User>(userDto);
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
             await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
-          // aqui se define saber a que tabla de empleado agregar usnado su servicio
+
+            if(userDto.UserRole == UserRole.Technician)
+            {
+                var technician = _mapper.Map<TechnicianDto>(userDto);
+                
+                await _technicianServices.CreateAsync(technician);
+            }
+
+            else
+            {
+                var employee = _mapper.Map<EmployeeDto>(userDto);
+                
+                await _employeeServices.CreateAsync(employee);
+            }
+            // aqui se define saber a que tabla de empleado agregar usnado su servicio
             var token = _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
