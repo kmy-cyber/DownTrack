@@ -57,21 +57,28 @@ public class IdentityService : IIdentityService
     {
         try
         {
+            if (!UserRole.IsValidRole(userDto.UserRole))
+
+                throw new Exception("Invalid Role");
+
+
+
+
             var user = _mapper.Map<User>(userDto);
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
             await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
 
-            if(userDto.UserRole == UserRole.Technician)
+            if (userDto.UserRole == UserRole.Technician)
             {
                 var technician = _mapper.Map<TechnicianDto>(userDto);
-                
+
                 await _technicianServices.CreateAsync(technician);
             }
 
             else
             {
                 var employee = _mapper.Map<EmployeeDto>(userDto);
-                
+
                 await _employeeServices.CreateAsync(employee);
             }
             // aqui se define saber a que tabla de empleado agregar usnado su servicio

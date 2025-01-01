@@ -30,7 +30,6 @@ public class IdentityManager : IIdentityManager
             throw new Exception($"Error al crear el usuario: {errors}");
         }
 
-
         return user;
     }
 

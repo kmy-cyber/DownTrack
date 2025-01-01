@@ -22,6 +22,11 @@ public class UserRole
         };
 
 
+    public static bool IsValidRole(string role)
+    {
+        return Roles.Contains(role);
+    }            
+
 }
 
 
