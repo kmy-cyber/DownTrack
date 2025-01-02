@@ -2,12 +2,14 @@
 
 using DownTrack.Application;
 using DownTrack.Infrastructure;
+using DownTrack.Application.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(AutomapperProfile));
 
 
 var services = builder.Services;

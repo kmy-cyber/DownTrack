@@ -40,7 +40,7 @@ namespace DownTrack.Api.Controllers
         [HttpPut]
         [Route("PUT")]
 
-        public async Task<IActionResult> UpdateDepartment(DepartmentDto department)
+        public async Task<IActionResult> UpdateDepartment(UpdateDepartmentDto department)
         {
             var result = await _departmentService.UpdateAsync(department);
             return Ok(result);

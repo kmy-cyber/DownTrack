@@ -35,13 +35,13 @@ public class DepartmentServices : IDepartmentServices
         var department = await _departmentRepository.ListAsync();
         return department.Select(_mapper.Map<DepartmentDto>);
     }
-
-    public async Task<DepartmentDto> UpdateAsync(DepartmentDto dto)
+    
+    public async Task<UpdateDepartmentDto> UpdateAsync(UpdateDepartmentDto dto)
     {
         var department = _departmentRepository.GetById(dto.Id);
         _mapper.Map(dto, department);
         await _departmentRepository.UpdateAsync(department);
-        return _mapper.Map<DepartmentDto>(department);
+        return _mapper.Map<UpdateDepartmentDto>(department);
     }
 }
 

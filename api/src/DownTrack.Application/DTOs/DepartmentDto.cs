@@ -5,8 +5,12 @@ namespace DownTrack.Application.DTO
 {
     public int Id {get;set;}
     public required string Name { get; set; } = "name";
-
     public int SectionId {get; set;}
 
 }
 }
+
+    public class UpdateDepartmentDto{
+    public int Id {get;set;}
+    public required string Name { get; set; } = "name";        
+    }
