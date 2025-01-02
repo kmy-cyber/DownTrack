@@ -1,7 +1,7 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using AutoMapper;
 using DownTrack.Domain.Entities;
 

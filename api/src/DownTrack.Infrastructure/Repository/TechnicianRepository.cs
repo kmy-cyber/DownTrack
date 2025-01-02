@@ -1,4 +1,4 @@
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using DownTrack.Domain.Entities;
 
 namespace DownTrack.Infrastructure.Repository;

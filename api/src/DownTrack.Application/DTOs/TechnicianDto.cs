@@ -9,6 +9,6 @@ public class TechnicianDto
     public double Salary { get; set; }
     public int ExpYears { get; set; }
     public string Name { get; set; } = null!;
-    public const string Role = "Technician";
+    public string UserRole = "Technician";
     
 }

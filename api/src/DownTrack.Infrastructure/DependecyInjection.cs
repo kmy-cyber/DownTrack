@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using DownTrack.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using DownTrack.Domain.Entities;
@@ -11,7 +11,6 @@ using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
 using DownTrack.Infrastructure.Initializer;
-//using DownTrack.Application.Common.Authentication;
 
 namespace DownTrack.Infrastructure;
 
@@ -34,8 +33,13 @@ public static class DependencyInjection
 
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
         service.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        service.AddScoped<IUserRepository,UserRepository>();
+        
+        
 
-
+        // // Registering DownTrackContextInitializer as a scoped service. 
+        // // It will be instantiated once per HTTP request, allowing it to manage database initialization for each request.
+        // service.AddScoped<DownTrackContextInitializer>();
 
 
         service.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SECTION_NAME));
@@ -56,9 +60,17 @@ public static class DependencyInjection
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DownTrackContext>();
 
+        
         //Register a service of type IHostedService in the dependency container
-         
         service.AddHostedService<RoleInitializer>();
 
     }
 }
+
+
+//scoped : se crea una nueva instacnia por solicitud HTTP.Se
+//utiliza para servicios que necesitan tener estados dentro de una
+// solicitud, como el accede a la BD
+
+//singleton: viven durante toda la vida de la app
+// servicios que no tienen estado o que son costosos de crear, como configuracion o cache

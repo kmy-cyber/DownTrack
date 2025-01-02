@@ -6,9 +6,19 @@ using Microsoft.Extensions.Hosting;
 
 namespace DownTrack.Infrastructure.Initializer;
 
+
+/// <summary>
+/// A background service that ensures predefined roles are created in the system at startup.
+/// This service is executed once when the application starts and is used to initialize
+/// roles or other required data for the application.
+/// </summary>
+/// <remarks>
+/// This service uses the IHostedService interface to perform initialization tasks.
+/// It is triggered during the application's startup and stops gracefully when the application shuts down.
+/// </remarks>
 public class RoleInitializer : IHostedService
 {
-    // using 
+    
     private readonly IServiceProvider _serviceProvider;
 
     public RoleInitializer(IServiceProvider serviceProvider)
@@ -48,5 +58,6 @@ public class RoleInitializer : IHostedService
         }
     }
 
+        
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }

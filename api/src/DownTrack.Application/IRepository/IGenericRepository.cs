@@ -1,7 +1,7 @@
 
 using DownTrack.Domain.Entities;
 
-namespace DownTrack.Application.IRespository;
+namespace DownTrack.Application.IRepository;
 
 public interface IGenericRepository<T> where T:GenericEntity
 {

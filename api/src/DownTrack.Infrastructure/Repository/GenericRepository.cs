@@ -1,5 +1,5 @@
 
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +41,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
     {
         var result = await entity.FindAsync(elementId, cancellationToken);
         if (result == null)
-            throw new KeyNotFoundException($"No se encontró una entidad con el ID '{elementId}'.");
+            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
         return result;
     }
     public virtual async Task<IEnumerable<T>> ListAsync(CancellationToken cancellationToken = default)
@@ -54,7 +54,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
         var result = entity.Find(elementId);
         
         if (result == null)
-            throw new KeyNotFoundException($"No se encontró una entidad con el ID '{elementId}'.");
+            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
 
         entity.Remove(result);
         await _context.SaveChangesAsync(cancellationToken);

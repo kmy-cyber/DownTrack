@@ -35,6 +35,13 @@ public class DownTrackContext : IdentityDbContext<User>
         modelBuilder.Entity<Technician>()
             .HasBaseType<Employee>();
 
+        // modelBuilder.Entity<User>()
+        //     .HasOne<Employee>()
+        //     .WithOne()
+        //     .HasForeignKey<User>(u=> u.IdEmployee)
+        //     .OnDelete(DeleteBehavior.Cascade);
+
+
     }
 }
 

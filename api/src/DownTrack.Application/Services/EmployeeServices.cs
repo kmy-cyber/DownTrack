@@ -1,9 +1,11 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Application.IRespository;
+using DownTrack.Application.IRepository;
 using AutoMapper;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
@@ -17,11 +19,15 @@ public class EmployeeServices : IEmployeeServices
 
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
-    public EmployeeServices(IEmployeeRepository employeeRepository, IMapper mapper)
+    public EmployeeServices(IEmployeeRepository employeeRepository,
+                            IMapper mapper,
+                            IUserRepository userRepository)
     {
         _employeeRepository = employeeRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
 
@@ -38,9 +44,6 @@ public class EmployeeServices : IEmployeeServices
 
         // method of the repository is called to insert the Employee entity into the database
         await _employeeRepository.CreateAsync(result);
-
-        // PONER AQUI EL GENERADOR DE TOKEN
-
 
         // map the new created Employee entity to a EmployeeDTO
         return _mapper.Map<EmployeeDto>(result);
@@ -89,9 +92,18 @@ public class EmployeeServices : IEmployeeServices
     /// </summary>
     /// <param name="employeeDto">The employee's ID to be deleted.</param>
     /// <returns>A Task representing the asynchronous delete operation.</returns>
-    public async Task DeleteAsync(int employeeDto)
+    public async Task DeleteAsync(int employeeId)
     {
-        await _employeeRepository.DeleteByIdAsync(employeeDto);
+        //get the employee
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        if (employee == null)
+        {
+            throw new Exception("Employee not found");
+        }
+
+        await _userRepository.DeleteByIdEmployeeAsync(employeeId);
+
+        await _employeeRepository.DeleteByIdAsync(employeeId);
     }
 
 

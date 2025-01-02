@@ -4,6 +4,7 @@ using DownTrack.Application.Authentication;
 using DownTrack.Application.Common.Authentication;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Authentication;
+using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Domain.Entities;
@@ -16,22 +17,22 @@ public class IdentityService : IIdentityService
     private readonly IIdentityManager _identityManager;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IMapper _mapper;
-    private readonly IEmployeeServices _employeeServices;
-    private readonly ITechnicianServices _technicianServices;
+    private readonly IEmployeeRepository _employeeRepository;
+    private readonly ITechnicianRepository _technicianRepository;
 
     public IdentityService(
                 IJwtTokenGenerator jwtTokenGenerator,
                 IMapper mapper,
                 IIdentityManager identityManager,
-                IEmployeeServices employeeServices,
-                ITechnicianServices technicianServices
+                IEmployeeRepository employeeRepository,
+                ITechnicianRepository technicianRepository
                 )
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _mapper = mapper;
         _identityManager = identityManager;
-        _employeeServices = employeeServices;
-        _technicianServices = technicianServices;
+        _employeeRepository = employeeRepository;
+        _technicianRepository = technicianRepository;
     }
 
     public async Task<bool> LoginUserAsync(LoginUserDto userDto)
@@ -66,16 +67,24 @@ public class IdentityService : IIdentityService
 
             if (userDto.UserRole == UserRole.Technician.ToString())
             {
-                var technician = _mapper.Map<TechnicianDto>(userDto);
+                Console.WriteLine(userDto.UserRole);
+                var technicianDto = _mapper.Map<TechnicianDto>(userDto);
+                Console.WriteLine(technicianDto.UserRole);
+                var technician = _mapper.Map<Technician>(technicianDto);
+                Console.WriteLine(technician.UserRole);
 
-                await _technicianServices.CreateAsync(technician);
+                await _technicianRepository.CreateAsync(technician);
             }
 
             else
             {
-                var employee = _mapper.Map<EmployeeDto>(userDto);
+                Console.WriteLine(userDto.UserRole);
+                var employeeDto = _mapper.Map<EmployeeDto>(userDto);
 
-                await _employeeServices.CreateAsync(employee);
+                Console.WriteLine(employeeDto.UserRole);
+                var employee = _mapper.Map<Employee>(employeeDto);
+                Console.WriteLine(employee.UserRole);
+                await _employeeRepository.CreateAsync(employee);
             }
             
             var token = _jwtTokenGenerator.GenerateToken(savedUser);

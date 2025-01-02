@@ -29,7 +29,7 @@ namespace DownTrack.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("UserRole")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -67,10 +67,6 @@ namespace DownTrack.Infrastructure.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
