@@ -13,6 +13,15 @@ dotnet add .\DownTrack.Api\ reference .\DownTrack.Application\ .\DownTrack.Infra
 dotnet add .\DownTrack.Infrastructure\ reference .\DownTrack.Application\ 
 dotnet add .\DownTrack.Application\ reference .\DownTrack.Domain\
 
+OR(for Amalia)
+for proj in **/*.csproj; do
+    dotnet sln add "$proj"
+done
+
+dotnet add ./DownTrack.Api/DownTrack.Api.csproj reference ./DownTrack.Application/DownTrack.Application.csproj ./DownTrack.Infrastructure/DownTrack.Infrastructure.csproj
+dotnet add ./DownTrack.Infrastructure/DownTrack.Infrastructure.csproj reference ./DownTrack.Application/DownTrack.Application.csproj
+dotnet add ./DownTrack.Application/DownTrack.Application.csproj reference ./DownTrack.Domain/DownTrack.Domain.csproj
+
 dotnet build
 
 

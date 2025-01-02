@@ -1,6 +1,4 @@
 
-
-
 using AutoMapper;
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Domain.Entities;
@@ -14,6 +12,7 @@ public class AutomapperProfile : Profile
         CreateMap<TechnicianDto, Technician>();
         CreateMap<Technician,TechnicianDto>();
 
+
         CreateMap<EmployeeDto,Employee>();
         CreateMap<Employee,EmployeeDto>();
 
@@ -23,5 +22,16 @@ public class AutomapperProfile : Profile
         CreateMap<RegisterUserDto,TechnicianDto>();
         CreateMap<RegisterUserDto,EmployeeDto>();
         
+
+        CreateMap<EquipmentDto, Equipment>();
+        CreateMap<Equipment, EquipmentDto>();
+
+        CreateMap<SectionDto, Section>();
+        CreateMap<Section, SectionDto>();
+        
+        CreateMap<MaintenanceDto, Maintenance>();
+        CreateMap<Maintenance, MaintenanceDto>();
+
+
     }
 }

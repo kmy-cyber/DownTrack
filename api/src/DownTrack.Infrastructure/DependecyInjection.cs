@@ -1,7 +1,7 @@
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using DownTrack.Application.IRepository;
 using DownTrack.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +11,11 @@ using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
 using DownTrack.Infrastructure.Initializer;
+=======
+using DownTrack.Infrastructure.Repository;
+using DownTrack.Application.IRepository;
+
+>>>>>>> api
 
 namespace DownTrack.Infrastructure;
 
@@ -34,7 +39,11 @@ public static class DependencyInjection
         service.AddScoped<ITechnicianRepository, TechnicianRepository>();
         service.AddScoped<IEmployeeRepository, EmployeeRepository>();
         service.AddScoped<IUserRepository,UserRepository>();
-        
+        service.AddScoped<IEquipmentRepository, EquipmentRepository>();
+
+        service.AddScoped<ISectionRepository, SectionRepository>();
+      
+        service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
         
 
         // // Registering DownTrackContextInitializer as a scoped service. 
@@ -63,6 +72,7 @@ public static class DependencyInjection
         
         //Register a service of type IHostedService in the dependency container
         service.AddHostedService<RoleInitializer>();
+
 
     }
 }
