@@ -9,5 +9,5 @@ public class EquipmentReceptor
     public string Name { get; set; } = null!;
     public int DepartamentId {get;set;}
     public int SectionId {get;set;}
-    public const string UserRole = "EquipmentReceptor";
+    public string UserRole = "EquipmentReceptor";
 }

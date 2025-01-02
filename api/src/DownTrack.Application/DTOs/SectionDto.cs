@@ -1,10 +1,8 @@
-namespace DownTrack.Application.DTO
+namespace DownTrack.Application.DTO;
+public class SectionDto
 {
-    public class SectionDto
-    { 
-        public int Id {get;set;}
+    public int Id { get; set; }
 
-         public required string Name { get; set; } = "name";
-    }
-
+    public required string Name { get; set; } = "name";
 }
+
