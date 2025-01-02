@@ -9,13 +9,11 @@ namespace DownTrack.Application.Services;
 public class EquipmentServices : IEquipmentServices
 {
     private readonly IEquipmentRepository _equipmentRepository;
-    private readonly IEquipmentDecommissioningRepository _equipmentDecommissioningRepository;
     private readonly IMapper _mapper;
 
-    public EquipmentServices(IEquipmentRepository equipmentRepository, IEquipmentDecommissioningRepository equipmentDecommissioningRepository, IMapper mapper)
+    public EquipmentServices(IEquipmentRepository equipmentRepository, IMapper mapper)
     {
         _equipmentRepository = equipmentRepository;
-        _equipmentDecommissioningRepository = equipmentDecommissioningRepository;
         _mapper = mapper;
     }
 
@@ -28,19 +26,6 @@ public class EquipmentServices : IEquipmentServices
 
     public async Task DeleteAsync(int dto)
     {
-        var equipment = await _equipmentRepository.GetByIdAsync(dto);
-
-        // Set EquipmentId to null in all related decommissionings
-        var decommissionings = await _equipmentDecommissioningRepository.ListAsync();
-        foreach (var decommissioning in decommissionings)
-        {
-            if (decommissioning.EquipmentId == dto)
-            {
-                decommissioning.EquipmentId = null;
-                await _equipmentDecommissioningRepository.UpdateAsync(decommissioning);
-            }
-        }
-
         await _equipmentRepository.DeleteByIdAsync(dto);
     }
 
