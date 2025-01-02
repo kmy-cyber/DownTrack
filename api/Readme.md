@@ -1,7 +1,7 @@
 ##### HOW TO RUN IT?
 
 ```bash
-\dotnet new sln -n DownTrack
+dotnet new sln -n DownTrack
 dotnet new webapi -n DownTrack.API
 dotnet new classlib -n DownTrack.Domain
 dotnet new classlib -n DownTrack.Application

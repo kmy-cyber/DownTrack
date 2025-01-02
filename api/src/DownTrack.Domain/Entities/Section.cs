@@ -1,8 +1,14 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace DownTrack.Domain.Entities;
 
 public class Section : GenericEntity
 {
     public required string Name { get; set; } = "name";
 
-    public List<Department> Departments {get; set;}
+    [JsonIgnore]
+    public ICollection<Department> Departments{get;set;} = new List<Department>();
+
+
 }
