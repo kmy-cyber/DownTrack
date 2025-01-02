@@ -1,16 +1,13 @@
-using System.Text.Json.Serialization;
 
 namespace DownTrack.Domain.Entities;
 
 public class EquipmentDecommissioning : GenericEntity
 {
-    public int? TechnicianId { get; set; }
-    public int? EquipmentId { get; set; }
+    public int TechnicianId { get; set; }
+    public int EquipmentId { get; set; }
     public DateTime DateOfDecommissioning { get; set; } = DateTime.Now;
-    public string? DecommissioningReason { get; set; }
+    public string DecommissioningReason { get; set; } = null!;
 
-    [JsonIgnore]
-    public Technician? Technician { get; set; }
-    [JsonIgnore]
-    public Equipment? Equipment { get; set; }
+    public Technician Technician { get; set; } = null!;
+    public Equipment Equipment { get; set; } = null!;
 }
