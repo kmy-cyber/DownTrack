@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
 using DownTrack.Application.IRepository;
 using DownTrack.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +10,7 @@ using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
 using DownTrack.Infrastructure.Initializer;
-=======
-using DownTrack.Infrastructure.Repository;
-using DownTrack.Application.IRepository;
 
->>>>>>> api
 
 namespace DownTrack.Infrastructure;
 

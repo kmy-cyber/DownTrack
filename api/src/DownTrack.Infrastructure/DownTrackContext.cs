@@ -1,10 +1,7 @@
 
 
 using DownTrack.Domain.Entities;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-=======
->>>>>>> api
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Infrastructure;
@@ -22,8 +19,8 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Equipment> Equipments { get; set; }
 
-    public DbSet<Section> Sections{get; set;}
-    
+    public DbSet<Section> Sections { get; set; }
+
     public DbSet<Maintenance> Maintenances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
