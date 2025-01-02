@@ -1,9 +1,8 @@
 using DownTrack.Application.DTO;
 
-namespace DownTrack.Application.IServices
+namespace DownTrack.Application.IServices;
+
+public interface IEquipmentServices : IGenericService<EquipmentDto>
 {
-    public interface IEquipmentServices : IGenericService<EquipmentDto>
-    {
-        
-    }
+
 }
