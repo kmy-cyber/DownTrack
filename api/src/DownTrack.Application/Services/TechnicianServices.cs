@@ -18,11 +18,13 @@ public class TechnicianServices : ITechnicianServices
 {
 
     private readonly ITechnicianRepository _technicianRepository;
+    private readonly IEquipmentDecommissioningRepository _equipmentDecommissioningRepository;
     private readonly IMapper _mapper;
 
-    public TechnicianServices(ITechnicianRepository technicianRepository, IMapper mapper)
+    public TechnicianServices(ITechnicianRepository technicianRepository, IEquipmentDecommissioningRepository equipmentDecommissioningRepository, IMapper mapper)
     {
         _technicianRepository = technicianRepository;
+        _equipmentDecommissioningRepository = equipmentDecommissioningRepository;
         _mapper = mapper;
     }
 
@@ -90,6 +92,19 @@ public class TechnicianServices : ITechnicianServices
     /// <returns>A Task representing the asynchronous delete operation.</returns>
     public async Task DeleteAsync(int technicianDto)
     {
+        var technician = await _technicianRepository.GetByIdAsync(technicianDto);
+
+        // Set TechnicianId to null in all related decommissionings
+        var decommissionings = await _equipmentDecommissioningRepository.ListAsync();
+        foreach (var decommissioning in decommissionings)
+        {
+            if (decommissioning.TechnicianId == technicianDto)
+            {
+                decommissioning.TechnicianId = null;
+                await _equipmentDecommissioningRepository.UpdateAsync(decommissioning);
+            }
+        }
+
         await _technicianRepository.DeleteByIdAsync(technicianDto);
     }
 
