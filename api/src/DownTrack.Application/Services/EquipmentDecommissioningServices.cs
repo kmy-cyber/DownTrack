@@ -14,7 +14,10 @@ public class EquipmentDecommissioningServices : IEquipmentDecommissioningService
     private readonly ITechnicianRepository _technicianRepository;
     private readonly IMapper _mapper;
 
-    public EquipmentDecommissioningServices(IEquipmentDecommissioningRepository equipmentDecommissioningRepository, IEquipmentRepository equipmentRepository, ITechnicianRepository technicianRepository, IMapper mapper)
+    public EquipmentDecommissioningServices(IEquipmentDecommissioningRepository equipmentDecommissioningRepository,
+                                             IEquipmentRepository equipmentRepository,  
+                                             ITechnicianRepository technicianRepository, 
+                                             IMapper mapper)
     {
         _equipmentDecommissioningRepository = equipmentDecommissioningRepository;
         _equipmentRepository = equipmentRepository;

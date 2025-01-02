@@ -8,8 +8,7 @@ namespace DownTrack.Domain.Entities
         public string Name { get; set; } = null!;
         public string Type { get; set; } = null!;
         public EquipmentStatus Status { get; set; }
-        public DateTime DateOfadquisition { get; set; } = DateTime.Now;
-        
+        public DateTime DateOfadquisition { get; set; } = DateTime.Now;        
         public EquipmentDecommissioning EquipmentDecommissioning { get; set; } = null!;
     }
 }
