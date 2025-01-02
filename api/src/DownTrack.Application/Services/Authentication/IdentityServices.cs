@@ -5,7 +5,6 @@ using DownTrack.Application.Common.Authentication;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IRepository;
-using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Domain.Entities;
 using DownTrack.Domain.Roles;
@@ -67,11 +66,11 @@ public class IdentityService : IIdentityService
 
             if (userDto.UserRole == UserRole.Technician.ToString())
             {
-                Console.WriteLine(userDto.UserRole);
+                
                 var technicianDto = _mapper.Map<TechnicianDto>(userDto);
-                Console.WriteLine(technicianDto.UserRole);
+                
                 var technician = _mapper.Map<Technician>(technicianDto);
-                Console.WriteLine(technician.UserRole);
+                
 
                 await _technicianRepository.CreateAsync(technician);
             }

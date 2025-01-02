@@ -42,4 +42,18 @@ public class EquipmentServices : IEquipmentServices
         await _equipmentRepository.UpdateAsync(equipment);
         return _mapper.Map<EquipmentDto>(equipment);
     }
+
+    /// <summary>
+    /// Retrieves a equipment by their ID
+    /// </summary>
+    /// <param name="equipmentDto">The equipment's ID to retrieve</param>
+    /// <returns>A Task representing the asynchronous operation that fetches the equipment</returns>
+    public async Task<EquipmentDto> GetByIdAsync(int equipmentDto)
+    {
+        var result = await _equipmentRepository.GetByIdAsync(equipmentDto);
+
+        /// and returns the updated equipment as a EquipmentDto.
+        return _mapper.Map<EquipmentDto>(result);
+
+    }
 }

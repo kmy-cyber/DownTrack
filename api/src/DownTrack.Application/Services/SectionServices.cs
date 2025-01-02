@@ -43,6 +43,21 @@ public class SectionServices : ISectionServices
         await _sectionRepository.UpdateAsync(section);
         return _mapper.Map<SectionDto>(section);
     }
+
+
+    /// <summary>
+    /// Retrieves a section by their ID
+    /// </summary>
+    /// <param name="sectionDto">The section's ID to retrieve</param>
+    /// <returns>A Task representing the asynchronous operation that fetches the section</returns>
+    public async Task<SectionDto> GetByIdAsync(int sectionDto)
+    {
+        var result = await _sectionRepository.GetByIdAsync(sectionDto);
+
+        /// and returns the updated section as a SectionDto.
+        return _mapper.Map<SectionDto>(result);
+
+    }
 }
 
 

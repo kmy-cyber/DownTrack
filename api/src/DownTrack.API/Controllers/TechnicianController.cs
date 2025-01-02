@@ -39,7 +39,7 @@ namespace DownTrack.Api.Controllers
 
         }
         
-<<<<<<< HEAD
+
         [HttpGet]
         [Route("GET")]
 
@@ -54,8 +54,6 @@ namespace DownTrack.Api.Controllers
 
         }
 
-=======
->>>>>>> api
         [HttpPut]
         [Route("PUT")]
 

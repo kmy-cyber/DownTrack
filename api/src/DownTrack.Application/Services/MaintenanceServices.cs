@@ -42,4 +42,18 @@ public class MaintenanceServices : IMaintenanceServices
         await _maintenanceRepository.UpdateAsync(maintenance);
         return _mapper.Map<MaintenanceDto>(maintenance);
     }
+
+    /// <summary>
+    /// Retrieves a maintenance by their ID
+    /// </summary>
+    /// <param name="maintenanceDto">The maintenance's ID to retrieve</param>
+    /// <returns>A Task representing the asynchronous operation that fetches the maintenance</returns>
+    public async Task<MaintenanceDto> GetByIdAsync(int maintenanceDto)
+    {
+        var result = await _maintenanceRepository.GetByIdAsync(maintenanceDto);
+
+        /// and returns the updated maintenance as a MaintenanceDto.
+        return _mapper.Map<MaintenanceDto>(result);
+
+    }
 }
