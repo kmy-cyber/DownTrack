@@ -37,6 +37,20 @@ public class EquipmentController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("GET")]
+
+    public async Task<ActionResult<Equipment>> GetUserById(int equipmentId)
+    {
+        var result = await _equipmentService.GetByIdAsync(equipmentId);
+
+        if (result == null)
+            return NotFound($"Equipement with ID {equipmentId} not found");
+
+        return Ok(result);
+
+    }
+
     [HttpPut]
     [Route("PUT")]
 

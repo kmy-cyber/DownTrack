@@ -21,6 +21,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
 
     public virtual async Task<T> CreateAsync(T element, CancellationToken cancellationToken = default)
     {
+        
         entity.Add(element);
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -40,7 +41,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
     {
         var result = await entity.FindAsync(elementId, cancellationToken);
         if (result == null)
-            throw new KeyNotFoundException($"No se encontró una entidad con el ID '{elementId}'.");
+            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
         return result;
     }
     public virtual async Task<IEnumerable<T>> ListAsync(CancellationToken cancellationToken = default)
@@ -53,7 +54,7 @@ public abstract class GenericRepository<T> : IGenericRepository<T> where T : Gen
         var result = entity.Find(elementId);
         
         if (result == null)
-            throw new KeyNotFoundException($"No se encontró una entidad con el ID '{elementId}'.");
+            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
 
         entity.Remove(result);
         await _context.SaveChangesAsync(cancellationToken);

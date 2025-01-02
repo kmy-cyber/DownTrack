@@ -1,7 +1,9 @@
 
 
 using DownTrack.Application.IServices;
+using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.Services;
+using DownTrack.Application.Services.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,14 +21,18 @@ public static class DependencyInjection
     {
         // add application layer services
         service.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-      
-        service.AddScoped<ITechnicianServices,TechnicianServices>();
+
+        service.AddScoped<ITechnicianServices, TechnicianServices>();
+        service.AddScoped<IEmployeeServices, EmployeeServices>();
+
+
+        service.AddScoped<IIdentityService,IdentityService>();
+        
       
         service.AddScoped<IEquipmentServices, EquipmentServices>();
 
         service.AddScoped<ISectionServices, SectionServices>();
       
-        service.AddScoped<IMaintenanceServices, MaintenanceServices>();
 
         service.AddScoped<IDepartmentServices, DepartmentServices>();
 

@@ -1,6 +1,21 @@
-@DownTrack.API_HostAddress = http://localhost:5217
+@host = http://localhost:5217
 
-GET {{DownTrack.API_HostAddress}}/weatherforecast/
-Accept: application/json
+
+POST {{host}}/api/Authentication/register/
+Content-Type:  application/json
+
+
+{
+  "name": "Jabel",
+  "userName": "jabelResendiz030812",
+  "email": "jabel#ka@gmail.com",
+  "password": "jabelresendiZ03_04",
+  "userRole": "Technician"
+    
+}
+
+
+
+
 
 ###

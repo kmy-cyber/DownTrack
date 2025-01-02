@@ -1,6 +1,4 @@
 
-
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IRepository;
@@ -10,7 +8,7 @@ using DownTrack.Domain.Entities;
 namespace DownTrack.Application.Services;
 
 /// <summary>
-/// Handle the business logic related to agency and work with DTOs 
+/// Handle the business logic related to technician and work with DTOs 
 /// to interact with the client , using the repository interface to access
 /// the database 
 /// </summary> 
@@ -37,7 +35,7 @@ public class TechnicianServices : ITechnicianServices
     {
         // map the DTOs (technicianDto) to a domain entity (Technician) 
         var result = _mapper.Map<Technician>(technicianDto);
-
+        
         // method of the repository is called to insert the Technician entity into the database
         await _technicianRepository.CreateAsync(result);
 
@@ -91,6 +89,22 @@ public class TechnicianServices : ITechnicianServices
     public async Task DeleteAsync(int technicianDto)
     {
         await _technicianRepository.DeleteByIdAsync(technicianDto);
+    }
+
+
+
+    /// <summary>
+    /// Retrieves a technician by their ID
+    /// </summary>
+    /// <param name="userDto">The technician's ID to retrieve</param>
+    /// <returns>A Task representing the asynchronous operation that fetches the technician</returns>
+    public async Task<TechnicianDto> GetByIdAsync(int technicianDto)
+    {
+        var result = await _technicianRepository.GetByIdAsync(technicianDto);
+        
+        /// and returns the updated technician as a TechnicianDto.
+        return _mapper.Map<TechnicianDto>(result);
+
     }
 
 

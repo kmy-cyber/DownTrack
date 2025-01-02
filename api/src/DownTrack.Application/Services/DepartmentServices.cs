@@ -43,6 +43,16 @@ public class DepartmentServices : IDepartmentServices
         await _departmentRepository.UpdateAsync(department);
         return _mapper.Map<DepartmentDto>(department);
     }
+
+
+    public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
+    {
+        var result = await _departmentRepository.GetByIdAsync(departmentDto);
+        
+        /// and returns the updated department as a DepartmentDto.
+        return _mapper.Map<DepartmentDto>(result);
+
+    }
 }
 
 

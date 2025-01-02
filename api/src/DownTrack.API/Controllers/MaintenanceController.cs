@@ -37,6 +37,20 @@ public class MaintenanceController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("GET")]
+
+    public async Task<ActionResult<Maintenance>> GetUserById(int maintenanceId)
+    {
+        var result = await _maintenanceService.GetByIdAsync(maintenanceId);
+
+        if (result == null)
+            return NotFound($"Maintenance with ID {maintenanceId} not found");
+
+        return Ok(result);
+
+    }
+
     [HttpPut]
     [Route("PUT")]
 

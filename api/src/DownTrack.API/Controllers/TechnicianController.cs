@@ -34,11 +34,26 @@ namespace DownTrack.Api.Controllers
         public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
         {
             var results = await _technicianService.ListAsync();
-
+            
             return Ok(results);
 
         }
         
+
+        [HttpGet]
+        [Route("GET")]
+
+        public async Task<ActionResult<Technician>> GetUserById(int technicianId)
+        {
+            var result = await _technicianService.GetByIdAsync(technicianId);
+
+            if (result == null)
+                return NotFound($"Technician with ID {technicianId} not found");
+
+            return Ok(result);
+
+        }
+
         [HttpPut]
         [Route("PUT")]
 

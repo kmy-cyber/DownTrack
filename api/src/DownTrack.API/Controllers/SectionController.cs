@@ -38,6 +38,21 @@ namespace DownTrack.Api.Controllers
 
         }
 
+        [HttpGet]
+        [Route("GET")]
+
+        public async Task<ActionResult<Section>> GetUserById(int sectionId)
+        {
+            var result = await _sectionService.GetByIdAsync(sectionId);
+
+            if (result == null)
+                return NotFound($"Section with ID {sectionId} not found");
+
+            return Ok(result);
+
+        }
+
+
         [HttpPut]
         [Route("PUT")]
 
