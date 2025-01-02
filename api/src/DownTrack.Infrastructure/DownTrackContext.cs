@@ -38,6 +38,9 @@ public class DownTrackContext : DbContext
             .HasForeignKey(d=> d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        
+        modelBuilder.Entity<Department>()
+            .HasKey(d=> new {d.Id, d.SectionId});        
+
+            
     }
 }
