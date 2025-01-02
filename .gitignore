@@ -12,3 +12,6 @@
 
 **/api/src/DownTrack.Domain/bin/
 **/api/src/DownTrack.Domain/obj/
+
+
+**/api/src/DownTrack.Infrastructure/Migrations/
