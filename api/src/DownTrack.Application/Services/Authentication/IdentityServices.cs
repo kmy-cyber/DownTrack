@@ -7,7 +7,7 @@ using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Roles;
 
 namespace DownTrack.Application.Services.Authentication;
 
@@ -17,11 +17,7 @@ public class IdentityService : IIdentityService
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IMapper _mapper;
     private readonly IEmployeeServices _employeeServices;
-
     private readonly ITechnicianServices _technicianServices;
-
-    // falta tmb los servicios para definir las tablas donde insertar
-    // de momento no se inserta en la tabla de Empleados
 
     public IdentityService(
                 IJwtTokenGenerator jwtTokenGenerator,
@@ -57,7 +53,7 @@ public class IdentityService : IIdentityService
     {
         try
         {
-            if (!UserRole.IsValidRole(userDto.UserRole))
+            if (!UserRoleHelper.IsValidRole(userDto.UserRole))
 
                 throw new Exception("Invalid Role");
 
@@ -68,7 +64,7 @@ public class IdentityService : IIdentityService
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
             await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
 
-            if (userDto.UserRole == UserRole.Technician)
+            if (userDto.UserRole == UserRole.Technician.ToString())
             {
                 var technician = _mapper.Map<TechnicianDto>(userDto);
 
@@ -81,7 +77,7 @@ public class IdentityService : IIdentityService
 
                 await _employeeServices.CreateAsync(employee);
             }
-            // aqui se define saber a que tabla de empleado agregar usnado su servicio
+            
             var token = _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
@@ -89,7 +85,7 @@ public class IdentityService : IIdentityService
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            throw; // O maneja el error adecuadamente en tu aplicación
+            throw; 
         }
     }
 }
