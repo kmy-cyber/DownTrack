@@ -24,6 +24,9 @@ export function reducer(state, action) {
     case "OPEN_CONFIGURATOR": {
       return { ...state, openConfigurator: action.value };
     }
+    case "OPEN_USER_INFO": {
+      return { ...state, openUserInfo: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -34,10 +37,11 @@ export function MaterialTailwindControllerProvider({ children }) {
   const initialState = {
     openSidenav: false,
     sidenavColor: "dark",
-    sidenavType: "white",
+    sidenavType: "dark",
     transparentNavbar: true,
     fixedNavbar: false,
     openConfigurator: false,
+    openUserInfo: false,
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -83,3 +87,5 @@ export const setFixedNavbar = (dispatch, value) =>
   dispatch({ type: "FIXED_NAVBAR", value });
 export const setOpenConfigurator = (dispatch, value) =>
   dispatch({ type: "OPEN_CONFIGURATOR", value });
+export const setOpenUserInfo = (dispatch, value) =>
+  dispatch({ type: "OPEN_USER_INFO", value });
