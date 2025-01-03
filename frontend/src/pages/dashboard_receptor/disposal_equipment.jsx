@@ -1,34 +1,34 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
-import { equipmentTransferData } from "@/data/equipment-transfer-data";
+import { equipmentDisposalData } from "@/data/equipment-disposal-data";
 import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import TransferInfoForm from "./info_transfer";
+import DisposalInfoForm from "./info_disposal";
 
-export function EquipmentTransferTable() {
+export function EquipmentDisposalTable() {
     const [onInfo, setOnInfo] = useState(false);
-    const [selectedTransfer, setSelectedTransfer] = useState(null);
+    const [selectedDisposal, setSelectedDisposal] = useState(null);
     const [isRegistered, setIsRegistered] = useState(false);
 
 
     // TODO: Connect with backend and replace static values
-    const handleShowInfo = (transfer) => {
-        setSelectedTransfer(transfer);
+    const handleShowInfo = (disposal) => {
+        setSelectedDisposal(disposal);
         setOnInfo(true);
     };
 
     const handleCloseInfo = () => {
-        setSelectedTransfer(null);
+        setSelectedDisposal(null);
         setOnInfo(false);
     };
 
     const registerItem = () => {
-        if (selectedTransfer && !isRegistered) {
-            const updatedData = [...equipmentTransferData];
-            const index = updatedData.findIndex(item => item.id === selectedTransfer);
+        if (selectedDisposal && !isRegistered) {
+            const updatedData = [...equipmentDisposalData];
+            const index = updatedData.findIndex(item => item.id === selectedDisposal);
             if (index !== -1) {
                 updatedData[index].registered = true;
-                equipmentTransferData.splice(index, 1, ...updatedData.slice(index, index + 1));
+                equipmentDisposalData.splice(index, 1, ...updatedData.slice(index, index + 1));
                 setIsRegistered(true);
                 alert('Successful registration');
             }
@@ -37,9 +37,9 @@ export function EquipmentTransferTable() {
 
     return (
         <>
-            {onInfo && selectedTransfer && (
-                <TransferInfoForm 
-                    transfer={selectedTransfer}
+            {onInfo && selectedDisposal && (
+                <DisposalInfoForm 
+                    disposal={selectedDisposal}
                     onClose={handleCloseInfo}
                 />
             )}
@@ -48,14 +48,14 @@ export function EquipmentTransferTable() {
                 <Card>
                     <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                         <Typography variant="h6" color="white">
-                            Equipment Transfer
+                            Equipment Disposal
                         </Typography>
                     </CardHeader>
                     <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {[ "Source Section", "Equipment", "Date"].map((el) => (
+                                    {[ "Technic", "Equipment", "Date"].map((el) => (
                                         <th
                                             key={el}
                                             className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -71,21 +71,21 @@ export function EquipmentTransferTable() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {equipmentTransferData.map(
-                                    (transfer, index) => {
+                                {equipmentDisposalData.map(
+                                    (disposal, index) => {
                                         const className = `py-3 px-5 ${
-                                            index === equipmentTransferData.length - 1
+                                            index === equipmentDisposalData.length - 1
                                                 ? ""
                                                 : "border-b border-blue-gray-50"
                                         }`;
 
                                         return (
-                                            <tr key={transfer.id}>
+                                            <tr key={disposal.id}>
                                                 <td className={className}>
                                                     <div className="flex items-center gap-4">
                                                         <div>
                                                             <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                                {transfer.sourceSection}
+                                                                {disposal.technician}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -98,21 +98,21 @@ export function EquipmentTransferTable() {
                                                                 color="blue-gray"
                                                                 className="font-semibold"
                                                             >
-                                                                {transfer.equipment}
+                                                                {disposal.equipment}
                                                             </Typography>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className={className}>
                                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                        {transfer.date}
+                                                        {disposal.date}
                                                     </Typography>
                                                 </td>
                                                 <td className={className}>
                                                     <div className="flex items-center gap-4">
                                                         <div 
                                                             className="flex items-center gap-1"
-                                                            onClick={() => handleShowInfo(transfer)}
+                                                            onClick={() => handleShowInfo(disposal)}
                                                         >
                                                             <Typography
                                                                 as="a"
@@ -154,4 +154,4 @@ export function EquipmentTransferTable() {
     );
 }
 
-export default EquipmentTransferTable;
+export default EquipmentDisposalTable;
