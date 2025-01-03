@@ -13,13 +13,13 @@ import {
     import { sectionData } from "@/data/sections-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
-import EditSectionForm from "./edit_section";
+    import EditSectionForm from "./edit_section";
     
     export function TablesSection() {
         const [sectionList, setSectionList] = useState(sectionData);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
-        const [userData, setUserData] = useState({
+        const [sectData, setSectData] = useState({
             name: "",
             id: "",
             description: "",
@@ -34,7 +34,7 @@ import EditSectionForm from "./edit_section";
             setSectionList(sectionList);
     
             // Reset the values
-            setUserData({
+            setSectData({
                 name: "",
                 id: "",
                 description: "",
@@ -47,12 +47,12 @@ import EditSectionForm from "./edit_section";
     
         const editSection = (sect, key) => {
             setKeyEdit(key);
-            setUserData(sect);
+            setSectData(sect);
             setOnEdit(true);
         };
     
         const cancelEditSection = () => {
-            setUserData({
+            setSectData({
                 name: "",
                 id: "",
                 description: "",
@@ -71,7 +71,7 @@ import EditSectionForm from "./edit_section";
             <>
                 { onEdit &&
                     <EditSectionForm 
-                        sectionData={sectionData} 
+                        sectionData={sectData} 
                         onSave={handleSave} 
                         onCancel={cancelEditSection} 
                     />
