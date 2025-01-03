@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import { equipmentDisposalData } from "@/data/equipment-disposal-data";
-import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import {InformationCircleIcon,CheckCircleIcon} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import DisposalInfoForm from "./info_disposal";
 
@@ -121,7 +122,7 @@ export function EquipmentDisposalTable() {
                                                             >
                                                                 Info
                                                             </Typography>
-                                                            <InformationCircleIcon className="w-3 text-blue-600" />
+                                                            <InformationCircleIcon className="w-5 text-blue-600" />
                                                         </div>
 
                                                         <div 
@@ -135,7 +136,7 @@ export function EquipmentDisposalTable() {
                                                             >
                                                                 Register
                                                             </Typography>
-                                                            <CheckCircleIcon className="w-3 text-green-600" />
+                                                            <CheckCircleIcon className="w-5 text-green-600" />
                                                         </div>
 
                                                     </div>

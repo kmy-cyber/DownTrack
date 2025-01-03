@@ -18,7 +18,7 @@ import {
         const [departmentList, setDepartmentList] = useState(departmentData);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
-        const [userData, setUserData] = useState({
+        const [dptData, setDptData] = useState({
             name: "",
             id: "",
             section: "",
@@ -32,7 +32,7 @@ import {
             setDepartmentList(departmentList);
     
             // Reset the values
-            setUserData({
+            setDptData({
                 name: "",
                 id: "",
                 section: "",
@@ -44,13 +44,13 @@ import {
             
         const editDepartment = (dept, key) => {
             setKeyEdit(key);
-            setUserData(dept);
+            setDptData(dept);
             setOnEdit(true);
         };
         
     
         const cancelEditDepartment = () => {
-            setUserData({
+            setDptData({
                 name: "",
                 id: "",
                 section: "",
@@ -68,7 +68,7 @@ import {
             <>
                 { onEdit &&
                     <EditDepartmentForm 
-                        departmentData={departmentData} 
+                        departmentData={dptData} 
                         onSave={handleSave} 
                         onCancel={cancelEditDepartment} 
                     />

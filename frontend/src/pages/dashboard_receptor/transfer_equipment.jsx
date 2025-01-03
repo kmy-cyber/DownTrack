@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import { equipmentTransferData } from "@/data/equipment-transfer-data";
-import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import TransferInfoForm from "./info_transfer";
 
@@ -121,7 +121,7 @@ export function EquipmentTransferTable() {
                                                             >
                                                                 Info
                                                             </Typography>
-                                                            <InformationCircleIcon className="w-3 text-blue-600" />
+                                                            <InformationCircleIcon className="w-5 text-blue-600" />
                                                         </div>
 
                                                         <div 
@@ -135,7 +135,7 @@ export function EquipmentTransferTable() {
                                                             >
                                                                 Register
                                                             </Typography>
-                                                            <CheckCircleIcon className="w-3 text-green-600" />
+                                                            <CheckCircleIcon className="w-5 text-green-600" />
                                                         </div>
 
                                                     </div>
