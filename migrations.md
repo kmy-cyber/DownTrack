@@ -10,6 +10,9 @@ dotnet ef migrations remove --project DownTrack.Infrastructure --startup-project
 
 dotnet ef database update InitialMigration_1 --project DownTrack.Infrastructure --startup-project DownTrack.API
 
+dotnet ef migrations add ConfigureDepartmentCompositeKey
+dotnet ef database update
+
 dotnet run --project .\DownTrack.API\
 
 ```

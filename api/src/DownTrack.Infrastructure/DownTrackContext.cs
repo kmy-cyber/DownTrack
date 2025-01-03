@@ -14,8 +14,8 @@ public class DownTrackContext : DbContext
 
     public DbSet<Equipment> Equipments { get; set; }
 
-    public DbSet<Section> Sections{get; set;}
-    
+    public DbSet<Section> Sections { get; set; }
+
     public DbSet<Maintenance> Maintenances { get; set; }
 
     public DbSet<Department> Departments { get; set; }
@@ -33,7 +33,13 @@ public class DownTrackContext : DbContext
 
         modelBuilder.Entity<Maintenance>().HasIndex(x => x.Id).IsUnique();
 
-        modelBuilder.Entity<Department>().HasIndex(x => x.Id).IsUnique();
+        modelBuilder.Entity<Department>()
+       .HasKey(d => new { d.Id, d.SectionId }); 
 
+        modelBuilder.Entity<Department>()
+            .HasOne(d => d.Section)
+            .WithMany(s => s.Departments)
+            .HasForeignKey(d => d.SectionId) 
+            .OnDelete(DeleteBehavior.Cascade); 
     }
 }

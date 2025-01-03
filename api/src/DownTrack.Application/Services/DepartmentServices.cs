@@ -20,11 +20,14 @@ public class DepartmentServices : IDepartmentServices
 
     public async Task<DepartmentDto> CreateAsync(DepartmentDto dto)
     {
-        var existingDepartment = _departmentRepository.GetById(dto.Id);
+
+        var existingDepartment = await _departmentRepository.GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
+
         if (existingDepartment != null)
         {
-            throw new ConflictException($"ID '{dto.Id}' is being used by another department.");
+            throw new ConflictException($"Department '{dto.Id}' in section'{dto.SectionId}' already exists.");
         }
+
         var department = _mapper.Map<Department>(dto);
         await _departmentRepository.CreateAsync(department);
         return _mapper.Map<DepartmentDto>(department);
@@ -51,9 +54,9 @@ public class DepartmentServices : IDepartmentServices
     {
         var department = _departmentRepository.GetById(dto.Id);
         if (department == null)
-            {
-                throw new ConflictException($"Department '{dto.Id}' does not exist.");
-            }
+        {
+            throw new ConflictException($"Department '{dto.Id}' does not exist.");
+        }
         _mapper.Map(dto, department);
         await _departmentRepository.UpdateAsync(department);
         return _mapper.Map<UpdateDepartmentDto>(department);
