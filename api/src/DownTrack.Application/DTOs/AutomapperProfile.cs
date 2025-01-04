@@ -18,8 +18,6 @@ public class AutomapperProfile : Profile
         CreateMap<Maintenance, MaintenanceDto>();
         CreateMap<DepartmentDto, Department>();
         CreateMap<Department, DepartmentDto>();
-        CreateMap<Department, UpdateDepartmentDto>();
-        CreateMap<UpdateDepartmentDto, Department>();
 
     }
 }

@@ -9,8 +9,3 @@ namespace DownTrack.Application.DTO
 
 }
 }
-
-    public class UpdateDepartmentDto{
-    public int Id {get;set;}
-    public required string Name { get; set; } = "name";        
-    }

@@ -34,14 +34,16 @@ public class DepartmentServices : IDepartmentServices
 
     }
 
-    public async Task DeleteAsync(int dto)
+    public async Task DeleteAsync(int departmentId, int sectionId)
     {
-        var department = _departmentRepository.GetById(dto);
-        if (department == null)
+        var existingDepartment = await _departmentRepository.GetByIdAndSectionIdAsync(departmentId, sectionId);
+
+        if (existingDepartment == null)
         {
-            throw new ConflictException($"Department No.'{dto}' does not exist.");
+            throw new ConflictException($"Department with ID '{departmentId}' in section '{sectionId}' does not exist.");
         }
-        await _departmentRepository.DeleteByIdAsync(dto);
+
+        await _departmentRepository.DeleteAsync(existingDepartment);
     }
 
     public async Task<IEnumerable<DepartmentDto>> ListAsync()
@@ -50,16 +52,28 @@ public class DepartmentServices : IDepartmentServices
         return department.Select(_mapper.Map<DepartmentDto>);
     }
 
-    public async Task<UpdateDepartmentDto> UpdateAsync(UpdateDepartmentDto dto)
+    public async Task<DepartmentDto> UpdateAsync(DepartmentDto dto)
     {
-        var department = _departmentRepository.GetById(dto.Id);
-        if (department == null)
+        var existingDepartment = await _departmentRepository.GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
+
+        if (existingDepartment == null)
         {
-            throw new ConflictException($"Department '{dto.Id}' does not exist.");
+            throw new ConflictException($"Department with ID '{dto.Id}' in section '{dto.SectionId}' does not exist.");
         }
-        _mapper.Map(dto, department);
-        await _departmentRepository.UpdateAsync(department);
-        return _mapper.Map<UpdateDepartmentDto>(department);
+
+        if (dto.SectionId != existingDepartment.SectionId)
+        {
+            throw new InvalidOperationException("Section ID cannot be modified.");
+        }
+
+        if (dto.Id != existingDepartment.Id)
+        {
+            throw new InvalidOperationException("Department ID cannot be modified.");
+        }
+
+        _mapper.Map(dto, existingDepartment);
+        await _departmentRepository.UpdateAsync(existingDepartment);
+        return _mapper.Map<DepartmentDto>(existingDepartment);
 
     }
 }

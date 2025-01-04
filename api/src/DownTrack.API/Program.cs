@@ -16,7 +16,6 @@ var services = builder.Services;
 
 services.AddHttpContextAccessor();
 services.AddAplication(builder.Configuration);
-
 services.AddInfrastructure(builder.Configuration);
 
 services.AddCors(options =>
