@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DownTrack.Infrastructure.Repository;
 
 // "Repository Pattern"
-public abstract class GenericRepository<T> : IGenericRepository<T> where T : GenericEntity
+public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntity
 {
     protected readonly DbSet<T> entity;
     private DownTrackContext _context;

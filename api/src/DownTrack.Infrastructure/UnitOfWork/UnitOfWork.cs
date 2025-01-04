@@ -1,11 +1,11 @@
 
 
 using DownTrack.Application.IRepository;
-using DownTrack.Application.IUnitOfWork;
+using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
 using DownTrack.Infrastructure.Repository;
 
-namespace DownTrack.Infrastructure.UnitOfWork;
+namespace DownTrack.Infrastructure.UnitOfWorkPattern;
 
 // Pattern Unit of Work
 public class UnitOfWork : IUnitOfWork
@@ -28,14 +28,14 @@ public class UnitOfWork : IUnitOfWork
 
         if (!_repositories.ContainsKey(type))
         {
-            var repositoryType = typeof(IGenericRepository<>).MakeGenericType(type);
+            var repositoryType = typeof(GenericRepository<>).MakeGenericType(type);
 
             try
             {
                 var repositoryInstance = Activator.CreateInstance(repositoryType, _context);
 
 
-                if (repositoryInstance is IGenericRepository<T> repository)
+                if (repositoryInstance is GenericRepository<T> repository)
                 {
                     
                     _repositories[type] = repository;

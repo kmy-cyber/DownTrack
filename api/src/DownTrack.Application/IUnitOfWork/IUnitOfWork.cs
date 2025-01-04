@@ -3,7 +3,7 @@
 using DownTrack.Application.IRepository;
 using DownTrack.Domain.Entities;
 
-namespace DownTrack.Application.IUnitOfWork;
+namespace DownTrack.Application.IUnitOfWorkPattern;
 
 
 public interface IUnitOfWork : IDisposable

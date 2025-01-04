@@ -10,6 +10,8 @@ using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
 using DownTrack.Infrastructure.Initializer;
+using DownTrack.Application.IUnitOfWorkPattern;
+using DownTrack.Infrastructure.UnitOfWorkPattern;
 
 
 namespace DownTrack.Infrastructure;
@@ -25,6 +27,11 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection service, ConfigurationManager configuration)
 
     {
+
+        service.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
         // add infrastructure layer services
         var connectionString = configuration.GetConnectionString("AppDbConnectionString");
         var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(
