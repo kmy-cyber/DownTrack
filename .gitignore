@@ -1,21 +1,9 @@
+# Ignorar todas las carpetas bin y obj dentro de cualquier directorio
+**/bin/
+**/obj/
 
-#ignore this directories
+# Ignorar las migraciones de cualquier proyecto
+**/Migrations/
 
-**/api/src/DownTrack.API/bin/
-**/api/src/DownTrack.API/obj/
-
-
-**/api/src/DownTrack.Infrastructure/bin/
-**/api/src/DownTrack.Infrastructure/obj/
-
-
-**/api/src/DownTrack.Application/bin/
-**/api/src/DownTrack.Application/obj/
-
-**/api/src/DownTrack.Domain/bin/
-**/api/src/DownTrack.Domain/obj/
-
-**/api/src/DownTrack.Infrastructure/Migrations/
-
-**/api/src/DownTrack.API/appsettings.json/
-
+# Ignorar el archivo appsettings.json de la API
+**/appsettings.json
