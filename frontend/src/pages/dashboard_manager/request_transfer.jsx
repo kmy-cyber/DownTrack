@@ -203,7 +203,6 @@ export const TransferRequestForm = () => {
         </DialogBody>
         <DialogFooter>
           <Button
-            color="red"
             onClick={() => handleModalClose("equipment")}
             variant="outlined"
           >
@@ -237,8 +236,8 @@ export const TransferRequestForm = () => {
         </DialogBody>
         <DialogFooter>
           <Button
-            color="red"
             onClick={() => handleModalClose("department")}
+            variant="outlined"
           >
             Close
           </Button>
