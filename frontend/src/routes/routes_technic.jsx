@@ -1,13 +1,6 @@
 import {
     HomeIcon,
-    UserCircleIcon,
     TableCellsIcon,
-    InformationCircleIcon,
-    ServerStackIcon,
-    RectangleStackIcon,
-    FireIcon,
-    ArrowPathIcon,
-    UserGroupIcon,
     ArrowDownCircleIcon,
     WrenchIcon,
 } from "@heroicons/react/24/solid";

@@ -7,3 +7,6 @@ export * from "@/data/conversations-data";
 export * from "@/data/projects-data";
 export * from "@/data/authors-table-data";
 export * from "@/data/users-table-data";
+export * from "@/data/department-data"
+export * from "@/data/equipment-disposal-data"
+export * from "@/data/equipment-data"
