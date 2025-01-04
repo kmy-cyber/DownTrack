@@ -5,5 +5,5 @@
 # Ignorar las migraciones de cualquier proyecto
 **/Migrations/
 
-# Ignorar el archivo appsettings.json de la API
-**/appsettings.json
+# # Ignorar el archivo appsettings.json de la API
+# **/appsettings.json
