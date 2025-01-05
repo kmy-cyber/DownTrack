@@ -9,22 +9,21 @@ import { userListData } from "@/data/users-table-data";
 export function SectionsTable() {
     const navigate = useNavigate();
 
-    const [expandedSectionId, setExpandedSectionId] = useState(null); // State to control expanded sections
-    const [searchTerm, setSearchTerm] = useState(""); // State to handle search input
+    const [expandedSectionId, setExpandedSectionId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handleSectionInventoryClick = (sectionId) => {
-        navigate(`/dashboard/director/sections/${sectionId}/inventory`); // Navigate to the section inventory page
+        navigate(`/dashboard/director/sections/${sectionId}/inventory`);
     };
 
     const handleDepartmentInventoryClick = (departmentId) => {
-        navigate(`/dashboard/director/departments/${departmentId}/inventory`); // Navigate to the department inventory page
+        navigate(`/dashboard/director/departments/${departmentId}/inventory`);
     };
 
     const toggleSectionDetails = (sectionId) => {
-        setExpandedSectionId((prev) => (prev === sectionId ? null : sectionId)); // Toggle expanded state
+        setExpandedSectionId((prev) => (prev === sectionId ? null : sectionId));
     };
 
-    // Filter sections based on the search term
     const filteredSections = sectionData.filter((section) =>
         section.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -62,13 +61,16 @@ export function SectionsTable() {
                                 (user) => user.role === "section_manager" && user.sectionId === section.id
                             );
 
-                            const isExpanded = expandedSectionId === section.id; // Check if the section is expanded
+                            const isExpanded = expandedSectionId === section.id;
 
                             return (
-                                <div key={section.id} className="border border-gray-200 rounded-lg shadow-sm">
+                                <div 
+                                    key={section.id} 
+                                    className="border border-gray-200 rounded-lg shadow-sm hover:bg-gray-200 hover:shadow-md transition duration-300"
+                                >
                                     <div
                                         className="flex items-center justify-between p-4 bg-gray-100 cursor-pointer"
-                                        onClick={() => toggleSectionDetails(section.id)} // Toggle the section's state
+                                        onClick={() => toggleSectionDetails(section.id)}
                                     >
                                         <Typography variant="h6" color="blue-gray">
                                             {section.name}
@@ -92,7 +94,10 @@ export function SectionsTable() {
                                             </Typography>
                                             <ul className="list-none space-y-2">
                                                 {departments.map((dept) => (
-                                                    <li key={dept.id} className="flex items-center justify-between p-2 border border-gray-200 rounded-md">
+                                                    <li 
+                                                        key={dept.id} 
+                                                        className="flex items-center justify-between p-2 border border-gray-200 rounded-md hover:bg-gray-100 transition"
+                                                    >
                                                         <Typography variant="small" color="blue-gray">
                                                             {dept.name}
                                                         </Typography>
@@ -101,7 +106,6 @@ export function SectionsTable() {
                                                             color="gray"
                                                             size="sm"
                                                             onClick={() => handleDepartmentInventoryClick(dept.id)}
-                                                            className="flex items-center"
                                                         >
                                                             View Inventory
                                                         </Button>
@@ -112,7 +116,7 @@ export function SectionsTable() {
                                                 variant="text"
                                                 color="gray"
                                                 size="sm"
-                                                className="mt-4 flex items-center"
+                                                className="mt-4"
                                                 onClick={() => handleSectionInventoryClick(section.id)}
                                             >
                                                 View Section Inventory
