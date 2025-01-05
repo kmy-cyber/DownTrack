@@ -59,6 +59,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Maintenance>().HasIndex(x => x.Id).IsUnique();
 
+
         modelBuilder.Entity<Section>()
             .HasMany(s=> s.Departments)
             .WithOne(d=> d.Section)

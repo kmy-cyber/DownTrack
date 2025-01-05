@@ -54,4 +54,6 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// <param name="elementId">The identifier of the entity to retrieve.</param>
     /// <returns>The entity with the specified identifier.</returns>
     T GetById<TId>(TId elementId);
+
 }
+

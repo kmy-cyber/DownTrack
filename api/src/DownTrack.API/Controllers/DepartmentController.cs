@@ -63,9 +63,9 @@ namespace DownTrack.Api.Controllers
         [HttpDelete]
         [Route("DELETE")]
 
-        public async Task<IActionResult> DeleteDepartment(int departmentId)
+        public async Task<IActionResult> DeleteDepartment(int departmentId, int SectionId)
         {
-            await _departmentService.DeleteAsync(departmentId);
+            await _departmentService.DeleteAsync(departmentId, SectionId);
 
             return Ok("Department deleted successfully");
         }

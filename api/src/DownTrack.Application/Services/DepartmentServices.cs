@@ -36,7 +36,9 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The created DepartmentDto.</returns>
     public async Task<DepartmentDto> CreateAsync(DepartmentDto dto)
     {
+
         //Maps DTO to domain entity.
+
         var department = _mapper.Map<Department>(dto);
        
         //Adds the new department to the repository.
@@ -47,6 +49,19 @@ public class DepartmentServices : IDepartmentServices
 
         // Maps the created entity back to DTO.
         return _mapper.Map<DepartmentDto>(department);
+
+    }
+
+    public async Task DeleteAsync(int departmentId, int sectionId)
+    {
+        var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAndSectionIdAsync(departmentId, sectionId);
+
+        if (existingDepartment == null)
+        {
+            throw new ConflictException($"Department with ID '{departmentId}' in section '{sectionId}' does not exist.");
+        }
+
+        await _unitOfWork.GetRepository<Department>().DeleteAsync(existingDepartment);
     }
 
 
@@ -85,7 +100,14 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The updated DepartmentDto.</returns>
     public async Task<DepartmentDto> UpdateAsync(DepartmentDto dto)
     {
-        var department = await _unitOfWork.GetRepository<Department>().GetByIdAsync(dto.Id);
+
+        var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
+
+        if (existingDepartment == null)
+        {
+            throw new ConflictException($"Department with ID '{dto.Id}' in section '{dto.SectionId}' does not exist.");
+        }
+
 
         _mapper.Map(dto, department);
 
@@ -94,7 +116,10 @@ public class DepartmentServices : IDepartmentServices
         await _unitOfWork.CompleteAsync();
 
         return _mapper.Map<DepartmentDto>(department);
+
     }
+
+
 
     /// <summary>
     /// Retrieves a department by its ID.
