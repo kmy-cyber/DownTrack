@@ -42,8 +42,7 @@ function formatNumber(number, decPlaces) {
 
 export function Configurator() {
   const [controller, dispatch] = useMaterialTailwindController();
-  const { openConfigurator, sidenavColor, sidenavType, fixedNavbar } =
-    controller;
+  const { openConfigurator, sidenavColor, sidenavType } = controller;
   const [stars, setStars] = React.useState(0);
 
   const sidenavColors = {
@@ -61,7 +60,10 @@ export function Configurator() {
     )
       .then((response) => response.json())
       .then((data) => setStars(formatNumber(data.stargazers_count, 1)));
-  }, []);
+
+    // Set Navbar to fixed on component mount
+    setFixedNavbar(dispatch, true);
+  }, [dispatch]);
 
   return (
     <aside
@@ -141,8 +143,9 @@ export function Configurator() {
             </Typography>
             <Switch
               id="navbar-fixed"
-              value={true}
-              // onChange={() => setFixedNavbar(dispatch, !fixedNavbar)}
+              value={true} // Navbar is always fixed
+              onChange={() => {}}
+              disabled // Disabled to prevent changes
             />
           </div>
           <hr />
