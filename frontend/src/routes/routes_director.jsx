@@ -2,11 +2,12 @@ import {
     HomeIcon,
     RectangleStackIcon,
     NewspaperIcon,
+    CubeIcon,
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
 import { Reports } from "@/components/reports/reports"
-import { element } from "prop-types";
+import GeneralInventoryTable from "@/components/inventory/general_inventory_table";
   
   const typeUser = 1;
   
@@ -35,6 +36,12 @@ export const routesDirector = [
           name: "Reports",
           path: "/reports",
           element: <Reports/>
+        },
+        {
+          icon: <CubeIcon {...icon}/>,
+          name: "Inventory",
+          path: "/inventory",
+          element: <GeneralInventoryTable/>
         }
         
     ],
