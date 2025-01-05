@@ -141,8 +141,8 @@ export function Configurator() {
             </Typography>
             <Switch
               id="navbar-fixed"
-              value={fixedNavbar}
-              onChange={() => setFixedNavbar(dispatch, !fixedNavbar)}
+              value={true}
+              // onChange={() => setFixedNavbar(dispatch, !fixedNavbar)}
             />
           </div>
           <hr />
