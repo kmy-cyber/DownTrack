@@ -1,1 +1,5 @@
 export * from "@/pages/dashboard_director/home"
+export * from "@/pages/dashboard_director/disposals_table"
+export * from "@/pages/dashboard_director/maintenance_table"
+export * from "@/pages/dashboard_director/equipment_transfers_table"
+export * from "@/pages/dashboard_director/technicians_table"

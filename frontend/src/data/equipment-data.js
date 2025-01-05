@@ -80,3 +80,5 @@ export const equipmentData = [
       location: "Sales Department"
     }
   ];
+
+  export default equipmentData

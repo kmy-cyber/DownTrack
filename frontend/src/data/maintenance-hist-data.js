@@ -72,3 +72,5 @@ export const maintenanceHistData = [
     cost: "$350.00"
   }
 ];
+
+export default maintenanceHistData
