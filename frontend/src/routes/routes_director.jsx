@@ -3,11 +3,19 @@ import {
     RectangleStackIcon,
     NewspaperIcon,
     CubeIcon,
+    MinusCircleIcon,
+    WrenchScrewdriverIcon,
+    ArrowsRightLeftIcon,
+    UserIcon
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
 import { Reports } from "@/components/reports/reports"
 import GeneralInventoryTable from "@/components/inventory/general_inventory_table";
+import EquipmentDisposalTable from "@/pages/dashboard_director/disposals_table";
+import MaintenanceHistory from "@/pages/dashboard_director/maintenance_table";
+import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
+import UserTable from "@/pages/dashboard_director/technicians_table";
   
   const typeUser = 1;
   
@@ -42,6 +50,30 @@ export const routesDirector = [
           name: "Inventory",
           path: "/inventory",
           element: <GeneralInventoryTable/>
+        },
+        {
+          icon: <MinusCircleIcon {...icon}/>,
+          name: "Disposals",
+          path: "/disposals",
+          element: <EquipmentDisposalTable/>
+        },
+        {
+          icon: <WrenchScrewdriverIcon {...icon}/>,
+          name: "Maintenances",
+          path: "/maintenances",
+          element: <MaintenanceHistory/>
+        },
+        {
+          icon: <ArrowsRightLeftIcon {...icon}/>,
+          name: "Transfers",
+          path: "/transfers",
+          element: <EquipmentTransferTable/>
+        },
+        {
+          icon: <UserIcon {...icon}/>,
+          name: "Technicians",
+          path: "/technicians",
+          element: <UserTable/>
         }
         
     ],
