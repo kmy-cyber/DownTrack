@@ -8,10 +8,7 @@ import {
     UserInfoSidebar,
 } from "@/components/layout";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
-import { useEffect } from "react";
 import routesDirector from "@/routes/routes_director";
-import SectionDetails from "@/components/sections/section_details"; // Import SectionDetails
-import SectionsTable from "@/components/sections/sections_table"; // Import SectionsTable
 
 export function Dashboard_Director() {
     const [controller, dispatch] = useMaterialTailwindController();
@@ -45,8 +42,6 @@ export function Dashboard_Director() {
                             ))
                     )}
 
-                    <Route path="sections/:sectionId" element={<SectionDetails/>} />
-                    {/* <Route path="sections/:sectionId/:departments/:departmentId" element={<DepartmentDetails/>}/> */}
                 </Routes>
                 <Outlet/>
             </div>
