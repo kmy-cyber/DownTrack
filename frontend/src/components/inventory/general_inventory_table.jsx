@@ -5,7 +5,7 @@ import { equipmentData } from "@/data/equipment-data"; // Ajusta la ruta de impo
 const GeneralInventoryTable = () => {
   return (
     <Card className="mt-8 shadow-lg">
-      <CardHeader variant="gradient" color="indigo" className="p-6">
+      <CardHeader variant="gradient" color="gray" className="p-6">
         <Typography variant="h6" color="white" className="text-xl font-semibold">
           Equipment Inventory
         </Typography>
@@ -13,7 +13,7 @@ const GeneralInventoryTable = () => {
       <CardBody className="px-0 py-4">
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto text-sm text-gray-900">
-            <thead className="bg-indigo-500 text-white">
+            <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="px-6 py-3 border-b text-left">Name</th>
                 <th className="px-6 py-3 border-b text-left">Type</th>
