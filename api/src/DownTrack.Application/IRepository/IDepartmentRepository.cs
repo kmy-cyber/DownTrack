@@ -4,7 +4,8 @@ namespace DownTrack.Application.IRepository;
 public interface IDepartmentRepository : IGenericRepository<Department>
 {
 
-    public Task<Department?> GetByIdAndSectionIdAsync(int departmentId, int sectionId);
+    //puede devolver null
+    public Task<Department> GetByIdAndSectionIdAsync(int departmentId, int sectionId);
 
     public  Task DeleteAsync(Department department);
 

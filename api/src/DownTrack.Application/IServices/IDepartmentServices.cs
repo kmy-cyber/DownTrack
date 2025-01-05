@@ -1,14 +1,9 @@
 using DownTrack.Application.DTO;
 
 
-namespace DownTrack.Application.IServices
+namespace DownTrack.Application.IServices;
+public interface IDepartmentServices : IGenericService<DepartmentDto>
 {
-    public interface IDepartmentServices
-    {
-        Task<DepartmentDto> CreateAsync(DepartmentDto dto);
-        Task<DepartmentDto> UpdateAsync(DepartmentDto dto);
-        Task<IEnumerable<DepartmentDto>> ListAsync();
-        Task DeleteAsync(int id, int SectionId);
-
-    }
+    Task DeleteAsync(int id, int SectionId);
+    
 }

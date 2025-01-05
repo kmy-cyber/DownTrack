@@ -21,13 +21,6 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> CreateAsync(DepartmentDto dto)
     {
 
-        var existingDepartment = await _departmentRepository.GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
-
-        if (existingDepartment != null)
-        {
-            throw new ConflictException($"Department '{dto.Id}' in section'{dto.SectionId}' already exists.");
-        }
-
         var department = _mapper.Map<Department>(dto);
         await _departmentRepository.CreateAsync(department);
         return _mapper.Map<DepartmentDto>(department);
@@ -45,6 +38,12 @@ public class DepartmentServices : IDepartmentServices
 
         await _departmentRepository.DeleteAsync(existingDepartment);
     }
+
+    public async Task DeleteAsync(int dpto)
+    {
+        await _departmentRepository.GetByIdAsync(dpto);
+    }
+
 
     public async Task<IEnumerable<DepartmentDto>> ListAsync()
     {
