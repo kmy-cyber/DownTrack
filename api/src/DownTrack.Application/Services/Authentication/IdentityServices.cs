@@ -4,8 +4,8 @@ using DownTrack.Application.Authentication;
 using DownTrack.Application.Common.Authentication;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Authentication;
-using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices.Authentication;
+using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
 using DownTrack.Domain.Roles;
 
@@ -16,22 +16,19 @@ public class IdentityService : IIdentityService
     private readonly IIdentityManager _identityManager;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IMapper _mapper;
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly ITechnicianRepository _technicianRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public IdentityService(
                 IJwtTokenGenerator jwtTokenGenerator,
                 IMapper mapper,
                 IIdentityManager identityManager,
-                IEmployeeRepository employeeRepository,
-                ITechnicianRepository technicianRepository
+                IUnitOfWork unitOfWork
                 )
     {
         _jwtTokenGenerator = jwtTokenGenerator;
         _mapper = mapper;
         _identityManager = identityManager;
-        _employeeRepository = employeeRepository;
-        _technicianRepository = technicianRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> LoginUserAsync(LoginUserDto userDto)
@@ -66,24 +63,33 @@ public class IdentityService : IIdentityService
 
             if (userDto.UserRole == UserRole.Technician.ToString())
             {
-                
+                Console.WriteLine("================================================================================================");
                 var technicianDto = _mapper.Map<TechnicianDto>(userDto);
                 
                 var technician = _mapper.Map<Technician>(technicianDto);
                 
+                Console.WriteLine($"Technician: {technician.Name}, {technician.UserRole}");  // Verifica que tenga valores correctos
 
-                await _technicianRepository.CreateAsync(technician);
+
+                await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
+
+                await _unitOfWork.CompleteAsync();
             }
 
             else
             {
+                Console.WriteLine("================================================================================================");
                 Console.WriteLine(userDto.UserRole);
                 var employeeDto = _mapper.Map<EmployeeDto>(userDto);
 
                 Console.WriteLine(employeeDto.UserRole);
                 var employee = _mapper.Map<Employee>(employeeDto);
                 Console.WriteLine(employee.UserRole);
-                await _employeeRepository.CreateAsync(employee);
+
+                Console.WriteLine("================================================================================================");
+                await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
+
+                await _unitOfWork.CompleteAsync();
             }
             
             var token = _jwtTokenGenerator.GenerateToken(savedUser);

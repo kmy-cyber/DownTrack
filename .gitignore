@@ -1,9 +1,7 @@
-# Ignorar todas las carpetas bin y obj dentro de cualquier directorio
+
 **/bin/
 **/obj/
 
-# Ignorar las migraciones de cualquier proyecto
+
 **/Migrations/
 
-# Ignorar el archivo appsettings.json de la API
-**/appsettings.json

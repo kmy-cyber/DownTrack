@@ -11,14 +11,18 @@ namespace DownTrack.Infrastructure.UnitOfWorkPattern;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly DownTrackContext _context;
-
     private Dictionary<Type, object> _repositories;
+    public IUserRepository UserRepository { get; }
 
-    public UnitOfWork(DownTrackContext context)
+    
+    public UnitOfWork(DownTrackContext context,
+                      IUserRepository userRepository)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
         _repositories = new Dictionary<Type, object>();
+
+        UserRepository = userRepository;
 
     }
 
@@ -37,7 +41,7 @@ public class UnitOfWork : IUnitOfWork
 
                 if (repositoryInstance is GenericRepository<T> repository)
                 {
-                    
+
                     _repositories[type] = repository;
                 }
                 else

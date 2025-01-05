@@ -8,7 +8,7 @@ namespace DownTrack.Infrastructure.Repository;
 // "Repository Pattern"
 public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntity
 {
-    protected readonly DbSet<T> entity;
+    protected readonly DbSet<T> _entity;
     private DownTrackContext _context;
     public GenericRepository(DownTrackContext context)
     {
@@ -16,51 +16,45 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
             throw new ArgumentException(nameof(context));
 
         _context = context;
-        entity = context.Set<T>();
+        _entity = context.Set<T>();
     }
 
     public virtual async Task<T> CreateAsync(T element, CancellationToken cancellationToken = default)
     {
-        
-        entity.Add(element);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _entity.AddAsync(element, cancellationToken);
 
         return element;
     }
 
-    public virtual async Task UpdateAsync(T element, CancellationToken cancellationToken = default)
+    public virtual IQueryable<T> GetAllAsync()
     {
-
-        entity.Update(element);
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        return _entity;
     }
+
+    public virtual void Update(T element)
+    {
+        _entity.Update(element);
+    }
+
+
     public virtual async Task<T> GetByIdAsync<TId>(TId elementId, CancellationToken cancellationToken = default)
     {
-        var result = await entity.FindAsync(elementId, cancellationToken);
+        var result = await _entity.FindAsync(elementId, cancellationToken);
         if (result == null)
             throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
         return result;
     }
-    public virtual async Task<IEnumerable<T>> ListAsync(CancellationToken cancellationToken = default)
-    {
-        var results = await entity.ToListAsync(cancellationToken);
-        return results;
-    }
+
     public virtual async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
-        var result = entity.Find(elementId);
-        
-        if (result == null)
-            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
+        var result = await GetByIdAsync(elementId,cancellationToken);
 
-        entity.Remove(result);
-        await _context.SaveChangesAsync(cancellationToken);
+        _entity.Remove(result);
+        
     }
     public virtual T GetById<TId>(TId elementId)
     {
-        return entity.Find(elementId)!;
+        return _entity.Find(elementId)!;
     }
 }

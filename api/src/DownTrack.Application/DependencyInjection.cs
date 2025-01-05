@@ -25,7 +25,7 @@ public static class DependencyInjection
         service.AddScoped<ITechnicianServices, TechnicianServices>();
         service.AddScoped<IEmployeeServices, EmployeeServices>();
 
-
+        service.AddScoped<IMaintenanceServices,MaintenanceServices>();
         service.AddScoped<IIdentityService,IdentityService>();
         
       
