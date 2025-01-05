@@ -54,14 +54,10 @@ public class DepartmentServices : IDepartmentServices
 
     public async Task DeleteAsync(int departmentId, int sectionId)
     {
-        var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAndSectionIdAsync(departmentId, sectionId);
 
-        if (existingDepartment == null)
-        {
-            throw new ConflictException($"Department with ID '{departmentId}' in section '{sectionId}' does not exist.");
-        }
+        await _unitOfWork.DepartmentRepository.DeleteAsync(departmentId, sectionId);
 
-        await _unitOfWork.GetRepository<Department>().DeleteAsync(existingDepartment);
+        await _unitOfWork.CompleteAsync();
     }
 
 
@@ -101,7 +97,7 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> UpdateAsync(DepartmentDto dto)
     {
 
-        var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
+        var existingDepartment = await _unitOfWork.DepartmentRepository.GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
 
         if (existingDepartment == null)
         {
@@ -109,13 +105,13 @@ public class DepartmentServices : IDepartmentServices
         }
 
 
-        _mapper.Map(dto, department);
+        _mapper.Map(dto, existingDepartment);
 
-        _unitOfWork.GetRepository<Department>().Update(department);
+        _unitOfWork.DepartmentRepository.Update(existingDepartment);
 
         await _unitOfWork.CompleteAsync();
 
-        return _mapper.Map<DepartmentDto>(department);
+        return _mapper.Map<DepartmentDto>(existingDepartment);
 
     }
 
@@ -128,7 +124,7 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The DepartmentDto of the retrieved department.</returns>
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
-        var result = await _unitOfWork.GetRepository<Department>().GetByIdAsync(departmentDto);
+        var result = await _unitOfWork.DepartmentRepository.GetByIdAsync(departmentDto);
         
         return _mapper.Map<DepartmentDto>(result);
 

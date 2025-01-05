@@ -14,15 +14,21 @@ public class UnitOfWork : IUnitOfWork
     private Dictionary<Type, object> _repositories;
     public IUserRepository UserRepository { get; }
 
+    public IDepartmentRepository DepartmentRepository { get; }
+
+
     
     public UnitOfWork(DownTrackContext context,
-                      IUserRepository userRepository)
+                      IUserRepository userRepository,
+                      IDepartmentRepository departmentRepository)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
         _repositories = new Dictionary<Type, object>();
 
         UserRepository = userRepository;
+
+        DepartmentRepository = departmentRepository;
 
     }
 

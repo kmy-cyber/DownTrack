@@ -7,7 +7,7 @@ public interface IDepartmentRepository : IGenericRepository<Department>
     //puede devolver null
     public Task<Department> GetByIdAndSectionIdAsync(int departmentId, int sectionId);
 
-    public  Task DeleteAsync(Department department);
+    public  Task DeleteAsync(int departmentId, int sectionId);
 
 
 }
