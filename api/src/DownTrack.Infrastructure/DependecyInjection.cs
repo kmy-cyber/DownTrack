@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IRespository;
 using DownTrack.Infrastructure.Reposiory;
+using DownTrack.Application.IUnitOfWorkPattern;
+using DownTrack.Infrastructure.UnitOfWorkPattern;
 
 namespace DownTrack.Infrastructure;
 
@@ -23,6 +25,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("AppDbConnectionString");
         var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+        service.AddScoped<IUnitOfWork, UnitOfWork> ();
         service.AddScoped<ITechnicianRepository,TechnicianRepository>();
     }
 }

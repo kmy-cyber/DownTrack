@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DownTrack.Infrastructure.Migrations
 {
     [DbContext(typeof(DownTrackContext))]
-    [Migration("20241226000820_InitialMigration2")]
-    partial class InitialMigration2
+    [Migration("20250105004047_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
