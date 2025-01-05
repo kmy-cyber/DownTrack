@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Typography, Button, Select, Option } from "@material-tailwind/react";
 
 export function Reports() {
     const [reportType, setReportType] = useState("inventory");
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
     const [reportData, setReportData] = useState([]);
+
+    // Generar la fecha y hora en formato YYYY-MM-DD HH:MM:SS
+    const generateDateTime = () => {
+        const currentDate = new Date();
+        return currentDate
+            .toISOString()
+            .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
+            .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
+    };
+
+    // Establecer la fecha al cargar el componente
+    useEffect(() => {
+        const currentDate = generateDateTime();
+        setStartDate(currentDate);
+    }, []);
 
     const generateReport = () => {
         // To Do API call - replace with backend call.
@@ -49,18 +63,11 @@ export function Reports() {
                                 <Option value="staff-effectiveness">Staff Effectiveness</Option>
                             </Select>
                             <input
-                                type="date"
+                                type="text"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="border rounded-lg px-4 py-2"
+                                readOnly
+                                className="border rounded-lg px-4 py-2 bg-gray-100 text-gray-700"
                                 placeholder="Start Date"
-                            />
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className="border rounded-lg px-4 py-2"
-                                placeholder="End Date"
                             />
                         </div>
                         <Button color="gray" onClick={generateReport}>
