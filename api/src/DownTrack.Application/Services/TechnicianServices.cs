@@ -1,98 +1,79 @@
-
-
-
+using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Application.IRepository;
-using AutoMapper;
+using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
-/// <summary>
-/// Handle the business logic related to agency and work with DTOs 
-/// to interact with the client , using the repository interface to access
-/// the database 
-/// </summary> 
 public class TechnicianServices : ITechnicianServices
 {
-
-    private readonly ITechnicianRepository _technicianRepository;
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public TechnicianServices(ITechnicianRepository technicianRepository, IMapper mapper)
+    public TechnicianServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _technicianRepository = technicianRepository;
+        // _technicianRepository = technicianRepository;
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
-
-
-    /// <summary>
-    /// Creates a new technician based on the provided TechnicianDto.
-    /// </summary>
-    /// <param name="technicianDto">The DTO containing technician details to be created.</param>
-    /// <returns>A Task representing the asynchronous operation, with an TechnicianDto as the result.</returns>
-    public async Task<TechnicianDto> CreateAsync(TechnicianDto technicianDto)
+    public async Task<TechnicianDto> CreateAsync(TechnicianDto dto)
     {
-        // map the DTOs (technicianDto) to a domain entity (Technician) 
-        var result = _mapper.Map<Technician>(technicianDto);
+        var technician = _mapper.Map<Technician>(dto);
 
-        // method of the repository is called to insert the Technician entity into the database
-        await _technicianRepository.CreateAsync(result);
+        //await _technicianRepository.CreateAsync(technician);
+        
+        await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
 
-        // map the new created Technician entity to a TechnicianDTO
-        return _mapper.Map<TechnicianDto>(result);
+        await _unitOfWork.CompleteAsync();
+
+        return _mapper.Map<TechnicianDto>(technician);
     }
 
+    public async Task DeleteAsync(int dto)
+    {
+        await _unitOfWork.GetRepository<Technician>().DeleteByIdAsync(dto);
 
+        await _unitOfWork.CompleteAsync();
+        //await _technicianRepository.DeleteByIdAsync(dto);
+    }
+
+    public async Task<IEnumerable<TechnicianDto>> ListAsync()
+    {
+        var technician = await _unitOfWork.GetRepository<Technician>().GetAllAsync().ToListAsync();
+        //var technician = await _technicianRepository.ListAsync();
+        return technician.Select(_mapper.Map<TechnicianDto>);
+    }
+
+    public async Task<TechnicianDto> UpdateAsync(TechnicianDto dto)
+    {
+        var technician = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(dto.Id);
+
+        //var technician = _technicianRepository.GetById(dto.Id);
+        _mapper.Map(dto, technician);
+
+        _unitOfWork.GetRepository<Technician>().Update(technician);
+
+        await _unitOfWork.CompleteAsync();
+        //await _technicianRepository.UpdateAsync(technician);
+        return _mapper.Map<TechnicianDto>(technician);
+    }
 
     /// <summary>
-    /// Updates an existing technician's information.
+    /// Retrieves a technician by their ID
     /// </summary>
-    /// <param name="technicianDto">The DTO containing updated technician details.</param>
-    /// <returns>A Task representing the asynchronous operation, with an TechnicianDto as the result.</returns>
-    public async Task<TechnicianDto> UpdateAsync(TechnicianDto technicianDto)
+    /// <param name="technicianDto">The technician's ID to retrieve</param>
+    /// <returns>A Task representing the asynchronous operation that fetches the technician</returns>
+    public async Task<TechnicianDto> GetByIdAsync(int technicianDto)
     {
-        var result = _technicianRepository.GetById(technicianDto.Id);
-
-        // Maps the provided TechnicianDto to the existing technician entity, updates the technician in the database, 
-        _mapper.Map(technicianDto, result);
-
-        await _technicianRepository.UpdateAsync(result);
+        var result = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(technicianDto);
+        
+        //var result = await _technicianRepository.GetByIdAsync(technicianDto);
 
         /// and returns the updated technician as a TechnicianDto.
         return _mapper.Map<TechnicianDto>(result);
-    }
-
-
-
-    /// <summary>
-    /// Retrieves a list of all technicians.
-    /// </summary>
-    /// <returns>A Task representing the asynchronous operation, with a list of TechnicianDto as the result.</returns>
-    public async Task<IEnumerable<TechnicianDto>> ListAsync()
-    {
-        //fetches all technicians from the repository
-        var results = await _technicianRepository.ListAsync();
-
-        //return them as a enumerable of TechnicanDto objects
-        return results.Select(_mapper.Map<TechnicianDto>);
 
     }
-
-
-
-    /// <summary>
-    /// Deletes a technician by its ID.
-    /// </summary>
-    /// <param name="technicianDto">The technician's ID to be deleted.</param>
-    /// <returns>A Task representing the asynchronous delete operation.</returns>
-    public async Task DeleteAsync(int technicianDto)
-    {
-        await _technicianRepository.DeleteByIdAsync(technicianDto);
-    }
-
-
-
 }

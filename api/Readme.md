@@ -27,7 +27,6 @@ dotnet build
 
 ```
 
-
 ##### Steps to Add the Entities
 
 **1. create a new branch from the 'api' branch**
@@ -40,10 +39,35 @@ dotnet build
 
 **5. inject the new service into the application layer in the 'DependencyInjection' file**
 
-**6. create the repository 'TRepository' in the infrastructure layer** 
+**6. create the repository 'TRepository' in the infrastructure layer**
 
 **7. create the controller for the new service in the Api layer**
 
 **8. perform the migrations and check the dataBase**
 
 **9. create a new pull request and wait for the merge to be approved ;)**
+
+
+## Authentication
+
+### Login Flow
+
+**1.User Input:**
+
+* **The user (be it a Technician, Administrator, etc.) provides their UserName and Password in the login form**
+
+**2. Credential Validation**
+
+* **Query the User table to check if the user with the given UserName exists**
+* **Compare the provided password with the hash stored in the database.**
+
+**3. JWT generation**
+
+* **If the credentials are valid, generate a JWT containing:**
+  * **"Id"**
+  * **"Role"**
+  * **Additional role specific information**
+
+**4. Return JWT** :
+
+* **The JWT is returned to the web page, which will use it to make authenticated requests**
