@@ -80,4 +80,3 @@ export const equipmentData = [
       location: "Sales Department"
     }
   ];
-  
