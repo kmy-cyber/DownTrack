@@ -6,7 +6,7 @@ public class EquipmentReceptor : Employee
 {
     public int DepartamentId {get;set;}
 
-    //public Departament Departament {get;set;}
+    public Department Departament {get;set;} = null!;
 
     public int SectionId{get;set;}
 

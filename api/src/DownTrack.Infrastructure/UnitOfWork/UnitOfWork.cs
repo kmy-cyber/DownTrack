@@ -30,6 +30,7 @@ public class UnitOfWork : IUnitOfWork
 
         DepartmentRepository = departmentRepository;
 
+
     }
 
     public IGenericRepository<T> GetRepository<T>() where T : GenericEntity
