@@ -92,7 +92,7 @@ public class IdentityService : IIdentityService
                 await _unitOfWork.CompleteAsync();
             }
             
-            var token = _jwtTokenGenerator.GenerateToken(savedUser);
+            var token = await _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
         }

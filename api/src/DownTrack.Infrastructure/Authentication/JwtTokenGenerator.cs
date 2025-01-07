@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using DownTrack.Application.Common.Authentication;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DownTrack.Infrastructure.Authentication;
@@ -14,26 +15,32 @@ namespace DownTrack.Infrastructure.Authentication;
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings;
+    private readonly UserManager<User> _userManager;
 
-    public JwtTokenGenerator(JwtSettings jwtSettings)
+    public JwtTokenGenerator(JwtSettings jwtSettings, UserManager<User> userManager)
     {
         _jwtSettings = jwtSettings;
+        _userManager = userManager;
     }
 
-    public string GenerateToken(User user)
+    public async Task<string> GenerateToken(User user)
     {
         //A symmetric signing key is created using the secret key defined in JwtSettings
         var key = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
                 SecurityAlgorithms.HmacSha256);
 
+        // Get user role
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(); // Obtener el primer (y único) rol
 
         //claims : 
-        var claims = new Claim[]
+        var claims = new List<Claim>
            {
               new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
               new Claim(JwtRegisteredClaimNames.GivenName, user.UserName!),
-              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+              // be careful with this claim (!)
+              new Claim(ClaimTypes.Role, role!)
            };
 
 
