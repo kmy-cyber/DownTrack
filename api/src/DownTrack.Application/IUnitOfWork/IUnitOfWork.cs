@@ -17,6 +17,8 @@ public interface IUnitOfWork : IDisposable
 
     IDepartmentRepository DepartmentRepository {get;}
 
+    ITransferRequestRepository TransferRequestRepository {get;}
+    
     /// <summary>
     /// Gets a generic repository for managing entities of the specified type.
     /// </summary>
