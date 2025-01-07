@@ -3,12 +3,14 @@
 
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AuthenticationController : ControllerBase
 {
     private readonly IIdentityService _identityService;

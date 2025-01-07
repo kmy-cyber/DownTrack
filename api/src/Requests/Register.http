@@ -5,9 +5,9 @@ POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
-  "id": 1,
+  "id": 1212,
   "name": "Julio",
-  "userName": "julio9009",
+  "userName": "julio1129009",
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
   "userRole": "Technician",
@@ -16,9 +16,6 @@ Content-Type:  application/json
   "expYears": 10
 }
 
-
-
-
-
-
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjEyIiwiZ2l2ZW5fbmFtZSI6Imp1bGlvMTEyOTAwOSIsImp0aSI6ImRhMDQzNWE0LWNjZDMtNGM2Mi1iZWMwLTFkOTk1ZGY2MGQxZCIsImV4cCI6MTczNjIzMDIzNywiaXNzIjoiRG93blRyYWNrIiwiYXVkIjoiRG93blRyYWNrIn0.dJWS_cpbogvi1hDSoH1FsdOanaK946a1oJqtPqsLWcA
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMiIsImdpdmVuX25hbWUiOiJqdWxpbzEyOTAwOSIsImp0aSI6ImIwMjhlZGQ2LWYyODMtNGUyMy04N2NiLTcyNGI1ZWRiYmE5NCIsImV4cCI6MTczNjIzMDIwNCwiaXNzIjoiRG93blRyYWNrIiwiYXVkIjoiRG93blRyYWNrIn0.EZSMrzzKSsIOrUURu7JYp0CSixXPItfDG3jwfouQfLw
 ###
