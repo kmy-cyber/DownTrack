@@ -1,0 +1,15 @@
+@host = http://localhost:5217
+
+
+POST {{host}}/api/Equipment/POST/
+Content-Type:  application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MCIsImdpdmVuX25hbWUiOiJqSnVsaW9QZXJleiIsImp0aSI6IjRiNzRhZWE3LTVlZDMtNDMxMi04NDE2LTAwZWM5NmIwYzQ1OSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlRlY2huaWNpYW4iLCJleHAiOjE3MzYyODk3MzcsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.tHSTQPDrRR1TvpTC9Z-l36mw4g6yuG_QJKYmml32ors
+
+
+{
+  "id": 919,
+  "name": "str232ing",
+  "type": "stri23ng",
+  "status": "str2323ing",
+  "dateOfadquisition": "2025-01-07T06:39:12.837Z"
+}

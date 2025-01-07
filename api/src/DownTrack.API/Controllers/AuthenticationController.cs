@@ -10,7 +10,6 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class AuthenticationController : ControllerBase
 {
     private readonly IIdentityService _identityService;

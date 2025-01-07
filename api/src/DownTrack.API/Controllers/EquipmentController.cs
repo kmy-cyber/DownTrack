@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -18,9 +20,24 @@ public class EquipmentController : ControllerBase
 
     [HttpPost]
     [Route("POST")]
-
+    [Authorize(Roles = "Technician")]
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
+        // Obtener el claim "role"
+        var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
+
+        if(roleClaim == null)
+        {
+            Console.WriteLine("es null");
+            throw new Exception();
+        }    
+        
+        Console.WriteLine(roleClaim.Value);
+        
+        if (roleClaim == null || roleClaim.Value != "Technician")
+        {
+            return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
+        }
         await _equipmentService.CreateAsync(equipment);
 
         return Ok("Equipment added successfully");

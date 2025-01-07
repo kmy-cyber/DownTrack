@@ -5,9 +5,9 @@ POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
-  "id": 1212,
+  "id": 90,
   "name": "Julio",
-  "userName": "julio1129009",
+  "userName": "jJulioPerez",
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
   "userRole": "Technician",
