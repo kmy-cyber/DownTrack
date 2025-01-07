@@ -4,6 +4,7 @@ using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.Services;
 using DownTrack.Application.Services.Authentication;
+using DownTrack.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,7 @@ public static class DependencyInjection
 
         service.AddScoped<ITechnicianServices, TechnicianServices>();
         service.AddScoped<IEmployeeServices, EmployeeServices>();
+        service.AddScoped<IEquipmentReceptorServices, EquipmentReceptorServices>();
 
         service.AddScoped<IMaintenanceServices,MaintenanceServices>();
         service.AddScoped<IIdentityService,IdentityService>();

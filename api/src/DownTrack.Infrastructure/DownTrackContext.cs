@@ -3,6 +3,7 @@
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DownTrack.Infrastructure;
 
@@ -27,6 +28,8 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Evaluation> Evaluations { get; set; }
 
+    public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +50,23 @@ public class DownTrackContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Technician>()
                     .HasBaseType<Employee>();
+
+        // Equipment Receptor Region
+
+        modelBuilder.Entity<EquipmentReceptor>()
+            .ToTable("EquipmentReceptor")
+            .HasOne<Employee>() // One-to-one relationship with Employee
+            .WithOne()
+            .HasForeignKey<EquipmentReceptor>(t => t.Id);
+
+        modelBuilder.Entity<EquipmentReceptor>()
+                    .HasBaseType<Employee>();
+
+        modelBuilder.Entity<EquipmentReceptor>()
+            .HasOne(er=> er.Departament)
+            .WithMany(d=> d.EquipmentReceptors)
+            .HasForeignKey(er=> new {er.DepartamentId,er.SectionId})
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         // Equipment Region
@@ -74,14 +94,14 @@ public class DownTrackContext : IdentityDbContext<User>
             .HasOne(e => e.Technician) // Each evaluation has one technician
             .WithMany(t => t.ReceivedEvaluations) // Each technician has many evaluations
             .HasForeignKey(e => e.TechnicianId) // Foreign key in Evaluation
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
 
         // SectionManager to Evaluation relationship
         modelBuilder.Entity<Evaluation>()
             .HasOne(e => e.SectionManager) // Each evaluation has one section manager
             .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
             .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

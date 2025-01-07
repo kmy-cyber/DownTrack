@@ -2,7 +2,6 @@
 using AutoMapper;
 using DownTrack.Application.Authentication;
 using DownTrack.Application.Common.Authentication;
-using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.IUnitOfWorkPattern;
@@ -54,44 +53,42 @@ public class IdentityService : IIdentityService
 
                 throw new Exception("Invalid Role");
 
-
-
-
             var user = _mapper.Map<User>(userDto);
-            var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
-            await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
 
             if (userDto.UserRole == UserRole.Technician.ToString())
             {
-                Console.WriteLine("================================================================================================");
-                var technicianDto = _mapper.Map<TechnicianDto>(userDto);
-                
-                var technician = _mapper.Map<Technician>(technicianDto);
-                
-                Console.WriteLine($"Technician: {technician.Name}, {technician.UserRole}");  // Verifica que tenga valores correctos
 
+                var technician = _mapper.Map<Technician>(userDto);
 
                 await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
 
-                await _unitOfWork.CompleteAsync();
+            }
+
+            else if (userDto.UserRole == UserRole.EquipmentReceptor.ToString())
+            {
+
+                var equipmentReceptor = _mapper.Map<EquipmentReceptor>(userDto);
+
+                await _unitOfWork.GetRepository<EquipmentReceptor>().CreateAsync(equipmentReceptor);
+
             }
 
             else
             {
-                Console.WriteLine("================================================================================================");
-                Console.WriteLine(userDto.UserRole);
-                var employeeDto = _mapper.Map<EmployeeDto>(userDto);
 
-                Console.WriteLine(employeeDto.UserRole);
-                var employee = _mapper.Map<Employee>(employeeDto);
-                Console.WriteLine(employee.UserRole);
+                var employee = _mapper.Map<Employee>(userDto);
 
-                Console.WriteLine("================================================================================================");
                 await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
 
-                await _unitOfWork.CompleteAsync();
+
             }
-            
+
+            var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
+
+            await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
+
+            await _unitOfWork.CompleteAsync();
+
             var token = _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
@@ -99,7 +96,7 @@ public class IdentityService : IIdentityService
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            throw; 
+            throw;
         }
     }
 }

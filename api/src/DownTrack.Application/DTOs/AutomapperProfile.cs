@@ -19,9 +19,9 @@ public class AutomapperProfile : Profile
         CreateMap<LoginUserDto,User>();
         CreateMap<RegisterUserDto,User>();
 
-        CreateMap<RegisterUserDto,TechnicianDto>();
-        CreateMap<RegisterUserDto,EmployeeDto>();
-        
+        CreateMap<RegisterUserDto,Technician>();
+        CreateMap<RegisterUserDto,Employee>();
+        CreateMap<RegisterUserDto,EquipmentReceptor>();
 
         CreateMap<EquipmentDto, Equipment>();
         CreateMap<Equipment, EquipmentDto>();
@@ -37,6 +37,9 @@ public class AutomapperProfile : Profile
 
         CreateMap<EvaluationDto,Evaluation>();
         CreateMap<Evaluation,EvaluationDto>();
+
+        CreateMap<EquipmentReceptorDto,EquipmentReceptor>();
+        CreateMap<EquipmentReceptor,EquipmentReceptorDto>();
 
     }
 }

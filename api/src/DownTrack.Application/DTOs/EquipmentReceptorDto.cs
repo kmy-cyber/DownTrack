@@ -1,9 +1,7 @@
 
-
-
 namespace DownTrack.Application.DTO;
 
-public class EquipmentReceptor
+public class EquipmentReceptorDto
 {
     public int Id { get; set;}
     public string Name { get; set; } = null!;
