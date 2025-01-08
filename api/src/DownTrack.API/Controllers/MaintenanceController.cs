@@ -8,7 +8,6 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class MaintenanceController : ControllerBase
 {
     private readonly IMaintenanceServices _maintenanceService;

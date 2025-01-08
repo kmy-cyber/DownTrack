@@ -9,6 +9,7 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class EquipmentController : ControllerBase
 {
     private readonly IEquipmentServices _equipmentService;
@@ -20,7 +21,6 @@ public class EquipmentController : ControllerBase
 
     [HttpPost]
     [Route("POST")]
-    [Authorize(Roles = "Technician")]
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
         // Obtener el claim "role"

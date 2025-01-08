@@ -62,19 +62,17 @@ public class IdentityManager : IIdentityManager
         }
     }
 
-    public async Task<bool> CheckCredentialsAsync(string username, string password)
+    public async Task<User?> CheckCredentialsAsync(string username, string password)
     {
         var user = await _userManager.Users
                        .FirstOrDefaultAsync(u => u.UserName!.Equals(username));
 
         if (user is null)
-        {
-            return false;
-        }
+            return null;
 
         var valid = await _userManager.CheckPasswordAsync(user, password);
 
-        return valid;
+        return user;
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)

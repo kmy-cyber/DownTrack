@@ -31,19 +31,25 @@ public class IdentityService : IIdentityService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> LoginUserAsync(LoginUserDto userDto)
+    public async Task<string> LoginUserAsync(LoginUserDto userDto)
     {
+        // Map the login DTO to the User model.
         var user = _mapper.Map<User>(userDto);
-        if (user == null)
-        {
-            return false;
-        }
 
+        // Check if the mapping or the user object is null.
+        if (user == null) 
+            throw new Exception();
+
+        // Validate the user's credentials.
         var savedUser = await _identityManager.CheckCredentialsAsync(user.UserName!, userDto.Password);
 
-        if (savedUser) return savedUser;
+        // If the credentials are invalid, return null.
+        if (savedUser is null)
+            throw new Exception();
+        
+        // If the credentials are valid, generate a token for the authenticated user.
+        return await _jwtTokenGenerator.GenerateToken(savedUser);
 
-        return false;
     }
 
     public async Task<string> RegisterUserAsync(RegisterUserDto userDto)
@@ -53,8 +59,6 @@ public class IdentityService : IIdentityService
             if (!UserRoleHelper.IsValidRole(userDto.UserRole))
 
                 throw new Exception("Invalid Role");
-
-
 
 
             var user = _mapper.Map<User>(userDto);
@@ -68,7 +72,7 @@ public class IdentityService : IIdentityService
                 
                 var technician = _mapper.Map<Technician>(technicianDto);
                 
-                Console.WriteLine($"Technician: {technician.Name}, {technician.UserRole}");  // Verifica que tenga valores correctos
+                Console.WriteLine($"Technician: {technician.Name}, {technician.UserRole}");  
 
 
                 await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);

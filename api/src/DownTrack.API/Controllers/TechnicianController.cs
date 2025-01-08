@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DownTrack.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class TechnicianController : ControllerBase
 {
     private readonly ITechnicianServices _technicianService;

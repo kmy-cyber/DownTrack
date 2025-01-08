@@ -19,33 +19,34 @@ public static class DependencyInjection
 
         // Add Swagger for API documentation
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(c =>
-        {
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Description = "Introduce el token JWT en el siguiente formato: Bearer {token}"
-            });
+        services.AddSwaggerGen();
+        // services.AddSwaggerGen(c =>
+        // {
+        //     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        //     {
+        //         Name = "Authorization",
+        //         Type = SecuritySchemeType.Http,
+        //         Scheme = "Bearer",
+        //         BearerFormat = "JWT",
+        //         In = ParameterLocation.Header,
+        //         Description = "Introduce el token JWT en el siguiente formato: Bearer {token}"
+        //     });
 
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                new string[] {}
-                }
-            });
-        });
+        //     c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        //     {
+        //         {
+        //             new OpenApiSecurityScheme
+        //             {
+        //                 Reference = new OpenApiReference
+        //                 {
+        //                     Type = ReferenceType.SecurityScheme,
+        //                     Id = "Bearer"
+        //                 }
+        //             },
+        //         new string[] {}
+        //         }
+        //     });
+        // });
 
 
         // Configure CORS to allow any origin, method, and headers
