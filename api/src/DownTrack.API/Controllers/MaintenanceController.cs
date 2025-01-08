@@ -1,12 +1,14 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MaintenanceController : ControllerBase
 {
     private readonly IMaintenanceServices _maintenanceService;

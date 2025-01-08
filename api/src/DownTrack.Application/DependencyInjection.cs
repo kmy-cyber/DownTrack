@@ -17,24 +17,21 @@ public static class DependencyInjection
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <returns>The modified IServiceCollection.</returns>
-    public static void AddAplication(this IServiceCollection service, ConfigurationManager configurationManager)
+    public static IServiceCollection AddAplication(this IServiceCollection services, ConfigurationManager configurationManager)
     {
-        // add application layer services
-        service.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        // Registers AutoMapper to enable mapping between DTOs and domain models.
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        service.AddScoped<ITechnicianServices, TechnicianServices>();
-        service.AddScoped<IEmployeeServices, EmployeeServices>();
+        // Registers services related to Entities
+        services.AddScoped<ITechnicianServices, TechnicianServices>();
+        services.AddScoped<IEmployeeServices, EmployeeServices>();
+        services.AddScoped<IMaintenanceServices,MaintenanceServices>();
+        services.AddScoped<IIdentityService,IdentityService>();
+        services.AddScoped<IEquipmentServices, EquipmentServices>();
+        services.AddScoped<ISectionServices, SectionServices>();
+        services.AddScoped<IDepartmentServices, DepartmentServices>();
 
-        service.AddScoped<IMaintenanceServices,MaintenanceServices>();
-        service.AddScoped<IIdentityService,IdentityService>();
-        
-      
-        service.AddScoped<IEquipmentServices, EquipmentServices>();
 
-        service.AddScoped<ISectionServices, SectionServices>();
-      
-
-        service.AddScoped<IDepartmentServices, DepartmentServices>();
-
+        return services;
     }
 }
