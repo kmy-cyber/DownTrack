@@ -1,0 +1,1 @@
+export * from "@/components/inventory/general_inventory_table"

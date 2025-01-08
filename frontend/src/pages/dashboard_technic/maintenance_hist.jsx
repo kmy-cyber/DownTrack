@@ -3,70 +3,71 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    Avatar,
-    Chip,
-    Tooltip,
-    Progress,
     } from "@material-tailwind/react";
-    import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
-    import { UserIcon } from "@heroicons/react/24/outline";
-    import { userListData } from "@/data";
+    import {EditMaintenanceForm} from "@/pages/dashboard_technic/edit_maintenance";
+    import { maintenanceHistData } from "@/data/maintenance-hist-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
     
     export function MaintenanceHistoryTable() {
-        const [userList, setUserList] = useState(userListData);
+        const [MaintenanceList, setMaintenanceList] = useState(maintenanceHistData);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
-        const [userData, setUserData] = useState({
-            name: "",
-            id: "",
-            section: "",
+        const [MaintenanceData, setMaintenanceData] = useState({
+            equipment: "",
+            maintenanceType: "",
+            technician: "",
+            date: "",
+            cost: "",
         });
     
         // TODO: Connect with backend and replace static values
         
-        const handleSave = (updatedUser) => {
-            userList[keyEdit] = updatedUser;
-            setUserList(userList);
+        const handleSave = (updatedMaintenance) => {
+            MaintenanceList[keyEdit] = updatedMaintenance;
+            setMaintenanceList(MaintenanceList);
     
             // Reset the values
-            setUserData({
-                name: "",
-                id: "",
-                section: "",
+            setMaintenanceData({
+                equipment: "",
+                maintenanceType: "",
+                technician: "",
+                date: "",
+                cost: "",
             });
             setOnEdit(false);
             setKeyEdit(0);
         };
     
-        const editUser = (user, key) => {
+        const editMaintenance = (user, key) => {
             setKeyEdit(key);
-            setUserData(user);
+            setMaintenanceData(user);
             setOnEdit(true);
         };
     
-        const cancelEditUser = () => {
-            setUserData({
-                name: "",
-                id: "",
-                section: "",
+        const cancelEditMaintenance = () => {
+            setMaintenanceData({
+                equipment: "",
+                maintenanceType: "",
+                technician: "",
+                date: "",
+                cost: "",
             });
             setOnEdit(false);
             setKeyEdit(0);
         }
         
-        const deleteUser = (id) => {
-            setUserList(userList.filter(user => user.id !== id));
+        const deleteMaintenance = (id) => {
+            setMaintenanceList(MaintenanceList.filter(maint => maint.id !== id));
         };
     
         return (
             <>
                 { onEdit &&
-                    <EditUserForm 
-                        userData={userData} 
+                    <EditMaintenanceForm 
+                        MaintenanceData={MaintenanceData} 
                         onSave={handleSave} 
-                        onCancel={cancelEditUser} 
+                        onCancel={cancelEditMaintenance} 
                     />
                 }
     
@@ -98,56 +99,86 @@ import {
                             </tr>
                             </thead>
                             <tbody>
-                            {userList.map(
-                                (user, key) => {
+                            {maintenanceHistData.map(
+                                (maint, key) => {
                                 const className = `py-3 px-5 ${
-                                    key === userList.length - 1
+                                    key === maintenanceHistData.length - 1
                                     ? ""
                                     : "border-b border-blue-gray-50"
                                 }`;
     
                                 return (
-                                    <tr key={user.name}>
+                                    <tr key={maint.equipment}>
                                     <td className={className}>
                                     <div className="flex items-center gap-4">
                                     <div>
                                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                                        {user.username}
+                                        {maint.equipment}
                                         </Typography>
                                     </div>
                                     </div>
                                     </td>
                                     <td className={className}>
                                         <div className="flex items-center gap-4">
-                                        {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                                        <UserIcon className="w-5"/>
                                         <div>
                                             <Typography
                                             variant="small"
                                             color="blue-gray"
                                             className="font-semibold"
                                             >
-                                            {user.name}
+                                            {maint.maintenanceType}
                                             </Typography>
                                         </div>
                                         </div>
                                     </td>
                                     
-                                    <td>
-                                        {/**fill */}
+                                    <td className={className}>
+                                        <div className="flex items-center gap-4">
+                                        <div>
+                                            <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-semibold"
+                                            >
+                                            {maint.technician}
+                                            </Typography>
+                                        </div>
+                                        </div>
                                     </td>
-                                        {/**fill */}
-                                    <td>
+
+                                    <td className={className}>
+                                        <div className="flex items-center gap-4">
+                                        <div>
+                                            <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-semibold"
+                                            >
+                                            {maint.date}
+                                            </Typography>
+                                        </div>
+                                        </div>
                                     </td>
-                                        {/**fill */}
-                                    <td>
+
+                                    <td className={className}>
+                                        <div className="flex items-center gap-4">
+                                        <div>
+                                            <Typography
+                                            variant="small"
+                                            color="blue-gray"
+                                            className="font-semibold"
+                                            >
+                                            {maint.cost}
+                                            </Typography>
+                                        </div>
+                                        </div>
                                     </td>
 
                                     <td className={className}>
                                         <div className="flex items-center gap-4">
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => editUser(user, key)}
+                                                onClick={() => editMaintenance(maint, key)}
                                             >
                                                 <Typography
                                                     as="a"
@@ -161,7 +192,7 @@ import {
                                         
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => deleteUser(user.id)}
+                                                onClick={() => deleteMaintenance(maint.id)}
                                             >
                                                 <Typography
                                                     as="a"

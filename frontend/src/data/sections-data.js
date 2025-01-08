@@ -1,5 +1,3 @@
-// sections_data.js
-
 export const sectionData = [
   {
     id: "sec001",
@@ -7,7 +5,7 @@ export const sectionData = [
     icon: "users_icon",
     description: "Handles user accounts, permissions, and authentication.",
     status: "Active",
-    priority: "High"
+    priority: "High",
   },
   {
     id: "sec002",
@@ -15,7 +13,7 @@ export const sectionData = [
     icon: "project_icon",
     description: "Manages project timelines, milestones, and resources.",
     status: "In Progress",
-    priority: "Medium"
+    priority: "Medium",
   },
   {
     id: "sec003",
@@ -23,7 +21,7 @@ export const sectionData = [
     icon: "inventory_icon",
     description: "Monitors and manages inventory levels across the organization.",
     status: "Completed",
-    priority: "Low"
+    priority: "Low",
   },
   {
     id: "sec004",
@@ -31,7 +29,7 @@ export const sectionData = [
     icon: "support_icon",
     description: "Provides support to customers through various channels.",
     status: "Active",
-    priority: "High"
+    priority: "High",
   },
   {
     id: "sec005",
@@ -39,8 +37,88 @@ export const sectionData = [
     icon: "report_icon",
     description: "Generates and distributes financial reports to stakeholders.",
     status: "In Progress",
-    priority: "Medium"
-  }
+    priority: "Medium",
+  },
+  {
+    id: "sec006",
+    name: "Research and Development",
+    icon: "research_icon",
+    description: "Focuses on innovation and developing new products and solutions.",
+    status: "Active",
+    priority: "High",
+  },
+  {
+    id: "sec007",
+    name: "Marketing Campaigns",
+    icon: "marketing_icon",
+    description: "Plans and executes marketing strategies to increase brand awareness.",
+    status: "Active",
+    priority: "High",
+  },
+  {
+    id: "sec008",
+    name: "Data Analysis",
+    icon: "data_icon",
+    description: "Analyzes organizational data to derive actionable insights.",
+    status: "In Progress",
+    priority: "Medium",
+  },
+  {
+    id: "sec009",
+    name: "Quality Assurance",
+    icon: "qa_icon",
+    description: "Ensures products and services meet quality standards.",
+    status: "Active",
+    priority: "High",
+  },
+  {
+    id: "sec010",
+    name: "Compliance Management",
+    icon: "compliance_icon",
+    description: "Monitors adherence to regulatory requirements and internal policies.",
+    status: "Completed",
+    priority: "Low",
+  },
+  {
+    id: "sec011",
+    name: "Security Operations",
+    icon: "security_icon",
+    description: "Maintains security protocols to protect data and assets.",
+    status: "Active",
+    priority: "High",
+  },
+  {
+    id: "sec012",
+    name: "Human Resources",
+    icon: "hr_icon",
+    description: "Handles employee management, recruitment, and benefits.",
+    status: "Active",
+    priority: "Medium",
+  },
+  {
+    id: "sec013",
+    name: "Supplier Management",
+    icon: "supplier_icon",
+    description: "Oversees relationships and contracts with suppliers.",
+    status: "Active",
+    priority: "Medium",
+  },
+  {
+    id: "sec014",
+    name: "Facilities Management",
+    icon: "facilities_icon",
+    description: "Manages office spaces, maintenance, and infrastructure.",
+    status: "In Progress",
+    priority: "Low",
+  },
+  {
+    id: "sec015",
+    name: "Training Programs",
+    icon: "training_icon",
+    description: "Organizes training sessions for employee development.",
+    status: "Active",
+    priority: "Medium",
+  },
 ];
 
 export default sectionData;
