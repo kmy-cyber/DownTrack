@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DownTrack.Domain.Entities;
 
-public class TranferRequest : GenericEntity
+public class TransferRequest : GenericEntity
 {
     [Required]
     public int UserId { get; set; }
