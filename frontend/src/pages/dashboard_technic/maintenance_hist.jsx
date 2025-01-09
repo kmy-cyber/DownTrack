@@ -3,13 +3,8 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    Avatar,
-    Chip,
-    Tooltip,
-    Progress,
     } from "@material-tailwind/react";
     import {EditMaintenanceForm} from "@/pages/dashboard_technic/edit_maintenance";
-    import { UserIcon } from "@heroicons/react/24/outline";
     import { maintenanceHistData } from "@/data/maintenance-hist-data";
     import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
     import { useState } from "react";
