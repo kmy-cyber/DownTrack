@@ -5,7 +5,8 @@ export const equipmentData = [
       type: "Printer",
       status: "active",
       acquisitionDate: "2022-03-15",
-      location: "IT Department"
+      location: "IT Department",
+      section: "sec1"
     },
     {
       id: "equip002",
@@ -13,7 +14,8 @@ export const equipmentData = [
       type: "Projector",
       status: "inactive",
       acquisitionDate: "2021-08-10",
-      location: "Marketing Department"
+      location: "Marketing Department",
+      section: "sec2"
     },
     {
       id: "equip003",
@@ -21,7 +23,8 @@ export const equipmentData = [
       type: "Laptop",
       status: "active",
       acquisitionDate: "2023-01-05",
-      location: "HR Department"
+      location: "HR Department",
+      section: "sec3"
     },
     {
       id: "equip004",
@@ -29,7 +32,8 @@ export const equipmentData = [
       type: "Scanner",
       status: "in maintenance",
       acquisitionDate: "2020-12-25",
-      location: "Operations Department"
+      location: "Operations Department",
+      section: "sec4"
     },
     {
       id: "equip005",
@@ -37,7 +41,8 @@ export const equipmentData = [
       type: "Desktop",
       status: "active",
       acquisitionDate: "2021-07-19",
-      location: "Finance Department"
+      location: "Finance Department",
+      section: "sec5"
     },
     {
       id: "equip006",
@@ -45,7 +50,8 @@ export const equipmentData = [
       type: "Mobile Device",
       status: "inactive",
       acquisitionDate: "2022-05-30",
-      location: "Customer Support Department"
+      location: "Customer Support Department",
+      section: "sec6"
     },
     {
       id: "equip007",
@@ -53,7 +59,8 @@ export const equipmentData = [
       type: "Laptop",
       status: "active",
       acquisitionDate: "2023-02-01",
-      location: "IT Department"
+      location: "IT Department",
+      section: "sec7"
     },
     {
       id: "equip008",
@@ -61,7 +68,8 @@ export const equipmentData = [
       type: "Monitor",
       status: "active",
       acquisitionDate: "2020-11-11",
-      location: "Research and Development"
+      location: "Research and Development",
+      section: "sec8"
     },
     {
       id: "equip009",
@@ -69,7 +77,8 @@ export const equipmentData = [
       type: "Networking Device",
       status: "inactive",
       acquisitionDate: "2022-07-18",
-      location: "Logistics Department"
+      location: "Logistics Department",
+      section: "sec9"
     },
     {
       id: "equip010",
@@ -77,7 +86,8 @@ export const equipmentData = [
       type: "Whiteboard",
       status: "in maintenance",
       acquisitionDate: "2021-09-12",
-      location: "Sales Department"
+      location: "Sales Department",
+      section: "sec10"
     }
   ];
 
