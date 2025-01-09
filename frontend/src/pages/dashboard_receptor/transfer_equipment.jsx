@@ -24,8 +24,9 @@ export function EquipmentTransferTable() {
         setOnInfo(false);
     };
 
-    const handleRegister = () => {
+    const handleRegister = (transfer) => {
         setShowRegistrationForm(true);
+        setSelectedTransfer(transfer);
     };
 
     const handleAcceptRegister = (person) => {
@@ -155,7 +156,7 @@ return (
                                                     </div>
                                                     <div 
                                                         className="flex items-center gap-1"
-                                                        onClick={handleRegister}
+                                                        onClick={() => handleRegister(transfer)}
                                                     >
                                                         <Typography
                                                             as="a"
