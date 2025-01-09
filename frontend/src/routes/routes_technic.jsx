@@ -4,7 +4,7 @@ import {
     ArrowDownCircleIcon,
     WrenchIcon,
 } from "@heroicons/react/24/solid";
-import { Home, MaintenanceHistoryTable, MaintenanceCreationForm, LeaveCreationForm } from "@/pages/dashboard_technic";
+import { Home, EquipmentInventory, MaintenanceCreationForm, LeaveCreationForm } from "@/pages/dashboard_technic";
 
 const typeUser = 1;
 const icon = {
@@ -35,9 +35,9 @@ export const routesTechnic = [
         },
         {
         icon: <WrenchIcon {...icon} />,
-        name: "Maintenance History",
-        path: "/maintenance_hist",
-        element: <MaintenanceHistoryTable />,
+        name: "Equipment Inventory",
+        path: "/equipment_inventory",
+        element: <EquipmentInventory />,
         },
     ],
 },];
