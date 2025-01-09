@@ -3,12 +3,14 @@ import { Card, CardBody, Typography, Button, Input } from "@material-tailwind/re
 
 const RegisterForm = ({ onAccept, onCancel }) => {
     const [assignedPerson, setAssignedPerson] = useState("");
+    const [error, setError] = useState("");
 
     const handleAccept = () => {
-        if (assignedPerson.trim() !== "") {
-            onAccept(assignedPerson);
+        if (assignedPerson.trim() === "") {
+            setError("This field is required.");
         } else {
-            alert("Please enter the shipping personnel responsible.");
+            setError("");
+            onAccept(assignedPerson);
         }
     };
 
@@ -21,17 +23,22 @@ const RegisterForm = ({ onAccept, onCancel }) => {
                     </Typography>
                     <Input
                         type="text"
-                        placeholder=" Enter shipping responsible ID"
                         value={assignedPerson}
                         onChange={(e) => setAssignedPerson(e.target.value)}
-                        className="mb-4"
+                        className={`mb-4 ${error ? 'border-red-500' : ''}`}
+                        required
                     />
+                    {error && (
+                        <Typography variant="small" color="red" className="mt-1">
+                            {error}
+                        </Typography>
+                    )}
                     <div className="flex justify-end gap-3 mt-4">
                         <Button onClick={onCancel} color="gray">
-                            Cancel
+                            Cancelar
                         </Button>
                         <Button onClick={handleAccept} color="green">
-                            Accept
+                            Aceptar
                         </Button>
                     </div>
                 </CardBody>

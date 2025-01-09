@@ -5,6 +5,8 @@ import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from 
 import { useState } from "react";
 import TransferInfoForm from "./info_transfer";
 import RegisterForm from "./register_shipping_resp";
+import MessageAlert from '@/components/Alert_mssg/alert_mssg';
+
 
 export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -13,6 +15,8 @@ export function EquipmentTransferTable() {
     const [showRegistrationForm, setShowRegistrationForm] = useState(false);
     const [assignedPerson, setAssignedPerson] = useState("");
     const [registeredTransfers, setRegisteredTransfers] = useState([]); 
+    const[alertMessage, setAlertMessage] = useState('');
+
     // TODO: Connect with backend and replace static values
     const handleShowInfo = (transfer) => {
         setSelectedTransfer(transfer);
@@ -44,7 +48,7 @@ export function EquipmentTransferTable() {
                 setShowRegistrationForm(false);
                 setAssignedPerson("");
                 setRegisteredTransfers([...registeredTransfers, { id: selectedTransfer.id, assignedPerson: person }]);
-                alert('Successful registration');
+                setAlertMessage("Successful registration");
             }
             else {
                 console.log("Transfer not found in data"); 
@@ -75,6 +79,7 @@ return (
         />
         )}
 
+        <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
         { !onInfo &&
             (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
             <Card>
