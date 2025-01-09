@@ -16,11 +16,13 @@ public class UnitOfWork : IUnitOfWork
 
     public IDepartmentRepository DepartmentRepository { get; }
 
+    public ITransferRequestRepository TransferRequestRepository { get; }
 
     
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
-                      IDepartmentRepository departmentRepository)
+                      IDepartmentRepository departmentRepository,
+                      ITransferRequestRepository transferRequestRepository)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
@@ -30,6 +32,7 @@ public class UnitOfWork : IUnitOfWork
 
         DepartmentRepository = departmentRepository;
 
+        TransferRequestRepository = transferRequestRepository;
     }
 
     public IGenericRepository<T> GetRepository<T>() where T : GenericEntity

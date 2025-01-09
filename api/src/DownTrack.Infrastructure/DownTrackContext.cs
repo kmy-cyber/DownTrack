@@ -25,6 +25,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Department> Departments { get; set; }
 
+    public DbSet<TransferRequest> TransferRequests {get; set;}
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,8 +68,9 @@ public class DownTrackContext : IdentityDbContext<User>
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Department>()
-            .HasKey(d=> new {d.Id, d.SectionId});        
-
+            .HasKey(d=> new {d.Id, d.SectionId});  
+                  
+        modelBuilder.Entity<TransferRequest>().HasIndex(x=> x.Id).IsUnique();
 
     }
 }
