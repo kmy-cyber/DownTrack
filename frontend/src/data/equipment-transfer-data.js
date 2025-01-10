@@ -7,7 +7,8 @@ export const equipmentTransferData = [
         department: "IT Department",
         sourceSection: "Network Administration",
         equipment: "Laptop",
-        date: "2023-05-15"
+        date: "2023-05-15",
+        shipping_resp: ""
     },
     {
         id: 2,
@@ -15,7 +16,8 @@ export const equipmentTransferData = [
         department: "Warehouse",
         sourceSection: "Inventory Management",
         equipment: "Printer",
-        date: "2023-05-16"
+        date: "2023-05-16",
+        shipping_resp: ""
     },
     {
         id: 3,
@@ -23,7 +25,8 @@ export const equipmentTransferData = [
         department: "Logistics",
         sourceSection: "Supply Chain Coordination",
         equipment: "Scanner",
-        date: "2023-05-17"
+        date: "2023-05-17",
+        shipping_resp: ""
     },
     {
         id: 4,
@@ -31,7 +34,8 @@ export const equipmentTransferData = [
         department: "Electrical Systems",
         sourceSection: "Building Maintenance",
         equipment: "Router",
-        date: "2023-05-18"
+        date: "2023-05-18",
+        shipping_resp: ""
     },
     {
         id: 6,
@@ -39,7 +43,8 @@ export const equipmentTransferData = [
         department: "HR Department",
         sourceSection: "Recruitment Team",
         equipment: "Monitor",
-        date: "2023-05-19"
+        date: "2023-05-19",
+        shipping_resp: ""
     },
     {
         id: 7,
@@ -47,7 +52,8 @@ export const equipmentTransferData = [
         department: "Finance",
         sourceSection: "Accounting",
         equipment: "Desktop Computer",
-        date: "2023-05-21"
+        date: "2023-05-21",
+        shipping_resp: ""
     },
     {
         id: 8,
@@ -55,7 +61,8 @@ export const equipmentTransferData = [
         department: "Marketing",
         sourceSection: "Digital Marketing Team",
         equipment: "Laptop Stand",
-        date: "2023-05-22"
+        date: "2023-05-22",
+        shipping_resp: ""
     },
     {
         id: 9,
@@ -63,7 +70,8 @@ export const equipmentTransferData = [
         department: "Facilities Management",
         sourceSection: "Maintenance Services",
         equipment: "Power Tools Kit",
-        date: "2023-05-23"
+        date: "2023-05-23",
+        shipping_resp: ""
     },
     {
         id: 10,
@@ -71,7 +79,8 @@ export const equipmentTransferData = [
         department: "Research and Development",
         sourceSection: "Data Science Lab",
         equipment: "High-Performance Server",
-        date: "2023-05-24"
+        date: "2023-05-24",
+        shipping_resp: ""
     }
 ];
 

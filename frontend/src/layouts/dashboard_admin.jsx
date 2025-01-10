@@ -5,6 +5,7 @@ import {
     Sidenav,
     DashboardNavbar,
     Configurator,
+    UserInfoSidebar
 } from "@/components/layout";
 import routesAdmin from "@/routes/routes_admin";
 //import routes from "@/routes1";
@@ -23,6 +24,11 @@ export function Dashboard_Admin() {
         />
         <div className="p-4 xl:ml-80">
             <DashboardNavbar />
+            <UserInfoSidebar
+                id="12345"
+                name="John Doe"
+                role="Admin"
+            />
             <Configurator />
             <IconButton
             size="lg"

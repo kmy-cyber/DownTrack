@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import { equipmentDisposalData } from "@/data/equipment-disposal-data";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import {InformationCircleIcon,CheckCircleIcon} from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/solid";
+import {InformationCircleIcon,CheckCircleIcon,TrashIcon} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import DisposalInfoForm from "./info_disposal";
 
@@ -59,7 +59,7 @@ export function EquipmentDisposalTable() {
                                     {[ "Technic", "Equipment", "Date"].map((el) => (
                                         <th
                                             key={el}
-                                            className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                            className="border-b border-blue-gray-100 py-3 px-5 text-left"
                                         >
                                             <Typography
                                                 variant="small"
@@ -137,6 +137,20 @@ export function EquipmentDisposalTable() {
                                                                 Register
                                                             </Typography>
                                                             <CheckCircleIcon className="w-5 text-green-600" />
+                                                        </div>
+
+                                                        <div 
+                                                            className="flex items-center gap-1"
+                                                            onClick={() => registerItem()}
+                                                        >
+                                                            <Typography
+                                                                as="a"
+                                                                href="#"
+                                                                className="text-xs font-semibold text-red-800"
+                                                            >
+                                                                Eliminate
+                                                            </Typography>
+                                                            <TrashIcon className="w-4 text-red-800" />
                                                         </div>
 
                                                     </div>
