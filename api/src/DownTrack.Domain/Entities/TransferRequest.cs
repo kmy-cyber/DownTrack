@@ -7,10 +7,10 @@ namespace DownTrack.Domain.Entities;
 public class TransferRequest : GenericEntity
 {
     [Required]
-    public int UserId { get; set; }
+    public int EmployeeId { get; set; }
 
-    [ForeignKey(nameof(UserId))]
-    public required User User { get; set; }
+    [ForeignKey(nameof(EmployeeId))]
+    public required Employee Employee { get; set; }
 
     [Required]
     public int EquipmentId { get; set; }

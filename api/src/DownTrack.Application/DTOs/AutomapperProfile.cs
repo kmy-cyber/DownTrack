@@ -33,5 +33,7 @@ public class AutomapperProfile : Profile
         CreateMap<DepartmentDto, Department>();
         CreateMap<Department, DepartmentDto>();
 
+        CreateMap<TransferRequestDto, TransferRequest>();
+        CreateMap<TransferRequest, TransferRequestDto>();
     }
 }

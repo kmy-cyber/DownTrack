@@ -25,7 +25,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Department> Departments { get; set; }
 
-    public DbSet<TransferRequest> TransferRequests {get; set;}
+    public DbSet<TransferRequest> TransferRequests { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,17 +62,34 @@ public class DownTrackContext : IdentityDbContext<User>
 
 
         modelBuilder.Entity<Section>()
-            .HasMany(s=> s.Departments)
-            .WithOne(d=> d.Section)
-            .HasForeignKey(d=> d.SectionId)
+            .HasMany(s => s.Departments)
+            .WithOne(d => d.Section)
+            .HasForeignKey(d => d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Department>()
-            .HasKey(d=> new {d.Id, d.SectionId});  
-                  
-        modelBuilder.Entity<TransferRequest>().HasIndex(x=> x.Id).IsUnique();
+            .HasKey(d => new { d.Id, d.SectionId });
+
+        modelBuilder.Entity<TransferRequest>()
+     .HasOne(tr => tr.Employee)
+     .WithMany(e => e.TransferRequests)
+     .HasForeignKey(tr => tr.EmployeeId)  // Correcto EmployeeId como FK
+     .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TransferRequest>()
+        .HasOne(tr => tr.Equipment)
+        .WithMany(e => e.TransferRequests)
+        .HasForeignKey(tr => tr.EquipmentId)  // Correcto EquipmentId como FK
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TransferRequest>()
+            .HasOne(tr => tr.Department)
+            .WithMany(d => d.TransferRequests)
+            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })  // Correcto DepartmentId como FK
+            .OnDelete(DeleteBehavior.Cascade);
+
 
     }
 }
 
-
+// --project DownTrack.Infrastructure --startup-project DownTrack.API
