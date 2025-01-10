@@ -72,6 +72,9 @@ public class IdentityManager : IIdentityManager
 
         var valid = await _userManager.CheckPasswordAsync(user, password);
 
+        if(!valid)
+            return null;
+            
         return user;
     }
 

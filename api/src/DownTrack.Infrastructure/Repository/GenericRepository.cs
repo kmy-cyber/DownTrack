@@ -16,7 +16,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
             throw new ArgumentException(nameof(context));
 
         _context = context;
-        _entity = context.Set<T>();
+        _entity = _context.Set<T>();
     }
 
     public virtual async Task<T> CreateAsync(T element, CancellationToken cancellationToken = default)
