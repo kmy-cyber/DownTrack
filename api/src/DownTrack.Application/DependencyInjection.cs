@@ -25,7 +25,7 @@ public static class DependencyInjection
         // Registers services related to Entities
         services.AddScoped<ITechnicianServices, TechnicianServices>();
         services.AddScoped<IEmployeeServices, EmployeeServices>();
-        services.AddScoped<IMaintenanceServices,MaintenanceServices>();
+        services.AddScoped<IDoneMaintenanceServices, DoneMaintenanceServices>();
         services.AddScoped<IIdentityService,IdentityService>();
         services.AddScoped<IEquipmentServices, EquipmentServices>();
         services.AddScoped<ISectionServices, SectionServices>();

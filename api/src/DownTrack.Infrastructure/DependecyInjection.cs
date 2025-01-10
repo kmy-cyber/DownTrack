@@ -54,9 +54,9 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEquipmentRepository, EquipmentRepository>();
         services.AddScoped<ISectionRepository, SectionRepository>();
-        services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IIdentityManager, IdentityManager>();
+        services.AddScoped<IDoneMaintenanceRepository, DoneMaintenanceRepository>();
 
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();

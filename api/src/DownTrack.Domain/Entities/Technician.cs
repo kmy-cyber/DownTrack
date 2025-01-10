@@ -8,4 +8,5 @@ public class Technician : Employee
     public double Salary { get; set; }
     public int ExpYears { get; set; }
   
+    public ICollection<DoneMaintenance> DoneMaintenances { get; set; } = new List<DoneMaintenance>();
 }

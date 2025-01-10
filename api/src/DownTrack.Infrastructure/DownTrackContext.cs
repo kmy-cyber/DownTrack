@@ -21,7 +21,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Section> Sections { get; set; }
 
-    public DbSet<Maintenance> Maintenances { get; set; }
+    public DbSet<DoneMaintenance> DoneMaintenances { get; set; }
 
     public DbSet<Department> Departments { get; set; }
 
@@ -57,18 +57,34 @@ public class DownTrackContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Equipment>().HasIndex(x => x.Id).IsUnique();
 
-        modelBuilder.Entity<Maintenance>().HasIndex(x => x.Id).IsUnique();
-
-
         modelBuilder.Entity<Section>()
-            .HasMany(s=> s.Departments)
-            .WithOne(d=> d.Section)
-            .HasForeignKey(d=> d.SectionId)
+            .HasMany(s => s.Departments)
+            .WithOne(d => d.Section)
+            .HasForeignKey(d => d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Department>()
-            .HasKey(d=> new {d.Id, d.SectionId});        
+            .HasKey(d => new { d.Id, d.SectionId });
 
+        // Configuration of DoneMaintenance relationship
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasKey(mr => mr.Id); // Primary key of the relationship
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasOne(dm => dm.Technician) // Primary key of the relationship
+            .WithMany(t => t.DoneMaintenances) // One-to-many relationship
+            .HasForeignKey(dm => dm.TechnicianId) // Foreign key to TechnicianId
+            .OnDelete(DeleteBehavior.SetNull); // If a technician is deleted, set the value of the field to null
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasOne(dm => dm.Equipment)
+            .WithMany(e => e.DoneMaintenances)
+            .HasForeignKey(dm => dm.EquipmentId)
+            .OnDelete(DeleteBehavior.SetNull); // If an equipment is deleted, set the value of the field to null
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .Property(dm => dm.Date).HasColumnType("date");
 
     }
 }

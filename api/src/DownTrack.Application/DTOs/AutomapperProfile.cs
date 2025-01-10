@@ -10,25 +10,25 @@ public class AutomapperProfile : Profile
     public AutomapperProfile()
     {
         CreateMap<TechnicianDto, Technician>();
-        CreateMap<Technician,TechnicianDto>();
+        CreateMap<Technician, TechnicianDto>();
 
+        CreateMap<EmployeeDto, Employee>();
+        CreateMap<Employee, EmployeeDto>();
 
-        CreateMap<EmployeeDto,Employee>();
-        CreateMap<Employee,EmployeeDto>();
+        CreateMap<LoginUserDto, User>();
+        CreateMap<RegisterUserDto, User>();
 
-        CreateMap<LoginUserDto,User>();
-        CreateMap<RegisterUserDto,User>();
-
-        CreateMap<RegisterUserDto,TechnicianDto>();
-        CreateMap<RegisterUserDto,EmployeeDto>();
-        
+        CreateMap<RegisterUserDto, TechnicianDto>();
+        CreateMap<RegisterUserDto, EmployeeDto>();
 
         CreateMap<EquipmentDto, Equipment>();
         CreateMap<Equipment, EquipmentDto>();
+
         CreateMap<SectionDto, Section>();
         CreateMap<Section, SectionDto>();
-        CreateMap<MaintenanceDto, Maintenance>();
-        CreateMap<Maintenance, MaintenanceDto>();
+
+        CreateMap<DoneMaintenanceDto, DoneMaintenance>();
+        CreateMap<DoneMaintenance, DoneMaintenanceDto>();
 
         CreateMap<DepartmentDto, Department>();
         CreateMap<Department, DepartmentDto>();
