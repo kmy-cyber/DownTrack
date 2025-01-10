@@ -46,7 +46,6 @@ public static class DependencyInjection
                .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
                .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
 
-
         // Add custom repositories and services
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITechnicianRepository, TechnicianRepository>();
@@ -57,6 +56,8 @@ public static class DependencyInjection
         services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
         services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         services.AddScoped<IIdentityManager, IdentityManager>();
+        services.AddScoped<IEvaluationRepository, EvaluationRepository>();
+        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
 
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();

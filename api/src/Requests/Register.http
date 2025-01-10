@@ -5,15 +5,23 @@ POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
+<<<<<<< HEAD
   "id": 10,
   "name": "Julio",
   "userName": "jiPerez",
+=======
+  "id": 112,
+  "name": "Julio",
+  "userName": "julio909asas29",
+>>>>>>> api_ev
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
-  "userRole": "Technician",
+  "userRole": "EquipmentReceptor",
   "specialty": "mechanic",
   "salary": 19090,
-  "expYears": 10
+  "expYears": 10,
+  "departamentId": 1,
+  "sectionId": 1
 }
 
 # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjEyIiwiZ2l2ZW5fbmFtZSI6Imp1bGlvMTEyOTAwOSIsImp0aSI6ImRhMDQzNWE0LWNjZDMtNGM2Mi1iZWMwLTFkOTk1ZGY2MGQxZCIsImV4cCI6MTczNjIzMDIzNywiaXNzIjoiRG93blRyYWNrIiwiYXVkIjoiRG93blRyYWNrIn0.dJWS_cpbogvi1hDSoH1FsdOanaK946a1oJqtPqsLWcA
