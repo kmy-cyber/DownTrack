@@ -21,6 +21,11 @@ export function Dashboard_Technic() {
         />
         <div className="p-4 xl:ml-80">
             <DashboardNavbar />
+            <UserInfoSidebar
+                id="12345"
+                name="John Doe"
+                role="Admin"
+            />
             <Configurator />
             <IconButton
             size="lg"
