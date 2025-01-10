@@ -59,23 +59,10 @@ public class IdentityService : IIdentityService
 
                 throw new Exception("Invalid Role");
 
-<<<<<<< HEAD
-
-=======
->>>>>>> api_ev
             var user = _mapper.Map<User>(userDto);
 
             if (userDto.UserRole == UserRole.Technician.ToString())
             {
-<<<<<<< HEAD
-                Console.WriteLine("================================================================================================");
-                var technicianDto = _mapper.Map<TechnicianDto>(userDto);
-                
-                var technician = _mapper.Map<Technician>(technicianDto);
-                
-                Console.WriteLine($"Technician: {technician.Name}, {technician.UserRole}");  
-=======
->>>>>>> api_ev
 
                 var technician = _mapper.Map<Technician>(userDto);
 
@@ -101,10 +88,7 @@ public class IdentityService : IIdentityService
 
 
             }
-<<<<<<< HEAD
-            
-            var token = await _jwtTokenGenerator.GenerateToken(savedUser);
-=======
+
 
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
 
@@ -112,8 +96,7 @@ public class IdentityService : IIdentityService
 
             await _unitOfWork.CompleteAsync();
 
-            var token = _jwtTokenGenerator.GenerateToken(savedUser);
->>>>>>> api_ev
+            var token = await _jwtTokenGenerator.GenerateToken(savedUser);
 
             return token;
         }
