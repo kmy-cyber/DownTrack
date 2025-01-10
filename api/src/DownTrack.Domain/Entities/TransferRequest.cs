@@ -21,10 +21,11 @@ public class TransferRequest : GenericEntity
     public DateTime Date { get; set; } // Fecha de la solicitud de transferencia
 
     [Required]
-    public required int  DepartmentId {get; set;}
-    public required int SectionId{get;set;}
+    public required int DepartmentId { get; set; }
+    [Required]
+    public required int SectionId { get; set; }
 
     [ForeignKey(nameof(DepartmentId) + "," + nameof(SectionId))]
-    public required Department Department{get; set;}
+    public required Department Department { get; set; }
 
 }
