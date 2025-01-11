@@ -19,7 +19,7 @@ export const SectionCreationForm = () => {
 
     const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User created:", formData);
+    console.log("Section created:", formData);
     };
 
     return (

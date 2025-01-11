@@ -1,77 +1,87 @@
 // equipment-transfer-data.js
 
 export const equipmentTransferData = [
-  {
-    sourceSection: "IT Department",
-    equipment: "Laptop",
-    date: "2023-05-15"
-  },
-  {
-    sourceSection: "Warehouse",
-    equipment: "Printer",
-    date: "2023-05-16"
-  },
-  {
-    sourceSection: "Logistics",
-    equipment: "Scanner",
-    date: "2023-05-17"
-  },
-  {
-    sourceSection: "Electrical Systems",
-    equipment: "Router",
-    date: "2023-05-18"
-  },
-  {
-    sourceSection: "Software Maintenance",
-    equipment: "Monitor",
-    date: "2023-05-19"
-  },
-  // Nuevos datos añadidos
-  {
-    sourceSection: "Research and Development",
-    equipment: "3D Printer",
-    date: "2023-05-20"
-  },
-  {
-    sourceSection: "Customer Support",
-    equipment: "Headset",
-    date: "2023-05-21"
-  },
-  {
-    sourceSection: "Security",
-    equipment: "CCTV Camera",
-    date: "2023-05-22"
-  },
-  {
-    sourceSection: "Production Line",
-    equipment: "Conveyor Belt",
-    date: "2023-05-23"
-  },
-  {
-    sourceSection: "Maintenance Department",
-    equipment: "Tool Kit",
-    date: "2023-05-24"
-  },
-  {
-    sourceSection: "Administration",
-    equipment: "Projector",
-    date: "2023-05-25"
-  },
-  {
-    sourceSection: "Design Studio",
-    equipment: "Graphic Tablet",
-    date: "2023-05-26"
-  },
-  {
-    sourceSection: "Server Room",
-    equipment: "Server Rack",
-    date: "2023-05-27"
-  },
-  {
-    sourceSection: "Quality Assurance",
-    equipment: "Testing Device",
-    date: "2023-05-28"
-  }
+    {
+        id: 1,
+        requestingOfficer: "John Doe",
+        department: "IT Department",
+        sourceSection: "Network Administration",
+        equipment: "Laptop",
+        date: "2023-05-15",
+        shipping_resp: ""
+    },
+    {
+        id: 2,
+        requestingOfficer: "Jane Smith",
+        department: "Warehouse",
+        sourceSection: "Inventory Management",
+        equipment: "Printer",
+        date: "2023-05-16",
+        shipping_resp: ""
+    },
+    {
+        id: 3,
+        requestingOfficer: "Mike Johnson",
+        department: "Logistics",
+        sourceSection: "Supply Chain Coordination",
+        equipment: "Scanner",
+        date: "2023-05-17",
+        shipping_resp: ""
+    },
+    {
+        id: 4,
+        requestingOfficer: "Emily Chen",
+        department: "Electrical Systems",
+        sourceSection: "Building Maintenance",
+        equipment: "Router",
+        date: "2023-05-18",
+        shipping_resp: ""
+    },
+    {
+        id: 6,
+        requestingOfficer: "Sarah Taylor",
+        department: "HR Department",
+        sourceSection: "Recruitment Team",
+        equipment: "Monitor",
+        date: "2023-05-19",
+        shipping_resp: ""
+    },
+    {
+        id: 7,
+        requestingOfficer: "Kevin White",
+        department: "Finance",
+        sourceSection: "Accounting",
+        equipment: "Desktop Computer",
+        date: "2023-05-21",
+        shipping_resp: ""
+    },
+    {
+        id: 8,
+        requestingOfficer: "Lisa Nguyen",
+        department: "Marketing",
+        sourceSection: "Digital Marketing Team",
+        equipment: "Laptop Stand",
+        date: "2023-05-22",
+        shipping_resp: ""
+    },
+    {
+        id: 9,
+        requestingOfficer: "Michael Brown",
+        department: "Facilities Management",
+        sourceSection: "Maintenance Services",
+        equipment: "Power Tools Kit",
+        date: "2023-05-23",
+        shipping_resp: ""
+    },
+    {
+        id: 10,
+        requestingOfficer: "Amy Martin",
+        department: "Research and Development",
+        sourceSection: "Data Science Lab",
+        equipment: "High-Performance Server",
+        date: "2023-05-24",
+        shipping_resp: ""
+    }
 ];
 
 export default equipmentTransferData;

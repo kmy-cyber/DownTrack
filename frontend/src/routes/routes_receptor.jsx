@@ -14,7 +14,7 @@ import {
     ArrowRightCircleIcon,
     TrashIcon,
 } from "@heroicons/react/24/solid";
-import { Home, EquipmentRegisterForm, EquipmentTransferTable} from "@/pages/dashboard_receptor";
+import { Home, EquipmentRegisterForm, EquipmentTransferTable, EquipmentDisposalTable} from "@/pages/dashboard_receptor";
 
 const typeUser = 1;
 const icon = {
@@ -47,7 +47,7 @@ export const routesReceptor = [
         icon: <TrashIcon {...icon} />,
         name: "Equipment Disposal",
         path: "/equipment_disposal",
-        element: <Home />,
+        element: <EquipmentDisposalTable />,
         },
     ],
 },];

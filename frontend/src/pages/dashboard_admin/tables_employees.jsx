@@ -38,7 +38,7 @@ export function Tables() {
         // Reset the values
         setUserData({
             name: "",
-            id: "",
+            username: "",
             role: "",
             department: "",
             experience: "",
@@ -59,7 +59,6 @@ export function Tables() {
     const cancelEditUser = () => {
         setUserData({
             name: "",
-            id: "",
             username: "",
             role: "",
             department: "",
@@ -72,8 +71,8 @@ export function Tables() {
         setKeyEdit(0);
     }
     
-    const deleteUser = (id) => {
-        setUserList(userList.filter(user => user.id !== id));
+    const deleteUser = (username) => {
+        setUserList(userList.filter(user => user.username !== username));
     };
 
     return (
@@ -186,7 +185,7 @@ export function Tables() {
                                     
                                         <div 
                                             className="flex items-center gap-1"
-                                            onClick={() => deleteUser(user.id)}
+                                            onClick={() => deleteUser(user.username)}
                                         >
                                             <Typography
                                                 as="a"

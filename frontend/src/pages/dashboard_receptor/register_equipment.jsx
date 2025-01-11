@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardHeader,
@@ -6,16 +6,18 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
+import {equipmentData} from "@/data/equipment-data"
 export const EquipmentRegisterForm = () => {
     const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    role: "admin",
-    department: "",
-    experience: "",
-    specialty: "",
-    salary: "",
+        id: "",
+        name: " ",
+        type: "",
+        status: " ",
+        acquisitionDate: "",
+        location: "",
+        section: ""
     });
+    const [startDate, setStartDate] = useState("");
 
     const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,8 +26,25 @@ export const EquipmentRegisterForm = () => {
 
     const handleSubmit = (e) => {
     e.preventDefault();
+    const currentDate = new Date().toISOString().split('T')[0];
+    date: currentDate
     console.log("User created:", formData);
     };
+
+    // Generar la fecha y hora en formato YYYY-MM-DD HH:MM:SS
+        const generateDateTime = () => {
+            const currentDate = new Date();
+            return currentDate
+                .toISOString()
+                .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
+                .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
+        };
+    
+        // Establecer la fecha al cargar el componente
+        useEffect(() => {
+            const currentDate = generateDateTime();
+            setStartDate(currentDate);
+        }, []);
 
     return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
@@ -71,23 +90,6 @@ export const EquipmentRegisterForm = () => {
                 </div>
 
                 <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Date
-                </label>
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value={formData.date}
-                    onChange={handleChange}
-                    placeholder=""
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-                </div>
-
-
-                <div>
                 <label htmlFor="departament" className="block text-sm font-medium text-gray-700">
                     Assing Departament
                 </label>
@@ -95,7 +97,7 @@ export const EquipmentRegisterForm = () => {
                     id="departament"
                     name="departament"
                     value={formData.department}
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                 >
@@ -105,7 +107,59 @@ export const EquipmentRegisterForm = () => {
                 </select>
                 </div>
 
+                <div>
+                <label htmlFor="section" className="block text-sm font-medium text-gray-700">
+                    Assing Section
+                </label>
+                <select
+                    id="departament"
+                    name="departament"
+                    value={formData.department}
+                    onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                >
+                    <option value="sec1">section1</option>
+                    <option value="sec2">section2</option>
+                    <option value="sec3">section3</option>
+                </select>
+                </div>
+
+                <div>
+                    <label htmlFor="Status" className="block text-sm font-medium text-gray-700">
+                    Status
+                </label><select
+                    id="status"
+                    name="status"
+                    value={formData.department}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                >
+                    <option value="active">Active</option>
+                    <option value="under_maintenance"> Under maintenance</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                </div>
+
+                <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                    Date
+                </label>
+                <input
+                    type="text"
+                    id="date"
+                    name="date"
+                    value={startDate}
+                    placeholder="Enter equipment type"
+                    readOnly
+                    className="mt-1 block w-full px-3 py-2 border  text-gray-900 border-gray-300 rounded-md shadow-sm"
+                    required
+                />
+                </div>
+
             </div>
+            
 
             <button
                 type="submit"
