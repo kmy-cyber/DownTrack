@@ -1,6 +1,4 @@
 
-#ignore this directories
-
 **/api/src/DownTrack.API/bin/
 **/api/src/DownTrack.API/obj/
 

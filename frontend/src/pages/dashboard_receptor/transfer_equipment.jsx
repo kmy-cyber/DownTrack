@@ -1,174 +1,192 @@
-import {
-Card,
-CardHeader,
-CardBody,
-Typography,
-Avatar,
-Chip,
-Tooltip,
-Progress,
-} from "@material-tailwind/react";
-import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
-import { UserIcon } from "@heroicons/react/24/outline";
+import React from 'react';
+import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import { equipmentTransferData } from "@/data/equipment-transfer-data";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import TransferInfoForm from "./info_transfer";
+import RegisterForm from "./register_shipping_resp";
+import MessageAlert from '@/components/Alert_mssg/alert_mssg';
+
 
 export function EquipmentTransferTable() {
-    const [onEdit, setOnEdit] = useState(false);
-    const [keyEdit, setKeyEdit] = useState(0);
-
-    const [transfers, setTransfers] = useState(equipmentTransferData);
+    const [onInfo, setOnInfo] = useState(false);
+    const [selectedTransfer, setSelectedTransfer] = useState(null);
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+    const [assignedPerson, setAssignedPerson] = useState("");
+    const [registeredTransfers, setRegisteredTransfers] = useState([]); 
+    const[alertMessage, setAlertMessage] = useState('');
 
     // TODO: Connect with backend and replace static values
-    
-    const handleSave = (updatedTransfer) => {
-        const updatedTransfers = transfers.map((transfer) =>
-            transfer.id === updatedTransfer.id ? updatedTransfer : transfer
-        );
-        setTransfers(updatedTransfers);
-
-        setOnEdit(false);
-        setKeyEdit(0);
+    const handleShowInfo = (transfer) => {
+        setSelectedTransfer(transfer);
+        setOnInfo(true);
     };
 
-    const editTransfer = (transfer, key) => {
-        setKeyEdit(key);
-        setTransfers(transfers.map(t => t.id === key ? {...t, ...transfer} : t));
-        setOnEdit(true);
+    const handleCloseInfo = () => {
+        setSelectedTransfer(null);
+        setOnInfo(false);
     };
 
-    const cancelEditTransfer = () => {
-        setTransfers(equipmentTransferData);
-        setOnEdit(false);
-        setKeyEdit(0);
-    }
-
-    const deleteTransfer = (id) => {
-        setTransfers(transfers.filter(transfer => transfer.id !== id));
+    const handleRegister = (transfer) => {
+        setShowRegistrationForm(true);
+        setSelectedTransfer(transfer);
     };
 
-    return (
-        <>
-            { onEdit &&
-                <EditUserForm 
-                    userData={userData} 
-                    onSave={handleSave} 
-                    onCancel={cancelEditUser} 
-                />
+    const handleAcceptRegister = (person) => {
+        console.log("handleAcceptRegister called with person:", person); 
+        if (selectedTransfer) {
+            console.log("selectedTransfer:", selectedTransfer); 
+            const updatedData = [...equipmentTransferData];
+            const index = updatedData.findIndex(item => item.id === selectedTransfer.id);
+            if (index !== -1) {
+                console.log("Updating transfer at index:", index); 
+                updatedData[index].registered = true;
+                updatedData[index].assignedPerson = person;
+                equipmentTransferData.splice(index, 1, ...updatedData.slice(index, index + 1));
+                setIsRegistered(true);
+                setShowRegistrationForm(false);
+                setAssignedPerson("");
+                setRegisteredTransfers([...registeredTransfers, { id: selectedTransfer.id, assignedPerson: person }]);
+                setAlertMessage("Successful registration");
             }
+            else {
+                console.log("Transfer not found in data"); 
+            }
+        } 
+        else {
+            console.log("No selected transfer or already registered");
+        }
+    };
 
-            { !onEdit &&
-                <div className="mt-12 mb-8 flex flex-col gap-12">
-                <Card>
-                    <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+    const handleCancelRegister = () => {
+        setShowRegistrationForm(false);
+    };
+
+
+return (
+    <>
+        {onInfo && selectedTransfer && (
+            <TransferInfoForm 
+                transfer={selectedTransfer}
+                onClose={handleCloseInfo}
+            />
+        )}
+        {showRegistrationForm && (
+        <RegisterForm
+            onAccept={handleAcceptRegister}
+            onCancel={handleCancelRegister}
+        />
+        )}
+
+        <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
+        { !onInfo &&
+            (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
+            <Card>
+                <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <Typography variant="h6" color="white">
                         Equipment Transfer
                     </Typography>
-                    </CardHeader>
-                    <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+                </CardHeader>
+                <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
-                        <tr>
-                            {[ "Source Section","Equipment","Date"].map((el) => (
-                            <th
-                                key={el}
-                                className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                            >
-                                <Typography
-                                variant="small"
-                                className="text-[11px] font-bold uppercase text-blue-gray-400"
-                                >
-                                {el}
-                                </Typography>
-                            </th>
-                            ))}
-                        </tr>
+                            <tr>
+                                {[ "Source Section", "Equipment", "Date"].map((el) => (
+                                    <th
+                                        key={el}
+                                        className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                    >
+                                        <Typography
+                                            variant="small"
+                                            className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                        >
+                                            {el}
+                                        </Typography>
+                                    </th>
+                                ))}
+                            </tr>
                         </thead>
                         <tbody>
-                        {transfers.map(
-                            (transfers, key) => {
-                            const className = `py-3 px-5 ${
-                                key === transfers.length - 1
-                                ? ""
-                                : "border-b border-blue-gray-50"
-                            }`;
+                            {equipmentTransferData.map(
+                                (transfer, index) => {
+                                    const className = `py-3 px-5 ${
+                                        index === equipmentTransferData.length - 1
+                                            ? ""
+                                            : "border-b border-blue-gray-50"
+                                    }`;
+                                    return (
+                                        <tr key={transfer.id}>
+                                            <td className={className}>
+                                                <div className="flex items-center gap-4">
+                                                    <div>
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                                                            {transfer.sourceSection}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className={className}>
+                                                <div className="flex items-center gap-4">
+                                                    <div>
+                                                        <Typography
+                                                            variant="small"
+                                                            color="blue-gray"
+                                                            className="font-semibold"
+                                                        >
+                                                            {transfer.equipment}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className={className}>
+                                                <Typography className="text-xs font-semibold text-blue-gray-600">
+                                                    {transfer.date}
+                                                </Typography>
+                                            </td>
+                                            <td className={className}>
+                                                <div className="flex items-center gap-4">
+                                                    <div 
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => handleShowInfo(transfer)}
+                                                    >
+                                                        <Typography
+                                                            as="a"
+                                                            href="#"
+                                                            className="text-xs font-semibold text-blue-600"
+                                                        >
+                                                            Info
+                                                        </Typography>
+                                                        <InformationCircleIcon className="w-5 text-blue-600" />
+                                                    </div>
+                                                    <div 
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => handleRegister(transfer)}
+                                                    >
+                                                        <Typography
+                                                            as="a"
+                                                            href="#"
+                                                            className="text-xs font-semibold text-green-600"
+                                                        >
+                                                            Register
+                                                        </Typography>
+                                                        <CheckCircleIcon className="w-5 text-green-600" />
+                                                    </div>
 
-                            return (
-                                <tr key={transfers.id}>
-                                <td className={className}>
-                                <div className="flex items-center gap-4">
-                                <div>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {transfers.sourceSection}
-                                    </Typography>
-                                </div>
-                                </div>
-                                </td>
-                                <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                    {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                                    <UserIcon className="w-5"/>
-                                    <div>
-                                        <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-semibold"
-                                        >
-                                        {transfers.equipment}
-                                        </Typography>
-                                    </div>
-                                    </div>
-                                </td>
-                                <td className={className}>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                                        {transfers.date}
-                                    </Typography>
-                                </td>
-                                <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                        <div 
-                                            className="flex items-center gap-1"
-                                            onClick={() => editUser(user, key)}
-                                        >
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                className="text-xs font-semibold text-green-600"
-                                                >
-                                                Edit
-                                            </Typography>
-                                            <PencilIcon className="w-3 text-green-600"/>
-                                        </div>
-                                    
-                                        <div 
-                                            className="flex items-center gap-1"
-                                            onClick={() => deleteUser(user.id)}
-                                        >
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                className="text-xs font-semibold text-red-600"
-                                                >
-                                                Delete
-                                            </Typography>
-                                            <TrashIcon className="w-3 text-red-600"/>
-                                        </div>
-                                    </div>
-                                </td>
-                                </tr>
-                            );
-                            }
-                        )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                }
+                            )}
                         </tbody>
                     </table>
-                    </CardBody>
-                </Card>
-
-                </div>
-            }
-        </>
-    );
+                </CardBody>
+            </Card>
+            </div>)
+        }
+    </>
+);
 }
 
 export default EquipmentTransferTable;
