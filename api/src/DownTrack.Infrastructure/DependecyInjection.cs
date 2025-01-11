@@ -10,6 +10,10 @@ using DownTrack.Infrastructure.Authentication;
 using Microsoft.Extensions.Options;
 using DownTrack.Application.Authentication;
 using DownTrack.Infrastructure.Initializer;
+using DownTrack.Application.IUnitOfWorkPattern;
+using DownTrack.Infrastructure.UnitOfWorkPattern;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace DownTrack.Infrastructure;
@@ -21,56 +25,85 @@ public static class DependencyInjection
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <returns>The modified IServiceCollection.</returns>
-
-    public static void AddInfrastructure(this IServiceCollection service, ConfigurationManager configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
 
     {
-        // add infrastructure layer services
+
+        // Database Configuration
         var connectionString = configuration.GetConnectionString("AppDbConnectionString");
-        var db = service.AddDbContext<DownTrackContext>(options => options.UseMySql(
+        var db = services.AddDbContext<DownTrackContext>(options => options.UseMySql(
                                                         connectionString, ServerVersion.AutoDetect(connectionString)));
 
+        // Add HttpContextAccessor for accessing the current HTTP context
+        services.AddHttpContextAccessor();
 
-        service.AddScoped<ITechnicianRepository, TechnicianRepository>();
-        service.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        service.AddScoped<IUserRepository,UserRepository>();
-        service.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        // Authentication and Authorization
+        services.AddAuth(configuration);
 
-        service.AddScoped<ISectionRepository, SectionRepository>();
-      
-        service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
-        
+        // Identity configuration
+        services.AddIdentityCore<User>()
+               .AddRoles<IdentityRole>() // Adds support for roles
+               .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
+               .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
 
-        // // Registering DownTrackContextInitializer as a scoped service. 
-        // // It will be instantiated once per HTTP request, allowing it to manage database initialization for each request.
-        // service.AddScoped<DownTrackContextInitializer>();
+        // Add custom repositories and services
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITechnicianRepository, TechnicianRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        services.AddScoped<ISectionRepository, SectionRepository>();
+        services.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        services.AddScoped<IIdentityManager, IdentityManager>();
+        services.AddScoped<IEvaluationRepository, EvaluationRepository>();
+        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
 
-
-        service.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SECTION_NAME));
-
-        service.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>(sp =>
-    {
-        var jwtSettings = sp.GetRequiredService<IOptions<JwtSettings>>().Value;
-        return new JwtTokenGenerator(jwtSettings);
-    });
-
-
-
-        service.AddScoped<IIdentityManager, IdentityManager>();
-
-        service.AddAuthentication();
-        service
-                .AddIdentityCore<User>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<DownTrackContext>();
-
-        
         //Register a service of type IHostedService in the dependency container
-        service.AddHostedService<RoleInitializer>();
+        services.AddHostedService<RoleInitializer>();
 
 
-        service.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        return services;
 
+    }
+
+
+    /// <summary>
+    /// Configures JWT authentication services for the application.
+    /// </summary>
+    /// <param name="services">The IServiceCollection to add services to.</param>
+    /// <param name="configuration">The configuration object for accessing application settings.</param>
+    /// <returns>The updated IServiceCollection.</returns>
+    public static IServiceCollection AddAuth(this IServiceCollection services,
+                                              ConfigurationManager configuration)
+    {
+        var jwtSettings = new JwtSettings();
+        configuration.Bind(JwtSettings.SECTION_NAME, jwtSettings);
+
+        services.AddSingleton(jwtSettings); // Registro directo para dependencias que lo necesiten como instancia
+
+        services.AddSingleton(Options.Create(jwtSettings));
+
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+        // Configuración de autenticación JWT
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                    };
+                });
+
+        return services;
     }
 }
 
@@ -81,3 +114,5 @@ public static class DependencyInjection
 
 //singleton: viven durante toda la vida de la app
 // servicios que no tienen estado o que son costosos de crear, como configuracion o cache
+
+

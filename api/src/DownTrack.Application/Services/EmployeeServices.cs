@@ -1,11 +1,10 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Application.IRepository;
 using AutoMapper;
 using DownTrack.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using DownTrack.Application.IUnitOfWorkPattern;
 
 namespace DownTrack.Application.Services;
 
@@ -17,17 +16,13 @@ namespace DownTrack.Application.Services;
 public class EmployeeServices : IEmployeeServices
 {
 
-    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IUserRepository _userRepository;
 
-    public EmployeeServices(IEmployeeRepository employeeRepository,
-                            IMapper mapper,
-                            IUserRepository userRepository)
+    public EmployeeServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _employeeRepository = employeeRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _userRepository = userRepository;
     }
 
 
@@ -37,16 +32,17 @@ public class EmployeeServices : IEmployeeServices
     /// </summary>
     /// <param name="employeeDto">The DTO containing employee details to be created.</param>
     /// <returns>A Task representing the asynchronous operation, with an EmployeeDto as the result.</returns>
-    public async Task<EmployeeDto> CreateAsync(EmployeeDto employeeDto)
+    public async Task<EmployeeDto> CreateAsync(EmployeeDto dto)
     {
-        // map the DTOs (employeeDto) to a domain entity (Employee) 
-        var result = _mapper.Map<Employee>(employeeDto);
+        var employee = _mapper.Map<Employee>(dto);
 
-        // method of the repository is called to insert the Employee entity into the database
-        await _employeeRepository.CreateAsync(result);
+        //await _employeeRepository.CreateAsync(employee);
+        
+        await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
 
-        // map the new created Employee entity to a EmployeeDTO
-        return _mapper.Map<EmployeeDto>(result);
+        await _unitOfWork.CompleteAsync();
+
+        return _mapper.Map<EmployeeDto>(employee);
     }
 
 
@@ -56,17 +52,18 @@ public class EmployeeServices : IEmployeeServices
     /// </summary>
     /// <param name="employeeDto">The DTO containing updated employee details.</param>
     /// <returns>A Task representing the asynchronous operation, with an EmployeeDto as the result.</returns>
-    public async Task<EmployeeDto> UpdateAsync(EmployeeDto employeeDto)
+    public async Task<EmployeeDto> UpdateAsync(EmployeeDto dto)
     {
-        var result = _employeeRepository.GetById(employeeDto.Id);
+        var employee = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(dto.Id);
 
-        // Maps the provided EmployeeDto to the existing employee entity, updates the employee in the database, 
-        _mapper.Map(employeeDto, result);
+        //var employee = _employeeRepository.GetById(dto.Id);
+        _mapper.Map(dto, employee);
 
-        await _employeeRepository.UpdateAsync(result);
+        _unitOfWork.GetRepository<Employee>().Update(employee);
 
-        /// and returns the updated employee as a EmployeeDto.
-        return _mapper.Map<EmployeeDto>(result);
+        await _unitOfWork.CompleteAsync();
+        //await _employeeRepository.UpdateAsync(employee);
+        return _mapper.Map<EmployeeDto>(employee);
     }
 
 
@@ -77,12 +74,9 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation, with a list of EmployeeDto as the result.</returns>
     public async Task<IEnumerable<EmployeeDto>> ListAsync()
     {
-        //fetches all employees from the repository
-        var results = await _employeeRepository.ListAsync();
-
-        //return them as a enumerable of TechnicanDto objects
-        return results.Select(_mapper.Map<EmployeeDto>);
-
+        var employee = await _unitOfWork.GetRepository<Employee>().GetAllAsync().ToListAsync();
+        //var employee = await _employeeRepository.ListAsync();
+        return employee.Select(_mapper.Map<EmployeeDto>);
     }
 
 
@@ -94,16 +88,11 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous delete operation.</returns>
     public async Task DeleteAsync(int employeeId)
     {
-        //get the employee
-        var employee = await _employeeRepository.GetByIdAsync(employeeId);
-        if (employee == null)
-        {
-            throw new Exception("Employee not found");
-        }
+        await _unitOfWork.GetRepository<Employee>().DeleteByIdAsync(employeeId);
 
-        await _userRepository.DeleteByIdEmployeeAsync(employeeId);
+        await _unitOfWork.UserRepository.DeleteByIdAsync(employeeId);
 
-        await _employeeRepository.DeleteByIdAsync(employeeId);
+        await _unitOfWork.CompleteAsync();
     }
 
 
@@ -115,9 +104,11 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation that fetches the employee</returns>
     public async Task<EmployeeDto> GetByIdAsync(int employeeDto)
     {
-        var result = await _employeeRepository.GetByIdAsync(employeeDto);
+        var result = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(employeeDto);
+        
+        //var result = await _employeeRepository.GetByIdAsync(employeeDto);
 
-        /// and returns the updated employee as a EmployeeDto.
+        /// and returns the updated employee as an EmployeeDto.
         return _mapper.Map<EmployeeDto>(result);
 
     }

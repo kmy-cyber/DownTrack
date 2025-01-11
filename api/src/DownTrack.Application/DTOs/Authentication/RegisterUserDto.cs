@@ -13,4 +13,6 @@ public class RegisterUserDto
     public string Specialty { get; set; } = null!;
     public double Salary { get; set; }
     public int ExpYears { get; set; }
+    public int DepartamentId {get;set;}
+    public int SectionId {get;set;}
 }

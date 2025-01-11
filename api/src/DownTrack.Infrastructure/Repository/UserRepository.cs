@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
         
         return element;
     }
-    public async Task<User> GetByIdEmployeeAsync(int elementId, CancellationToken cancellationToken = default)
+    public async Task<User> GetByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.Users.
                         FirstOrDefaultAsync(u=> u.Id == elementId.ToString());
@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
         return user;
 
     }
-    public async Task DeleteByIdEmployeeAsync(int elementId, CancellationToken cancellationToken = default)
+    public async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.Users.
                         FirstOrDefaultAsync(u=> u.Id == elementId.ToString());

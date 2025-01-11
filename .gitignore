@@ -1,21 +1,7 @@
 
-#ignore this directories
-
-**/api/src/DownTrack.API/bin/
-**/api/src/DownTrack.API/obj/
+**/bin/
+**/obj/
 
 
-**/api/src/DownTrack.Infrastructure/bin/
-**/api/src/DownTrack.Infrastructure/obj/
-
-
-**/api/src/DownTrack.Application/bin/
-**/api/src/DownTrack.Application/obj/
-
-**/api/src/DownTrack.Domain/bin/
-**/api/src/DownTrack.Domain/obj/
-
-**/api/src/DownTrack.Infrastructure/Migrations/
-
-**/api/src/DownTrack.API/appsettings.json/
+**/Migrations/
 
