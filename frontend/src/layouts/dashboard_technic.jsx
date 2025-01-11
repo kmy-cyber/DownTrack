@@ -5,6 +5,7 @@ import {
     Sidenav,
     DashboardNavbar,
     Configurator,
+    UserInfoSidebar,
 } from "@/components/layout";
 import routesTechnic from "@/routes/routes_technic";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";

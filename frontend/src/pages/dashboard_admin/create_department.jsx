@@ -27,7 +27,7 @@ export const DepartmentCreationForm = () => {
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
             <Typography variant="h6" color="white">
-                Create Department
+                Register Department
             </Typography>
         </CardHeader>
         <CardBody>
