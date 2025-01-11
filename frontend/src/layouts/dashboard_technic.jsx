@@ -10,10 +10,15 @@ import {
 import routesTechnic from "@/routes/routes_technic";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 import { useEffect } from "react";
+import {jwtDecode} from 'jwt-decode';
 
 export function Dashboard_Technic() {
     const [controller, dispatch] = useMaterialTailwindController();
     const { sidenavType } = controller;
+    const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const roleClaimValue = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        console.log("ROL:", roleClaimValue);
 
     return (
         <div className="min-h-screen bg-blue-gray-50/50">
@@ -23,9 +28,9 @@ export function Dashboard_Technic() {
         <div className="p-4 xl:ml-80">
             <DashboardNavbar />
             <UserInfoSidebar
-                id="12345"
-                name="John Doe"
-                role="Admin"
+                id={decodedToken.sub}
+                name={decodedToken.given_name} 
+                role={roleClaimValue}
             />
             <Configurator />
             <IconButton

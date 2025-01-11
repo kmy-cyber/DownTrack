@@ -148,7 +148,7 @@ export function EquipmentDisposalTable() {
                                                                 href="#"
                                                                 className="text-xs font-semibold text-red-800"
                                                             >
-                                                                Eliminate
+                                                                Delete
                                                             </Typography>
                                                             <TrashIcon className="w-4 text-red-800" />
                                                         </div>
