@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Auth, Dashboard_Admin } from "@/layouts";
+import {SignIn , Dashboard_Admin } from "@/layouts";
 import Dashboard_Technic from "./layouts/dashboard_technic";
 import Dashboard_Receptor from "./layouts/dashboard_receptor";
 import Dashboard_Director from "./layouts/dashboard_director";
