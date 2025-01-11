@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Input,
@@ -7,14 +7,46 @@ import {
 } from "@material-tailwind/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import "@/assets/css/mystyles.css";
+import {jwtDecode} from 'jwt-decode';
+
+
+const getDashboardPath = (role) => {
+  switch (role) {
+    case 'Administrator':
+      return '/dashboard/admin/home';
+    case 'Director':
+      return '/dashboard/director/home';
+    case 'SectionManager':
+      return '/dashboard/manager/home';
+    case 'Technician':
+      return '/dashboard/technic/home';
+    case 'EquipmentReceptor':
+      return '/dashboard/receptor/home';
+    default:
+      return '/auth/';
+  }
+};
 
 export function SignIn() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [token, setToken] = useState('');
+
+  const [userGlobalData, setUserGlobalData] = useState({
+    id: "",
+    name: "",
+    //email: "",
+    role: ""
+  })
 
   const handleSubmit = async (e) => {
     console.log("Login ");
     e.preventDefault(); // Previene la recarga de la página
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch("http://localhost:5217/api/Authentication/login/", {
         method: "POST",
@@ -25,31 +57,60 @@ export function SignIn() {
       });
 
       console.log(response.status);
-
+      
       // if (!response.ok) {
-      //   throw new Error("Login failed");
-      // }
+        //   throw new Error("Login failed");
+        // }
+        
+        const token = await response.text(); // Obtenemos el token como texto
+        console.log(response.ok);
 
-      const data = await response.json();
-      console.log("Response JSON:", data);
-      console.log(response.ok);
-     // console.log(data.success);
+        setToken(token);
+        localStorage.setItem('token', token); // Guardar token en localStorage
 
       
-      if (response.ok && data) {
-        console.log("Login successful:", data);
-  
-        // Redirige al usuario o guarda información de sesión
-        window.location.href = "/dashboard/home";
+      if (response.ok && token) {
+        console.log("Token obtenido:", token);
+        
+        // Decodificamos el token JWT
+        const decodedToken = jwtDecode(token);
+        const roleClaimValue = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        console.log("ROL:", roleClaimValue);
+        // Extraemos las propiedades relevantes del token decodificado
+      const userData = {
+        id: decodedToken.sub,
+        name: decodedToken.given_name,
+        //email: decodedToken.email,
+        role: roleClaimValue
+      }
+      console.log("Datos del usuario:", userData);
+      console.log("Datos del token:", decodedToken);
+      // Guardamos los datos del usuario globalmente
+      setUserGlobalData(userData)
+
+      // Redirige al dashboard si el login es correcto
+      const dashboardPath = getDashboardPath(userData.role);
+        console.log("Dashboard path:", dashboardPath);
+        setShouldRedirect(dashboardPath);
       } else {
-        console.error("Login failed:", data.message);
+        console.error("Login failed");
+        setError("Failed to login");
       }
       
       
     } catch (error) {
       console.error("Error logging in:", error);
+      setError('An error occurred during the login process');
+    } finally {
+      setIsLoading(false);
     }
   };
+  useEffect(() => {
+    if (shouldRedirect && !isLoading) {
+      window.location.href = shouldRedirect;
+    }
+  }, [shouldRedirect, isLoading]);
+
 
   return (
     <section className="m-8 flex gap-4">
