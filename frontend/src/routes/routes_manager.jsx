@@ -34,7 +34,7 @@ export const routesManager = [
         {
           icon: <ArrowsRightLeftIcon {...icon}/>,
           name: "Request Transfer",
-          path: "/reports",
+          path: "/transfer_request",
           element: <TransferRequestForm/>
         },
         {
