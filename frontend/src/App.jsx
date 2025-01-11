@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Auth, Dashboard_Admin } from "@/layouts";
+import {SignIn , Dashboard_Admin } from "@/layouts";
 import Dashboard_Technic from "./layouts/dashboard_technic";
 import Dashboard_Receptor from "./layouts/dashboard_receptor";
 import Dashboard_Director from "./layouts/dashboard_director";
@@ -13,9 +13,8 @@ function App() {
       <Route path="/dashboard/receptor/*" element={<Dashboard_Receptor />} />
       <Route path="/dashboard/director/*" element={<Dashboard_Director />}/>
       <Route path="/dashboard/manager/*" element={<Dashboard_Manager/>}/>
-      <Route path="/dashboard/*" element={<Dashboard />} />
-      <Route path="/auth/*" element={<Auth />} />
-      <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+      <Route path="/auth/*" element={<SignIn />} />
+      <Route path="*" element={<Navigate to="/auth/" replace />} />
     </Routes>
   );
 }
