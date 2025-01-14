@@ -13,11 +13,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly DownTrackContext _context;
     private Dictionary<Type, object> _repositories;
     public IUserRepository UserRepository { get; }
-
     public IDepartmentRepository DepartmentRepository { get; }
 
-
-    
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
                       IDepartmentRepository departmentRepository)
@@ -29,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = userRepository;
 
         DepartmentRepository = departmentRepository;
+
 
     }
 

@@ -22,6 +22,7 @@ public static class DependencyInjection
         // Registers AutoMapper to enable mapping between DTOs and domain models.
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
         // Registers services related to Entities
         services.AddScoped<ITechnicianServices, TechnicianServices>();
         services.AddScoped<IEmployeeServices, EmployeeServices>();
@@ -30,8 +31,11 @@ public static class DependencyInjection
         services.AddScoped<IEquipmentServices, EquipmentServices>();
         services.AddScoped<ISectionServices, SectionServices>();
         services.AddScoped<IDepartmentServices, DepartmentServices>();
+        services.AddScoped<IEquipmentReceptorServices, EquipmentReceptorServices>();
+        services.AddScoped<IEvaluationServices, EvaluationServices>();
 
 
         return services;
+
     }
 }

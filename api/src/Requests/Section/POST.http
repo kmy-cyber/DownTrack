@@ -1,0 +1,11 @@
+@host = http://localhost:5217
+
+
+POST {{host}}/api/Section/POST/
+Content-Type:  application/json
+
+
+{
+  "id": 1,
+  "name": "stasas"
+}
