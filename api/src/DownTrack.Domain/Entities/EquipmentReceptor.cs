@@ -11,5 +11,5 @@ public class EquipmentReceptor : Employee
     //usar Section si se necesita acceder directamente en alguna consulta frecuente
     //public Section Section {get;set;} = null!;
 
-    // public ICollection<Traslados> TrasladosRecibidos {get;set;}
+
 }

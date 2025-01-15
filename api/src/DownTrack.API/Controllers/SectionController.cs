@@ -5,6 +5,7 @@ using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class SectionController : ControllerBase

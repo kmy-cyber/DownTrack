@@ -44,14 +44,15 @@ public class DoneMaintenanceServices : IDoneMaintenanceServices
 
     public async Task DeleteAsync(int dto)
     {
-        var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>().GetByIdAsync(dto);
+        //var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>().GetByIdAsync(dto);
 
-        if (doneMaintenance.TechnicianId != null || doneMaintenance.EquipmentId != null)
-        {
-            throw new InvalidOperationException("Cannot delete maintenance while it is associated with a technician or equipment.");
-        }
+        // if (doneMaintenance.TechnicianId != null || doneMaintenance.EquipmentId != null)
+        // {
+        //     throw new InvalidOperationException("Cannot delete maintenance while it is associated with a technician or equipment.");
+        // }
 
         await _unitOfWork.GetRepository<DoneMaintenance>().DeleteByIdAsync(dto);
+        
         await _unitOfWork.CompleteAsync();
     }
 

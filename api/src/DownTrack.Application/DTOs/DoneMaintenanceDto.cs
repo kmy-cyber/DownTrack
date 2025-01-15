@@ -7,5 +7,5 @@ public class DoneMaintenanceDto
     public string Type { get; set; } = "type";
     public int? EquipmentId { get; set; }    
     public DateTime Date { get; set; } = DateTime.Now;
-    public double Cost { get; set; } = 0.0;
+    public double Cost { get; set; } 
 }

@@ -62,7 +62,7 @@ public class DoneMaintenanceController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("DELETE")]
+    [Route("{doneMaintenanceId}")]
 
     public async Task<IActionResult> DeleteDoneMaintenance(int doneMaintenanceId)
     {
