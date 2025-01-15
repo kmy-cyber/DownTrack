@@ -39,9 +39,9 @@ namespace DownTrack.Api.Controllers
         
 
         [HttpGet]
-        [Route("GET")]
+        [Route("{transferRequestId}")]
 
-        public async Task<ActionResult<TransferRequest>> GetUserById(int transferRequestId)
+        public async Task<ActionResult<TransferRequest>> GetTransferRequestById(int transferRequestId)
         {
             var result = await _transferRequestService.GetByIdAsync(transferRequestId);
 
@@ -63,7 +63,7 @@ namespace DownTrack.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("DELETE")]
+        [Route("{transferRequestId}")]
 
         public async Task<IActionResult> DeleteTransferRequest(int transferRequestId)
         {

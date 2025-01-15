@@ -1,0 +1,14 @@
+@host = http://localhost:5217
+
+
+POST {{host}}/api/TransferRequest/POST/
+Content-Type:  application/json
+
+{
+  "id": 0,
+  "date": "2025-01-15T20:46:16.338Z",
+  "employeeId": 0,
+  "equipmentId": 0,
+  "departmentId": 0,
+  "sectionId": 0
+}
