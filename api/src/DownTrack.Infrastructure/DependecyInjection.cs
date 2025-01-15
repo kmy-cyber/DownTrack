@@ -59,7 +59,7 @@ public static class DependencyInjection
         services.AddScoped<IEvaluationRepository, EvaluationRepository>();
         services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
 
-
+        //services.AddScoped<DownTrackContextIni
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();
 
