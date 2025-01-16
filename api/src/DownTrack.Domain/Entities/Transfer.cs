@@ -11,7 +11,6 @@ public class Transfer : GenericEntity
 
     public int ShippingSupervisorId {get; set;}
     public Employee? ShippingSupervisor {get; set;}
-
     public int EquipmentReceptorId {get; set;}
     public Employee? EquipmentReceptor{get; set;}
     public DateTime Date { get; set; } 

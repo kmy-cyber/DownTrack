@@ -35,5 +35,9 @@ public class AutomapperProfile : Profile
 
         CreateMap<TransferRequestDto, TransferRequest>();
         CreateMap<TransferRequest, TransferRequestDto>();
+        
+        CreateMap<Transfer, TransferDto>();
+        CreateMap<Transfer, TransferDto>();
+        
     }
 }
