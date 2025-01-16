@@ -60,8 +60,19 @@ public class IdentityService : IIdentityService
                 throw new Exception("Invalid Role");
 
             var user = _mapper.Map<User>(userDto);
+            
+            if (userDto.UserRole == UserRole.ShippingSupervisor.ToString())
+            {
+                var supervisor = _mapper.Map<Employee>(userDto);
 
-            if (userDto.UserRole == UserRole.Technician.ToString())
+                await _unitOfWork.GetRepository<Employee>().CreateAsync(supervisor);
+
+                await _unitOfWork.CompleteAsync();
+
+                return "Not token for this user";
+
+            }
+            else if (userDto.UserRole == UserRole.Technician.ToString())
             {
 
                 var technician = _mapper.Map<Technician>(userDto);

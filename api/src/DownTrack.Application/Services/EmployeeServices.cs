@@ -5,6 +5,7 @@ using AutoMapper;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
+using DownTrack.Domain.Roles;
 
 namespace DownTrack.Application.Services;
 
@@ -34,10 +35,12 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation, with an EmployeeDto as the result.</returns>
     public async Task<EmployeeDto> CreateAsync(EmployeeDto dto)
     {
-        var employee = _mapper.Map<Employee>(dto);
-
-        //await _employeeRepository.CreateAsync(employee);
+        Employee employee = _mapper.Map<Employee>(dto);
         
+        if(employee.UserRole != UserRoleHelper.ToString(UserRole.ShippingSupervisor))
+        {
+            throw new Exception("This user is not a Shipping Supervisor");
+        }
         await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
 
         await _unitOfWork.CompleteAsync();

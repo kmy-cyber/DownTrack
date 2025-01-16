@@ -40,6 +40,9 @@ public class DownTrackContext : IdentityDbContext<User>
             .ToTable("Employee")
             .HasKey(u => u.Id);
 
+        modelBuilder.Entity<User>()
+            .Property(u=> u.Id)
+            .ValueGeneratedOnAdd();
 
         // Technician Region
         modelBuilder.Entity<Technician>()
