@@ -99,6 +99,7 @@ public class EquipmentDecommissioningServices : IEquipmentDecommissioningService
                 await _unitOfWork.GetRepository<EquipmentDecommissioning>().DeleteByIdAsync(decommissioning.Id);
             }
         }
+        equipmentDecommissioning.Status = Domain.Enum.DecommissioningStatus.Accepted;
 
         _unitOfWork.GetRepository<Equipment>().Update(equipment);
         await _unitOfWork.CompleteAsync();

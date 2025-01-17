@@ -10,5 +10,5 @@ public class EquipmentDecommissioningDto
     public int? ReceptorId { get; set; }
     public DateTime Date { get; set; }
     public string Cause { get; set; } = string.Empty;
-    public DecommissioningStatus Status { get; set; } = DecommissioningStatus.pending; 
+    public DecommissioningStatus Status { get; set; } = DecommissioningStatus.Pending; 
 }
