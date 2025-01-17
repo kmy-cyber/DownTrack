@@ -3,7 +3,7 @@ namespace DownTrack.Domain.Entities;
 
 public class Department : GenericEntity
 {
-    public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!; // tod
     public int SectionId {get; set;}
 
     // todo dpto tiene obligado una Seccion

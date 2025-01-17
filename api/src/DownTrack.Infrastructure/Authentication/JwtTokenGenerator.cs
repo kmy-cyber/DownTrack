@@ -25,7 +25,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
     public async Task<string> GenerateToken(User user)
     {
-        Console.WriteLine($"Generate Token : {user} ");
         //A symmetric signing key is created using the secret key defined in JwtSettings
         var key = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
@@ -33,9 +32,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         // Get user role
         var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault(); 
-        Console.WriteLine($"EL rol del usuario es : {role}");
-
-        
+    
         //claims : 
         var claims = new List<Claim>
            {

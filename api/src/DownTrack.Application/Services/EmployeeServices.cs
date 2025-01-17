@@ -37,7 +37,7 @@ public class EmployeeServices : IEmployeeServices
     {
         Employee employee = _mapper.Map<Employee>(dto);
         
-        if(employee.UserRole != UserRoleHelper.ToString(UserRole.ShippingSupervisor))
+        if(employee.UserRole != UserRole.ShippingSupervisor.ToString())
         {
             throw new Exception("This user is not a Shipping Supervisor");
         }
@@ -91,9 +91,12 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous delete operation.</returns>
     public async Task DeleteAsync(int employeeId)
     {
+        var employee = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(employeeId);
+
         await _unitOfWork.GetRepository<Employee>().DeleteByIdAsync(employeeId);
 
-        await _unitOfWork.UserRepository.DeleteByIdAsync(employeeId);
+        if(employee.UserRole != UserRole.ShippingSupervisor.ToString())
+            await _unitOfWork.UserRepository.DeleteByIdAsync(employeeId);
 
         await _unitOfWork.CompleteAsync();
     }

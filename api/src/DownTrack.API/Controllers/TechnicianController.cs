@@ -19,15 +19,15 @@ public class TechnicianController : ControllerBase
         _technicianService = technicianServices;
     }
 
-    [HttpPost]
-    [Route("POST")]
+    // [HttpPost]
+    // [Route("POST")]
 
-    public async Task<IActionResult> CreateTechnician(TechnicianDto technician)
-    {
-        await _technicianService.CreateAsync(technician);
+    // public async Task<IActionResult> CreateTechnician(TechnicianDto technician)
+    // {
+    //     await _technicianService.CreateAsync(technician);
 
-        return Ok("Technician added successfully");
-    }
+    //     return Ok("Technician added successfully");
+    // }
 
     [HttpGet]
     [Route("GET_ALL")]
@@ -65,15 +65,15 @@ public class TechnicianController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
-    [Route("DELETE")]
+    // [HttpDelete]
+    // [Route("DELETE")]
 
-    public async Task<IActionResult> DeleteTechnician(int technicianId)
-    {
-        await _technicianService.DeleteAsync(technicianId);
+    // public async Task<IActionResult> DeleteTechnician(int technicianId)
+    // {
+    //     await _technicianService.DeleteAsync(technicianId);
 
-        return Ok("Technician deleted successfully");
-    }
+    //     return Ok("Technician deleted successfully");
+    // }
 
 
 }

@@ -1,16 +1,15 @@
 @host = http://localhost:5217
 
-
 POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
-  "id":989,
-  "name": "Julio",
-  "userName": "2117878dasaasasadrez",
+  "id": 6,
+  "name": "pedro",
+  "userName": "pedro_hernaio121452",
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
-  "userRole": "ShippingSupervisor",
+  "userRole": "EquipmentReceptor",
   "specialty": "mechanic",
   "salary": 19090,
   "expYears": 10,

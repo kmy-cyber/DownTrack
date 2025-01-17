@@ -1,7 +1,3 @@
-
-
-
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
@@ -20,15 +16,15 @@ public class EquipmentReceptorController : ControllerBase
         _equipmentReceptorService = equipmentReceptorServices;
     }
 
-    [HttpPost]
-    [Route("POST")]
+    // [HttpPost]
+    // [Route("POST")]
 
-    public async Task<IActionResult> CreateEquipmentReceptor(EquipmentReceptorDto equipmentReceptor)
-    {
-        await _equipmentReceptorService.CreateAsync(equipmentReceptor);
+    // public async Task<IActionResult> CreateEquipmentReceptor(EquipmentReceptorDto equipmentReceptor)
+    // {
+    //     await _equipmentReceptorService.CreateAsync(equipmentReceptor);
 
-        return Ok("EquipmentReceptor added successfully");
-    }
+    //     return Ok("EquipmentReceptor added successfully");
+    // }
 
     [HttpGet]
     [Route("GET_ALL")]
@@ -66,15 +62,15 @@ public class EquipmentReceptorController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
-    [Route("DELETE")]
+    // [HttpDelete]
+    // [Route("DELETE")]
 
-    public async Task<IActionResult> DeleteEquipmentReceptor(int equipmentReceptorId)
-    {
-        await _equipmentReceptorService.DeleteAsync(equipmentReceptorId);
+    // public async Task<IActionResult> DeleteEquipmentReceptor(int equipmentReceptorId)
+    // {
+    //     await _equipmentReceptorService.DeleteAsync(equipmentReceptorId);
 
-        return Ok("EquipmentReceptor deleted successfully");
-    }
+    //     return Ok("EquipmentReceptor deleted successfully");
+    // }
 
 
 }
