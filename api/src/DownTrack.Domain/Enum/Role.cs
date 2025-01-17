@@ -17,14 +17,14 @@ public static class UserRoleHelper
     /// Validates whether the specified role belongs to any of the registered roles
     /// </summary>
     public static bool IsValidRole(string role) =>
-        Enum.TryParse(typeof(UserRole), role, out _);
+        System.Enum.TryParse(typeof(UserRole), role, out _);
 
     /// <summary>
     /// Retrieves all roles defined in the UserRole enum as a collection of strings.
     /// </summary>
     /// <returns>A read-only collection containing all role names.</returns>
     public static IReadOnlyCollection<string> AllRoles() =>
-        Enum.GetNames(typeof(UserRole));
+        System.Enum.GetNames(typeof(UserRole));
 
     /// <summary>
     /// Converts a string representation of a role to its corresponding UserRole enum value.
@@ -32,7 +32,7 @@ public static class UserRoleHelper
     /// <param name="role">The role name as a string.</param>
     /// <returns>The UserRole enum value if the conversion is successful; otherwise, null.</returns>
     public static UserRole? FromString(string role) =>
-        Enum.TryParse(typeof(UserRole), role, out var result) ? (UserRole?)result : null;
+        System.Enum.TryParse(typeof(UserRole), role, out var result) ? (UserRole?)result : null;
 
     /// <summary>
     /// Converts a UserRole enum value to its string representation.

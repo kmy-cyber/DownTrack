@@ -30,6 +30,8 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
 
+    public DbSet<EquipmentDecommissioning> EquipmentDecommissionings { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,15 +65,19 @@ public class DownTrackContext : IdentityDbContext<User>
                     .HasBaseType<Employee>();
 
         modelBuilder.Entity<EquipmentReceptor>()
-            .HasOne(er=> er.Departament)
-            .WithMany(d=> d.EquipmentReceptors)
-            .HasForeignKey(er=> new {er.DepartamentId,er.SectionId})
+            .HasOne(er => er.Departament)
+            .WithMany(d => d.EquipmentReceptors)
+            .HasForeignKey(er => new { er.DepartamentId, er.SectionId })
             .OnDelete(DeleteBehavior.Restrict);
 
 
         // Equipment Region
         modelBuilder.Entity<Equipment>()
                     .HasKey(e => e.Id);
+
+        modelBuilder.Entity<Equipment>()
+            .Property(e => e.EquipmentStatus)
+            .HasConversion<string>();
 
 
         // Maintenance Region
@@ -102,6 +108,33 @@ public class DownTrackContext : IdentityDbContext<User>
             .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
             .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Equipment decommissioning region
+        // EquipmentDecommissioning - Technician relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Technician) // EquipmentDecommissioning has one Technician
+            .WithMany(t => t.EquipmentDecommissionings) // Technician has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.TechnicianId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If Technician is deleted, set TechnicianId to null
+
+        // EquipmentDecommissioning - Equipment relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Equipment) // 
+            .WithMany(e => e.EquipmentDecommissionings) //
+            .HasForeignKey(ed => ed.EquipmentId) // 
+            .OnDelete(DeleteBehavior.Cascade); // 
+
+        // EquipmentDecommissioning - Receptor relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Receptor) // EquipmentDecommissioning has one Receptor
+            .WithMany(r => r.EquipmentDecommissionings) // Receptor has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.ReceptorId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.Cascade); // If Receptor is deleted, set ReceptorId to null
+
+        // Map enum Status to int in the database
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .Property(ed => ed.Status)
+            .HasConversion<string>();
     }
 }
 

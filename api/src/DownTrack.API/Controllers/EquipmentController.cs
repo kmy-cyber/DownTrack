@@ -9,7 +9,7 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+// [Authorize]
 public class EquipmentController : ControllerBase
 {
     private readonly IEquipmentServices _equipmentService;
@@ -23,21 +23,21 @@ public class EquipmentController : ControllerBase
     [Route("POST")]
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
-        // Obtener el claim "role"
-        var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
+        // // Obtener el claim "role"
+        // var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
 
-        if(roleClaim == null)
-        {
-            Console.WriteLine("es null");
-            throw new Exception();
-        }    
+        // if(roleClaim == null)
+        // {
+        //     Console.WriteLine("es null");
+        //     throw new Exception();
+        // }    
         
-        Console.WriteLine(roleClaim.Value);
+        // Console.WriteLine(roleClaim.Value);
         
-        if (roleClaim == null || roleClaim.Value != "Technician")
-        {
-            return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
-        }
+        // if (roleClaim == null || roleClaim.Value != "Technician")
+        // {
+        //     return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
+        // }
         await _equipmentService.CreateAsync(equipment);
 
         return Ok("Equipment added successfully");
