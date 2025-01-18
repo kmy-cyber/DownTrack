@@ -19,7 +19,7 @@ public interface IUnitOfWork : IDisposable
 
     ITransferRequestRepository TransferRequestRepository { get; }
 
-    ITransferRequestRepository TransferRepository { get; }
+    ITransferRepository TransferRepository { get; }
 
     /// <summary>
     /// Gets a generic repository for managing entities of the specified type.

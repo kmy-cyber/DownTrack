@@ -29,6 +29,7 @@ public static class DependencyInjection
         service.AddScoped<ISectionServices, SectionServices>();
         service.AddScoped<IDepartmentServices, DepartmentServices>();
         service.AddScoped<ITransferRequestServices, TransferRequestServices>();
+        service.AddScoped<ITransferServices, TransferServices>();
 
     }
 }

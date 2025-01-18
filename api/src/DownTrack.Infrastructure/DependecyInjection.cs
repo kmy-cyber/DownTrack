@@ -45,6 +45,7 @@ public static class DependencyInjection
         service.AddScoped<ISectionRepository, SectionRepository>();
         service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
         service.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
+        service.AddScoped<ITransferRepository, TransferRepository>();
 
         // // Registering DownTrackContextInitializer as a scoped service. 
         // // It will be instantiated once per HTTP request, allowing it to manage database initialization for each request.

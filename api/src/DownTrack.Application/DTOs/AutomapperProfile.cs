@@ -10,18 +10,18 @@ public class AutomapperProfile : Profile
     public AutomapperProfile()
     {
         CreateMap<TechnicianDto, Technician>();
-        CreateMap<Technician,TechnicianDto>();
+        CreateMap<Technician, TechnicianDto>();
 
 
-        CreateMap<EmployeeDto,Employee>();
-        CreateMap<Employee,EmployeeDto>();
+        CreateMap<EmployeeDto, Employee>();
+        CreateMap<Employee, EmployeeDto>();
 
-        CreateMap<LoginUserDto,User>();
-        CreateMap<RegisterUserDto,User>();
+        CreateMap<LoginUserDto, User>();
+        CreateMap<RegisterUserDto, User>();
 
-        CreateMap<RegisterUserDto,TechnicianDto>();
-        CreateMap<RegisterUserDto,EmployeeDto>();
-        
+        CreateMap<RegisterUserDto, TechnicianDto>();
+        CreateMap<RegisterUserDto, EmployeeDto>();
+
 
         CreateMap<EquipmentDto, Equipment>();
         CreateMap<Equipment, EquipmentDto>();
@@ -35,9 +35,15 @@ public class AutomapperProfile : Profile
 
         CreateMap<TransferRequestDto, TransferRequest>();
         CreateMap<TransferRequest, TransferRequestDto>();
-        
+
+        CreateMap<TransferDto, Transfer>()
+           .ForMember(dest => dest.RequestId, opt => opt.MapFrom(src => src.RequestId))
+           .ForMember(dest => dest.ShippingSupervisorId, opt => opt.MapFrom(src => src.ShippingSupervisorId))
+           .ForMember(dest => dest.EquipmentReceptorId, opt => opt.MapFrom(src => src.EquipmentReceptorId))
+           .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date));
+
         CreateMap<Transfer, TransferDto>();
         CreateMap<Transfer, TransferDto>();
-        
+
     }
 }

@@ -27,6 +27,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<TransferRequest> TransferRequests { get; set; }
 
+    public DbSet<Transfer> Transfers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,8 +89,30 @@ public class DownTrackContext : IdentityDbContext<User>
             .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })  // Correcto DepartmentId como FK
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Transfer>(entity =>
+            {
+                entity.HasKey(t => t.Id);
+                entity.HasOne(t => t.TransferRequest)
+                    .WithMany()
+                    .HasForeignKey(t => t.RequestId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
+
+                entity.HasOne(t => t.ShippingSupervisor)
+                    .WithMany()
+                    .HasForeignKey(t => t.ShippingSupervisorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasOne(t => t.EquipmentReceptor)
+                    .WithMany()
+                    .HasForeignKey(t => t.EquipmentReceptorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.Property(t => t.Date)
+                    .IsRequired();
+            });
     }
 }
 
-// --project DownTrack.Infrastructure --startup-project DownTrack.API
