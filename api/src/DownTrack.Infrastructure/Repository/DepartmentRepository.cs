@@ -26,4 +26,14 @@ public class DepartmentRepository : GenericRepository<Department>, IDepartmentRe
 
         _entity.Remove(result);
     }
+
+    public async Task<Department> GetByNameAsync (string name)
+    {
+        var department = await _entity.SingleOrDefaultAsync(d=> d.Name == name);
+
+        if(department is null)
+            throw new Exception();
+        
+        return department;
+    }
 }

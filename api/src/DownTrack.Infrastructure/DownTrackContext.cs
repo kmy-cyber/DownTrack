@@ -3,7 +3,7 @@
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+
 
 namespace DownTrack.Infrastructure;
 
@@ -22,7 +22,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Section> Sections { get; set; }
 
-    public DbSet<Maintenance> Maintenances { get; set; }
+    public DbSet<DoneMaintenance> DoneMaintenances { get; set; }
 
     public DbSet<Department> Departments { get; set; }
 
@@ -63,9 +63,9 @@ public class DownTrackContext : IdentityDbContext<User>
                     .HasBaseType<Employee>();
 
         modelBuilder.Entity<EquipmentReceptor>()
-            .HasOne(er=> er.Departament)
-            .WithMany(d=> d.EquipmentReceptors)
-            .HasForeignKey(er=> new {er.DepartamentId,er.SectionId})
+            .HasOne(er => er.Departament)
+            .WithMany(d => d.EquipmentReceptors)
+            .HasForeignKey(er => new { er.DepartamentId, er.SectionId })
             .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -73,20 +73,44 @@ public class DownTrackContext : IdentityDbContext<User>
         modelBuilder.Entity<Equipment>()
                     .HasKey(e => e.Id);
 
-
-        // Maintenance Region
-        modelBuilder.Entity<Maintenance>()
-                    .HasKey(m => m.Id);
-
-
+        //Section Region
         modelBuilder.Entity<Section>()
             .HasMany(s => s.Departments)
             .WithOne(d => d.Section)
             .HasForeignKey(d => d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Section>()
+            .HasIndex(s => s.Name)
+            .IsUnique();
+
+        //Department Region
         modelBuilder.Entity<Department>()
             .HasKey(d => new { d.Id, d.SectionId });
+
+        modelBuilder.Entity<Department>()
+               .HasIndex(d => d.Name) 
+               .IsUnique();           
+
+        // Configuration of DoneMaintenance relationship
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasKey(mr => mr.Id); // Primary key of the relationship
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasOne(dm => dm.Technician) // Primary key of the relationship
+            .WithMany(t => t.DoneMaintenances) // One-to-many relationship
+            .HasForeignKey(dm => dm.TechnicianId) // Foreign key to TechnicianId
+            .OnDelete(DeleteBehavior.SetNull); // If a technician is deleted, set the value of the field to null
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .HasOne(dm => dm.Equipment)
+            .WithMany(e => e.DoneMaintenances)
+            .HasForeignKey(dm => dm.EquipmentId)
+            .OnDelete(DeleteBehavior.SetNull); // If an equipment is deleted, set the value of the field to null
+
+        modelBuilder.Entity<DoneMaintenance>()
+            .Property(dm => dm.Date).HasColumnType("date");
 
         // Evaluation region
         // Technician to Evaluation relationship
@@ -94,14 +118,15 @@ public class DownTrackContext : IdentityDbContext<User>
             .HasOne(e => e.Technician) // Each evaluation has one technician
             .WithMany(t => t.ReceivedEvaluations) // Each technician has many evaluations
             .HasForeignKey(e => e.TechnicianId) // Foreign key in Evaluation
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // SectionManager to Evaluation relationship
         modelBuilder.Entity<Evaluation>()
             .HasOne(e => e.SectionManager) // Each evaluation has one section manager
             .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
             .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
+
     }
 }
 

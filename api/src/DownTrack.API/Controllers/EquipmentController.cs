@@ -9,7 +9,6 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class EquipmentController : ControllerBase
 {
     private readonly IEquipmentServices _equipmentService;
@@ -24,20 +23,20 @@ public class EquipmentController : ControllerBase
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
         // Obtener el claim "role"
-        var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
+        // var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
 
-        if(roleClaim == null)
-        {
-            Console.WriteLine("es null");
-            throw new Exception();
-        }    
+        // if(roleClaim == null)
+        // {
+        //     Console.WriteLine("es null");
+        //     throw new Exception();
+        // }    
         
-        Console.WriteLine(roleClaim.Value);
+        // Console.WriteLine(roleClaim.Value);
         
-        if (roleClaim == null || roleClaim.Value != "Technician")
-        {
-            return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
-        }
+        // if (roleClaim == null || roleClaim.Value != "Technician")
+        // {
+        //     return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
+        // }
         await _equipmentService.CreateAsync(equipment);
 
         return Ok("Equipment added successfully");
@@ -62,7 +61,7 @@ public class EquipmentController : ControllerBase
         var result = await _equipmentService.GetByIdAsync(equipmentId);
 
         if (result == null)
-            return NotFound($"Equipement with ID {equipmentId} not found");
+            return NotFound($"Equipment with ID {equipmentId} not found");
 
         return Ok(result);
 

@@ -3,6 +3,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Roles;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
@@ -23,8 +24,18 @@ public class SectionServices : ISectionServices
     {
         var section = _mapper.Map<Section>(dto);
 
-        //await _sectionRepository.CreateAsync(section);
-        
+        Employee sectionManager = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(section.SectionManagerId);
+
+        if (sectionManager == null)
+        {
+            throw new Exception($"Employee with ID {section.SectionManagerId} not found.");
+        }
+
+        if (sectionManager.UserRole != UserRole.SectionManager.ToString())
+        {
+            throw new Exception($"Employee with ID {section.SectionManagerId} is not a SectionManager.");
+        }
+
         await _unitOfWork.GetRepository<Section>().CreateAsync(section);
 
         await _unitOfWork.CompleteAsync();
@@ -69,7 +80,7 @@ public class SectionServices : ISectionServices
     public async Task<SectionDto> GetByIdAsync(int sectionDto)
     {
         var result = await _unitOfWork.GetRepository<Section>().GetByIdAsync(sectionDto);
-        
+
         //var result = await _sectionRepository.GetByIdAsync(sectionDto);
 
         /// and returns the updated section as a SectionDto.
