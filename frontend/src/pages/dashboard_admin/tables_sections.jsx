@@ -7,40 +7,67 @@ import {
     Chip,
     Tooltip,
     Progress,
-    } from "@material-tailwind/react";
-    import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
-    import { UserIcon } from "@heroicons/react/24/outline";
-    import { sectionData } from "@/data/sections-data";
-    import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-    import { useState } from "react";
-    import EditSectionForm from "./edit_section";
+} from "@material-tailwind/react";
+import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
+import { UserIcon } from "@heroicons/react/24/outline";
+import { sectionData } from "@/data/sections-data";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";
+import EditSectionForm from "./edit_section";
+import MessageAlert from "@/components/Alert_mssg/alert_mssg";
     
     export function TablesSection() {
-        const [sectionList, setSectionList] = useState(sectionData);
+        const [isLoading, setIsLoading] = useState(true);
+        const[alertMessage, setAlertMessage] = useState('');
+        const [alertType, setAlertType] = useState('success');
+
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
+        const [sectionList, setSectionList] = useState([]);
         const [sectData, setSectData] = useState({
-            name: "",
             id: "",
-            description: "",
-            status: "",
-            priority: ""
+            name: "",
         });
     
         // TODO: Connect with backend and replace static values
+
+        useEffect(() => {
+            fetchSections();
+        }, []);
         
-        const handleSave = (updatedSection) => {
-            sectionList[keyEdit] = updatedSection;
+        const fetchSections = async () => {
+            try {
+                const response = await fetch('http://localhost:5217/api/Section/GET_ALL', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setSectionList(data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching sections:", error);
+                setSectionList([]);
+                setIsLoading(false);
+            }
+        };
+        
+        const handleSave = (updateSection) => {
+            const index = sectionList.findIndex(s => s.id === updateSection.id)
+            sectionList[index] = updateSection;
+
             setSectionList(sectionList);
-    
-            // Reset the values
+
             setSectData({
-                name: "",
                 id: "",
-                description: "",
-                status: "",
-                priority: ""
+                name: "",
             });
+
             setOnEdit(false);
             setKeyEdit(0);
         };
@@ -63,12 +90,37 @@ import {
             setKeyEdit(0);
         }
         
-        const deleteSection = (id) => {
-            setSectionList(sectionList.filter(sec => sec.id !== id));
+        const deleteSection = async (id) => {
+            try {
+                const response = await fetch(`http://localhost:5217/api/Section/DELETE?sectionId=${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                setAlertMessage('Failed to delete section');
+                setAlertType('error');
+                throw new Error('Failed to delete section');
+            }
+            else
+            {
+                setAlertMessage('Delete completed successfully');
+                setAlertType('success');
+                setSectionList(sectionList.filter(s => s.id !== id));
+            }
+            } catch (error) {
+                setAlertMessage('Error deleting section:');
+                setAlertType('error');
+                console.error("Error deleting section:", error);
+            }
         };
     
         return (
             <>
+                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
+
                 { onEdit &&
                     <EditSectionForm 
                         sectionData={sectData} 
