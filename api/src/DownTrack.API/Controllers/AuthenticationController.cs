@@ -21,7 +21,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
 

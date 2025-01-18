@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button } from "@material-tailwind/react";
 
-const MessageAlert = ({ message, type = "success", onClose }) => {
+const MessageAlert = ({ message, type , onClose }) => {
 const [isVisible, setIsVisible] = useState(false);
 
 useEffect(() => {

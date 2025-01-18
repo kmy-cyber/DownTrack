@@ -7,25 +7,55 @@ import {
     Chip,
     Tooltip,
     Progress,
-    } from "@material-tailwind/react";
-    import {EditDepartmentForm} from "@/pages/dashboard_admin/edit_department";
-    import { UserIcon } from "@heroicons/react/24/outline";
-    import { departmentData } from "@/data/department-data";
-    import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-    import { useState } from "react";
-    
+} from "@material-tailwind/react";
+import {EditDepartmentForm} from "@/pages/dashboard_admin/edit_department";
+import { UserIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";   
+import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+
     export function TablesDepartment() {
-        const [departmentList, setDepartmentList] = useState(departmentData);
+        const [isLoading, setIsLoading] = useState(true);
+        const[alertMessage, setAlertMessage] = useState('');
+        const [alertType, setAlertType] = useState('success');
+
+        const [departmentList, setDepartmentList] = useState([]);
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
         const [dptData, setDptData] = useState({
             name: "",
             id: "",
-            section: "",
+            sectionId: "",
             description: ""
         });
     
         // TODO: Connect with backend and replace static values
+
+        useEffect(() => {
+            fetchDepartments();
+        }, []);
+    
+        const fetchDepartments = async () => {
+            try {
+                const response = await fetch('http://localhost:5217/api/Department/GET_ALL', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setDepartmentList(data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+                setDepartmentList([]);
+                setIsLoading(false);
+            }
+        };
         
         const handleSave = (updatedDepartment) => {
             departmentList[keyEdit] = updatedDepartment;
@@ -35,7 +65,7 @@ import {
             setDptData({
                 name: "",
                 id: "",
-                section: "",
+                sectionId: "",
                 description: ""
             });
             setOnEdit(false);
@@ -53,19 +83,44 @@ import {
             setDptData({
                 name: "",
                 id: "",
-                section: "",
+                sectionId: "",
                 description: ""
             });
             setOnEdit(false);
             setKeyEdit(0);
         }
         
-        const deleteDepartment = (id) => {
-            setDepartmentList(departmentList.filter(dept => dept.id !== id));
+        const deleteDepartment = async (id, sectionId) => {
+            try {
+                const response = await fetch(`http://localhost:5217/api/Department/DELETE?departmentId=${id}&SectionId=${sectionId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                setAlertMessage('Failed to delete department');
+                setAlertType('error');
+                throw new Error('Failed to delete department');
+            }
+            else
+            {
+                setAlertMessage('Delete completed successfully');
+                setAlertType('success');
+                setDepartmentList(departmentList.filter(d => d.id !== id));
+            }
+            } catch (error) {
+                setAlertMessage('Error deleting department:');
+                setAlertType('error');
+                console.error("Error deleting department:", error);
+            }
         };
     
         return (
             <>
+                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
+
                 { onEdit &&
                     <EditDepartmentForm 
                         departmentData={dptData} 
@@ -123,15 +178,13 @@ import {
                                     </td>
                                     <td className={className}>
                                         <div className="flex items-center gap-4">
-                                        {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                                        <UserIcon className="w-5"/>
                                         <div>
                                             <Typography
                                             variant="small"
                                             color="blue-gray"
                                             className="font-semibold"
                                             >
-                                            {dept.section}
+                                            {dept.sectionId}
                                             </Typography>
                                         </div>
                                         </div>
@@ -155,7 +208,7 @@ import {
                                         
                                             <div 
                                                 className="flex items-center gap-1"
-                                                onClick={() => deleteDepartment(dept.id)}
+                                                onClick={() => deleteDepartment(dept.id, dept.sectionId)}
                                             >
                                                 <Typography
                                                     as="a"

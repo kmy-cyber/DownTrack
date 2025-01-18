@@ -2,15 +2,12 @@ import React from 'react';
 import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
 import { Pagination } from '@mui/material';
 import { equipmentData } from '@/data/equipment-data';
-import { PencilIcon, TrashIcon, InformationCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 
 const itemsPerPage = 7;
 
 export function EquipmentInventory() {
     const [currentPage, setCurrentPage] = useState(1);
-    const [indexOfLastItem, setIndexOfLastItem] = useState(itemsPerPage);
-    const [indexOfFirstItem, setIndexOfFirstItem] = useState(0);
     const [totalPages, setTotalPages] = useState(Math.ceil(equipmentData.length / itemsPerPage));
     const [currentItems, setCurrentItems] = useState([]);
 
@@ -30,10 +27,6 @@ export function EquipmentInventory() {
 
         const lastIndex = newPage * itemsPerPage;
         const firstIndex = lastIndex - itemsPerPage;
-
-        // Ahora no hace falta guardarlo pero por si acaso
-        setIndexOfLastItem(lastIndex);
-        setIndexOfFirstItem(firstIndex);
 
         // Actualizar los elementos actuales
         setCurrentItems(equipmentData.slice(firstIndex, lastIndex));
