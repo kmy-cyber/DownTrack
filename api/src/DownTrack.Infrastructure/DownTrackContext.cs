@@ -16,7 +16,6 @@ public class DownTrackContext : IdentityDbContext<User>
 
     public DbSet<Employee> Employees { get; set; }
 
-
     public DbSet<Equipment> Equipments { get; set; }
 
     public DbSet<Section> Sections { get; set; }
@@ -57,7 +56,39 @@ public class DownTrackContext : IdentityDbContext<User>
         //     .HasForeignKey<User>(u=> u.IdEmployee)
         //     .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Equipment>().HasIndex(x => x.Id).IsUnique();
+        modelBuilder.Entity<Equipment>(entity =>
+            {
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(e => e.Location)
+                    .WithMany(d => d.Equipments)
+                    .HasForeignKey(e => e.LocationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.TransferRequests)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.Transfers)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.DateOfadquisition)
+                    .IsRequired();
+            });
 
         modelBuilder.Entity<Maintenance>().HasIndex(x => x.Id).IsUnique();
 
@@ -68,25 +99,43 @@ public class DownTrackContext : IdentityDbContext<User>
             .HasForeignKey(d => d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Department>()
-            .HasKey(d => new { d.Id, d.SectionId });
+        modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasKey(d => new { d.Id, d.SectionId });
+
+                entity.Property(d => d.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.Section)
+                    .WithMany()
+                    .HasForeignKey(d => d.SectionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.TransferRequests)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Equipments)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+        modelBuilder.Entity<TransferRequest>()
+            .HasOne(tr => tr.Employee)
+            .WithMany(e => e.TransferRequests)
+            .HasForeignKey(tr => tr.EmployeeId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TransferRequest>()
-     .HasOne(tr => tr.Employee)
-     .WithMany(e => e.TransferRequests)
-     .HasForeignKey(tr => tr.EmployeeId)  // Correcto EmployeeId como FK
-     .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TransferRequest>()
-        .HasOne(tr => tr.Equipment)
-        .WithMany(e => e.TransferRequests)
-        .HasForeignKey(tr => tr.EquipmentId)  // Correcto EquipmentId como FK
-        .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(tr => tr.Equipment)
+            .WithMany(e => e.TransferRequests)
+            .HasForeignKey(tr => tr.EquipmentId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TransferRequest>()
             .HasOne(tr => tr.Department)
             .WithMany(d => d.TransferRequests)
-            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })  // Correcto DepartmentId como FK
+            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Transfer>(entity =>
