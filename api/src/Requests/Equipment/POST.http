@@ -1,14 +1,36 @@
 @host = http://localhost:5217
 
-
+### ID ( [0-99] )
 POST {{host}}/api/Equipment/POST/
 Content-Type:  application/json
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MTEwIiwiZ2l2ZW5fbmFtZSI6ImpQZXJleiIsImp0aSI6Ijc0ZDRhY2Y1LTUyOTYtNGM3MS05MjU4LTc1MzhlZGIyNjg2MCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlRlY2huaWNpYW4iLCJleHAiOjE3MzYzODE5NjYsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.O0OGhJ7PxTIAl6sDoTNMkvRznIJ3OJF2bgICZNDqvqY
 
 {
-  "id": 1299,
+  "id": 2,
   "name": "str232ing",
   "type": "stri23ng",
   "status": "str2323ing",
   "dateOfadquisition": "2025-01-07T06:39:12.837Z"
 }
+
+### Get request
+
+GET {{host}}/api/Equipment/GET_ALL
+
+### Delete request
+
+DELETE  {{host}}/api/Equipment/ 102
+
+### PUT request
+
+PUT {{host}}/api/Equipment/PUT 
+Content-Type:  application/json
+
+{
+  "id": 2,
+  "name": "str232ing",
+  "type": "stri23ng",
+  "status": "str2323ing",
+  "dateOfadquisition": "2025-01-07T06:39:12.837Z"
+}
+
+

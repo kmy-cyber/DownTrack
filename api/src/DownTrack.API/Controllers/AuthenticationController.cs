@@ -1,6 +1,5 @@
 
 
-
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -42,4 +41,12 @@ public class AuthenticationController : ControllerBase
 
     }
 
+    [HttpPut]
+    [Route("PUT")]
+    public async Task<IActionResult> UpdateUser(UpdateUserDto updateDto )
+    {
+        await _identityService.UpdateUserAsync(updateDto);
+
+        return Ok();
+    }
 }

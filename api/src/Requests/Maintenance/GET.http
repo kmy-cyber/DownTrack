@@ -1,5 +1,8 @@
 @host = http://localhost:5217
 
 
-GET {{host}}/api/Maintenance/GET_ALL
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjEyIiwiZ2l2ZW5fbmFtZSI6Imp1bGlvMTEyOTAwOSIsImp0aSI6ImRhMDQzNWE0LWNjZDMtNGM2Mi1iZWMwLTFkOTk1ZGY2MGQxZCIsImV4cCI6MTczNjIzMDIzNywiaXNzIjoiRG93blRyYWNrIiwiYXVkIjoiRG93blRyYWNrIn0.dJWS_cpbogvi1hDSoH1FsdOanaK946a1oJqtPqsLWcA
+GET {{host}}/api/DoneMaintenance/GET_ALL
+
+### Delete request
+
+DELETE {{host}}/api/DoneMaintenance/2

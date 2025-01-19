@@ -60,8 +60,20 @@ public class IdentityService : IIdentityService
                 throw new Exception("Invalid Role");
 
             var user = _mapper.Map<User>(userDto);
+            
+            if (userDto.UserRole == UserRole.ShippingSupervisor.ToString())
+            {
+                var supervisor = _mapper.Map<Employee>(userDto);
 
-            if (userDto.UserRole == UserRole.Technician.ToString())
+                await _unitOfWork.GetRepository<Employee>().CreateAsync(supervisor);
+
+                await _unitOfWork.CompleteAsync();
+
+                return "Not token for this user";
+
+            }
+
+            else if (userDto.UserRole == UserRole.Technician.ToString())
             {
 
                 var technician = _mapper.Map<Technician>(userDto);
@@ -106,4 +118,44 @@ public class IdentityService : IIdentityService
             throw;
         }
     }
+
+
+    public async Task UpdateUserAsync (UpdateUserDto updateDto)
+    {
+        try
+        {
+            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Password, updateDto.Email);
+
+            if(updateDto.UserRole == UserRole.Technician.ToString())
+            {
+                var technician = _mapper.Map<Technician>(updateDto);
+
+                _unitOfWork.GetRepository<Technician>().Update(technician);
+
+            }
+            
+            else if (updateDto.UserRole == UserRole.EquipmentReceptor.ToString())
+            {
+                var receptor = _mapper.Map<EquipmentReceptor>(updateDto);
+
+                _unitOfWork.GetRepository<EquipmentReceptor>().Update(receptor);
+            }
+            
+            else 
+            {
+                var employee = _mapper.Map<Employee>(updateDto);
+
+                _unitOfWork.GetRepository<Employee>().Update(employee);
+            }
+
+            await _unitOfWork.CompleteAsync();
+            
+        }
+        catch(Exception ex)
+        {
+           throw new Exception(ex.Message);
+        }
+    }
+
+    
 }

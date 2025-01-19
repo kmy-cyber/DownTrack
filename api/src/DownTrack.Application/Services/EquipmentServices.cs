@@ -39,27 +39,26 @@ public class EquipmentServices : IEquipmentServices
         await _unitOfWork.GetRepository<Equipment>().DeleteByIdAsync(dto);
 
         await _unitOfWork.CompleteAsync();
-        //await _equipmentRepository.DeleteByIdAsync(dto);
+       
     }
 
     public async Task<IEnumerable<EquipmentDto>> ListAsync()
     {
         var equipment = await _unitOfWork.GetRepository<Equipment>().GetAllAsync().ToListAsync();
-        //var equipment = await _equipmentRepository.ListAsync();
+        
         return equipment.Select(_mapper.Map<EquipmentDto>);
     }
 
     public async Task<EquipmentDto> UpdateAsync(EquipmentDto dto)
     {
         var equipment = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(dto.Id);
-
-        //var equipment = _equipmentRepository.GetById(dto.Id);
+        
         _mapper.Map(dto, equipment);
 
         _unitOfWork.GetRepository<Equipment>().Update(equipment);
 
         await _unitOfWork.CompleteAsync();
-        //await _equipmentRepository.UpdateAsync(equipment);
+       
         return _mapper.Map<EquipmentDto>(equipment);
     }
 
@@ -72,8 +71,6 @@ public class EquipmentServices : IEquipmentServices
     {
         var result = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(equipmentDto);
         
-        //var result = await _equipmentRepository.GetByIdAsync(equipmentDto);
-
         /// and returns the updated equipment as an EquipmentDto.
         return _mapper.Map<EquipmentDto>(result);
 

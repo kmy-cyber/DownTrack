@@ -1,19 +1,12 @@
 @host = http://localhost:5217
 
-
 POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
-<<<<<<< HEAD
-  "id": 10,
-  "name": "Julio",
-  "userName": "jiPerez",
-=======
-  "id": 112,
-  "name": "Julio",
-  "userName": "julio909asas29",
->>>>>>> api_ev
+  "id": 6,
+  "name": "pedro",
+  "userName": "pedro_hernaio121452",
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
   "userRole": "EquipmentReceptor",
