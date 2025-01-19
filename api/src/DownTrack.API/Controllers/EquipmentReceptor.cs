@@ -1,4 +1,3 @@
-using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +15,6 @@ public class EquipmentReceptorController : ControllerBase
         _equipmentReceptorService = equipmentReceptorServices;
     }
 
-    // [HttpPost]
-    // [Route("POST")]
-
-    // public async Task<IActionResult> CreateEquipmentReceptor(EquipmentReceptorDto equipmentReceptor)
-    // {
-    //     await _equipmentReceptorService.CreateAsync(equipmentReceptor);
-
-    //     return Ok("EquipmentReceptor added successfully");
-    // }
 
     [HttpGet]
     [Route("GET_ALL")]
@@ -51,26 +41,6 @@ public class EquipmentReceptorController : ControllerBase
         return Ok(result);
 
     }
-
-    [HttpPut]
-    [Route("PUT")]
-
-    public async Task<IActionResult> UpdateEquipmentReceptor(EquipmentReceptorDto equipmentReceptor)
-    {
-        var result = await _equipmentReceptorService.UpdateAsync(equipmentReceptor);
-
-        return Ok(result);
-    }
-
-    // [HttpDelete]
-    // [Route("DELETE")]
-
-    // public async Task<IActionResult> DeleteEquipmentReceptor(int equipmentReceptorId)
-    // {
-    //     await _equipmentReceptorService.DeleteAsync(equipmentReceptorId);
-
-    //     return Ok("EquipmentReceptor deleted successfully");
-    // }
 
 
 }

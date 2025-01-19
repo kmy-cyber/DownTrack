@@ -120,5 +120,42 @@ public class IdentityService : IIdentityService
     }
 
 
+    public async Task UpdateUserAsync (UpdateUserDto updateDto)
+    {
+        try
+        {
+            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Password, updateDto.Email);
+
+            if(updateDto.UserRole == UserRole.Technician.ToString())
+            {
+                var technician = _mapper.Map<Technician>(updateDto);
+
+                _unitOfWork.GetRepository<Technician>().Update(technician);
+
+            }
+            
+            else if (updateDto.UserRole == UserRole.EquipmentReceptor.ToString())
+            {
+                var receptor = _mapper.Map<EquipmentReceptor>(updateDto);
+
+                _unitOfWork.GetRepository<EquipmentReceptor>().Update(receptor);
+            }
+            
+            else 
+            {
+                var employee = _mapper.Map<Employee>(updateDto);
+
+                _unitOfWork.GetRepository<Employee>().Update(employee);
+            }
+
+            await _unitOfWork.CompleteAsync();
+            
+        }
+        catch(Exception ex)
+        {
+           throw new Exception(ex.Message);
+        }
+    }
+
     
 }
