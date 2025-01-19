@@ -23,5 +23,5 @@ public interface IIdentityService
     Task<string> LoginUserAsync(LoginUserDto userDto);
 
     // cambiar
-    // Task UpdateUser (RegisterUserDto userDto);
+    Task UpdateUserAsync (UpdateUserDto updateDto);
 }

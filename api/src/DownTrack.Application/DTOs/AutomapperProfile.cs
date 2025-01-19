@@ -43,5 +43,9 @@ public class AutomapperProfile : Profile
         CreateMap<EquipmentReceptorDto,EquipmentReceptor>();
         CreateMap<EquipmentReceptor,EquipmentReceptorDto>();
 
+        CreateMap<UpdateUserDto,Technician>();
+        CreateMap<UpdateUserDto,Employee>();
+        CreateMap<UpdateUserDto,EquipmentReceptor>();
+
     }
 }
