@@ -15,6 +15,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import EditSectionForm from "./edit_section";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
     
     export function TablesSection() {
         const [isLoading, setIsLoading] = useState(true);
@@ -37,12 +38,8 @@ import MessageAlert from "@/components/Alert_mssg/alert_mssg";
         
         const fetchSections = async () => {
             try {
-                const response = await fetch('http://localhost:5217/api/Section/GET_ALL', {
+                const response = await api('/Section/GET_ALL', {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -92,12 +89,8 @@ import MessageAlert from "@/components/Alert_mssg/alert_mssg";
         
         const deleteSection = async (id) => {
             try {
-                const response = await fetch(`http://localhost:5217/api/Section/DELETE?sectionId=${id}`, {
+                const response = await api(`Section/DELETE?sectionId=${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
             });
             if (!response.ok) {
                 setAlertMessage('Failed to delete section');

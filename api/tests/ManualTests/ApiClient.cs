@@ -19,7 +19,7 @@ namespace Manual
             using var client = new HttpClient();
 
             // Define la base URL de la API
-            client.BaseAddress = new Uri("http://localhost:5217/api/Equipment/");
+            client.BaseAddress = new Uri("/Equipment/");
 
             for (int i = 1; i <= 10000 ; i++)
             {
@@ -42,7 +42,7 @@ namespace Manual
         {
             using var client = new HttpClient();
 
-            client.BaseAddress = new Uri("http://localhost:5217/api/Equipment/");
+            client.BaseAddress = new Uri("/Equipment/");
 
             for (int i = 1; i <= 10000; i++)
             {

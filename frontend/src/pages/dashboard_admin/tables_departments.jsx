@@ -13,6 +13,7 @@ import { UserIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";   
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
     export function TablesDepartment() {
         const [isLoading, setIsLoading] = useState(true);
@@ -37,12 +38,8 @@ import MessageAlert from "@/components/Alert_mssg/alert_mssg";
     
         const fetchDepartments = async () => {
             try {
-                const response = await fetch('http://localhost:5217/api/Department/GET_ALL', {
+                const response = await api('/Department/GET_ALL', {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -92,12 +89,8 @@ import MessageAlert from "@/components/Alert_mssg/alert_mssg";
         
         const deleteDepartment = async (id, sectionId) => {
             try {
-                const response = await fetch(`http://localhost:5217/api/Department/DELETE?departmentId=${id}&SectionId=${sectionId}`, {
+                const response = await api(`/Department/DELETE?departmentId=${id}&SectionId=${sectionId}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
             });
             if (!response.ok) {
                 setAlertMessage('Failed to delete department');

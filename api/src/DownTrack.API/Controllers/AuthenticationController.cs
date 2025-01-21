@@ -25,6 +25,7 @@ public class AuthenticationController : ControllerBase
     {
 
         var result = await _identityService.RegisterUserAsync(registerDto);
+        Console.WriteLine(result);
         return Ok(result);
 
     }
@@ -36,7 +37,7 @@ public class AuthenticationController : ControllerBase
     {
 
         var token = await _identityService.LoginUserAsync(loginDto);
-
+        Console.WriteLine(token);
         return Ok(token);
 
     }

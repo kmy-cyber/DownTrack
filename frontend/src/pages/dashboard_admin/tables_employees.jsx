@@ -14,6 +14,7 @@ import { UserIcon, KeyIcon} from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
 
 export function Tables() {
@@ -32,7 +33,6 @@ export function Tables() {
         experience: "",
         specialty: "",
         salary: "",
-        password: "",
     });
     
     useEffect(() => {
@@ -41,12 +41,8 @@ export function Tables() {
     
     const fetchEmployees = async () => {
         try {
-            const response = await fetch('http://localhost:5217/api/Employee/GET_ALL/', {
+            const response = await api('/Employee/GET_ALL/', {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -76,7 +72,6 @@ export function Tables() {
             experience: "",
             specialty: "",
             salary: "",
-            password: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -99,7 +94,6 @@ export function Tables() {
             experience: "",
             specialty: "",
             salary: "",
-            password: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -107,12 +101,8 @@ export function Tables() {
     
     const deleteUser = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5217/api/Employee/DELETE?employeeId=${id}`, {
+            const response = await api(`/Employee/DELETE?employeeId=${id}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
         });
         if (!response.ok) {
             setAlertMessage('Failed to delete employee');
@@ -155,7 +145,7 @@ export function Tables() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "employee","password","username","role", "gmail"].map((el) => (
+                            {[ "employee","username","role", "gmail"].map((el) => (
                             <th
                                 key={el}
                                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -192,20 +182,6 @@ export function Tables() {
                                         className="font-semibold"
                                         >
                                         {user.name}
-                                        </Typography>
-                                    </div>
-                                    </div>
-                                </td>
-                                <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                    <KeyIcon className="w-4"/>
-                                    <div>
-                                        <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-semibold"
-                                        >
-                                        {user.password}
                                         </Typography>
                                     </div>
                                     </div>

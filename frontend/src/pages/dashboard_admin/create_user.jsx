@@ -7,6 +7,7 @@ import {
 
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
 export const UserCreationForm = () => {
     const [alertMessage, setAlertMessage] = useState('');
@@ -35,13 +36,9 @@ export const UserCreationForm = () => {
             setIsLoading(true);
             setAlertMessage(null);
             try {
-                const response = await fetch("http://localhost:5217/api/Authentication/register/", {
+                const response = await api("/Authentication/register/", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
                     body: JSON.stringify({
-                        id: 11,
                         name: formData.name,
                         userName: formData.username,
                         email: formData.email,
@@ -190,7 +187,7 @@ export const UserCreationForm = () => {
                     </div>
 
 
-                    {formData.role === "SectionManager" || formData.role === "EquipmentReceptor" ? (
+                    {formData.role === "EquipmentReceptor" ? (
                         <div>
                             <label htmlFor="section" className="block text-sm font-medium text-gray-700">
                             Section

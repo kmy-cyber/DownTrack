@@ -7,7 +7,8 @@ import {
 } from "@material-tailwind/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import "@/assets/css/mystyles.css";
-import {jwtDecode} from 'jwt-decode';
+import api from "@/middlewares/api";
+import { useAuth } from "@/context/AuthContext";
 
 
 const getDashboardPath = (role) => {
@@ -34,77 +35,44 @@ export function SignIn() {
   const [error, setError] = useState(null);
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [token, setToken] = useState('');
-
-  const [userGlobalData, setUserGlobalData] = useState({
-    id: "",
-    name: "",
-    //email: "",
-    role: ""
-  })
+  const { login, getUserData } = useAuth();
 
   const handleSubmit = async (e) => {
     console.log("Login ");
     e.preventDefault(); // Previene la recarga de la página
     setIsLoading(true);
     setError(null);
+
     try {
-      const response = await fetch("http://localhost:5217/api/Authentication/login/", {
+      const response = await api("/Authentication/login/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ username, password }),
       });
-
-      console.log(response.status);
       
-      // if (!response.ok) {
-        //   throw new Error("Login failed");
-        // }
-        
-        const token = await response.text(); // Obtenemos el token como texto
-        console.log(response.ok);
-
-        setToken(token);
-        localStorage.setItem('token', token); // Guardar token en localStorage
-
+      const token = await response.text(); // Obtenemos el token como texto
       
       if (response.ok && token) {
-        console.log("Token obtenido:", token);
+        login(token);
+        console.log(token);
+        const userData = getUserData(token);
         
-        // Decodificamos el token JWT
-        const decodedToken = jwtDecode(token);
-        const roleClaimValue = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-        console.log("ROL:", roleClaimValue);
-        // Extraemos las propiedades relevantes del token decodificado
-      const userData = {
-        id: decodedToken.sub,
-        name: decodedToken.given_name,
-        //email: decodedToken.email,
-        role: roleClaimValue
-      }
-      console.log("Datos del usuario:", userData);
-      console.log("Datos del token:", decodedToken);
-      // Guardamos los datos del usuario globalmente
-      setUserGlobalData(userData)
-
-      // Redirige al dashboard si el login es correcto
-      const dashboardPath = getDashboardPath(userData.role);
-        console.log("Dashboard path:", dashboardPath);
+        // Redirige al dashboard si el login es correcto
+        const dashboardPath = getDashboardPath(userData.role);
         setShouldRedirect(dashboardPath);
       } else {
-        console.error("Login failed");
         setError("Failed to login");
       }
       
       
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.log('~ login ~ error:', error);
+
       setError('An error occurred during the login process');
     } finally {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     if (shouldRedirect && !isLoading) {
       window.location.href = shouldRedirect;

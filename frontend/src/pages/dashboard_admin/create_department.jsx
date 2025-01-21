@@ -7,6 +7,7 @@ import {
 
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
 export const DepartmentCreationForm = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -28,12 +29,8 @@ export const DepartmentCreationForm = () => {
     
     const fetchSections = async () => {
         try {
-            const response = await fetch('http://localhost:5217/api/Section/GET_ALL', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
+            const response = await api('/Section/GET_ALL', {
+                method: 'GET'
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -62,7 +59,7 @@ export const DepartmentCreationForm = () => {
         setIsLoading(true);
         setAlertMessage(null);
         try {
-            const response = await fetch("http://localhost:5217/api/Department/POST", {
+            const response = await api("/Department/POST", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
