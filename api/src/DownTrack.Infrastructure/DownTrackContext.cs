@@ -65,7 +65,7 @@ public class DownTrackContext : IdentityDbContext<User>
         modelBuilder.Entity<EquipmentReceptor>()
             .HasOne(er => er.Departament)
             .WithMany(d => d.EquipmentReceptors)
-            .HasForeignKey(er => new { er.DepartamentId, er.SectionId })
+            .HasForeignKey(er => new { er.DepartamentId })
             .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -86,11 +86,12 @@ public class DownTrackContext : IdentityDbContext<User>
 
         //Department Region
         modelBuilder.Entity<Department>()
-            .HasKey(d => new { d.Id, d.SectionId });
+            .HasKey(d => d.Id); // 
 
         modelBuilder.Entity<Department>()
-               .HasIndex(d => d.Name) 
-               .IsUnique();           
+            .Property(d => d.Id)
+            .ValueGeneratedOnAdd(); //
+
 
         // Configuration of DoneMaintenance relationship
 
