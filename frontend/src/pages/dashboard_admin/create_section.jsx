@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardHeader,
@@ -14,6 +14,7 @@ export const SectionCreationForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [alertType, setAlertType] = useState('success');
 
+    const [userManagerList, setUserManagerList] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         usernameSectionM: "",
@@ -24,6 +25,36 @@ export const SectionCreationForm = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    useEffect(() => {
+            setIsLoading(true);
+            fetchSectionManager();
+            setIsLoading(false);
+        }, []);
+        
+
+    const fetchSectionManager = async () => {
+        try {
+            const response = await api('/Employee/GET_ALL', {
+                method: 'GET'
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const filteredData = data.filter(employee => employee.userRole === 'SectionManager');
+            setUserManagerList(filteredData);
+            if(filteredData.length === 0){
+                navigate('/dashboard/admin/add_employee');
+            }
+            setFormData((prev) => ({ ...prev, ['usernameSectionM']: filteredData[0].id }));
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching sections:", error);
+            setUserManagerList([]);
+            setIsLoading(false);
+        }
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Section created:", formData);
@@ -35,7 +66,7 @@ export const SectionCreationForm = () => {
                 method: "POST",
                 body: JSON.stringify({
                     name: formData.name,
-                    sectionManagerId: parseInt(formData.usernameSectionM),
+                    sectionManagerId: formData.usernameSectionM,
                 }),
             });
 
@@ -99,8 +130,7 @@ export const SectionCreationForm = () => {
                         <label htmlFor="usernaname" className="block text-sm font-medium text-gray-700">
                             Section Manager Username
                         </label>
-                        <input
-                            type="text"
+                        <select
                             id="usernameSectionM"
                             name="usernameSectionM"
                             value={formData.usernameSectionM}
@@ -108,7 +138,11 @@ export const SectionCreationForm = () => {
                             placeholder="Enter Section Manager Username"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             required
-                        />
+                        >
+                                {userManagerList.map(sm => (
+                                <option key={sm.id} value={sm.id}>{sm.name}</option>
+                        ))}
+                        </select>
                         </div>
                     </div>
                     <button

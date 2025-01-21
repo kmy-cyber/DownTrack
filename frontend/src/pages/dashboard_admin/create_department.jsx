@@ -37,7 +37,7 @@ export const DepartmentCreationForm = () => {
             const data = await response.json();
             setSectionList(data);
             if(data.length === 0){
-                navigate('/dashboard/admin/create-section');
+                navigate('/dashboard/admin/add_section');
             }
             setFormData((prev) => ({ ...prev, ['section']: data[0].id }));
             setIsLoading(false);
