@@ -1,5 +1,6 @@
 
 
+using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,9 @@ public class EmployeeController : ControllerBase
     [HttpGet]
     [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployee()
+    public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee()
     {
-        var results = await _employeeService.ListAsync();
+        var results = await _employeeService.AllAsync();
 
         return Ok(results);
 

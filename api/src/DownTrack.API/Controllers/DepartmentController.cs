@@ -25,6 +25,7 @@ public class DepartmentController : ControllerBase
         return Ok("Department added successfully");
     }
 
+
     [HttpGet]
     [Route("GET_ALL")]
 
