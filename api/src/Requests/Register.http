@@ -4,12 +4,12 @@ POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
 
 {
-  "id": 1,
+  "id": 9,
   "name": "Jabel",
-  "userName": "pedro_hernaio1",
+  "userName": "pe90aisopoopodsdmanagero1",
   "email": "juliohernandez@gmail.com",
   "password": "julio9009_L",
-  "userRole": "Technician",
+  "userRole": "EquipmentReceptor",
   "specialty": "mechanic",
   "salary": 19090,
   "expYears": 10,
