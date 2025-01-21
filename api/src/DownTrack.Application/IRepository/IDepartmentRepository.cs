@@ -1,4 +1,5 @@
 using DownTrack.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace DownTrack.Application.IRepository;
 public interface IDepartmentRepository : IGenericRepository<Department>
@@ -8,5 +9,6 @@ public interface IDepartmentRepository : IGenericRepository<Department>
 
     Task DeleteAsync(int departmentId, int sectionId);
 
-    Task<Department> GetByNameAsync (string name);
+    Task<Department> GetByNameAsync(string name);
+
 }
