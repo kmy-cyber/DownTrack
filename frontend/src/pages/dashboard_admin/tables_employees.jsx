@@ -27,12 +27,9 @@ export function Tables() {
     const [userData, setUserData] = useState({
         id:0,
         name: "",
-        username: "",
+        gmail:"",
+        userName: "",
         userRole: "",
-        department: "",
-        experience: "",
-        specialty: "",
-        salary: "",
     });
     
     useEffect(() => {
@@ -49,8 +46,9 @@ export function Tables() {
             }
             const data = await response.json();
             console.log(data);
-            console.log(userList);
             setUserList(data);
+            console.log(userList);
+            console.log(userData);
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching employees:", error);
@@ -66,12 +64,9 @@ export function Tables() {
         setUserData({
             id:id,
             name: "",
-            username: "",
+            email:"",
+            userName: "",
             userRole: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -88,12 +83,9 @@ export function Tables() {
         setUserData({
             id :0,
             name: "",
-            username: "",
+            email:"",
+            userName: "",
             userRole: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -190,7 +182,7 @@ export function Tables() {
                                 <div className="flex items-center gap-4">
                                 <div>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.username}
+                                    {user.userName}
                                     </Typography>
                                 </div>
                                 </div>
@@ -200,6 +192,15 @@ export function Tables() {
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
                                     {user.userRole}
                                     </Typography>
+                                </td>
+                                <td className={className}>
+                                <div className="flex items-center gap-4">
+                                <div>
+                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    {user.email}
+                                    </Typography>
+                                </div>
+                                </div>
                                 </td>
                                 <td className={className}>
                                     <div className="flex items-center gap-4">

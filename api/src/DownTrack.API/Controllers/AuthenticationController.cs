@@ -37,9 +37,13 @@ public class AuthenticationController : ControllerBase
     {
 
         var token = await _identityService.LoginUserAsync(loginDto);
+<<<<<<< Updated upstream
         Console.WriteLine("+=================================");
         Console.WriteLine(token);
          Console.WriteLine("+=================================");
+=======
+
+>>>>>>> Stashed changes
         return Ok(token);
 
     }

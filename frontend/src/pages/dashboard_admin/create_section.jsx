@@ -35,7 +35,7 @@ export const SectionCreationForm = () => {
                 method: "POST",
                 body: JSON.stringify({
                     name: formData.name,
-                    usernameSectionM: parseInt(formData.usernameSectionM),
+                    sectionManagerId: parseInt(formData.usernameSectionM),
                 }),
             });
 
