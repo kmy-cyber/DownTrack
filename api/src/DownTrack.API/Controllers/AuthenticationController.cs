@@ -37,7 +37,13 @@ public class AuthenticationController : ControllerBase
     {
 
         var token = await _identityService.LoginUserAsync(loginDto);
+<<<<<<< HEAD
+        Console.WriteLine("+=================================");
         Console.WriteLine(token);
+         Console.WriteLine("+=================================");
+=======
+        Console.WriteLine(token);
+>>>>>>> 4bc28fe8d9c25724a8760837e4b863d6ad1369fe
         return Ok(token);
 
     }
