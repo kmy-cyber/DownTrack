@@ -1,4 +1,5 @@
 
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -42,6 +43,19 @@ public class TechnicianController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _technicianService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
 

@@ -1,5 +1,7 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -75,5 +77,28 @@ public class TechnicianServices : ITechnicianServices
         /// and returns the updated technician as a TechnicianDto.
         return _mapper.Map<TechnicianDto>(result);
 
+    }
+
+
+    public async Task<PagedResultDto<TechnicianDto>> GetPagedResultAsync (PagedRequestDto paged)
+    {
+        GetPagedDto<Technician> pagedTechnician =  await _unitOfWork.TechnicianRepository
+                                                                 .GetPagedAsync(paged);
+
+            
+        return new PagedResultDto<TechnicianDto>
+        {
+            Items = pagedTechnician.Items?.Select(_mapper.Map<TechnicianDto>),
+            TotalCount = pagedTechnician.TotalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < pagedTechnician.TotalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
     }
 }

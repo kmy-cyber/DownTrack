@@ -1,5 +1,7 @@
 
 
+using DownTrack.Application.Dto;
+
 namespace DownTrack.Application.IServices;
 
 /// <summary>
@@ -42,4 +44,6 @@ public interface IGenericService<TDto>
     /// <param name="dto">The identifier of the entity to retrieve.</param>
     /// <returns>A Task representing the asynchronous operation, returning the DTO of the retrieved entity.</returns>
     Task<TDto> GetByIdAsync(int dto);
+
+
 }

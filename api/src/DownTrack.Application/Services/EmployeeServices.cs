@@ -6,6 +6,7 @@ using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Roles;
+using System.Data.Common;
 
 namespace DownTrack.Application.Services;
 
@@ -78,10 +79,23 @@ public class EmployeeServices : IEmployeeServices
     public async Task<IEnumerable<EmployeeDto>> ListAsync()
     {
         var employee = await _unitOfWork.GetRepository<Employee>().GetAllAsync().ToListAsync();
-        //var employee = await _employeeRepository.ListAsync();
+
+        
+        
         return employee.Select(_mapper.Map<EmployeeDto>);
     }
 
+
+    public async Task<IEnumerable<GetEmployeeDto>> AllAsync()
+    {
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                        .GetAllAsync()
+                                        .Include(e=> e.User)
+                                        .ToListAsync();
+
+        return employee.Select(_mapper.Map<GetEmployeeDto>);
+        
+    }
 
 
     /// <summary>

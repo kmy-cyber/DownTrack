@@ -8,6 +8,6 @@ public class Evaluation : GenericEntity
     public Technician Technician {get;set;} = null!; 
     public int? SectionManagerId {get;set;} // can be null
     public Employee? SectionManager {get;set;}
-    public string Description {get;set;} = "notEvaluation";
+    public string Description {get;set;} = string.Empty;
     
 }

@@ -8,5 +8,5 @@ Content-Type:  application/json
 {
   "id": 1,
   "name": "stasas",
-  "sectionManagerId": 5
+  "sectionManagerId": 7
 }

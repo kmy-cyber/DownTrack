@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using DownTrack.Application.Dto;
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Domain.Entities;
 
@@ -19,9 +20,9 @@ public class AutomapperProfile : Profile
         CreateMap<RegisterUserDto, User>();
 
 
-        CreateMap<RegisterUserDto,Technician>();
-        CreateMap<RegisterUserDto,Employee>();
-        CreateMap<RegisterUserDto,EquipmentReceptor>();
+        CreateMap<RegisterUserDto, Technician>();
+        CreateMap<RegisterUserDto, Employee>();
+        CreateMap<RegisterUserDto, EquipmentReceptor>();
 
 
         CreateMap<EquipmentDto, Equipment>();
@@ -37,15 +38,23 @@ public class AutomapperProfile : Profile
         CreateMap<DepartmentDto, Department>();
         CreateMap<Department, DepartmentDto>();
 
-        CreateMap<EvaluationDto,Evaluation>();
-        CreateMap<Evaluation,EvaluationDto>();
+        CreateMap<EvaluationDto, Evaluation>();
+        CreateMap<Evaluation, EvaluationDto>();
 
-        CreateMap<EquipmentReceptorDto,EquipmentReceptor>();
-        CreateMap<EquipmentReceptor,EquipmentReceptorDto>();
+        CreateMap<EquipmentReceptorDto, EquipmentReceptor>();
+        CreateMap<EquipmentReceptor, EquipmentReceptorDto>();
 
-        CreateMap<UpdateUserDto,Technician>();
-        CreateMap<UpdateUserDto,Employee>();
-        CreateMap<UpdateUserDto,EquipmentReceptor>();
+        CreateMap<UpdateUserDto, Technician>();
+        CreateMap<UpdateUserDto, Employee>();
+        CreateMap<UpdateUserDto, EquipmentReceptor>();
 
+
+
+        CreateMap<Employee, GetEmployeeDto>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.UserName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User!.Email))
+            .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole));
+
+            
     }
 }
