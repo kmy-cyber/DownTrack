@@ -78,26 +78,35 @@ public class IdentityService : IIdentityService
 
                 var technician = _mapper.Map<Technician>(userDto);
 
+                technician.User = user;
+                Console.WriteLine("======================================");
+                Console.WriteLine(technician.User);
+                Console.WriteLine("======================================");
                 await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
 
+            
             }
 
             else if (userDto.UserRole == UserRole.EquipmentReceptor.ToString())
             {
 
                 var equipmentReceptor = _mapper.Map<EquipmentReceptor>(userDto);
-
+                equipmentReceptor.User = user;
+                Console.WriteLine(equipmentReceptor.User);
                 await _unitOfWork.GetRepository<EquipmentReceptor>().CreateAsync(equipmentReceptor);
 
+                
             }
 
             else
             {
 
                 var employee = _mapper.Map<Employee>(userDto);
-
+                 employee.User = user;
+                Console.WriteLine(employee.User);
                 await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
 
+               
 
             }
 
