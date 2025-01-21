@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import "@/assets/css/mystyles.css";
+import api from "@/middlewares/api";
 
 export function SignIn() {
   const [username, setUsername] = useState("");
@@ -16,11 +17,8 @@ export function SignIn() {
     console.log("Login ");
     e.preventDefault(); // Previene la recarga de la página
     try {
-      const response = await fetch("http://localhost:5217/api/Authentication/login/", {
+      const response = await api("/Authentication/login/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ username, password }),
       });
 

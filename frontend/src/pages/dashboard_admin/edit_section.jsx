@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
 
 const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
@@ -33,12 +34,8 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
     e.preventDefault();
 
     try {
-        const response = await fetch(`http://localhost:5217/api/Section/PUT`, {
+        const response = await api(`/Section/PUT`, {
           method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-          },
           body: JSON.stringify({
             'id': formData.id,
             'name': formData.name,

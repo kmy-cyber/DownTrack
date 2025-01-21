@@ -17,8 +17,13 @@
 //     {
 //         using var client = new HttpClient();
 
+<<<<<<< HEAD
+            // Define la base URL de la API
+            client.BaseAddress = new Uri("/Equipment/");
+=======
 //         // Define la base URL de la API
 //         client.BaseAddress = new Uri("http://localhost:5217/api/Equipment/");
+>>>>>>> 64fc0735e5e62cf209db84ce22356759a824587d
 
 //         for (int i = 1; i <= 10000; i++)
 //         {
@@ -41,7 +46,11 @@
 //     {
 //         using var client = new HttpClient();
 
+<<<<<<< HEAD
+            client.BaseAddress = new Uri("/Equipment/");
+=======
 //         client.BaseAddress = new Uri("http://localhost:5217/api/Equipment/");
+>>>>>>> 64fc0735e5e62cf209db84ce22356759a824587d
 
 //         for (int i = 1; i <= 10000; i++)
 //         {

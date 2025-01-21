@@ -7,6 +7,7 @@ import {
 
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
 
 export const SectionCreationForm = () => {
     const [alertMessage, setAlertMessage] = useState('');
@@ -16,6 +17,7 @@ export const SectionCreationForm = () => {
     const [formData, setFormData] = useState({
         id: "",
         name: "",
+        usernameSectionM: "",
     });
 
     const handleChange = (e) => {
@@ -30,14 +32,11 @@ export const SectionCreationForm = () => {
         setIsLoading(true);
         setAlertMessage(null);
         try {
-            const response = await fetch("http://localhost:5217/api/Section/POST", {
+            const response = await api("/Section/POST", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify({
-                    
                     name: formData.name,
+                    usernameSectionM: formData.usernameSectionM,
                 }),
             });
 
@@ -55,7 +54,7 @@ export const SectionCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
-                setFormData({ id: "", name: "" });
+                setFormData({ id: "", name: "", usernameSectionM: "" });
             } else {
                 setAlertMessage("Failed to login");
             }
@@ -93,6 +92,21 @@ export const SectionCreationForm = () => {
                             value={formData.name}
                             onChange={handleChange}
                             placeholder="Enter full name"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                        </div>
+                        <div>
+                        <label htmlFor="usernaname" className="block text-sm font-medium text-gray-700">
+                            Section Manager Username
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.usernameSectionM}
+                            onChange={handleChange}
+                            placeholder="Enter Section Manager Username"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             required
                         />
