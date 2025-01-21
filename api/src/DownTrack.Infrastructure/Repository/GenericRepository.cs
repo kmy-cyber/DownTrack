@@ -10,6 +10,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 {
     protected readonly DbSet<T> _entity;
     private DownTrackContext _context;
+
     public GenericRepository(DownTrackContext context)
     {
         if (context == null)
