@@ -17,7 +17,6 @@ export const DepartmentCreationForm = () => {
     const [sectionList, setSectionList] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
-        id: "",
         section: "",
     });
 
@@ -36,8 +35,10 @@ export const DepartmentCreationForm = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            
             setSectionList(data);
+            if(data.length === 0){
+                navigate('/dashboard/admin/create-section');
+            }
             setFormData((prev) => ({ ...prev, ['section']: data[0].id }));
             setIsLoading(false);
         } catch (error) {
@@ -104,6 +105,7 @@ export const DepartmentCreationForm = () => {
             </div>
         );
     }
+
 
     return (
         <>

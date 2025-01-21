@@ -7,6 +7,7 @@ const api = async (url, options = {}) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...(token ? { Authorization:`Bearer ${token.replace(/"/g, '')}` } : {}),
+        'token': token
     };
 
     // Fusionar encabezados existentes con los nuevos

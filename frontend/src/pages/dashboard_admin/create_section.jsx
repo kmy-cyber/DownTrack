@@ -15,7 +15,6 @@ export const SectionCreationForm = () => {
     const [alertType, setAlertType] = useState('success');
 
     const [formData, setFormData] = useState({
-        id: "",
         name: "",
         usernameSectionM: "",
     });
@@ -36,7 +35,7 @@ export const SectionCreationForm = () => {
                 method: "POST",
                 body: JSON.stringify({
                     name: formData.name,
-                    usernameSectionM: formData.usernameSectionM,
+                    usernameSectionM: parseInt(formData.usernameSectionM),
                 }),
             });
 
@@ -102,8 +101,8 @@ export const SectionCreationForm = () => {
                         </label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
+                            id="usernameSectionM"
+                            name="usernameSectionM"
                             value={formData.usernameSectionM}
                             onChange={handleChange}
                             placeholder="Enter Section Manager Username"
