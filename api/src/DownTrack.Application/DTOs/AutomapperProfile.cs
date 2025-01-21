@@ -1,6 +1,5 @@
 
 using AutoMapper;
-using DownTrack.Application.Dto;
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Domain.Entities;
 

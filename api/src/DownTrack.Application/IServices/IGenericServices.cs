@@ -1,7 +1,5 @@
 
 
-using DownTrack.Application.Dto;
-
 namespace DownTrack.Application.IServices;
 
 /// <summary>
