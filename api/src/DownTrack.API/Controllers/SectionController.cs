@@ -22,6 +22,7 @@ public class SectionController : ControllerBase
 
     public async Task<IActionResult> CreateSection(SectionDto section)
     {
+        Console.WriteLine(section.Name);
         await _sectionService.CreateAsync(section);
 
         return Ok("Section added successfully");

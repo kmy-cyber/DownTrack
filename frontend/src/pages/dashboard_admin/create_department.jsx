@@ -60,6 +60,7 @@ export const DepartmentCreationForm = () => {
         setIsLoading(true);
         setAlertMessage(null);
         try {
+
             const response = await api("/Department/POST", {
                 method: "POST",
                 headers: {
@@ -70,6 +71,9 @@ export const DepartmentCreationForm = () => {
                     sectionId: formData.section,
                 }),
             });
+
+            console.log(formData.name);
+            console.log(formData.section);
 
             if (!response.ok) { 
                 if (response.status === 400) {

@@ -1,6 +1,6 @@
 ```powershell
 
-dotnet ef migrations add InitialMigration9090 --project DownTrack.Infrastructure --startup-project DownTrack.API
+dotnet ef migrations add InitialMigration99090 --project DownTrack.Infrastructure --startup-project DownTrack.API
 
 dotnet ef database update --project DownTrack.Infrastructure --startup-project DownTrack.API 
 

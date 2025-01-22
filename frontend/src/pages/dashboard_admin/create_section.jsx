@@ -64,12 +64,16 @@ export const SectionCreationForm = () => {
         try {
             const response = await api("/Section/POST", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     name: formData.name,
                     sectionManagerId: formData.usernameSectionM,
                 }),
             });
-
+            console.log(formData.name);
+            console.log(formData.usernameSectionM);
             if (!response.ok) { 
                 if (response.status === 400) {
                     setAlertType('error');

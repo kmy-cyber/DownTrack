@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
 
 
 export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
@@ -37,6 +38,11 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
         e.preventDefault();
 
         try {
+            
+            console.log(formData.id);
+            console.log(formData.name);
+            console.log(formData.sectionId);
+
             const response = await api(`/Department/PUT`, {
                 method: 'PUT',
                 body: JSON.stringify({

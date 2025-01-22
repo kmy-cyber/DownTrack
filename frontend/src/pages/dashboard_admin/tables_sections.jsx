@@ -89,7 +89,8 @@ import api from "@/middlewares/api";
         
         const deleteSection = async (id) => {
             try {
-                const response = await api(`Section/DELETE?sectionId=${id}`, {
+                console.log("El id de la seccion a borrar es :", id);
+                const response = await api(`/Section/DELETE?sectionId=${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {

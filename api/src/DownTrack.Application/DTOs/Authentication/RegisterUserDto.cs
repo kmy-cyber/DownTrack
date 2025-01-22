@@ -1,5 +1,4 @@
 
-
 namespace DownTrack.Application.DTO.Authentication;
 
 public class RegisterUserDto

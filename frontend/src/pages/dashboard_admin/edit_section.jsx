@@ -39,8 +39,13 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
           body: JSON.stringify({
             'id': formData.id,
             'name': formData.name,
+            'sectionManagerId' : formData.sectionManager
           })
         });
+
+        console.log(formData.sectionManager);
+        console.log(formData.id);
+
     if (!response.ok) {
         setAlertMessage('Failed to edit employee');
         setAlertType('error');
