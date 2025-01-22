@@ -89,7 +89,7 @@ export const DepartmentCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
-                setFormData({ id: "", name: "" });
+                setFormData({ name: "", section: formData.section });
             } else {
                 setAlertMessage("Failed to login");
             }
