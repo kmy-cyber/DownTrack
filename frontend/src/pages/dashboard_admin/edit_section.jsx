@@ -5,14 +5,19 @@ import {
   CardBody,
   Typography,
 } from "@material-tailwind/react";
+import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
+
 
 const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const[alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('success');
+
   const [formData, setFormData] = useState({
-    name: sectionData ? sectionData.name : "",
     id: sectionData ? sectionData.id : "",
-    description: sectionData ? sectionData.description : "",
-    status: sectionData ? sectionData.status : "",
-    priority: sectionData ? sectionData.priority : "",
+    name: sectionData ? sectionData.name : "",
+    sectionManagerId: sectionData ? sectionData.sectionManagerId : "",
   });
 
   useEffect(() => {
@@ -26,13 +31,44 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
-    console.log("Updated section:", formData);
-  };
+
+    try {
+        const response = await api(`/Section/PUT`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            'id': formData.id,
+            'name': formData.name,
+            'sectionManagerId' : formData.sectionManagerId
+          })
+        });
+
+        console.log(formData.sectionManager);
+        console.log(formData.id);
+
+    if (!response.ok) {
+        setAlertMessage('Failed to edit section');
+        setAlertType('error');
+        throw new Error('Failed to edit section');
+    }
+    else
+    {
+        setAlertMessage('Edit completed successfully');
+        setAlertType('success');
+        onSave(formData);
+    }
+    } catch (error) {
+        setAlertMessage('Error editing section:');
+        setAlertType('error');
+        console.log(error);
+    }
+};
 
 return (
+  <>
+    <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
+
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <Typography variant="h6" color="white">
@@ -78,6 +114,7 @@ return (
             </form>
         </CardBody>
         </div>
+  </>
     );
 };
 

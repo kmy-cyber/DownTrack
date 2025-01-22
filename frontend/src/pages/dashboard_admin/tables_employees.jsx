@@ -10,41 +10,63 @@ Progress,
 } from "@material-tailwind/react";
 import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
 import { UserIcon, KeyIcon} from "@heroicons/react/24/outline";
-import { userListData } from "@/data";
+//import { userListData } from "@/data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
+
 
 export function Tables() {
-    const [userList, setUserList] = useState(userListData);
     const [onEdit, setOnEdit] = useState(false);
     const [keyEdit, setKeyEdit] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+    const[alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('success');
+    const [userList, setUserList] = useState([]);
     const [userData, setUserData] = useState({
+        id:0,
         name: "",
-        username: "",
-        role: "",
-        department: "",
-        experience: "",
-        specialty: "",
-        salary: "",
-        password: "",
+        gmail:"",
+        userName: "",
+        userRole: "",
     });
-
-    // TODO: Connect with backend and replace static values
     
-    const handleSave = (updatedUser) => {
-        userList[keyEdit] = updatedUser;
-        setUserList(userList);
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+    
+    const fetchEmployees = async () => {
+        try {
+            const response = await api('/Employee/GET_ALL/', {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data);
+            setUserList(data);
+            console.log(userList);
+            console.log(userData);
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+            setUserList([]);
+            setIsLoading(false);
+        }
+    };
 
-        // Reset the values
+    const handleSave = (updatedUser) => {
+        const index = userList.findIndex(user => user.id === updatedUser.id);
+        userList[index] = updatedUser;
+        setUserList([...userList]);
         setUserData({
+            id:id,
             name: "",
-            username: "",
-            role: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
-            password: "",
+            email:"",
+            userName: "",
+            userRole: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
@@ -54,29 +76,47 @@ export function Tables() {
         setKeyEdit(key);
         setUserData(user);
         setOnEdit(true);
+        console.log(userData);
     };
 
     const cancelEditUser = () => {
         setUserData({
+            id :0,
             name: "",
-            username: "",
-            role: "",
-            department: "",
-            experience: "",
-            specialty: "",
-            salary: "",
-            password: "",
+            email:"",
+            userName: "",
+            userRole: "",
         });
         setOnEdit(false);
         setKeyEdit(0);
     }
     
-    const deleteUser = (username) => {
-        setUserList(userList.filter(user => user.username !== username));
+    const deleteUser = async (id) => {
+        try {
+            const response = await api(`/Employee/DELETE?employeeId=${id}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            setAlertMessage('Failed to delete employee');
+            setAlertType('error');
+            throw new Error('Failed to delete employee');
+        }
+        else
+        {
+            setAlertMessage('Delete completed successfully');
+            setAlertType('success');
+            setUserList(userList.filter(user => user.id !== id));
+        }
+        } catch (error) {
+            setAlertMessage('Error deleting employee:');
+            setAlertType('error');
+            console.error("Error deleting employee:", error);
+        }
     };
 
     return (
         <>
+            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             { onEdit &&
                 <EditUserForm 
                     userData={userData} 
@@ -97,7 +137,7 @@ export function Tables() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "employee","password","username", "function"].map((el) => (
+                            {[ "employee","username","role", "gmail"].map((el) => (
                             <th
                                 key={el}
                                 className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -139,24 +179,10 @@ export function Tables() {
                                     </div>
                                 </td>
                                 <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                    <KeyIcon className="w-4"/>
-                                    <div>
-                                        <Typography
-                                        variant="small"
-                                        color="blue-gray"
-                                        className="font-semibold"
-                                        >
-                                        {user.password}
-                                        </Typography>
-                                    </div>
-                                    </div>
-                                </td>
-                                <td className={className}>
                                 <div className="flex items-center gap-4">
                                 <div>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.username}
+                                    {user.userName}
                                     </Typography>
                                 </div>
                                 </div>
@@ -164,8 +190,17 @@ export function Tables() {
                                 
                                 <td className={className}>
                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                    {user.role}
+                                    {user.userRole}
                                     </Typography>
+                                </td>
+                                <td className={className}>
+                                <div className="flex items-center gap-4">
+                                <div>
+                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    {user.email}
+                                    </Typography>
+                                </div>
+                                </div>
                                 </td>
                                 <td className={className}>
                                     <div className="flex items-center gap-4">
@@ -185,7 +220,7 @@ export function Tables() {
                                     
                                         <div 
                                             className="flex items-center gap-1"
-                                            onClick={() => deleteUser(user.username)}
+                                            onClick={() => deleteUser(user.id)}
                                         >
                                             <Typography
                                                 as="a"

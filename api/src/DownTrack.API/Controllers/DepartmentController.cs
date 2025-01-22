@@ -20,7 +20,12 @@ public class DepartmentController : ControllerBase
 
     public async Task<IActionResult> CreateDepartmen(DepartmentDto department)
     {
+        Console.WriteLine(department.Id);
+        Console.WriteLine(department.Name);
+        Console.WriteLine(department.SectionId);
+        
         await _departmentService.CreateAsync(department);
+
 
         return Ok("Department added successfully");
     }

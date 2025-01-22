@@ -14,19 +14,18 @@ namespace DownTrack.Application.Services;
 /// </summary>
 public class DepartmentServices : IDepartmentServices
 {
+
     // Automapper instance for mapping between domain entities and DTOs.
     private readonly IMapper _mapper;
 
     // Unit of Work instance for managing repositories and transactions.
     private readonly IUnitOfWork _unitOfWork;
 
-
     public DepartmentServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
-
 
 
     /// <summary>
@@ -40,7 +39,8 @@ public class DepartmentServices : IDepartmentServices
         //Maps DTO to domain entity.
 
         var department = _mapper.Map<Department>(dto);
-       
+        department.SectionId = dto.SectionId;
+        department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
         //Adds the new department to the repository.
         await _unitOfWork.GetRepository<Department>().CreateAsync(department);
 
@@ -67,7 +67,7 @@ public class DepartmentServices : IDepartmentServices
     /// </summary>
     /// <param name="dto">The ID of the department to delete.</param>
     public async Task DeleteAsync(int dto)
-    {   
+    {
         // Removes the department by its ID
         await _unitOfWork.GetRepository<Department>().DeleteByIdAsync(dto);
 
@@ -75,16 +75,25 @@ public class DepartmentServices : IDepartmentServices
     }
 
 
-
     /// <summary>
-    /// Retrieves a list of all departments.
+    /// Retrieves a list of all departments along with their section names.
     /// </summary>
-    /// <returns>A collection of DepartmentDto representing all departments.</returns>
-    public async Task<IEnumerable<DepartmentDto>> ListAsync()
+    /// <returns>A collection of DepartmentDto representing all departments with section names.</returns>
+    public async Task<IEnumerable<DepartmentPresentationDto>> ListAsync()
     {
-        var department = await _unitOfWork.GetRepository<Department>().GetAllAsync().ToListAsync();
+        var departments = await _unitOfWork
+            .GetRepository<Department>()
+            .GetAllAsync() // Devuelve IQueryable<Department>
+            .Include(d => d.Section) // Incluye la relación con Section
+            .ToListAsync(); // Ejecuta la consulta y materializa los resultados
 
-        return department.Select(_mapper.Map<DepartmentDto>);
+        return departments.Select(department => new DepartmentPresentationDto
+        {
+            Id = department.Id,
+            Name = department.Name,
+            SectionId = department.SectionId,
+            SectionName = department.Section.Name // Incluye el nombre de la sección
+        });
     }
 
 
@@ -125,7 +134,7 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
         var result = await _unitOfWork.DepartmentRepository.GetByIdAsync(departmentDto);
-        
+
         return _mapper.Map<DepartmentDto>(result);
 
     }

@@ -5,7 +5,7 @@ POST {{host}}/api/Department/POST/
 Content-Type:  application/json
 
 {
-  "id": 1,
-  "name": "strinasasg",
-  "sectionId": 1
+  "id": 0,
+  "name": "s90trin90asasg",
+  "sectionId": 9
 }
