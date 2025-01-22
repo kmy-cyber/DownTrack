@@ -92,7 +92,7 @@ public class ApiClient
 
         client.BaseAddress = new Uri("http://localhost:5217/api/Authentication/register");
 
-        for (int i = 2; i <= 100; i++)
+        for (int i = 2; i <= 10; i++)
         {
             var user = new
             {
