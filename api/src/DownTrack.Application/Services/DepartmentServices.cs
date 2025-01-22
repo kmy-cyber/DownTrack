@@ -39,7 +39,8 @@ public class DepartmentServices : IDepartmentServices
         //Maps DTO to domain entity.
 
         var department = _mapper.Map<Department>(dto);
-
+        department.SectionId = dto.SectionId;
+        department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
         //Adds the new department to the repository.
         await _unitOfWork.GetRepository<Department>().CreateAsync(department);
 
@@ -90,6 +91,7 @@ public class DepartmentServices : IDepartmentServices
         {
             Id = department.Id,
             Name = department.Name,
+            SectionId = department.SectionId,
             SectionName = department.Section.Name // Incluye el nombre de la sección
         });
     }
