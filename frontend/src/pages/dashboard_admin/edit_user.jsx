@@ -4,19 +4,20 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    } from "@material-tailwind/react";
+} from "@material-tailwind/react";
+import api from "@/middlewares/api";
 
 export const EditUserForm = ({ userData, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
-        name: "",
         id: "",
+        name: "",
         role: "",
         email:"",
-        department: "",
-        experience: "",
-        specialty: "",
-        supervisorRating: "",
         password: "",
+        salary: 0,
+        specialty: "",
+        expYears: 0,
+        departamentId: 0
     });
 
     useEffect(() => {
@@ -30,10 +31,42 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     }; 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(formData);
-        console.log("Updated user:", formData);
+
+    try {
+        console.log("HERE",)
+        console.log(formData)
+        const response = await api(`/Authentication/PUT`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            'id': formData.id,
+            'name': formData.name,
+            'email': formData.email,
+            'password': formData.password,
+            'userRole': formData.role,
+            'specialty': formData.specialty,
+            'salary': formData.salary,
+            'expYears': formData.expYears,
+            'departamentId': formData.departamentId
+        })
+        });
+        if (!response.ok) {
+            setAlertMessage('Failed to edit user');
+            setAlertType('error');
+            throw new Error('Failed to edit user');
+        }
+        else
+        {
+            setAlertMessage('Edit completed successfully');
+            setAlertType('success');
+            onSave(formData);
+        }
+    } catch (error) {
+        setAlertMessage('Error editing user:');
+        setAlertType('error');
+        console.log(error);
+    }
     };
 
     return (
@@ -64,24 +97,8 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
-                    </label>
-                    <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.userName}
-                    onChange={handleChange}
-                    placeholder="Enter identification number"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                    />
-                </div>
-
-                <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Username
+                    Email
                     </label>
                     <input
                     type="text"
@@ -104,11 +121,11 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     id="role"
                     name="role"
                     value={formData.userRole}
-                    ReadOnly
                     onChange={handleChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                     disabled
+                    readOnly
                     />
                 </div>
 
@@ -121,7 +138,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                         type="text"
                         id="department"
                         name="department"
-                        value={formData.department}
+                        value={formData.departamentId}
                         onChange={handleChange}
                         placeholder="Enter department"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -140,7 +157,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                         type="number"
                         id="experience"
                         name="experience"
-                        value={formData.experience}
+                        value={formData.expYears}
                         onChange={handleChange}
                         placeholder="Enter years of experience"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -164,16 +181,16 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     </div>
 
                     <div>
-                        <label htmlFor="supervisorRating" className="block text-sm font-medium text-gray-700">
-                        Supervisor Rating
+                        <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
+                        Salary
                         </label>
                         <input
                         type="number"
-                        id="supervisorRating"
-                        name="supervisorRating"
-                        value={formData.supervisorRating}
+                        id="salary"
+                        name="salary"
+                        value={formData.salary}
                         onChange={handleChange}
-                        placeholder="Enter rating (1-5)"
+                        placeholder="Salary"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                     </div>
