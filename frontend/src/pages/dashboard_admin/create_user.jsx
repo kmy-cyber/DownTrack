@@ -30,6 +30,8 @@ export const UserCreationForm = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):192;
+    
     const handleSubmit = async (e) => {
             console.log("Register ");
             e.preventDefault(); // Previene la recarga de la página
@@ -40,10 +42,11 @@ export const UserCreationForm = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjFlMDYxMDVmLWNhYzQtNDU2ZC1iMTAxLTRjMzM1MTYyOTlhYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzQ2MDgsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.MSHvcGnczsqz1HuaHRqvlsSjE7-LyZQjRSCVWEe_kp4"
+                        //"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjFlMDYxMDVmLWNhYzQtNDU2ZC1iMTAxLTRjMzM1MTYyOTlhYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzQ2MDgsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.MSHvcGnczsqz1HuaHRqvlsSjE7-LyZQjRSCVWEe_kp4"
                     },
+                    
                     body: JSON.stringify({
-                        id: 1899090,
+                        id: globalId,
                         name: formData.name,
                         userName: formData.username,
                         email: formData.email,
@@ -57,7 +60,9 @@ export const UserCreationForm = () => {
                     }),
                 });
                 
-    
+                console.log(globalId);
+                globalId++;
+                localStorage.setItem("globalId",globalId);
                 if (!response.ok) { 
                 if (response.status === 400) {
                     setAlertType('error');
@@ -70,6 +75,7 @@ export const UserCreationForm = () => {
                 }
                 }
                 else if (response.ok) {
+                    
                     setAlertType('success');
                     setAlertMessage("Successful registration");
                 } else {

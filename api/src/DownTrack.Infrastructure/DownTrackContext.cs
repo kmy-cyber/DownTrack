@@ -87,9 +87,9 @@ namespace DownTrack.Infrastructure
             modelBuilder.Entity<Department>()
                 .HasKey(d => d.Id); // 
 
-            modelBuilder.Entity<Department>()
-                .Property(d => d.Id)
-                .ValueGeneratedOnAdd(); //
+            // modelBuilder.Entity<Department>()
+            //     .Property(d => d.Id)
+            //     .ValueGeneratedOnAdd(); //
 
             modelBuilder.Entity<Department>()
                 .HasOne(d => d.Section)

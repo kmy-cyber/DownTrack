@@ -10,3 +10,7 @@ Content-Type:  application/json
   "name": "stasas",
   "sectionManagerId": 7
 }
+
+###Delete
+
+DELETE {{host}}/api/Section/DELETE?sectionId=3
