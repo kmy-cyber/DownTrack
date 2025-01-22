@@ -46,6 +46,7 @@ import api from "@/middlewares/api";
                 }
                 const data = await response.json();
                 setDepartmentList(data);
+                console.log(data);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching departments:", error);
