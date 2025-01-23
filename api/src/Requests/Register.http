@@ -5,17 +5,17 @@ Content-Type:  application/json
 //Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjhjMTY2NDQ5LTM1NGYtNGM1ZC1iMWYxLWQzNzRmYmM0OGRhMyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzM5NTUsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.0ipM82Yfd_6l1UFHOl8eSVvyycdqbafZjz5RzAiVwkI
 
 {
-  "id":7,
+  "id":91,
   "name": "pedrito",
-  "userName": "leoMessi",
+  "userName": "jabelResendiz0",
   "email": "juliohernandez@gmail.com",
-  "password": "LeonelMessi_86",
-  "userRole": "Administrator",
+  "password": "jabelResendiz_0304",
+  "userRole": "EquipmentReceptor",
   "specialty": "mechanic",
   "salary": 19090,
   "expYears": 10,
-  "departamentId": 1,
-  "sectionId": 1
+  "departamentId": 0,
+  "sectionId": 3
 }
 
 # eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjEyIiwiZ2l2ZW5fbmFtZSI6Imp1bGlvMTEyOTAwOSIsImp0aSI6ImRhMDQzNWE0LWNjZDMtNGM2Mi1iZWMwLTFkOTk1ZGY2MGQxZCIsImV4cCI6MTczNjIzMDIzNywiaXNzIjoiRG93blRyYWNrIiwiYXVkIjoiRG93blRyYWNrIn0.dJWS_cpbogvi1hDSoH1FsdOanaK946a1oJqtPqsLWcA

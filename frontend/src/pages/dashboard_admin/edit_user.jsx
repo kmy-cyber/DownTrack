@@ -12,10 +12,10 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
         id: "",
         role: "",
         email:"",
-        department: "",
-        experience: "",
+        department: 0,
+        experience: 0,
         specialty: "",
-        supervisorRating: "",
+        salary: 0,
         password: "",
     });
 

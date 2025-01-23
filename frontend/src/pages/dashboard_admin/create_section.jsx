@@ -74,6 +74,7 @@ export const SectionCreationForm = () => {
             });
             console.log(formData.name);
             console.log(formData.usernameSectionM);
+            
             if (!response.ok) { 
                 if (response.status === 400) {
                     setAlertType('error');
@@ -131,7 +132,7 @@ export const SectionCreationForm = () => {
                         />
                         </div>
                         <div>
-                        <label htmlFor="usernaname" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                             Section Manager Username
                         </label>
                         <select

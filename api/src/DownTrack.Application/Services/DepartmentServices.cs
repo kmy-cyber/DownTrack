@@ -82,7 +82,7 @@ public class DepartmentServices : IDepartmentServices
     {
         var departments = await _unitOfWork
             .GetRepository<Department>()
-            .GetAllAsync() // Devuelve IQueryable<Department>
+            .GetAll() // Devuelve IQueryable<Department>
             .Include(d => d.Section) // Incluye la relación con Section
             .ToListAsync(); // Ejecuta la consulta y materializa los resultados
 

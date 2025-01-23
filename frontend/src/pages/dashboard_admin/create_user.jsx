@@ -30,8 +30,7 @@ export const UserCreationForm = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):192;
-    
+    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):298;
     const handleSubmit = async (e) => {
             console.log("Register ");
             e.preventDefault(); // Previene la recarga de la página
