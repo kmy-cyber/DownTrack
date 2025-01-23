@@ -14,21 +14,18 @@ public class UnitOfWork : IUnitOfWork
     private Dictionary<Type, object> _repositories;
     public IUserRepository UserRepository { get; }
     public IDepartmentRepository DepartmentRepository { get; }
-
-<<<<<<< HEAD
     public ITechnicianRepository TechnicianRepository {get;}
-=======
     public ITransferRequestRepository TransferRequestRepository { get; }
->>>>>>> api_solicitud-traslado
 
+    public ITransferRepository TransferRepository { get; }
+    
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
                       IDepartmentRepository departmentRepository,
-<<<<<<< HEAD
-                      ITechnicianRepository technicianRepository)
-=======
-                      ITransferRequestRepository transferRequestRepository)
->>>>>>> api_solicitud-traslado
+                      ITransferRequestRepository transferRequestRepository,
+                       ITechnicianRepository technicianRepository,
+                      ITransferRepository transferRepository)
+
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
@@ -38,12 +35,12 @@ public class UnitOfWork : IUnitOfWork
 
         DepartmentRepository = departmentRepository;
 
-<<<<<<< HEAD
         TechnicianRepository = technicianRepository;
 
-=======
         TransferRequestRepository = transferRequestRepository;
->>>>>>> api_solicitud-traslado
+
+        TransferRepository = transferRepository;
+
     }
 
     public IGenericRepository<T> GetRepository<T>() where T : GenericEntity

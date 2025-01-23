@@ -6,26 +6,18 @@ namespace DownTrack.Domain.Entities;
 
 public class TransferRequest : GenericEntity
 {
-    [Required]
-    public int EmployeeId { get; set; }
+    public int? EmployeeId { get; set; }
 
-    [ForeignKey(nameof(EmployeeId))]
-    public required Employee Employee { get; set; }
+    public  Employee? Employee { get; set; } 
 
-    [Required]
-    public int EquipmentId { get; set; }
-    [ForeignKey(nameof(EquipmentId))]
-    public required Equipment Equipment { get; set; }
+    public int? EquipmentId { get; set; }
+    public  Equipment? Equipment { get; set; }
 
-    [Required]
     public DateTime Date { get; set; } // Fecha de la solicitud de transferencia
 
-    [Required]
-    public required int DepartmentId { get; set; }
-    [Required]
-    public required int SectionId { get; set; }
+    public  int? DepartmentId { get; set; }
+    public  int? SectionId { get; set; }
 
-    [ForeignKey(nameof(DepartmentId) + "," + nameof(SectionId))]
-    public required Department Department { get; set; }
+    public  Department? Department { get; set; }
 
 }

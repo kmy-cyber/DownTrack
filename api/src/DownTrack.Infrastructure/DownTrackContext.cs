@@ -9,26 +9,10 @@ namespace DownTrack.Infrastructure
 {
     public class DownTrackContext : IdentityDbContext<User>
 
-<<<<<<< HEAD
-=======
-    public DbSet<Technician> Technicians { get; set; }
-
-    public DbSet<Employee> Employees { get; set; }
-
-
-    public DbSet<Equipment> Equipments { get; set; }
-
-    public DbSet<Section> Sections { get; set; }
-
-    public DbSet<Maintenance> Maintenances { get; set; }
-
-    public DbSet<Department> Departments { get; set; }
-
-    public DbSet<TransferRequest> TransferRequests { get; set; }
-
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
->>>>>>> api_solicitud-traslado
+
     {
         public DownTrackContext(DbContextOptions options) : base(options) { }
 
@@ -44,13 +28,18 @@ namespace DownTrack.Infrastructure
         public DbSet<DoneMaintenance> DoneMaintenances { get; set; }
 
         public DbSet<Department> Departments { get; set; }
+      
+        public DbSet<TransferRequest> TransferRequests { get; set; }
 
-        public DbSet<Evaluation> Evaluations { get; set; }
+        public DbSet<Transfer> Transfers { get; set; }
+        
+      public DbSet<Evaluation> Evaluations { get; set; }
+      
+      public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
 
-        public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
+     
 
 
-<<<<<<< HEAD
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -59,34 +48,33 @@ namespace DownTrack.Infrastructure
             modelBuilder.Entity<Employee>()
                 .ToTable("Employee")
                 .HasKey(u => u.Id);
-=======
+
         modelBuilder.Entity<Section>()
             .HasMany(s => s.Departments)
             .WithOne(d => d.Section)
             .HasForeignKey(d => d.SectionId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Department>()
-            .HasKey(d => new { d.Id, d.SectionId });
+        
+  
+  
+        modelBuilder.Entity<TransferRequest>()
+            .HasOne(tr => tr.Employee)
+            .WithMany(e => e.TransferRequests)
+            .HasForeignKey(tr => tr.EmployeeId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TransferRequest>()
-     .HasOne(tr => tr.Employee)
-     .WithMany(e => e.TransferRequests)
-     .HasForeignKey(tr => tr.EmployeeId)  // Correcto EmployeeId como FK
-     .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TransferRequest>()
-        .HasOne(tr => tr.Equipment)
-        .WithMany(e => e.TransferRequests)
-        .HasForeignKey(tr => tr.EquipmentId)  // Correcto EquipmentId como FK
-        .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(tr => tr.Equipment)
+            .WithMany(e => e.TransferRequests)
+            .HasForeignKey(tr => tr.EquipmentId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TransferRequest>()
             .HasOne(tr => tr.Department)
             .WithMany(d => d.TransferRequests)
-            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })  // Correcto DepartmentId como FK
+            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })
             .OnDelete(DeleteBehavior.Cascade);
->>>>>>> api_solicitud-traslado
 
 
             // Technician Region
@@ -120,6 +108,40 @@ namespace DownTrack.Infrastructure
             // Equipment Region
             modelBuilder.Entity<Equipment>()
                         .HasKey(e => e.Id);
+          
+            modelBuilder.Entity<Equipment>(entity =>
+            {
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(e => e.Location)
+                    .WithMany(d => d.Equipments)
+                    .HasForeignKey(e => e.LocationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.TransferRequests)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.Transfers)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.DateOfadquisition)
+                    .IsRequired();
+            });
 
             //Section Region
             modelBuilder.Entity<Section>()
@@ -135,7 +157,28 @@ namespace DownTrack.Infrastructure
             //Department Region
             modelBuilder.Entity<Department>()
                 .HasKey(d => d.Id); // 
+            
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasKey(d => new { d.Id, d.SectionId });
 
+                entity.Property(d => d.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.Section)
+                    .WithMany()
+                    .HasForeignKey(d => d.SectionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.TransferRequests)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Equipments)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
             // modelBuilder.Entity<Department>()
             //     .Property(d => d.Id)
             //     .ValueGeneratedOnAdd(); //
@@ -180,13 +223,34 @@ namespace DownTrack.Infrastructure
                 .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
                 .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
                 .OnDelete(DeleteBehavior.SetNull);
+            
+          
+          modelBuilder.Entity<Transfer>(entity =>
+            {
+                entity.HasKey(t => t.Id);
+                entity.HasOne(t => t.TransferRequest)
+                    .WithMany()
+                    .HasForeignKey(t => t.RequestId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
+
+                entity.HasOne(t => t.ShippingSupervisor)
+                    .WithMany()
+                    .HasForeignKey(t => t.ShippingSupervisorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasOne(t => t.EquipmentReceptor)
+                    .WithMany()
+                    .HasForeignKey(t => t.EquipmentReceptorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.Property(t => t.Date)
+                    .IsRequired();
+            });
+          
+          
         }
     }
 
-<<<<<<< HEAD
-
-}
-=======
-// --project DownTrack.Infrastructure --startup-project DownTrack.API
->>>>>>> api_solicitud-traslado

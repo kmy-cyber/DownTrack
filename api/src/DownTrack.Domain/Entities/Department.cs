@@ -12,5 +12,6 @@ public class Department : GenericEntity
     public Section Section { get; set; } = null!;
     public ICollection<EquipmentReceptor> EquipmentReceptors {get;set;} = new List<EquipmentReceptor>();
     public ICollection<TransferRequest> TransferRequests { get; set; } = new List<TransferRequest>();
+    public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
 }
