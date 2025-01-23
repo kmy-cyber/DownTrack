@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Roles;
 using System.Data.Common;
+using DownTrack.Application.DTO.Paged;
 
 namespace DownTrack.Application.Services;
 
@@ -78,9 +79,10 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation, with a list of EmployeeDto as the result.</returns>
     public async Task<IEnumerable<EmployeeDto>> ListAsync()
     {
-        var employee = await _unitOfWork.GetRepository<Employee>().GetAllAsync().ToListAsync();
-
-        
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                        .GetAll()
+                                        .Include(e=> e.User)
+                                        .ToListAsync();
         
         return employee.Select(_mapper.Map<EmployeeDto>);
     }
@@ -89,7 +91,7 @@ public class EmployeeServices : IEmployeeServices
     public async Task<IEnumerable<GetEmployeeDto>> AllAsync()
     {
         var employee = await _unitOfWork.GetRepository<Employee>()
-                                        .GetAllAsync()
+                                        .GetAll()
                                         .Include(e=> e.User)
                                         .ToListAsync();
 
@@ -134,5 +136,32 @@ public class EmployeeServices : IEmployeeServices
     }
 
 
+    public async Task<PagedResultDto<EmployeeDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Employee> queryEmployee = _unitOfWork.GetRepository<Employee>().GetAll();
 
+        var totalCount = await queryEmployee.CountAsync();
+
+        var items = await queryEmployee // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<EmployeeDto>
+        {
+            Items = items?.Select(_mapper.Map<EmployeeDto>) ?? Enumerable.Empty<EmployeeDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
 }

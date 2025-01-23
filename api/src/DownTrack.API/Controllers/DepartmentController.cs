@@ -1,4 +1,5 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,6 @@ public class DepartmentController : ControllerBase
 
     public async Task<IActionResult> CreateDepartmen(DepartmentDto department)
     {
-        Console.WriteLine(department.Id);
-        Console.WriteLine(department.Name);
-        Console.WriteLine(department.SectionId);
         
         await _departmentService.CreateAsync(department);
 
@@ -54,6 +52,19 @@ public class DepartmentController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedDepartment ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _departmentService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
     [HttpPut]

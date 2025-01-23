@@ -1,5 +1,7 @@
 
 
+using DownTrack.Application.DTO.Paged;
+
 namespace DownTrack.Application.IServices;
 
 /// <summary>
@@ -43,5 +45,10 @@ public interface IGenericService<TDto>
     /// <returns>A Task representing the asynchronous operation, returning the DTO of the retrieved entity.</returns>
     Task<TDto> GetByIdAsync(int dto);
 
-
+    /// <summary>
+    /// Asynchronously retrieves a paginated list of entities .
+    /// </summary>
+    /// <param name="paged">The pagination parameters, including page size and page number and filters parameters</param>
+    /// <returns>A Task representing the asynchronous operation, returning a paginated result as <see cref="PagedResultDto{TDto}"/>.</returns>
+    Task<PagedResultDto<TDto>> GetPagedResultAsync(PagedRequestDto paged);
 }

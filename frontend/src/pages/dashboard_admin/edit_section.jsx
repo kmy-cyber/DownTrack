@@ -44,8 +44,8 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
           })
         });
 
-        console.log(formData.sectionManager);
         console.log(formData.id);
+        console.log(formData.sectionManagerId);
 
     if (!response.ok) {
         setAlertMessage('Failed to edit section');
@@ -94,8 +94,23 @@ return (
                     required
                     />
                 </div>
+                <div>
+                    <label htmlFor="userName" className="block text-sm font-medium text-gray-700">
+                    Section Manager Username
+                    </label>
+                    <input
+                    type="text"
+                    id="name"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder="Enter full name"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                    />
+                </div>
               </div>
-
+    
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
                         type="submit"

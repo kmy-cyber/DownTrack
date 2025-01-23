@@ -1,5 +1,6 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -74,16 +75,22 @@ public class DepartmentServices : IDepartmentServices
         await _unitOfWork.CompleteAsync(); // Commits the transaction.
     }
 
+    public async Task<IEnumerable<DepartmentDto>> ListAsync ()
+    {
+        var departments = await _unitOfWork.DepartmentRepository.GetAll().ToListAsync();
+
+        return departments.Select(_mapper.Map<DepartmentDto>);
+    }
 
     /// <summary>
     /// Retrieves a list of all departments along with their section names.
     /// </summary>
     /// <returns>A collection of DepartmentDto representing all departments with section names.</returns>
-    public async Task<IEnumerable<DepartmentPresentationDto>> ListAsync()
+    public async Task<IEnumerable<DepartmentPresentationDto>> AsyncList()
     {
         var departments = await _unitOfWork
             .GetRepository<Department>()
-            .GetAllAsync() // Devuelve IQueryable<Department>
+            .GetAll() // Devuelve IQueryable<Department>
             .Include(d => d.Section) // Incluye la relación con Section
             .ToListAsync(); // Ejecuta la consulta y materializa los resultados
 
@@ -139,6 +146,34 @@ public class DepartmentServices : IDepartmentServices
 
     }
 
+     public async Task<PagedResultDto<DepartmentDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Department> queryDepartment = _unitOfWork.GetRepository<Department>().GetAll();
+
+        var totalCount = await queryDepartment.CountAsync();
+
+        var items = await queryDepartment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<DepartmentDto>
+        {
+            Items = items?.Select(_mapper.Map<DepartmentDto>) ?? Enumerable.Empty<DepartmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
 
 
 }

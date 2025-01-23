@@ -10,23 +10,5 @@ public class TechnicianRepository : GenericRepository<Technician>, ITechnicianRe
 {
     public TechnicianRepository(DownTrackContext context) : base(context){}
 
-    public async Task<GetPagedDto<Technician>> GetPagedAsync (PagedRequestDto paged, CancellationToken cancellationToken= default)
-    {
-        var totalCount = await _entity.CountAsync(cancellationToken);
-
-        var items = await _entity
-                        .Skip((paged.PageNumber-1)*paged.PageSize)
-                        .Take(paged.PageSize)
-                        .ToListAsync(cancellationToken);
-                        
-
-        return new GetPagedDto<Technician>
-        {
-            Items= items,
-            TotalCount = totalCount
-        };
-
-    }
-
 
 }
