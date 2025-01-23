@@ -1,7 +1,7 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -16,7 +16,6 @@ public class TechnicianServices : ITechnicianServices
 
     public TechnicianServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _technicianRepository = technicianRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -24,8 +23,6 @@ public class TechnicianServices : ITechnicianServices
     public async Task<TechnicianDto> CreateAsync(TechnicianDto dto)
     {
         var technician = _mapper.Map<Technician>(dto);
-
-        //await _technicianRepository.CreateAsync(technician);
 
         await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
 
@@ -39,7 +36,7 @@ public class TechnicianServices : ITechnicianServices
         await _unitOfWork.GetRepository<Technician>().DeleteByIdAsync(dto);
 
         await _unitOfWork.CompleteAsync();
-        //await _technicianRepository.DeleteByIdAsync(dto);
+
     }
 
     public async Task<IEnumerable<TechnicianDto>> ListAsync()
@@ -77,12 +74,28 @@ public class TechnicianServices : ITechnicianServices
 
     }
 
-
-
     public async Task<PagedResultDto<TechnicianDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
+        return await GetPagedResultWithFilterAsync(paged,null);
+    }
+    public async Task<PagedResultDto<TechnicianDto>> GetPagedResultWithFilterAsync(PagedRequestDto paged,
+                                                                        Expression<Func<Technician, bool>>? exp)
+    {
         //The queryable collection of entities to paginate
-        IQueryable<Technician> queryTechnician = _unitOfWork.TechnicianRepository.GetAll();
+        IQueryable<Technician> queryTechnician;
+
+        if (exp is null)
+        {
+            queryTechnician = _unitOfWork.TechnicianRepository.GetAll();
+
+        }
+        else
+        {
+            List<Expression<Func<Technician, bool>>> exps = new List<Expression<Func<Technician, bool>>>() { exp };
+            queryTechnician = _unitOfWork.TechnicianRepository.GetAllByItems(exps);
+        }
+
+
 
         var totalCount = await queryTechnician.CountAsync();
 

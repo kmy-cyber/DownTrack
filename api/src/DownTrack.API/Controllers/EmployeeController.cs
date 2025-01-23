@@ -20,17 +20,6 @@ public class EmployeeController : ControllerBase
 
 
     [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee()
-    {
-        var results = await _employeeService.AllAsync();
-
-        return Ok(results);
-
-    }
-
-    [HttpGet]
     [Route("GET")]
 
     public async Task<ActionResult<Employee>> GetEmployeeById(int employeeId)

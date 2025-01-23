@@ -29,16 +29,6 @@ public class SectionController : ControllerBase
         return Ok("Section added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Section>>> GetAllSections()
-    {
-        var results = await _sectionService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]

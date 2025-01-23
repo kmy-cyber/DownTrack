@@ -5,6 +5,7 @@ using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class DepartmentController : ControllerBase
@@ -30,17 +31,6 @@ public class DepartmentController : ControllerBase
 
 
     [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartments()
-    {
-        var results = await _departmentService.ListAsync();
-
-        return Ok(results);
-
-    }
-
-    [HttpGet]
     [Route("GET")]
 
     public async Task<ActionResult<Department>> GetDepartmentById(int departmentId)
@@ -53,6 +43,7 @@ public class DepartmentController : ControllerBase
         return Ok(result);
 
     }
+
 
     [HttpGet]
     [Route("GetPaged")]
