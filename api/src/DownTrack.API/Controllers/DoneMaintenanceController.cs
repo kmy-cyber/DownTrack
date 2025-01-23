@@ -1,4 +1,5 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,20 @@ public class DoneMaintenanceController : ControllerBase
 
         return Ok(result);
 
+    }
+
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedDoneMaintenance ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _doneMaintenanceService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
     [HttpPut]
