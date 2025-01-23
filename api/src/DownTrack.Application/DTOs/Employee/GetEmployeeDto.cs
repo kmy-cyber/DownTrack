@@ -2,6 +2,8 @@
 
 namespace DownTrack.Application.DTO;
 
+//DTO de mostrado de caracteristicas de un empleado
+
 public class GetEmployeeDto
 {
     public int Id {get;set;}

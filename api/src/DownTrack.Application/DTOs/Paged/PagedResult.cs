@@ -1,6 +1,8 @@
 
 namespace DownTrack.Application.DTO.Paged;
 
+// formato de la solicitud de respuesta a la pagina
+
 public class PagedResultDto<T>
 {
     public IEnumerable<T>? Items {get;set;} 

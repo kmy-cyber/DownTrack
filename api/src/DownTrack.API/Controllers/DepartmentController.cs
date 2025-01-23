@@ -32,7 +32,7 @@ public class DepartmentController : ControllerBase
     [HttpGet]
     [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartents()
+    public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartments()
     {
         var results = await _departmentService.ListAsync();
 
@@ -43,7 +43,7 @@ public class DepartmentController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Department>> GetUserById(int departmentId)
+    public async Task<ActionResult<Department>> GetDepartmentById(int departmentId)
     {
         var result = await _departmentService.GetByIdAsync(departmentId);
 
@@ -79,9 +79,9 @@ public class DepartmentController : ControllerBase
     [HttpDelete]
     [Route("DELETE")]
 
-    public async Task<IActionResult> DeleteDepartment(int departmentId, int SectionId)
+    public async Task<IActionResult> DeleteDepartment(int departmentId)
     {
-        await _departmentService.DeleteAsync(departmentId, SectionId);
+        await _departmentService.DeleteAsync(departmentId);
 
         return Ok("Department deleted successfully");
     }

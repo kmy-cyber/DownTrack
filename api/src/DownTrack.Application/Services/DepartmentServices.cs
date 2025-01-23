@@ -40,8 +40,9 @@ public class DepartmentServices : IDepartmentServices
         //Maps DTO to domain entity.
 
         var department = _mapper.Map<Department>(dto);
-        department.SectionId = dto.SectionId;
+
         department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
+
         //Adds the new department to the repository.
         await _unitOfWork.GetRepository<Department>().CreateAsync(department);
 
@@ -75,32 +76,15 @@ public class DepartmentServices : IDepartmentServices
         await _unitOfWork.CompleteAsync(); // Commits the transaction.
     }
 
-    public async Task<IEnumerable<DepartmentDto>> ListAsync ()
-    {
-        var departments = await _unitOfWork.DepartmentRepository.GetAll().ToListAsync();
-
-        return departments.Select(_mapper.Map<DepartmentDto>);
-    }
-
-    /// <summary>
-    /// Retrieves a list of all departments along with their section names.
-    /// </summary>
-    /// <returns>A collection of DepartmentDto representing all departments with section names.</returns>
-    public async Task<IEnumerable<DepartmentPresentationDto>> AsyncList()
+    public async Task<IEnumerable<DepartmentDto>> ListAsync()
     {
         var departments = await _unitOfWork
-            .GetRepository<Department>()
-            .GetAll() // Devuelve IQueryable<Department>
-            .Include(d => d.Section) // Incluye la relación con Section
-            .ToListAsync(); // Ejecuta la consulta y materializa los resultados
+                                .GetRepository<Department>()
+                                .GetAll() 
+                                .Include(d => d.Section) // Load the relation Section
+                                .ToListAsync(); // List the values
 
-        return departments.Select(department => new DepartmentPresentationDto
-        {
-            Id = department.Id,
-            Name = department.Name,
-            SectionId = department.SectionId,
-            SectionName = department.Section.Name // Incluye el nombre de la sección
-        });
+        return departments.Select(_mapper.Map<DepartmentDto>);
     }
 
 
