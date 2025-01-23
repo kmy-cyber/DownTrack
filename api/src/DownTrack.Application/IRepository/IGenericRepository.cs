@@ -1,4 +1,6 @@
 
+using System.Linq.Expressions;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IRepository;
@@ -37,7 +39,7 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// Retrieves all entities as an <see cref="IQueryable{T}"/>.
     /// </summary>
     /// <returns>An <see cref="IQueryable{T}"/> representing all entities in the repository.</returns>
-    IQueryable<T> GetAllAsync();
+    IQueryable<T> GetAll();
 
     /// <summary>
     /// Asynchronously deletes an entity by its identifier.
@@ -55,5 +57,11 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// <returns>The entity with the specified identifier.</returns>
     T GetById<TId>(TId elementId);
 
+    /// <summary>
+    /// Retrieves all entities that satisfy the specified filter expressions.
+    /// </summary>
+    /// <param name="expressions">A collection of filter expressions to apply to the query.</param>
+    /// <returns>An <see cref="IQueryable{T}"/> containing all entities that match the provided filters.</returns>
+    IQueryable<T> GetAllByItems(IEnumerable<Expression<Func<T, bool>>> expressions);
 }
 

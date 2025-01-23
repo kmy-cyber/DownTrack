@@ -1,5 +1,6 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -39,27 +40,26 @@ public class EquipmentServices : IEquipmentServices
         await _unitOfWork.GetRepository<Equipment>().DeleteByIdAsync(dto);
 
         await _unitOfWork.CompleteAsync();
-        //await _equipmentRepository.DeleteByIdAsync(dto);
+       
     }
 
     public async Task<IEnumerable<EquipmentDto>> ListAsync()
     {
-        var equipment = await _unitOfWork.GetRepository<Equipment>().GetAllAsync().ToListAsync();
-        //var equipment = await _equipmentRepository.ListAsync();
+        var equipment = await _unitOfWork.GetRepository<Equipment>().GetAll().ToListAsync();
+        
         return equipment.Select(_mapper.Map<EquipmentDto>);
     }
 
     public async Task<EquipmentDto> UpdateAsync(EquipmentDto dto)
     {
         var equipment = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(dto.Id);
-
-        //var equipment = _equipmentRepository.GetById(dto.Id);
+        
         _mapper.Map(dto, equipment);
 
         _unitOfWork.GetRepository<Equipment>().Update(equipment);
 
         await _unitOfWork.CompleteAsync();
-        //await _equipmentRepository.UpdateAsync(equipment);
+       
         return _mapper.Map<EquipmentDto>(equipment);
     }
 
@@ -72,10 +72,39 @@ public class EquipmentServices : IEquipmentServices
     {
         var result = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(equipmentDto);
         
-        //var result = await _equipmentRepository.GetByIdAsync(equipmentDto);
-
         /// and returns the updated equipment as an EquipmentDto.
         return _mapper.Map<EquipmentDto>(result);
 
+    }
+
+
+
+    public async Task<PagedResultDto<EquipmentDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>().GetAll();
+
+        var totalCount = await queryEquipment.CountAsync();
+
+        var items = await queryEquipment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<EquipmentDto>
+        {
+            Items = items?.Select(_mapper.Map<EquipmentDto>) ?? Enumerable.Empty<EquipmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
     }
 }

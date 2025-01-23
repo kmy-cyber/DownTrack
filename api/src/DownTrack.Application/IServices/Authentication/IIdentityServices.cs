@@ -1,5 +1,4 @@
 
-
 using DownTrack.Application.DTO.Authentication;
 
 namespace DownTrack.Application.IServices.Authentication;
@@ -20,6 +19,9 @@ public interface IIdentityService
     /// Authenticates a user with the provided login credentials.
     /// </summary>
     /// <param name="userDto">The DTO containing the user's login details.</param>
-    /// <returns>A Task representing the asynchronous operation, returning true if login is successful, otherwise false.</returns>
-    Task<bool> LoginUserAsync(LoginUserDto userDto);
+    /// <returns>A Task representing the asynchronous operation, returning the generated token as a string if login is successful, otherwise null.</returns>
+    Task<string> LoginUserAsync(LoginUserDto userDto);
+
+    // cambiar
+    Task UpdateUserAsync (UpdateUserDto updateDto);
 }

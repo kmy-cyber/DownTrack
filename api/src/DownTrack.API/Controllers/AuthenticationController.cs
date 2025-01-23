@@ -1,8 +1,8 @@
 
 
-
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -20,11 +20,12 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-
+    //[Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
 
         var result = await _identityService.RegisterUserAsync(registerDto);
+        Console.WriteLine(result);
         return Ok(result);
 
     }
@@ -36,9 +37,16 @@ public class AuthenticationController : ControllerBase
     {
 
         var token = await _identityService.LoginUserAsync(loginDto);
-
         return Ok(token);
 
     }
 
+    [HttpPut]
+    [Route("PUT")]
+    public async Task<IActionResult> UpdateUser(UpdateUserDto updateDto )
+    {
+        await _identityService.UpdateUserAsync(updateDto);
+
+        return Ok();
+    }
 }

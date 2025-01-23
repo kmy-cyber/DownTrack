@@ -1,80 +1,60 @@
 
-
-using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DownTrack.Api.Controllers
+namespace DownTrack.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class TechnicianController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TechnicianController : ControllerBase
+    private readonly ITechnicianServices _technicianService;
+
+    public TechnicianController(ITechnicianServices technicianServices)
     {
-        private readonly ITechnicianServices _technicianService;
+        _technicianService = technicianServices;
+    }
 
-        public TechnicianController(ITechnicianServices technicianServices)
-        {
-            _technicianService = technicianServices;
-        }
 
-        [HttpPost]
-        [Route("POST")]
+    [HttpGet]
+    [Route("GET")]
 
-        public async Task<IActionResult> CreateTechnician(TechnicianDto technician)
-        {
-            await _technicianService.CreateAsync(technician);
+    public async Task<ActionResult<Technician>> GetUserById(int technicianId)
+    {
+        var result = await _technicianService.GetByIdAsync(technicianId);
 
-            return Ok("Technician added successfully");
-        }
+        if (result == null)
+            return NotFound($"Technician with ID {technicianId} not found");
 
-        [HttpGet]
-        [Route("GET_ALL")]
-
-        public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
-        {
-            var results = await _technicianService.ListAsync();
-            
-            return Ok(results);
-
-        }
-        
-
-        [HttpGet]
-        [Route("GET")]
-
-        public async Task<ActionResult<Technician>> GetUserById(int technicianId)
-        {
-            var result = await _technicianService.GetByIdAsync(technicianId);
-
-            if (result == null)
-                return NotFound($"Technician with ID {technicianId} not found");
-
-            return Ok(result);
-
-        }
-
-        [HttpPut]
-        [Route("PUT")]
-
-        public async Task<IActionResult> UpdateTechnician(TechnicianDto technician)
-        {
-            var result = await _technicianService.UpdateAsync(technician);
-            
-            return Ok(result);
-        }
-
-        [HttpDelete]
-        [Route("DELETE")]
-
-        public async Task<IActionResult> DeleteTechnician(int technicianId)
-        {
-            await _technicianService.DeleteAsync(technicianId);
-
-            return Ok("Technician deleted successfully");
-        }
-
+        return Ok(result);
 
     }
 
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _technicianService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+
+    // [HttpGet]
+    // [Route("Get_All_By")]
+
+    // public async Task<ActionResult<IEnumerable<Technician>>> GetAllByItems ([FromQuery] Prueba<Technician> prueba)
+    // {
+    //     var result = await _technicianService.GetPagedResultWithFilterAsync(prueba.paged,prueba.expressions[0]);
+
+    //     return Ok(result);
+    // }
 }
+

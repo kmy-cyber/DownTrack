@@ -1,6 +1,8 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -18,24 +20,28 @@ public class EquipmentController : ControllerBase
 
     [HttpPost]
     [Route("POST")]
-
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
+        // Obtener el claim "role"
+        // var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
+
+        // if(roleClaim == null)
+        // {
+        //     Console.WriteLine("es null");
+        //     throw new Exception();
+        // }    
+        
+        // Console.WriteLine(roleClaim.Value);
+        
+        // if (roleClaim == null || roleClaim.Value != "Technician")
+        // {
+        //     return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
+        // }
         await _equipmentService.CreateAsync(equipment);
 
         return Ok("Equipment added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Equipment>>> GetAllEquipment()
-    {
-        var results = await _equipmentService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]
@@ -45,10 +51,23 @@ public class EquipmentController : ControllerBase
         var result = await _equipmentService.GetByIdAsync(equipmentId);
 
         if (result == null)
-            return NotFound($"Equipement with ID {equipmentId} not found");
+            return NotFound($"Equipment with ID {equipmentId} not found");
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedEquipment ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
     [HttpPut]

@@ -1,0 +1,36 @@
+@host = http://localhost:5217
+
+### ID ( [0-99] )
+POST {{host}}/api/Equipment/POST/
+Content-Type:  application/json
+
+{
+  "id": 2,
+  "name": "str232ing",
+  "type": "stri23ng",
+  "status": "str2323ing",
+  "dateOfadquisition": "2025-01-07T06:39:12.837Z"
+}
+
+### Get request
+
+GET {{host}}/api/Equipment/GET_ALL
+
+### Delete request
+
+DELETE  {{host}}/api/Equipment/ 102
+
+### PUT request
+
+PUT {{host}}/api/Equipment/PUT 
+Content-Type:  application/json
+
+{
+  "id": 2,
+  "name": "str232ing",
+  "type": "stri23ng",
+  "status": "str2323ing",
+  "dateOfadquisition": "2025-01-07T06:39:12.837Z"
+}
+
+

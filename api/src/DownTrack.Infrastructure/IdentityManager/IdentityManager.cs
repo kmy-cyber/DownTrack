@@ -1,5 +1,3 @@
-
-
 using DownTrack.Application.Authentication;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -25,9 +23,8 @@ public class IdentityManager : IIdentityManager
 
         if (!result.Succeeded)
         {
-
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new Exception($"Error al crear el usuario: {errors}");
+            throw new Exception($"Error creating user: {errors}");
         }
 
         return user;
@@ -36,7 +33,7 @@ public class IdentityManager : IIdentityManager
 
     public async Task AddRoles(string userId, string role)
     {
-        //Verifica si el rol ya existe, si no, lo crea
+        
         var existingRole = await _roleManager.FindByNameAsync(role);
         if (existingRole == null)
         {
@@ -44,37 +41,39 @@ public class IdentityManager : IIdentityManager
             var roleResult = await _roleManager.CreateAsync(newRole);
             if (!roleResult.Succeeded)
             {
-                throw new Exception($"Error al crear el rol {role}: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+                throw new Exception($"Error creating role  {role}: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
             }
         }
 
-        //Asignar el rol al usuario
+        
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            throw new Exception($"Usuario con ID {userId} no encontrado.");
+            throw new Exception($"User with ID {userId} not found");
         }
 
         var addRoleResult = await _userManager.AddToRoleAsync(user, role);
+
         if (!addRoleResult.Succeeded)
         {
-            throw new Exception($"Error al agregar rol {role} al usuario: {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
+            throw new Exception($"Error adding role {role} to user : {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
         }
     }
 
-    public async Task<bool> CheckCredentialsAsync(string username, string password)
+    public async Task<User?> CheckCredentialsAsync(string username, string password)
     {
         var user = await _userManager.Users
                        .FirstOrDefaultAsync(u => u.UserName!.Equals(username));
 
         if (user is null)
-        {
-            return false;
-        }
+            return null;
 
         var valid = await _userManager.CheckPasswordAsync(user, password);
 
-        return valid;
+        if(!valid)
+            return null;
+            
+        return user;
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role)

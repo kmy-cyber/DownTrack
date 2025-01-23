@@ -1,0 +1,8 @@
+@host = http://localhost:5217
+
+
+GET {{host}}/api/DoneMaintenance/GET_ALL
+
+### Delete request
+
+DELETE {{host}}/api/DoneMaintenance/2

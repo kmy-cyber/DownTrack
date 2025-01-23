@@ -1,0 +1,16 @@
+@host = http://localhost:5217
+
+
+POST {{host}}/api/Section/POST/
+Content-Type:  application/json
+
+
+{
+  "id": 3,
+  "name": "stasas",
+  "sectionManagerId": 224
+}
+
+###Delete
+
+DELETE {{host}}/api/Section/DELETE?sectionId=3

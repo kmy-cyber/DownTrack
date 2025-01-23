@@ -5,6 +5,9 @@ using AutoMapper;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
+using DownTrack.Domain.Roles;
+using System.Data.Common;
+using DownTrack.Application.DTO.Paged;
 
 namespace DownTrack.Application.Services;
 
@@ -34,10 +37,12 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation, with an EmployeeDto as the result.</returns>
     public async Task<EmployeeDto> CreateAsync(EmployeeDto dto)
     {
-        var employee = _mapper.Map<Employee>(dto);
-
-        //await _employeeRepository.CreateAsync(employee);
+        Employee employee = _mapper.Map<Employee>(dto);
         
+        if(employee.UserRole != UserRole.ShippingSupervisor.ToString())
+        {
+            throw new Exception("This user is not a Shipping Supervisor");
+        }
         await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
 
         await _unitOfWork.CompleteAsync();
@@ -74,11 +79,25 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous operation, with a list of EmployeeDto as the result.</returns>
     public async Task<IEnumerable<EmployeeDto>> ListAsync()
     {
-        var employee = await _unitOfWork.GetRepository<Employee>().GetAllAsync().ToListAsync();
-        //var employee = await _employeeRepository.ListAsync();
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                        .GetAll()
+                                        .Include(e=> e.User)
+                                        .ToListAsync();
+        
         return employee.Select(_mapper.Map<EmployeeDto>);
     }
 
+
+    public async Task<IEnumerable<GetEmployeeDto>> AllAsync()
+    {
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                        .GetAll()
+                                        .Include(e=> e.User)
+                                        .ToListAsync();
+
+        return employee.Select(_mapper.Map<GetEmployeeDto>);
+        
+    }
 
 
     /// <summary>
@@ -88,9 +107,12 @@ public class EmployeeServices : IEmployeeServices
     /// <returns>A Task representing the asynchronous delete operation.</returns>
     public async Task DeleteAsync(int employeeId)
     {
+        var employee = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(employeeId);
+
         await _unitOfWork.GetRepository<Employee>().DeleteByIdAsync(employeeId);
 
-        await _unitOfWork.UserRepository.DeleteByIdAsync(employeeId);
+        if(employee.UserRole != UserRole.ShippingSupervisor.ToString())
+            await _unitOfWork.UserRepository.DeleteByIdAsync(employeeId);
 
         await _unitOfWork.CompleteAsync();
     }
@@ -114,5 +136,32 @@ public class EmployeeServices : IEmployeeServices
     }
 
 
+    public async Task<PagedResultDto<EmployeeDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Employee> queryEmployee = _unitOfWork.GetRepository<Employee>().GetAll();
 
+        var totalCount = await queryEmployee.CountAsync();
+
+        var items = await queryEmployee // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<EmployeeDto>
+        {
+            Items = items?.Select(_mapper.Map<EmployeeDto>) ?? Enumerable.Empty<EmployeeDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
 }
