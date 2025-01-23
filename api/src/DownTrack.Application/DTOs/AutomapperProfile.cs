@@ -54,6 +54,9 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User!.Email))
             .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole));
 
-            
+        CreateMap<Department, DepartmentDto>()
+            .ForMember(dest => dest.SectionName, opt=> opt.MapFrom(src => src.Section.Name));
+
+
     }
 }

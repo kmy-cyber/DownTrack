@@ -28,16 +28,6 @@ public class DoneMaintenanceController : ControllerBase
         return Ok("Done Maintenance added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<DoneMaintenance>>> GetAllDoneMaintenance()
-    {
-        var results = await _doneMaintenanceService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]

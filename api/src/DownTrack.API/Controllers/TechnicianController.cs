@@ -20,18 +20,6 @@ public class TechnicianController : ControllerBase
 
 
     [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
-    {
-        var results = await _technicianService.ListAsync();
-
-        return Ok(results);
-
-    }
-
-
-    [HttpGet]
     [Route("GET")]
 
     public async Task<ActionResult<Technician>> GetUserById(int technicianId)
@@ -59,6 +47,14 @@ public class TechnicianController : ControllerBase
     }
 
 
+    // [HttpGet]
+    // [Route("Get_All_By")]
 
+    // public async Task<ActionResult<IEnumerable<Technician>>> GetAllByItems ([FromQuery] Prueba<Technician> prueba)
+    // {
+    //     var result = await _technicianService.GetPagedResultWithFilterAsync(prueba.paged,prueba.expressions[0]);
+
+    //     return Ok(result);
+    // }
 }
 

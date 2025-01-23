@@ -1,5 +1,6 @@
 namespace DownTrack.Application.DTO;
 
+// DTO para la creacion 
 public class DoneMaintenanceDto
 {
     public int Id { get; set; }
