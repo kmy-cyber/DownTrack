@@ -33,7 +33,7 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentServices, DepartmentServices>();
         services.AddScoped<IEquipmentReceptorServices, EquipmentReceptorServices>();
         services.AddScoped<IEvaluationServices, EvaluationServices>();
-
+        services.AddScoped<ITransferRequestServices, TransferRequestServices>();
 
         return services;
 

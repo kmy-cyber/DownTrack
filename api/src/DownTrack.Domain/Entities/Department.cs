@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations;
+
 namespace DownTrack.Domain.Entities;
 
 public class Department : GenericEntity
@@ -9,5 +11,6 @@ public class Department : GenericEntity
     // todo dpto tiene obligado una Seccion
     public Section Section { get; set; } = null!;
     public ICollection<EquipmentReceptor> EquipmentReceptors {get;set;} = new List<EquipmentReceptor>();
+    public ICollection<TransferRequest> TransferRequests { get; set; } = new List<TransferRequest>();
 
 }

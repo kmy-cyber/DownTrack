@@ -9,6 +9,26 @@ namespace DownTrack.Infrastructure
 {
     public class DownTrackContext : IdentityDbContext<User>
 
+<<<<<<< HEAD
+=======
+    public DbSet<Technician> Technicians { get; set; }
+
+    public DbSet<Employee> Employees { get; set; }
+
+
+    public DbSet<Equipment> Equipments { get; set; }
+
+    public DbSet<Section> Sections { get; set; }
+
+    public DbSet<Maintenance> Maintenances { get; set; }
+
+    public DbSet<Department> Departments { get; set; }
+
+    public DbSet<TransferRequest> TransferRequests { get; set; }
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+>>>>>>> api_solicitud-traslado
     {
         public DownTrackContext(DbContextOptions options) : base(options) { }
 
@@ -30,6 +50,7 @@ namespace DownTrack.Infrastructure
         public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
 
 
+<<<<<<< HEAD
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -38,6 +59,34 @@ namespace DownTrack.Infrastructure
             modelBuilder.Entity<Employee>()
                 .ToTable("Employee")
                 .HasKey(u => u.Id);
+=======
+        modelBuilder.Entity<Section>()
+            .HasMany(s => s.Departments)
+            .WithOne(d => d.Section)
+            .HasForeignKey(d => d.SectionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Department>()
+            .HasKey(d => new { d.Id, d.SectionId });
+
+        modelBuilder.Entity<TransferRequest>()
+     .HasOne(tr => tr.Employee)
+     .WithMany(e => e.TransferRequests)
+     .HasForeignKey(tr => tr.EmployeeId)  // Correcto EmployeeId como FK
+     .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TransferRequest>()
+        .HasOne(tr => tr.Equipment)
+        .WithMany(e => e.TransferRequests)
+        .HasForeignKey(tr => tr.EquipmentId)  // Correcto EquipmentId como FK
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TransferRequest>()
+            .HasOne(tr => tr.Department)
+            .WithMany(d => d.TransferRequests)
+            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })  // Correcto DepartmentId como FK
+            .OnDelete(DeleteBehavior.Cascade);
+>>>>>>> api_solicitud-traslado
 
 
             // Technician Region
@@ -135,5 +184,9 @@ namespace DownTrack.Infrastructure
         }
     }
 
+<<<<<<< HEAD
 
 }
+=======
+// --project DownTrack.Infrastructure --startup-project DownTrack.API
+>>>>>>> api_solicitud-traslado

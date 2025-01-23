@@ -37,6 +37,7 @@ public static class DependencyInjection
         // Add HttpContextAccessor for accessing the current HTTP context
         services.AddHttpContextAccessor();
 
+<<<<<<< HEAD
         // Authentication and Authorization
         services.AddAuth(configuration);
 
@@ -45,6 +46,15 @@ public static class DependencyInjection
                .AddRoles<IdentityRole>() // Adds support for roles
                .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
                .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
+=======
+        service.AddScoped<ITechnicianRepository, TechnicianRepository>();
+        service.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        service.AddScoped<IUserRepository,UserRepository>();
+        service.AddScoped<IEquipmentRepository, EquipmentRepository>();
+        service.AddScoped<ISectionRepository, SectionRepository>();
+        service.AddScoped<IMaintenanceRepository, MaintenanceRepository>();
+        service.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
+>>>>>>> api_solicitud-traslado
 
         // Add custom repositories and services
         services.AddScoped<IUnitOfWork, UnitOfWork>();

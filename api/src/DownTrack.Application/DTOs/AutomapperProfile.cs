@@ -58,5 +58,7 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.SectionName, opt=> opt.MapFrom(src => src.Section.Name));
 
 
+        CreateMap<TransferRequestDto, TransferRequest>();
+        CreateMap<TransferRequest, TransferRequestDto>();
     }
 }

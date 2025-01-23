@@ -18,6 +18,8 @@ public interface IUnitOfWork : IDisposable
     IDepartmentRepository DepartmentRepository {get;}
 
     ITechnicianRepository TechnicianRepository {get;}
+    
+    
     /// <summary>
     /// Gets a generic repository for managing entities of the specified type.
     /// </summary>
