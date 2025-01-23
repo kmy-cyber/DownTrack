@@ -1,5 +1,6 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -39,7 +40,8 @@ public class DepartmentServices : IDepartmentServices
         //Maps DTO to domain entity.
 
         var department = _mapper.Map<Department>(dto);
-
+        department.SectionId = dto.SectionId;
+        department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
         //Adds the new department to the repository.
         await _unitOfWork.GetRepository<Department>().CreateAsync(department);
 
@@ -73,12 +75,18 @@ public class DepartmentServices : IDepartmentServices
         await _unitOfWork.CompleteAsync(); // Commits the transaction.
     }
 
+    public async Task<IEnumerable<DepartmentDto>> ListAsync ()
+    {
+        var departments = await _unitOfWork.DepartmentRepository.GetAll().ToListAsync();
+
+        return departments.Select(_mapper.Map<DepartmentDto>);
+    }
 
     /// <summary>
     /// Retrieves a list of all departments along with their section names.
     /// </summary>
     /// <returns>A collection of DepartmentDto representing all departments with section names.</returns>
-    public async Task<IEnumerable<DepartmentPresentationDto>> ListAsync()
+    public async Task<IEnumerable<DepartmentPresentationDto>> AsyncList()
     {
         var departments = await _unitOfWork
             .GetRepository<Department>()
@@ -90,6 +98,7 @@ public class DepartmentServices : IDepartmentServices
         {
             Id = department.Id,
             Name = department.Name,
+            SectionId = department.SectionId,
             SectionName = department.Section.Name // Incluye el nombre de la sección
         });
     }
@@ -137,6 +146,34 @@ public class DepartmentServices : IDepartmentServices
 
     }
 
+     public async Task<PagedResultDto<DepartmentDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Department> queryDepartment = _unitOfWork.GetRepository<Department>().GetAll();
+
+        var totalCount = await queryDepartment.CountAsync();
+
+        var items = await queryDepartment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<DepartmentDto>
+        {
+            Items = items?.Select(_mapper.Map<DepartmentDto>) ?? Enumerable.Empty<DepartmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
 
 
 }

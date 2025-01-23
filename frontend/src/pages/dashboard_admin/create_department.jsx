@@ -36,10 +36,14 @@ export const DepartmentCreationForm = () => {
             }
             const data = await response.json();
             setSectionList(data);
+            console.log("HERE");
+            console.log(sectionList);
             if(data.length === 0){
                 navigate('/dashboard/admin/add_section');
             }
             setFormData((prev) => ({ ...prev, ['section']: data[0].id }));
+            console.log("HERE2");
+            console.log(formData);
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching sections:", error);
@@ -61,6 +65,7 @@ export const DepartmentCreationForm = () => {
         setAlertMessage(null);
         try {
 
+            console.log(formData.name, formData.section);
             const response = await api("/Department/POST", {
                 method: "POST",
                 headers: {
@@ -89,7 +94,7 @@ export const DepartmentCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
-                setFormData({ id: "", name: "" });
+                setFormData({ name: "", section: formData.section });
             } else {
                 setAlertMessage("Failed to login");
             }
@@ -158,73 +163,6 @@ export const DepartmentCreationForm = () => {
                     </select>
                     </div>
 
-                    {formData.role === "section_manager" || formData.role === "receptor" ? (
-                    <div>
-                        <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                        Department
-                        </label>
-                        <input
-                        type="text"
-                        id="department"
-                        name="department"
-                        value={formData.department}
-                        onChange={handleChange}
-                        placeholder="Enter department"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                        />
-                    </div>
-                    ) : null}
-
-                    {formData.role === "technician" ? (
-                    <>
-                        <div>
-                        <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
-                            Years of Experience
-                        </label>
-                        <input
-                            type="number"
-                            id="experience"
-                            name="experience"
-                            value={formData.experience}
-                            onChange={handleChange}
-                            placeholder="Enter years of experience"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
-                        />
-                        </div>
-
-                        <div>
-                        <label htmlFor="specialty" className="block text-sm font-medium text-gray-700">
-                            Specialty
-                        </label>
-                        <input
-                            type="text"
-                            id="specialty"
-                            name="specialty"
-                            value={formData.specialty}
-                            onChange={handleChange}
-                            placeholder="Enter specialty"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                        </div>
-
-                        <div>
-                        <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
-                            Salary
-                        </label>
-                        <input
-                            type="number"
-                            id="salary"
-                            name="salary"
-                            value={formData.salary}
-                            onChange={handleChange}
-                            placeholder="Enter money to pay"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                        </div>
-                    </>
-                    ) : null}
                 </div>
 
                 <button

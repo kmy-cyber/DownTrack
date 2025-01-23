@@ -17,7 +17,7 @@ export const UserCreationForm = () => {
     const [formData, setFormData] = useState({
         name: "",
         username: "",
-        role: "",
+        role: "Administrator",
         department: 0,
         experience: "",
         specialty: "",
@@ -74,7 +74,6 @@ export const UserCreationForm = () => {
                 }
                 }
                 else if (response.ok) {
-                    
                     setAlertType('success');
                     setAlertMessage("Successful registration");
                 } else {

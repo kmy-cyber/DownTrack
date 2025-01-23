@@ -27,7 +27,7 @@ import api from "@/middlewares/api";
             name: "",
             id: "",
             sectionId: "",
-            description: ""
+            sectionName: "",
         });
     
         // TODO: Connect with backend and replace static values
@@ -46,6 +46,7 @@ import api from "@/middlewares/api";
                 }
                 const data = await response.json();
                 setDepartmentList(data);
+                console.log(data);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching departments:", error);
@@ -63,7 +64,7 @@ import api from "@/middlewares/api";
                 name: "",
                 id: "",
                 sectionId: "",
-                description: ""
+                sectionName: "",
             });
             setOnEdit(false);
             setKeyEdit(0);
@@ -81,7 +82,7 @@ import api from "@/middlewares/api";
                 name: "",
                 id: "",
                 sectionId: "",
-                description: ""
+                sectionName: ""
             });
             setOnEdit(false);
             setKeyEdit(0);
@@ -177,7 +178,7 @@ import api from "@/middlewares/api";
                                             color="blue-gray"
                                             className="font-semibold"
                                             >
-                                            {dept.sectionId}
+                                            {dept.sectionName}
                                             </Typography>
                                         </div>
                                         </div>

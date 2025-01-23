@@ -8,6 +8,7 @@ import {
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
+import { Refresh } from "@mui/icons-material";
 
 export const SectionCreationForm = () => {
     const [alertMessage, setAlertMessage] = useState('');
@@ -89,7 +90,7 @@ export const SectionCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
-                setFormData({ id: "", name: "", usernameSectionM: "" });
+                setFormData({ id: "", name: "", usernameSectionM: formData.usernameSectionM });
             } else {
                 setAlertMessage("Failed to login");
             }

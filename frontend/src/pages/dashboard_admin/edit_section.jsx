@@ -17,6 +17,7 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     id: sectionData ? sectionData.id : "",
     name: sectionData ? sectionData.name : "",
+    sectionManagerId: sectionData ? sectionData.sectionManagerId : "",
   });
 
   useEffect(() => {
@@ -37,9 +38,9 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
         const response = await api(`/Section/PUT`, {
           method: 'PUT',
           body: JSON.stringify({
-            id: formData.id,
-            name: formData.name,
-            sectionManagerId : formData.sectionManagerId
+            'id': formData.id,
+            'name': formData.name,
+            'sectionManagerId' : formData.sectionManagerId
           })
         });
 
@@ -47,9 +48,9 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
         console.log(formData.sectionManagerId);
 
     if (!response.ok) {
-        setAlertMessage('Failed to edit employee');
+        setAlertMessage('Failed to edit section');
         setAlertType('error');
-        throw new Error('Failed to edit employee');
+        throw new Error('Failed to edit section');
     }
     else
     {
@@ -58,7 +59,7 @@ const EditSectionForm = ({ sectionData, onSave, onCancel }) => {
         onSave(formData);
     }
     } catch (error) {
-        setAlertMessage('Error editing employee:');
+        setAlertMessage('Error editing section:');
         setAlertType('error');
         console.log(error);
     }
