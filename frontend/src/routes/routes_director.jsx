@@ -15,7 +15,7 @@ import GeneralInventoryTable from "@/components/inventory/general_inventory_tabl
 import EquipmentDisposalTable from "@/pages/dashboard_director/disposals_table";
 import MaintenanceHistory from "@/pages/dashboard_director/maintenance_table";
 import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
-import UserTable from "@/pages/dashboard_director/technicians_table";
+import UserTable from "@/pages/dashboard_director/employee_table";
   
   const typeUser = 1;
   
@@ -71,8 +71,8 @@ export const routesDirector = [
         },
         {
           icon: <UserIcon {...icon}/>,
-          name: "Technicians",
-          path: "/technicians",
+          name: "Employees",
+          path: "/employees",
           element: <UserTable/>
         }
         

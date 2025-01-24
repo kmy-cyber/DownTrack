@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
 import userListData from "@/data/users-table-data"; // Ajusta la ruta según tu estructura de proyecto
 
-const TechnicianTable = () => {
+const EmployeeTable = () => {
   // Filtrar usuarios con rol de "technician"
   const technicians = userListData.filter((user) => user.role === "technician");
 
@@ -11,7 +11,7 @@ const TechnicianTable = () => {
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-4 p-6">
           <Typography variant="h6" color="white">
-            Technician Management Table
+            Employee Management Table
           </Typography>
         </CardHeader>
         <CardBody>
@@ -50,4 +50,4 @@ const TechnicianTable = () => {
   );
 };
 
-export default TechnicianTable;
+export default EmployeeTable;
