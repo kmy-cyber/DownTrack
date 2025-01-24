@@ -5,10 +5,10 @@ POST {{host}}/api/TransferRequest/POST/
 Content-Type:  application/json
 
 {
-  "id": 0,
+  "id": 1,
   "date": "2025-01-15T20:46:16.338Z",
-  "employeeId": 0,
-  "equipmentId": 0,
-  "departmentId": 0,
-  "sectionId": 0
+  "employeeId": 1,
+  "equipmentId": 1,
+  "departmentId": 1,
+  "sectionId": 2
 }
