@@ -27,16 +27,7 @@ public class EvaluationController : ControllerBase
         return Ok("Evaluation added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<Evaluation>>> GetAllEvaluation()
-    {
-        var results = await _evaluationService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]

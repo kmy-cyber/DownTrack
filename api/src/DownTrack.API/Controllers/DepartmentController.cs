@@ -5,6 +5,7 @@ using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class DepartmentController : ControllerBase
@@ -30,20 +31,9 @@ public class DepartmentController : ControllerBase
 
 
     [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartents()
-    {
-        var results = await _departmentService.ListAsync();
-
-        return Ok(results);
-
-    }
-
-    [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Department>> GetUserById(int departmentId)
+    public async Task<ActionResult<Department>> GetDepartmentById(int departmentId)
     {
         var result = await _departmentService.GetByIdAsync(departmentId);
 
@@ -53,6 +43,7 @@ public class DepartmentController : ControllerBase
         return Ok(result);
 
     }
+
 
     [HttpGet]
     [Route("GetPaged")]
@@ -79,9 +70,9 @@ public class DepartmentController : ControllerBase
     [HttpDelete]
     [Route("DELETE")]
 
-    public async Task<IActionResult> DeleteDepartment(int departmentId, int SectionId)
+    public async Task<IActionResult> DeleteDepartment(int departmentId)
     {
-        await _departmentService.DeleteAsync(departmentId, SectionId);
+        await _departmentService.DeleteAsync(departmentId);
 
         return Ok("Department deleted successfully");
     }

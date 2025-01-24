@@ -43,16 +43,6 @@ public class EquipmentController : ControllerBase
         return Ok("Equipment added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Equipment>>> GetAllEquipment()
-    {
-        var results = await _equipmentService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]

@@ -17,17 +17,6 @@ public class EquipmentReceptorController : ControllerBase
     }
 
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<EquipmentReceptor>>> GetAllEquipmentReceptor()
-    {
-        var results = await _equipmentReceptorService.ListAsync();
-
-        return Ok(results);
-
-    }
-
 
     [HttpGet]
     [Route("GET")]
