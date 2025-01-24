@@ -9,7 +9,8 @@ Content-Type:  application/json
   "name": "str232ing",
   "type": "stri23ng",
   "status": "str2323ing",
-  "dateOfadquisition": "2025-01-07T06:39:12.837Z"
+  "dateOfadquisition": "2025-01-07T06:39:12.837Z",
+  "departmentId": 1
 }
 
 ### Get request

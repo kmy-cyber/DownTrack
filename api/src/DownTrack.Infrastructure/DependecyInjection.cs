@@ -37,6 +37,7 @@ public static class DependencyInjection
         // Add HttpContextAccessor for accessing the current HTTP context
         services.AddHttpContextAccessor();
 
+
         // Authentication and Authorization
         services.AddAuth(configuration);
 
@@ -46,10 +47,12 @@ public static class DependencyInjection
                .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
                .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
 
+
         // Add custom repositories and services
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITechnicianRepository, TechnicianRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEquipmentRepository, EquipmentRepository>();
         services.AddScoped<ISectionRepository, SectionRepository>();
@@ -57,11 +60,13 @@ public static class DependencyInjection
         services.AddScoped<IIdentityManager, IdentityManager>();
         services.AddScoped<IDoneMaintenanceRepository, DoneMaintenanceRepository>();
         services.AddScoped<IEvaluationRepository, EvaluationRepository>();
-        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
-
+        services.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
+        services.AddScoped<ITransferRepository, TransferRepository>();
+        
         //services.AddScoped<DownTrackContextIni
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();
+
 
 
         return services;
