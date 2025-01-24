@@ -86,13 +86,13 @@ public class TechnicianServices : ITechnicianServices
 
         if (exp is null)
         {
-            queryTechnician = _unitOfWork.TechnicianRepository.GetAll();
+            queryTechnician = _unitOfWork.GetRepository<Technician>().GetAll();
 
         }
         else
         {
             List<Expression<Func<Technician, bool>>> exps = new List<Expression<Func<Technician, bool>>>() { exp };
-            queryTechnician = _unitOfWork.TechnicianRepository.GetAllByItems(exps);
+            queryTechnician = _unitOfWork.GetRepository<Technician>().GetAllByItems(exps);
         }
 
 

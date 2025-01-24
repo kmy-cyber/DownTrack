@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;

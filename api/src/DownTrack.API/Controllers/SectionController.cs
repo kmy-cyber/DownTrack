@@ -44,6 +44,16 @@ public class SectionController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _sectionService.ListAsync();
+
+        return Ok(result);
+
+    }
 
     [HttpGet]
     [Route("GetPaged")]

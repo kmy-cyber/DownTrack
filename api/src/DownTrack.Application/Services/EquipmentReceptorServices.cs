@@ -24,8 +24,8 @@ public class EquipmentReceptorServices : IEquipmentReceptorServices
     {
         var equipmentReceptor = _mapper.Map<EquipmentReceptor>(dto);
 
-        var department = await _unitOfWork.DepartmentRepository
-                        .GetByIdAndSectionIdAsync(equipmentReceptor.DepartamentId, equipmentReceptor.SectionId);
+        var department = await _unitOfWork.GetRepository<Department>()
+                                          .GetByIdAsync(equipmentReceptor.DepartamentId);
 
         equipmentReceptor.Departament = department;
         
