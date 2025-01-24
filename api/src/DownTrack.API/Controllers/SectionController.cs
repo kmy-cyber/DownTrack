@@ -68,6 +68,15 @@ public class SectionController : ControllerBase
         
     }
 
+    [HttpGet]
+    [Route("Get_ALL_Departments")]
+    public async Task<ActionResult> GetAllDepartments (int sectionId)
+    {
+        var result = await _sectionService.GetAllDepartments(sectionId);
+
+        return Ok(result);
+    }
+
 
     [HttpPut]
     [Route("PUT")]

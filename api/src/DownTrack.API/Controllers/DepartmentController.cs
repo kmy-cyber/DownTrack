@@ -58,6 +58,17 @@ public class DepartmentController : ControllerBase
         
     }
 
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _departmentService.ListAsync();
+
+        return Ok(result);
+
+    }
+
     [HttpPut]
     [Route("PUT")]
 

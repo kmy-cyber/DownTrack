@@ -1,6 +1,8 @@
 using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -40,6 +42,15 @@ public class DepartmentServices : IDepartmentServices
         //Maps DTO to domain entity.
 
         var department = _mapper.Map<Department>(dto);
+
+        var departmentRepository = (IDepartmentRepository) _unitOfWork.GetRepository<Department>();
+        
+        bool existDepartment = await departmentRepository
+                                    .ExistsByNameAndSectionAsync(department.Name,department.SectionId);
+
+        if(existDepartment)
+            throw new Exception("A department with the same name already exists in this section.");
+
 
         department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
 
