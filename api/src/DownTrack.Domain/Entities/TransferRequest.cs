@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DownTrack.Domain.Entities;
 
@@ -8,16 +5,17 @@ public class TransferRequest : GenericEntity
 {
     public int? EmployeeId { get; set; }
 
-    public  Employee? Employee { get; set; } 
+    public  Employee? SectionManager { get; set; } 
 
-    public int? EquipmentId { get; set; }
-    public  Equipment? Equipment { get; set; }
+    public int EquipmentId { get; set; }
+    public  Equipment Equipment { get; set; } = null!;
 
     public DateTime Date { get; set; } // Fecha de la solicitud de transferencia
 
-    public  int? DepartmentId { get; set; }
-    public  int? SectionId { get; set; }
+    public  int ArrivalDepartmentId { get; set; } // departmamento al cual llegara
+    public  Department ArrivalDepartment { get; set; } =null!;
 
-    public  Department? Department { get; set; }
+    public int? TransferId {get;set;}
+    public Transfer? Transfer {get;set;}
 
 }

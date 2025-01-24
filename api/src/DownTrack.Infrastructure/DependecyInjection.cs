@@ -52,6 +52,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITechnicianRepository, TechnicianRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEquipmentRepository, EquipmentRepository>();
         services.AddScoped<ISectionRepository, SectionRepository>();
@@ -59,9 +60,9 @@ public static class DependencyInjection
         services.AddScoped<IIdentityManager, IdentityManager>();
         services.AddScoped<IDoneMaintenanceRepository, DoneMaintenanceRepository>();
         services.AddScoped<IEvaluationRepository, EvaluationRepository>();
-        services.AddScoped<IEquipmentReceptorRepository, EquipmentReceptorRepository>();
         services.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
         services.AddScoped<ITransferRepository, TransferRepository>();
+        
         //services.AddScoped<DownTrackContextIni
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();

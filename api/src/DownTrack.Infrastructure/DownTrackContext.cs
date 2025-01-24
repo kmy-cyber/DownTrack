@@ -5,252 +5,265 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace DownTrack.Infrastructure
+namespace DownTrack.Infrastructure;
+public class DownTrackContext : IdentityDbContext<User>
 {
-    public class DownTrackContext : IdentityDbContext<User>
 
-    
+    public DownTrackContext(DbContextOptions options) : base(options)
+    {
+
+    }
+
+    public DbSet<Technician> Technicians { get; set; }
+    public DbSet<Employee> Employees { get; set; }
+    public DbSet<Equipment> Equipments { get; set; }
+    public DbSet<Section> Sections { get; set; }
+    public DbSet<DoneMaintenance> DoneMaintenances { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<Evaluation> Evaluations { get; set; }
+    public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
+    public DbSet<TransferRequest> TransferRequests { get; set; }
+    public DbSet<Transfer> Transfers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-
     {
-        public DownTrackContext(DbContextOptions options) : base(options) { }
+        base.OnModelCreating(modelBuilder);
 
-        public DbSet<Technician> Technicians { get; set; }
-
-        public DbSet<Employee> Employees { get; set; }
-
-
-        public DbSet<Equipment> Equipments { get; set; }
-
-        public DbSet<Section> Sections { get; set; }
-
-        public DbSet<DoneMaintenance> DoneMaintenances { get; set; }
-
-        public DbSet<Department> Departments { get; set; }
-      
-        public DbSet<TransferRequest> TransferRequests { get; set; }
-
-        public DbSet<Transfer> Transfers { get; set; }
-        
-      public DbSet<Evaluation> Evaluations { get; set; }
-      
-      public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
-
-     
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // Employee Region
+        modelBuilder.Entity<Employee>(entity =>
         {
-            base.OnModelCreating(modelBuilder);
+            entity.HasKey(e => e.Id);
 
-            // Employee Region
-            modelBuilder.Entity<Employee>()
-                .ToTable("Employee")
-                .HasKey(u => u.Id);
+            entity.Property(e => e.Name)
+                  .IsRequired();
+            entity.Property(e => e.UserRole)
+                  .IsRequired();
 
-        modelBuilder.Entity<Section>()
-            .HasMany(s => s.Departments)
-            .WithOne(d => d.Section)
-            .HasForeignKey(d => d.SectionId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.UserRole);
 
-        
-  
-  
-        modelBuilder.Entity<TransferRequest>()
-            .HasOne(tr => tr.Employee)
-            .WithMany(e => e.TransferRequests)
-            .HasForeignKey(tr => tr.EmployeeId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TransferRequest>()
-            .HasOne(tr => tr.Equipment)
-            .WithMany(e => e.TransferRequests)
-            .HasForeignKey(tr => tr.EquipmentId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TransferRequest>()
-            .HasOne(tr => tr.Department)
-            .WithMany(d => d.TransferRequests)
-            .HasForeignKey(tr => new { tr.DepartmentId, tr.SectionId })
-            .OnDelete(DeleteBehavior.Cascade);
+        });
 
 
-            // Technician Region
-            modelBuilder.Entity<Technician>()
-                .ToTable("Technician")
-                .HasOne<Employee>() // One-to-one relationship with Employee
-                .WithOne()
-                .HasForeignKey<Technician>(t => t.Id);
+        // Technician Region
+        modelBuilder.Entity<Technician>(entity =>
+        {
+            entity.HasOne<Employee>()
+                  .WithOne()
+                  .HasForeignKey<Technician>(t => t.Id);
 
-            modelBuilder.Entity<Technician>()
-                        .HasBaseType<Employee>();
+            entity.Property(t => t.Specialty)
+                  .IsRequired();
+            entity.Property(t => t.Salary)
+                  .IsRequired();
+            entity.Property(t => t.ExpYears)
+                  .IsRequired();
 
-            // Equipment Receptor Region
+            entity.HasBaseType<Employee>();
+        });
 
-            modelBuilder.Entity<EquipmentReceptor>()
-                .ToTable("EquipmentReceptor")
-                .HasOne<Employee>() // One-to-one relationship with Employee
-                .WithOne()
-                .HasForeignKey<EquipmentReceptor>(t => t.Id);
+        // Equipment Receptor Region
 
-            modelBuilder.Entity<EquipmentReceptor>()
-                        .HasBaseType<Employee>();
+        modelBuilder.Entity<EquipmentReceptor>(entity =>
+        {
 
-            modelBuilder.Entity<EquipmentReceptor>()
-                .HasOne(er => er.Departament)
-                .WithMany(d => d.EquipmentReceptors)
-                .HasForeignKey(er => new { er.DepartamentId })
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Employee>() // One-to-one relationship with Employee
+                  .WithOne()
+                  .HasForeignKey<EquipmentReceptor>(t => t.Id);
+
+            entity.HasBaseType<Employee>();
+
+            entity.HasOne(er => er.Departament)
+                  .WithMany(d => d.EquipmentReceptors)
+                  .HasForeignKey(er => er.DepartamentId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+        });
+
+        //Section region
+
+        modelBuilder.Entity<Section>(entity =>
+        {
+            entity.HasKey(s => s.Id);
+
+            entity.Property(s => s.Name)
+                  .IsRequired();
+            entity.HasIndex(s => s.Name)
+                  .IsUnique();
+
+            entity.HasOne(s => s.SectionManager)
+                  .WithMany(sm => sm.Sections)
+                  .HasForeignKey(s => s.SectionManagerId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
 
-            // Equipment Region
-            modelBuilder.Entity<Equipment>()
-                        .HasKey(e => e.Id);
-          
-            modelBuilder.Entity<Equipment>(entity =>
-            {
+        });
 
-                entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
+        //Department Region
 
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(50);
+        modelBuilder.Entity<Department>(entity =>
+        {
+            entity.HasKey(d => d.Id);
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(50);
+            entity.Property(d => d.Name)
+                .IsRequired()
+                .HasMaxLength(100);
 
-                entity.HasOne(e => e.Location)
-                    .WithMany(d => d.Equipments)
-                    .HasForeignKey(e => e.LocationId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(d => d.Name);
 
-                entity.HasMany(e => e.TransferRequests)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasMany(e => e.Transfers)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.Property(e => e.DateOfadquisition)
-                    .IsRequired();
-            });
-
-            //Section Region
-            modelBuilder.Entity<Section>()
-                .HasMany(s => s.Departments)
-                .WithOne(d => d.Section)
+            entity.HasOne(d => d.Section)
+                .WithMany(s => s.Departments)
                 .HasForeignKey(d => d.SectionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Section>()
-                .HasIndex(s => s.Name)
-                .IsUnique();
+        });
 
-            //Department Region
-            modelBuilder.Entity<Department>()
-                .HasKey(d => d.Id); // 
-            
-            modelBuilder.Entity<Department>(entity =>
-            {
-                entity.HasKey(d => new { d.Id, d.SectionId });
+        // Equipment Region
+        modelBuilder.Entity<Equipment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
 
-                entity.Property(d => d.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
 
-                entity.HasOne(d => d.Section)
-                    .WithMany()
-                    .HasForeignKey(d => d.SectionId)
-                    .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(50);
 
-                entity.HasMany(d => d.TransferRequests)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50);
 
-                entity.HasMany(d => d.Equipments)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-            // modelBuilder.Entity<Department>()
-            //     .Property(d => d.Id)
-            //     .ValueGeneratedOnAdd(); //
+            entity.Property(e => e.DateOfadquisition)
+                .IsRequired();
 
-            modelBuilder.Entity<Department>()
-                .HasOne(d => d.Section)
-                .WithMany(s => s.Departments)
-                .HasForeignKey(d => d.SectionId);
+            entity.HasIndex(e => e.Type);
+            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.DateOfadquisition);
+            entity.HasIndex(e => e.Status);
+
+            entity.HasOne(e => e.Location)
+                  .WithMany(d => d.Equipments)
+                  .HasForeignKey(e => e.LocationId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(dm => dm.DateOfadquisition).HasColumnType("date");
+
+        });
+
+        //Transfer Request
+        modelBuilder.Entity<TransferRequest>(entity =>
+        {
+            entity.HasKey(tr => tr.Id);
+
+            entity.HasOne(tr => tr.SectionManager)
+                  .WithMany(e => e.TransferRequests)
+                  .HasForeignKey(tr => tr.EmployeeId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(tr => tr.Equipment)
+                  .WithMany(e => e.TransferRequests)
+                  .HasForeignKey(tr => tr.EquipmentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(tr => tr.ArrivalDepartment)
+                  .WithMany(d => d.TransferRequests)
+                  .HasForeignKey(tr => tr.ArrivalDepartmentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+        });
+
+        // Configuration of DoneMaintenance relationship
+
+        modelBuilder.Entity<DoneMaintenance>(entity =>
+        {
+            entity.HasKey(dm => dm.Id); // Primary key of the relationship
+
+            entity.Property(dm => dm.Type)
+                  .IsRequired();
+
+            entity.Property(dm => dm.Date)
+                  .HasColumnType("date")
+                  .IsRequired();
+
+            entity.Property(dm => dm.Cost)
+                  .IsRequired();
+
+            entity.HasIndex(dm => dm.Date);
+
+            entity.HasOne(dm => dm.Technician) // Primary key of the relationship
+                  .WithMany(t => t.DoneMaintenances) // One-to-many relationship
+                  .HasForeignKey(dm => dm.TechnicianId) // Foreign key to TechnicianId
+                  .OnDelete(DeleteBehavior.SetNull); // If a technician is deleted, set the value of the field to null
 
 
-            // Configuration of DoneMaintenance relationship
+            entity.HasOne(dm => dm.Equipment)
+                  .WithMany(e => e.DoneMaintenances)
+                  .HasForeignKey(dm => dm.EquipmentId)
+                  .OnDelete(DeleteBehavior.SetNull); // If an equipment is deleted, set the value of the field to null
 
-            modelBuilder.Entity<DoneMaintenance>()
-                .HasKey(mr => mr.Id); // Primary key of the relationship
 
-            modelBuilder.Entity<DoneMaintenance>()
-                .HasOne(dm => dm.Technician) // Primary key of the relationship
-                .WithMany(t => t.DoneMaintenances) // One-to-many relationship
-                .HasForeignKey(dm => dm.TechnicianId) // Foreign key to TechnicianId
-                .OnDelete(DeleteBehavior.SetNull); // If a technician is deleted, set the value of the field to null
+        });
 
-            modelBuilder.Entity<DoneMaintenance>()
-                .HasOne(dm => dm.Equipment)
-                .WithMany(e => e.DoneMaintenances)
-                .HasForeignKey(dm => dm.EquipmentId)
-                .OnDelete(DeleteBehavior.SetNull); // If an equipment is deleted, set the value of the field to null
 
-            modelBuilder.Entity<DoneMaintenance>()
-                .Property(dm => dm.Date).HasColumnType("date");
+        // Evaluation region
+        // Technician to Evaluation relationship
+        modelBuilder.Entity<Evaluation>(entity =>
+        {
+            entity.HasKey(ev => ev.Id);
 
-            // Evaluation region
-            // Technician to Evaluation relationship
-            modelBuilder.Entity<Evaluation>()
-                .HasOne(e => e.Technician) // Each evaluation has one technician
-                .WithMany(t => t.ReceivedEvaluations) // Each technician has many evaluations
-                .HasForeignKey(e => e.TechnicianId) // Foreign key in Evaluation
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(ev => ev.Description)
+                  .IsRequired();
+
+            entity.HasOne(e => e.Technician) // Each evaluation has one technician
+                  .WithMany(t => t.ReceivedEvaluations) // Each technician has many evaluations
+                  .HasForeignKey(e => e.TechnicianId) // Foreign key in Evaluation
+                  .OnDelete(DeleteBehavior.Cascade);
 
             // SectionManager to Evaluation relationship
-            modelBuilder.Entity<Evaluation>()
-                .HasOne(e => e.SectionManager) // Each evaluation has one section manager
-                .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
-                .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
-                .OnDelete(DeleteBehavior.SetNull);
-            
-          
-          modelBuilder.Entity<Transfer>(entity =>
-            {
-                entity.HasKey(t => t.Id);
-                entity.HasOne(t => t.TransferRequest)
-                    .WithMany()
-                    .HasForeignKey(t => t.RequestId)
-                    .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.SectionManager) // Each evaluation has one section manager
+                  .WithMany(s => s.GivenEvaluations) // Each section manager has many evaluations
+                  .HasForeignKey(e => e.SectionManagerId) // Foreign key in Evaluation
+                  .OnDelete(DeleteBehavior.SetNull);
 
+        });
 
-                entity.HasOne(t => t.ShippingSupervisor)
-                    .WithMany()
-                    .HasForeignKey(t => t.ShippingSupervisorId)
-                    .OnDelete(DeleteBehavior.Restrict);
+        //Transfer Region
+        modelBuilder.Entity<Transfer>(entity =>
+          {
+              entity.HasKey(t => t.Id);
 
-
-                entity.HasOne(t => t.EquipmentReceptor)
-                    .WithMany()
-                    .HasForeignKey(t => t.EquipmentReceptorId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-
-                entity.Property(t => t.Date)
+              entity.Property(t => t.Date)
+                    .HasColumnType("date")
                     .IsRequired();
-            });
-          
-          
-        }
+
+              entity.HasIndex(t => t.Date);
+
+              entity.HasOne(t => t.TransferRequest)
+                    .WithOne(tr => tr.Transfer)
+                    .HasForeignKey<Transfer>(t => t.RequestId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+              entity.HasOne(t => t.ShippingSupervisor)
+                    .WithMany(sr => sr.Transfers)
+                    .HasForeignKey(t => t.ShippingSupervisorId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+              entity.HasOne(t => t.EquipmentReceptor)
+                    .WithMany(er => er.AcceptedTransfers)
+                    .HasForeignKey(t => t.EquipmentReceptorId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+          });
+
+
     }
+}
+
+
+
+
+
 

@@ -14,14 +14,6 @@ public interface IUnitOfWork : IDisposable
     /// Gets the repository for user-related operations.
     /// </summary>
     IUserRepository UserRepository { get; }
-
-    IDepartmentRepository DepartmentRepository { get; }
-
-    ITransferRequestRepository TransferRequestRepository { get; }
-
-    ITransferRepository TransferRepository { get; }
-
-    ITechnicianRepository TechnicianRepository {get;}
     
     /// <summary>
     /// Gets a generic repository for managing entities of the specified type.

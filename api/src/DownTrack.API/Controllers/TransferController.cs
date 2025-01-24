@@ -1,78 +1,81 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DownTrack.Api.Controllers
+namespace DownTrack.Api.Controllers;
+
+
+[ApiController]
+[Route("api/[controller]")]
+public class TransferController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TransferController : ControllerBase
+    private readonly ITransferServices _transferService;
+
+    public TransferController(ITransferServices transferServices)
     {
-        private readonly ITransferServices _transferService;
+        _transferService = transferServices;
+    }
 
-        public TransferController(ITransferServices transferServices)
-        {
-            _transferService = transferServices;
-        }
+    [HttpPost]
+    [Route("POST")]
 
-        [HttpPost]
-        [Route("POST")]
+    public async Task<IActionResult> CreateTransfer(TransferDto transfer)
+    {
+        await _transferService.CreateAsync(transfer);
 
-        public async Task<IActionResult> CreateTransfer(TransferDto transfer)
-        {
-            await _transferService.CreateAsync(transfer);
+        return Ok("Transfer added successfully");
+    }
 
-            return Ok("Transfer added successfully");
-        }
+    [HttpGet]
+    [Route("GetPaged")]
 
-        [HttpGet]
-        [Route("GET_ALL")]
+    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        public async Task<ActionResult<IEnumerable<Transfer>>> GetAllTransfer()
-        {
-            var results = await _transferService.ListAsync();
-            
-            return Ok(results);
-
-        }
+        var result = await _transferService.GetPagedResultAsync(paged);
         
+        return Ok (result);
+        
+    }
 
-        [HttpGet]
-        [Route("{transferId}")]
 
-        public async Task<ActionResult<Transfer>> GetTransferById(int transferId)
-        {
-            var result = await _transferService.GetByIdAsync(transferId);
+    [HttpGet]
+    [Route("{transferId}")]
 
-            if (result == null)
-                return NotFound($"Transfer with ID {transferId} not found");
+    public async Task<ActionResult<Transfer>> GetTransferById(int transferId)
+    {
+        var result = await _transferService.GetByIdAsync(transferId);
 
-            return Ok(result);
+        if (result == null)
+            return NotFound($"Transfer with ID {transferId} not found");
 
-        }
-
-        [HttpPut]
-        [Route("PUT")]
-
-        public async Task<IActionResult> UpdateTransfer(TransferDto transfer)
-        {
-            var result = await _transferService.UpdateAsync(transfer);
-            
-            return Ok(result);
-        }
-
-        [HttpDelete]
-        [Route("{transferId}")]
-
-        public async Task<IActionResult> DeleteTransfer(int transferId)
-        {
-            await _transferService.DeleteAsync(transferId);
-
-            return Ok("Transfer deleted successfully");
-        }
-
+        return Ok(result);
 
     }
 
+    [HttpPut]
+    [Route("PUT")]
+
+    public async Task<IActionResult> UpdateTransfer(TransferDto transfer)
+    {
+        var result = await _transferService.UpdateAsync(transfer);
+
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    [Route("{transferId}")]
+
+    public async Task<IActionResult> DeleteTransfer(int transferId)
+    {
+        await _transferService.DeleteAsync(transferId);
+
+        return Ok("Transfer deleted successfully");
+    }
+
+
 }
+

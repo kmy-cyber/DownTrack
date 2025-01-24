@@ -1,5 +1,6 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -39,7 +40,7 @@ public class TransferServices : ITransferServices
 
     public async Task<IEnumerable<TransferDto>> ListAsync()
     {
-        var transfer = await _unitOfWork.GetRepository<Transfer>().GetAllAsync().ToListAsync();
+        var transfer = await _unitOfWork.GetRepository<Transfer>().GetAll().ToListAsync();
         //var transfer = await _transferRepository.ListAsync();
         return transfer.Select(_mapper.Map<TransferDto>);
     }
@@ -69,6 +70,37 @@ public class TransferServices : ITransferServices
         // and returns the updated transfer as a transferDto.
         return _mapper.Map<TransferDto>(result);
 
+    }
+
+
+
+    public async Task<PagedResultDto<TransferDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Transfer> queryTransfer = _unitOfWork.GetRepository<Transfer>().GetAll();
+
+        var totalCount = await queryTransfer.CountAsync();
+
+        var items = await queryTransfer // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<TransferDto>
+        {
+            Items = items?.Select(_mapper.Map<TransferDto>) ?? Enumerable.Empty<TransferDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
     }
 }
 
