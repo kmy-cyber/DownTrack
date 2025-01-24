@@ -34,6 +34,16 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee ()
+    {
+        var result = await _employeeService.ListAsync();
+
+        return Ok(result);
+    }   
+
+    [HttpGet]
     [Route("GetPaged")]
 
     public async Task<IActionResult> GetPagedEmployee ([FromQuery]PagedRequestDto paged)
