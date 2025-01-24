@@ -6,9 +6,9 @@ Content-Type:  application/json
 
 
 {
-  "id": 3,
-  "name": "stasas",
-  "sectionManagerId": 224
+  "id": 2,
+  "name": "IT",
+  "sectionManagerId": 3
 }
 
 ###Delete

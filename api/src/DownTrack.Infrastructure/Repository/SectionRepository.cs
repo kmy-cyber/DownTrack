@@ -17,4 +17,5 @@ public class SectionRepository : GenericRepository<Section>, ISectionRepository
         
         return section;
     }
+
 }

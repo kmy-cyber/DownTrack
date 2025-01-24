@@ -44,6 +44,16 @@ public class SectionController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _sectionService.ListAsync();
+
+        return Ok(result);
+
+    }
 
     [HttpGet]
     [Route("GetPaged")]
@@ -56,6 +66,15 @@ public class SectionController : ControllerBase
         
         return Ok (result);
         
+    }
+
+    [HttpGet]
+    [Route("Get_ALL_Departments")]
+    public async Task<ActionResult> GetAllDepartments (int sectionId)
+    {
+        var result = await _sectionService.GetAllDepartments(sectionId);
+
+        return Ok(result);
     }
 
 
