@@ -15,29 +15,31 @@ public class DepartmentRepository : GenericRepository<Department>, IDepartmentRe
 
     }
 
-    public async Task<Department> GetByIdAndSectionIdAsync(int departmentId, int sectionId)
+    // public async Task<Department> GetByIdAndSectionIdAsync(int departmentId, int sectionId)
+    // {
+    //     var result = await _entity.FirstOrDefaultAsync(d => d.Id == departmentId && d.SectionId == sectionId);
+    //     if (result == null)
+    //         throw new KeyNotFoundException($"No se encontró una entidad con el ID '{departmentId} y {sectionId}'.");
+    //     return result;
+    // }
+    public async Task<bool> ExistsByNameAndSectionAsync (string departmentName , int sectionId)
     {
-        var result = await _entity.FirstOrDefaultAsync(d => d.Id == departmentId && d.SectionId == sectionId);
-        if (result == null)
-            throw new KeyNotFoundException($"No se encontró una entidad con el ID '{departmentId} y {sectionId}'.");
-        return result;
+        return  await _entity.AnyAsync(d=> d.Name == departmentName && d.SectionId == sectionId);
     }
 
-    public async Task DeleteAsync(int departmentId, int sectionId)
+    public async Task<IEnumerable<Department>> GetDepartmentsBySectionIdAsync (int sectionId)
     {
-        var result = await GetByIdAndSectionIdAsync(departmentId, sectionId);
-
-        _entity.Remove(result);
+        return await _entity.Where(d=> d.SectionId == sectionId).ToListAsync();
     }
 
-    public async Task<Department> GetByNameAsync(string name)
-    {
-        var department = await _entity.SingleOrDefaultAsync(d => d.Name == name);
+    // public async Task<Department> GetByNameAsync(string name)
+    // {
+    //     var department = await _entity.SingleOrDefaultAsync(d => d.Name == name);
 
-        if (department is null)
-            throw new Exception();
+    //     if (department is null)
+    //         throw new Exception();
 
-        return department;
-    }
+    //     return department;
+    // }
 
 }

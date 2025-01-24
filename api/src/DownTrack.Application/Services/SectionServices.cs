@@ -1,6 +1,7 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -116,5 +117,26 @@ public class SectionServices : ISectionServices
                         : null
 
         };
+    }
+
+
+    public async Task<IEnumerable<DepartmentDto>> GetAllDepartments(int sectionId)
+    {
+        var departmentRepository = (IDepartmentRepository)_unitOfWork.GetRepository<Department>();
+
+        //check the section exist
+
+
+        var existSection = await _unitOfWork.GetRepository<Section>().GetByIdAsync(sectionId);
+        // aqui se verifica que si salta una excepcion etnonce no existe sino existe la section esa
+
+        var listDepartments = await departmentRepository.GetDepartmentsBySectionIdAsync(sectionId);
+
+        return listDepartments.Select(_mapper.Map<DepartmentDto>);
+
+
+
+
+
     }
 }
