@@ -91,9 +91,10 @@ public class ApiClient
         using var client = new HttpClient();
         client.BaseAddress = new Uri("http://localhost:5217/api/Authentication/register");
 
-        for (int i = 32; i <= 50; i++)
+        for (int i = 151; i <= 170; i++)
         {
             var userRole = _roles[_random.Next(_roles.Length)]; 
+
             var user = new
             {
                 Id = i,
@@ -143,11 +144,12 @@ public class ApiClient
     public async Task RegisterSectionAsync()
     {
         using var client = new HttpClient();
-        client.BaseAddress = new Uri("http://localhost:5217/api/Section");
+        client.BaseAddress = new Uri("http://localhost:5217/api/Section/POST");
 
-        for (int i = 123; i <= 200; i++) // Aseguramos una sección por cada SectionManager
+        for (int i = 342; i <= 361; i++) // Aseguramos una sección por cada SectionManager
         {
-            var sectionManager = _sectionManagers[_random.Next(_sectionManagers.Count)]; 
+            var sectionManager = _sectionManagers[_random.Next(_sectionManagers.Count)];
+            Console.WriteLine(sectionManager); 
             var section = new
             {
                 Id = i,
@@ -183,11 +185,13 @@ public class ApiClient
      public async Task RegisterDepartmentAsync()
     {
         using var client = new HttpClient();
-        client.BaseAddress = new Uri("http://localhost:5217/api/Section");
+        client.BaseAddress = new Uri("http://localhost:5217/api/Department/POST");
 
         for (int i = 1223; i <= 1250; i++) // Aseguramos una sección por cada SectionManager
         {
             var section = _section[_random.Next(_section.Count)]; 
+            Console.WriteLine(section.Name);
+            Console.WriteLine(section.Id);
             var department = new
             {
                 Id = i,
@@ -198,7 +202,7 @@ public class ApiClient
 
             // Serializa el objeto a JSON
             var content = new StringContent(
-                JsonSerializer.Serialize(section),
+                JsonSerializer.Serialize(department),
                 Encoding.UTF8,
                 "application/json"
             );
@@ -211,7 +215,7 @@ public class ApiClient
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode} for section ID: {section.Id}");
+                Console.WriteLine($"Error: {response.StatusCode} for department ID: {department.Id}");
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
                 break;
             }

@@ -43,7 +43,7 @@ public class DepartmentServices : IDepartmentServices
 
         var department = _mapper.Map<Department>(dto);
 
-        var departmentRepository = (IDepartmentRepository) _unitOfWork.GetRepository<Department>();
+        var departmentRepository = _unitOfWork.DepartmentRepository;
         
         bool existDepartment = await departmentRepository
                                     .ExistsByNameAndSectionAsync(department.Name,department.SectionId);
