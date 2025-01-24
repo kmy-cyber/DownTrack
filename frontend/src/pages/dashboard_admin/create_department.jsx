@@ -36,14 +36,11 @@ export const DepartmentCreationForm = () => {
             }
             const data = await response.json();
             setSectionList(data);
-            console.log("HERE");
-            console.log(sectionList);
             if(data.length === 0){
                 navigate('/dashboard/admin/add_section');
             }
             setFormData((prev) => ({ ...prev, ['section']: data[0].id }));
-            console.log("HERE2");
-            console.log(formData);
+            
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching sections:", error);
