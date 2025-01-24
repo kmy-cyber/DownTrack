@@ -122,7 +122,7 @@ public class SectionServices : ISectionServices
 
     public async Task<IEnumerable<DepartmentDto>> GetAllDepartments(int sectionId)
     {
-        var departmentRepository = (IDepartmentRepository)_unitOfWork.GetRepository<Department>();
+        var departmentRepository = _unitOfWork.DepartmentRepository;
 
         //check the section exist
 
