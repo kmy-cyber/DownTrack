@@ -138,16 +138,10 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
 
-        var filter = new List<Expression<Func<Department,bool>>> ()
-        {
-            d=> d.Id == departmentDto
-        };
 
         var result = await _unitOfWork.GetRepository<Department>()
-                                      .GetAllByItems(filter)
-                                      .Include(d=>d.Section)
-                                      .ToListAsync();
-                                        
+                                      .GetByIdAsync(departmentDto,default,
+                                      d=>d.Section);
 
         return _mapper.Map<DepartmentDto>(result);
 
@@ -156,7 +150,9 @@ public class DepartmentServices : IDepartmentServices
      public async Task<PagedResultDto<DepartmentDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
-        IQueryable<Department> queryDepartment = _unitOfWork.GetRepository<Department>().GetAll();
+        IQueryable<Department> queryDepartment = _unitOfWork.GetRepository<Department>()
+                                                            .GetAll()
+                                                            .Include(d=>d.Section);
 
         var totalCount = await queryDepartment.CountAsync();
 
