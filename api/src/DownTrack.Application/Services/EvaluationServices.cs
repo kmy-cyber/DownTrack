@@ -11,14 +11,12 @@ namespace DownTrack.Application.Services;
 
 public class EvaluationServices : IEvaluationServices
 {
-    //private readonly IEvaluationRepository _evaluationRepository;
     private readonly IMapper _mapper;
 
     private readonly IUnitOfWork _unitOfWork;
 
     public EvaluationServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _evaluationRepository = evaluationRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -28,7 +26,7 @@ public class EvaluationServices : IEvaluationServices
         var evaluation = _mapper.Map<Evaluation>(dto);
 
         var technician = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(evaluation.TechnicianId);
-        // ya esta garantizado que no sea null
+
         var manager = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(evaluation.SectionManagerId);
 
         evaluation.Technician = technician;

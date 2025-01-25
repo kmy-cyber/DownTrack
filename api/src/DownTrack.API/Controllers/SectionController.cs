@@ -33,7 +33,7 @@ public class SectionController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Section>> GetUserById(int sectionId)
+    public async Task<ActionResult<SectionDto>> GetUserById(int sectionId)
     {
         var result = await _sectionService.GetByIdAsync(sectionId);
 

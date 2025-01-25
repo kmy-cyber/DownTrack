@@ -23,7 +23,7 @@ public class AuthenticationController : ControllerBase
     //[Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
-
+        Console.WriteLine(registerDto.DepartmentId);
         var result = await _identityService.RegisterUserAsync(registerDto);
         Console.WriteLine(result);
         return Ok(result);

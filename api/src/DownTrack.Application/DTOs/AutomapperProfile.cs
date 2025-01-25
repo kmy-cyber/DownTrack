@@ -16,7 +16,9 @@ public class AutomapperProfile : Profile
         CreateMap<Employee, EmployeeDto>();
 
         CreateMap<EquipmentReceptorDto, EquipmentReceptor>();
-        CreateMap<EquipmentReceptor, EquipmentReceptorDto>();
+        CreateMap<EquipmentReceptor, EquipmentReceptorDto>()
+            .ForMember(dest => dest.SectionId, opt=> opt.MapFrom(src => src.Department.SectionId));
+  
 
         CreateMap<LoginUserDto, User>();
         CreateMap<RegisterUserDto, User>();
@@ -30,7 +32,9 @@ public class AutomapperProfile : Profile
         CreateMap<UpdateUserDto, EquipmentReceptor>();
 
         CreateMap<EquipmentDto, Equipment>();
-        CreateMap<Equipment, EquipmentDto>();
+        CreateMap<Equipment, EquipmentDto>()
+            .ForMember(dest => dest.SectionId, opt=> opt.MapFrom(src => src.Department.SectionId));
+  
 
         CreateMap<SectionDto, Section>();
         CreateMap<Section, SectionDto>();

@@ -1,7 +1,6 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -28,13 +27,11 @@ public class DoneMaintenanceServices : IDoneMaintenanceServices
         }
         var doneMaintenance = _mapper.Map<DoneMaintenance>(dto);
 
-        // Add the maintenance to the technician's and equipment's lists
+        doneMaintenance.Technician = await _unitOfWork.GetRepository<Technician>()
+                                        .GetByIdAsync(doneMaintenance.TechnicianId!.Value);
 
-        var technician = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(doneMaintenance.TechnicianId!.Value);
-        technician.DoneMaintenances.Add(doneMaintenance);
-
-        var equipment = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(doneMaintenance.EquipmentId!.Value);
-        equipment.DoneMaintenances.Add(doneMaintenance);
+        doneMaintenance.Equipment = await _unitOfWork.GetRepository<Equipment>()
+                                        .GetByIdAsync(doneMaintenance.EquipmentId!.Value);
 
 
         await _unitOfWork.GetRepository<DoneMaintenance>().CreateAsync(doneMaintenance);
@@ -45,13 +42,6 @@ public class DoneMaintenanceServices : IDoneMaintenanceServices
 
     public async Task DeleteAsync(int dto)
     {
-        //var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>().GetByIdAsync(dto);
-
-        // if (doneMaintenance.TechnicianId != null || doneMaintenance.EquipmentId != null)
-        // {
-        //     throw new InvalidOperationException("Cannot delete maintenance while it is associated with a technician or equipment.");
-        // }
-
         await _unitOfWork.GetRepository<DoneMaintenance>().DeleteByIdAsync(dto);
         
         await _unitOfWork.CompleteAsync();

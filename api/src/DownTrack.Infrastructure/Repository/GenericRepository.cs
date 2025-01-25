@@ -1,6 +1,5 @@
 
 using System.Linq.Expressions;
-using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IRepository;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -42,16 +41,26 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
     }
 
 
-    public virtual async Task<T> GetByIdAsync<TId>(TId elementId, CancellationToken cancellationToken = default)
-    {   
-        // Asynchronously find the entity by its ID.
-        var result = await _entity.FindAsync(elementId, cancellationToken);
+    public virtual async Task<T> GetByIdAsync<TId>(TId elementId ,
+                                                    CancellationToken cancellationToken =default,
+                                                    params Expression<Func<T,object>>[]includes)
+    {
+        IQueryable<T> query = _entity;
+
+        foreach(var include in includes)
+            query = query.Include(include);
+
+        if (elementId == null)
+            throw new ArgumentNullException(nameof(elementId), "The ID cannot be null.");
+
+
+        var result = await query.FirstOrDefaultAsync(e=> EF.Property<TId>(e,"Id")!.Equals(elementId),cancellationToken);
 
         if (result == null) // Check if the entity was not found.
-            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
+             throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
+
         return result;
     }
-
     public virtual async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {   
         // Retrieve the entity by its ID.

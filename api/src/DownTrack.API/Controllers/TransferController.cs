@@ -45,7 +45,7 @@ public class TransferController : ControllerBase
     [HttpGet]
     [Route("{transferId}")]
 
-    public async Task<ActionResult<Transfer>> GetTransferById(int transferId)
+    public async Task<ActionResult<TransferDto>> GetTransferById(int transferId)
     {
         var result = await _transferService.GetByIdAsync(transferId);
 

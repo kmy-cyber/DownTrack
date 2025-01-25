@@ -11,5 +11,5 @@ public class UpdateUserDto
     public int Salary { get; set; }
     public string Specialty { get; set; } = null!;
     public int ExpYears { get; set; }
-    public int DepartamentId {get;set;} 
+    public int DepartmentId {get;set;} 
 }

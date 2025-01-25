@@ -1,9 +1,12 @@
+using System.Diagnostics;
+using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Roles;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
@@ -22,6 +25,30 @@ public class TransferServices : ITransferServices
     public async Task<TransferDto> CreateAsync(TransferDto dto)
     {
         var transfer = _mapper.Map<Transfer>(dto);
+
+        // if(transfer.ShippingSupervisorId == null || transfer.EquipmentReceptorId == null)
+        //     throw new Exception("Shipping Supervisor and EquipmentReceptor is required");
+        
+        // var shippingSupervisor = await _unitOfWork.GetRepository<Employee>()
+        //                                     .GetByIdAsync(transfer.ShippingSupervisorId);
+        // if(shippingSupervisor == null)
+        //     throw new Exception("");
+
+        // if(shippingSupervisor.UserRole != UserRole.ShippingSupervisor.ToString())
+        //     throw new Exception("");
+        
+        // var receptor = await _unitOfWork.GetRepository<EquipmentReceptor>()
+        //                                     .GetByIdAsync(transfer.EquipmentReceptorId);
+        // if(receptor == null)
+        //     throw new Exception("");
+        
+        // var transferRequest = await _unitOfWork.GetRepository<TransferRequest>()
+        //                                     .GetByIdAsync(transfer.EquipmentReceptorId);
+        // if(receptor == null)
+        //     throw new Exception("");
+
+        // transfer.ShippingSupervisor = shippingSupervisor;
+        // transfer.EquipmentReceptor = receptor;
         
         await _unitOfWork.GetRepository<Transfer>().CreateAsync(transfer);
 

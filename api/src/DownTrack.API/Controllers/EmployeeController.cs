@@ -4,6 +4,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -22,7 +23,7 @@ public class EmployeeController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Employee>> GetEmployeeById(int employeeId)
+    public async Task<ActionResult<EmployeeDto>> GetEmployeeById(int employeeId)
     {
         var result = await _employeeService.GetByIdAsync(employeeId);
 
@@ -55,6 +56,27 @@ public class EmployeeController : ControllerBase
         return Ok (result);
         
     }
+
+    [HttpGet]
+    [Route("GetAllSectionManager")]
+
+    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAllSectionManager ()
+    {
+        var sectionManager = await _employeeService.ListAllByRole(UserRole.SectionManager);
+
+        return Ok(sectionManager);
+    }
+
+    [HttpGet]
+    [Route("GetAllShippingSupervisor")]
+
+    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAllShippingSupervisor()
+    {
+        var supervisor = await _employeeService.ListAllByRole(UserRole.ShippingSupervisor);
+
+        return Ok(supervisor);
+    }
+
 
     [HttpDelete]
     [Route("DELETE")]

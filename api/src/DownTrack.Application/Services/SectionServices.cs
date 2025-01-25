@@ -17,7 +17,6 @@ public class SectionServices : ISectionServices
 
     public SectionServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _sectionRepository = sectionRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
