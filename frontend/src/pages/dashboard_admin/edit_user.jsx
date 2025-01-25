@@ -23,16 +23,18 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log('~ editUserForm ~ userData:', userData);
+        
         if (userData) {
             if(userData.userRole === "EquipmentReceptor"){
 
             }
             else if(userData.userRole === "Technician"){
-                setFormData(userData);
+                setFormData({...formData, ...userData});
                 getTechnicianData(userData.id);
             }
             else{
-                setFormData(userData);
+                setFormData({...formData, ...userData});
             }
         }
     }, [userData]);
@@ -49,15 +51,14 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log(userData);
-            console.log("data",data);
-            setFormData(
-                id = data.id,
-                salary = data.salary,
-                specialty = data.specialty,
-                expYears = data.expYears,
-            );
-            console.log("TECH",formData);
+
+            setFormData({
+                ...formData,
+                id: data.id,
+                salary: data.salary,
+                specialty: data.specialty,
+                expYears: data.expYears,
+            });
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching sections:", error);
@@ -144,7 +145,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     type="text"
                     id="email"
                     name="email"
-                    value={formData.email}
+                    value={userData.email}
                     onChange={handleChange}
                     placeholder="Enter identification number"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -169,7 +170,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     />
                 </div>
 
-                {formData.userRole === "EquipmentReceptor" ? (
+                {userData.userRole === "EquipmentReceptor" ? (
                 <>
                     <div>
                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
@@ -205,7 +206,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </>
                 ) : null}
 
-                {formData.userRole === "Technician" ? (
+                {userData.userRole === "Technician" ? (
                     <>
                     <div>
                         <label htmlFor="experience" className="block text-sm font-medium text-gray-700">

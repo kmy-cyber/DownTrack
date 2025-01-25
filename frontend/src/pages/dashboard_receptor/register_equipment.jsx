@@ -9,12 +9,13 @@ import {
 import {equipmentData} from "@/data/equipment-data";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
+import { useAuth } from "@/context/AuthContext";
 export const EquipmentRegisterForm = () => {
     const [formData, setFormData] = useState({
         id: "",
         name: " ",
         type: "",
-        status: " ",
+        status: "Active",
         acquisitionDate: "",
         section: "",
         department: ""
@@ -24,6 +25,8 @@ export const EquipmentRegisterForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [alertType, setAlertType] = useState('success');
     const [dateFormat, setDateFormat] = useState("");
+
+    const {user} = useAuth();
 
     const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +63,31 @@ export const EquipmentRegisterForm = () => {
             setStartDate(currentDate);
             const dateInFormat = inFormatDate();
             setDateFormat(dateInFormat);
+            fetchReceptorInfo(user.id);
         }, []);
+
+
+        const fetchReceptorInfo = async (receptorId) => {
+            try {
+                const response = await api(`/EquipmentReceptor/GET?equipmentReceptorId=${receptorId}`, {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setFormData((prevData) => ({
+                    ...prevData, 
+                    section: data.sectionId, 
+                    department: data.departmentId
+                }));
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+                setDepartmentList([]);
+                setIsLoading(false);
+            }
+        };
 
         const handleSubmit = async (e) => {
             console.log("Register equipment");
@@ -82,6 +109,8 @@ export const EquipmentRegisterForm = () => {
                         "type": formData.type,
                         "status": formData.status,
                         "dateOfadquisition": dateFormat,
+                        "sectionId": formData.section,
+                        "departmentId": formData.department,
                     }),
                 });
                 
@@ -160,41 +189,6 @@ export const EquipmentRegisterForm = () => {
                     />
                     </div>
 
-                    <div>
-                    <label htmlFor="departament" className="block text-sm font-medium text-gray-700">
-                        Assing Departament
-                    </label>
-                    <select
-                        id="departament"
-                        name="departament"
-                        value={formData.department}
-                        onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    >
-                        <option value="departament1">Departament1</option>
-                        <option value="departament2">Departament2</option>
-                        <option value="departament3">Departament3</option>
-                    </select>
-                    </div>
-
-                    <div>
-                    <label htmlFor="section" className="block text-sm font-medium text-gray-700">
-                        Assing Section
-                    </label>
-                    <select
-                        id="departament"
-                        name="departament"
-                        value={formData.section}
-                        onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    >
-                        <option value="sec1">section1</option>
-                        <option value="sec2">section2</option>
-                        <option value="sec3">section3</option>
-                    </select>
-                    </div>
 
                     <div>
                         <label htmlFor="status" className="block text-sm font-medium text-gray-700">
@@ -207,9 +201,9 @@ export const EquipmentRegisterForm = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                     >
-                        <option value="active">Active</option>
-                        <option value="under_maintenance"> Under maintenance</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="Active">Active</option>
+                        <option value="UnderMaintenance"> Under maintenance</option>
+                        <option value="Inactive">Inactive</option>
                     </select>
                     </div>
 
