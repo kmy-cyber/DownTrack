@@ -4,7 +4,8 @@ import {
     WrenchScrewdriverIcon,
     ClipboardDocumentListIcon,
 } from "@heroicons/react/24/solid";
-import { Home, EquipmentInventory, MaintenanceCreationForm, LeaveCreationForm } from "@/pages/dashboard_technic";
+import { Home, EquipmentInventory, MaintenanceCreationForm, LeaveCreationForm,EquipmentMaintenance } from "@/pages/dashboard_technic";
+import {AutoMode} from '@mui/icons-material';
 
 const typeUser = 1;
 const icon = {
@@ -27,6 +28,12 @@ export const routesTechnic = [
         path: "/maintenance",
         element: <MaintenanceCreationForm />,
         },
+        {
+            icon: <AutoMode {...icon} />,
+            name: "equipment_maintenance",
+            path: "/equipment_maintenance",
+            element: <EquipmentMaintenance />,
+            },
         {
         icon: <ArrowDownCircleIcon {...icon} />,
         name: "technical leave",
