@@ -3,7 +3,6 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
 using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +38,7 @@ public class EmployeeController : ControllerBase
 
     public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee ()
     {
-        var result = await _employeeService.ListAsync();
+        var result = await _employeeService.AllAsync();
 
         return Ok(result);
     }   
