@@ -60,5 +60,8 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.SectionName, opt=> opt.MapFrom(src => src.Section.Name));
   
 
+        CreateMap<EquipmentDecommissioningDto,EquipmentDecommissioning>();
+        CreateMap<EquipmentDecommissioning,EquipmentDecommissioningDto>();
+
     }
 }

@@ -24,6 +24,7 @@ public class DownTrackContext : IdentityDbContext<User>
       public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
       public DbSet<TransferRequest> TransferRequests { get; set; }
       public DbSet<Transfer> Transfers { get; set; }
+      public DbSet<EquipmentDecommissioning> EquipmentDecommissionings { get; set; }
 
       protected override void OnModelCreating(ModelBuilder modelBuilder)
       {
@@ -130,9 +131,11 @@ public class DownTrackContext : IdentityDbContext<User>
             {
                   entity.HasKey(e => e.Id);
 
+
                   entity.Property(e => e.Name)
                   .IsRequired()
                   .HasMaxLength(100);
+
 
                   entity.Property(e => e.Type)
                   .IsRequired()
@@ -164,10 +167,12 @@ public class DownTrackContext : IdentityDbContext<User>
             {
                   entity.HasKey(tr => tr.Id);
 
+
                   entity.HasOne(tr => tr.SectionManager)
                     .WithMany(e => e.TransferRequests)
                     .HasForeignKey(tr => tr.EmployeeId)
                     .OnDelete(DeleteBehavior.SetNull);
+
 
                   entity.HasOne(tr => tr.Equipment)
                     .WithMany(e => e.TransferRequests)
@@ -179,7 +184,40 @@ public class DownTrackContext : IdentityDbContext<User>
                     .HasForeignKey(tr => tr.ArrivalDepartmentId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+
             });
+
+            // Equipment decommissioning region
+        // EquipmentDecommissioning - Technician relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Technician) // EquipmentDecommissioning has one Technician
+            .WithMany(t => t.EquipmentDecommissionings) // Technician has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.TechnicianId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If Technician is deleted, set TechnicianId to null
+
+        // EquipmentDecommissioning - Equipment relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Equipment) // 
+            .WithMany(e => e.EquipmentDecommissionings) //
+            .HasForeignKey(ed => ed.EquipmentId) // 
+            .OnDelete(DeleteBehavior.Cascade); // 
+
+        // EquipmentDecommissioning - Receptor relationship (one-to-many)
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .HasOne(ed => ed.Receptor) // EquipmentDecommissioning has one Receptor
+            .WithMany(r => r.EquipmentDecommissionings) // Receptor has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.ReceptorId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.Cascade); // If Receptor is deleted, set ReceptorId to null
+
+        // Map enum Status to int in the database
+        modelBuilder.Entity<EquipmentDecommissioning>()
+            .Property(ed => ed.Status)
+            .HasConversion<string>();
+
+
+
+
+
 
             // Configuration of DoneMaintenance relationship
 
@@ -196,7 +234,8 @@ public class DownTrackContext : IdentityDbContext<User>
 
                   entity.Property(dm => dm.Cost)
                     .IsRequired();
-
+ 
+        
                   entity.HasIndex(dm => dm.Date);
 
                   entity.HasOne(dm => dm.Technician) // Primary key of the relationship
@@ -266,6 +305,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
 
       }
+
 }
 
 

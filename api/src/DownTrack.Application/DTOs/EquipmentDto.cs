@@ -1,3 +1,4 @@
+
 namespace DownTrack.Application.DTO;
 
 // DTO para el registro de un Equipment
@@ -11,3 +12,4 @@ public class EquipmentDto
     public int DepartmentId {get;set;}
     public int SectionId {get;set;}
 }
+

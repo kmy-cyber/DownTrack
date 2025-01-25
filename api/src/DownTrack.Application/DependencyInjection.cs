@@ -34,9 +34,11 @@ public static class DependencyInjection
         services.AddScoped<IDepartmentServices, DepartmentServices>();
         services.AddScoped<IEquipmentReceptorServices, EquipmentReceptorServices>();
         services.AddScoped<IEvaluationServices, EvaluationServices>();
+        services.AddScoped<IEquipmentDecommissioningServices, EquipmentDecommissioningServices>();
         services.AddScoped<ITransferRequestServices, TransferRequestServices>();
         services.AddScoped<ITransferServices, TransferServices>();
       
+
         return services;
 
 

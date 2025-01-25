@@ -22,7 +22,7 @@ public class EquipmentController : ControllerBase
     [Route("POST")]
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
-        // Obtener el claim "role"
+
         // var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
 
         // if(roleClaim == null)
