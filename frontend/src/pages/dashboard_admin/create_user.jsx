@@ -21,12 +21,12 @@ export const UserCreationForm = () => {
         name: "",
         username: "",
         role: "Administrator",
-        departmentId: "",
+        departmentId: 0,
         experience: "",
         specialty: "",
         salary: 0,
         password: "",
-        sectionId: "",
+        sectionId: 0,
     });
 
     useEffect(() => {
