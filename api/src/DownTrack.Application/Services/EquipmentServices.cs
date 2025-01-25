@@ -4,20 +4,19 @@ using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Status;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
 public class EquipmentServices : IEquipmentServices
 {
-    //private readonly IEquipmentRepository _equipmentRepository;
     private readonly IMapper _mapper;
 
     private readonly IUnitOfWork _unitOfWork;
 
     public EquipmentServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _equipmentRepository = equipmentRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -26,8 +25,16 @@ public class EquipmentServices : IEquipmentServices
     {
         var equipment = _mapper.Map<Equipment>(dto);
 
-        //await _equipmentRepository.CreateAsync(equipment);
-        
+        var department = await _unitOfWork.DepartmentRepository
+                                  .GetByIdAsync(equipment.DepartmentId);
+
+        if(department.SectionId != dto.SectionId)
+            throw new Exception($"Department with Id: {department.SectionId} not exist in Section with Id : {dto.SectionId}");
+
+
+        if(!EquipmentStatusHelper.IsValidStatus(equipment.Status))
+            throw new Exception("Invalid status");
+            
         await _unitOfWork.GetRepository<Equipment>().CreateAsync(equipment);
 
         await _unitOfWork.CompleteAsync();
@@ -70,7 +77,8 @@ public class EquipmentServices : IEquipmentServices
     /// <returns>A Task representing the asynchronous operation that fetches the equipment</returns>
     public async Task<EquipmentDto> GetByIdAsync(int equipmentDto)
     {
-        var result = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(equipmentDto);
+        var result = await _unitOfWork.GetRepository<Equipment>()
+                                      .GetByIdAsync(equipmentDto,default,e=> e.Department);
         
         /// and returns the updated equipment as an EquipmentDto.
         return _mapper.Map<EquipmentDto>(result);
@@ -82,7 +90,9 @@ public class EquipmentServices : IEquipmentServices
     public async Task<PagedResultDto<EquipmentDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
-        IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>().GetAll();
+        IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>()
+                                                          .GetAll()
+                                                          .Include(e=> e.Department);
 
         var totalCount = await queryEquipment.CountAsync();
 

@@ -7,4 +7,5 @@ public class EquipmentReceptorRepository : GenericRepository<EquipmentReceptor>,
 {
     public EquipmentReceptorRepository(DownTrackContext context) : base(context){}
 
+
 }

@@ -14,17 +14,11 @@ public class UnitOfWork : IUnitOfWork
     private Dictionary<Type, object> _repositories;
     public IUserRepository UserRepository { get; }
     public IDepartmentRepository DepartmentRepository { get; }
-    public ITechnicianRepository TechnicianRepository {get;}
-    public ITransferRequestRepository TransferRequestRepository { get; }
 
-    public ITransferRepository TransferRepository { get; }
-    
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
-                      IDepartmentRepository departmentRepository,
-                      ITransferRequestRepository transferRequestRepository,
-                       ITechnicianRepository technicianRepository,
-                      ITransferRepository transferRepository)
+                      IDepartmentRepository departmentRepository
+                     )
 
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -35,11 +29,6 @@ public class UnitOfWork : IUnitOfWork
 
         DepartmentRepository = departmentRepository;
 
-        TechnicianRepository = technicianRepository;
-
-        TransferRequestRepository = transferRequestRepository;
-
-        TransferRepository = transferRepository;
 
     }
 

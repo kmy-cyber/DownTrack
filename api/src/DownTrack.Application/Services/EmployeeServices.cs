@@ -6,8 +6,8 @@ using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Roles;
-using System.Data.Common;
 using DownTrack.Application.DTO.Paged;
+using System.Linq.Expressions;
 
 namespace DownTrack.Application.Services;
 
@@ -127,10 +127,7 @@ public class EmployeeServices : IEmployeeServices
     public async Task<EmployeeDto> GetByIdAsync(int employeeDto)
     {
         var result = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(employeeDto);
-        
-        //var result = await _employeeRepository.GetByIdAsync(employeeDto);
 
-        /// and returns the updated employee as an EmployeeDto.
         return _mapper.Map<EmployeeDto>(result);
 
     }
@@ -163,5 +160,19 @@ public class EmployeeServices : IEmployeeServices
                         : null
 
         };
+    }
+
+
+    public async Task<IEnumerable<EmployeeDto>> ListAllByRole(UserRole role)
+    {
+        var filter = new List<Expression<Func<Employee,bool>>> ()
+        {
+            u=>u.UserRole == role.ToString()
+        };
+
+        var result = await _unitOfWork.GetRepository<Employee>().GetAllByItems(filter).ToListAsync();
+
+        return result.Select(_mapper.Map<EmployeeDto>);
+        
     }
 }

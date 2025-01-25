@@ -33,7 +33,7 @@ public class DepartmentController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Department>> GetDepartmentById(int departmentId)
+    public async Task<ActionResult<DepartmentDto>> GetDepartmentById(int departmentId)
     {
         var result = await _departmentService.GetByIdAsync(departmentId);
 

@@ -48,6 +48,10 @@ public class DownTrackContext : IdentityDbContext<User>
             // Technician Region
             modelBuilder.Entity<Technician>(entity =>
             {
+                  entity.ToTable("Technicians");
+                  
+                  entity.HasBaseType<Employee>();
+
                   entity.HasOne<Employee>()
                     .WithOne()
                     .HasForeignKey<Technician>(t => t.Id);
@@ -59,23 +63,24 @@ public class DownTrackContext : IdentityDbContext<User>
                   entity.Property(t => t.ExpYears)
                     .IsRequired();
 
-                  entity.HasBaseType<Employee>();
+                  
             });
 
             // Equipment Receptor Region
 
             modelBuilder.Entity<EquipmentReceptor>(entity =>
             {
-
+                  entity.ToTable("EquipmentReceptors");
+                  
+                  entity.HasBaseType<Employee>();
+                  
                   entity.HasOne<Employee>() // One-to-one relationship with Employee
                     .WithOne()
                     .HasForeignKey<EquipmentReceptor>(t => t.Id);
 
-                  entity.HasBaseType<Employee>();
-
-                  entity.HasOne(er => er.Departament)
+                  entity.HasOne(er => er.Department)
                     .WithMany(d => d.EquipmentReceptors)
-                    .HasForeignKey(er => er.DepartamentId)
+                    .HasForeignKey(er => er.DepartmentId)
                     .OnDelete(DeleteBehavior.Restrict);
 
             });
@@ -145,9 +150,9 @@ public class DownTrackContext : IdentityDbContext<User>
                   entity.HasIndex(e => e.DateOfadquisition);
                   entity.HasIndex(e => e.Status);
 
-                  entity.HasOne(e => e.Location)
+                  entity.HasOne(e => e.Department)
                     .WithMany(d => d.Equipments)
-                    .HasForeignKey(e => e.LocationId)
+                    .HasForeignKey(e => e.DepartmentId)
                     .OnDelete(DeleteBehavior.Restrict);
 
                   entity.Property(dm => dm.DateOfadquisition).HasColumnType("date");

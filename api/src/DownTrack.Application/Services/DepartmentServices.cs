@@ -1,8 +1,7 @@
+using System.Linq.Expressions;
 using AutoMapper;
-using AutoMapper.Configuration.Annotations;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.IRepository;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -43,14 +42,13 @@ public class DepartmentServices : IDepartmentServices
 
         var department = _mapper.Map<Department>(dto);
 
-        var departmentRepository = (IDepartmentRepository) _unitOfWork.GetRepository<Department>();
+        var departmentRepository = _unitOfWork.DepartmentRepository;
         
         bool existDepartment = await departmentRepository
                                     .ExistsByNameAndSectionAsync(department.Name,department.SectionId);
 
         if(existDepartment)
             throw new Exception("A department with the same name already exists in this section.");
-
 
         department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
 
@@ -139,7 +137,17 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The DepartmentDto of the retrieved department.</returns>
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
-        var result = await _unitOfWork.GetRepository<Department>().GetByIdAsync(departmentDto);
+
+        var filter = new List<Expression<Func<Department,bool>>> ()
+        {
+            d=> d.Id == departmentDto
+        };
+
+        var result = await _unitOfWork.GetRepository<Department>()
+                                      .GetAllByItems(filter)
+                                      .Include(d=>d.Section)
+                                      .ToListAsync();
+                                        
 
         return _mapper.Map<DepartmentDto>(result);
 

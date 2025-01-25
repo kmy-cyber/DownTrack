@@ -1,4 +1,5 @@
 
+using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
@@ -22,7 +23,7 @@ public class TechnicianController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Technician>> GetUserById(int technicianId)
+    public async Task<ActionResult<TechnicianDto>> GetUserById(int technicianId)
     {
         var result = await _technicianService.GetByIdAsync(technicianId);
 
