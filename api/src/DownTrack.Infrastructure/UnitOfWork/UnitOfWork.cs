@@ -15,12 +15,11 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository { get; }
     public IDepartmentRepository DepartmentRepository { get; }
 
-    public ITechnicianRepository TechnicianRepository {get;}
-
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
-                      IDepartmentRepository departmentRepository,
-                      ITechnicianRepository technicianRepository)
+                      IDepartmentRepository departmentRepository
+                     )
+
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 
@@ -30,7 +29,6 @@ public class UnitOfWork : IUnitOfWork
 
         DepartmentRepository = departmentRepository;
 
-        TechnicianRepository = technicianRepository;
 
     }
 

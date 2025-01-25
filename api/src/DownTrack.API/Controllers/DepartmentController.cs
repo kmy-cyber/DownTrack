@@ -33,7 +33,7 @@ public class DepartmentController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Department>> GetDepartmentById(int departmentId)
+    public async Task<ActionResult<DepartmentDto>> GetDepartmentById(int departmentId)
     {
         var result = await _departmentService.GetByIdAsync(departmentId);
 
@@ -56,6 +56,17 @@ public class DepartmentController : ControllerBase
         
         return Ok (result);
         
+    }
+
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _departmentService.ListAsync();
+
+        return Ok(result);
+
     }
 
     [HttpPut]

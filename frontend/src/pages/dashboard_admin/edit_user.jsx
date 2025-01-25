@@ -4,36 +4,110 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    } from "@material-tailwind/react";
+} from "@material-tailwind/react";
+import api from "@/middlewares/api";
 
 export const EditUserForm = ({ userData, onSave, onCancel }) => {
     const [formData, setFormData] = useState({
-        name: "",
         id: "",
-        role: "",
+        name: "",
+        userRole: "",
         email:"",
-        department: 0,
-        experience: 0,
-        specialty: "",
-        salary: 0,
         password: "",
+        salary: 0,
+        specialty: "",
+        expYears: 0,
+        departamentId: 0,
+        sectionId: 0,
     });
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log('~ editUserForm ~ userData:', userData);
+        
         if (userData) {
-            setFormData(userData);
+            if(userData.userRole === "EquipmentReceptor"){
+
+            }
+            else if(userData.userRole === "Technician"){
+                setFormData({...formData, ...userData});
+                getTechnicianData(userData.id);
+            }
+            else{
+                setFormData({...formData, ...userData});
+            }
         }
     }, [userData]);
+
+
+    const getTechnicianData = async (id) => {
+        console.log(id);
+        try {
+            const response = await api(`/Technician/GET?technicianId=${id}`, {
+                method: 'GET',
+                params: {technicianId: id}
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+
+            setFormData({
+                ...formData,
+                id: data.id,
+                salary: data.salary,
+                specialty: data.specialty,
+                expYears: data.expYears,
+            });
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching sections:", error);
+            setFormData([]);
+            setIsLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     }; 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(formData);
-        console.log("Updated user:", formData);
+
+    try {
+        console.log("HERE",)
+        console.log(formData)
+        const response = await api(`/Authentication/PUT`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            'id': formData.id,
+            'name': formData.name,
+            'email': formData.email,
+            'password': formData.password,
+            'userRole': formData.userRole,
+            'specialty': formData.specialty,
+            'salary': formData.salary,
+            'expYears': formData.expYears,
+            'departamentId': formData.departamentId
+        })
+        });
+        if (!response.ok) {
+            setAlertMessage('Failed to edit user');
+            setAlertType('error');
+            throw new Error('Failed to edit user');
+        }
+        else
+        {
+            setAlertMessage('Edit completed successfully');
+            setAlertType('success');
+            onSave(formData);
+        }
+    } catch (error) {
+        setAlertMessage('Error editing user:');
+        setAlertType('error');
+        console.log(error);
+    }
     };
 
     return (
@@ -64,30 +138,14 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
-                    </label>
-                    <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.userName}
-                    onChange={handleChange}
-                    placeholder="Enter identification number"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                    />
-                </div>
-
-                <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Username
+                    Email
                     </label>
                     <input
                     type="text"
                     id="email"
                     name="email"
-                    value={formData.email}
+                    value={userData.email}
                     onChange={handleChange}
                     placeholder="Enter identification number"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -97,22 +155,23 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                    Role
+                    <label htmlFor="userRole" className="block text-sm font-medium text-gray-700">
+                    userRole
                     </label>
                     <input
-                    id="role"
-                    name="role"
+                    id="userRole"
+                    name="userRole"
                     value={formData.userRole}
-                    ReadOnly
                     onChange={handleChange}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
                     disabled
+                    readOnly
                     />
                 </div>
 
-                {formData.role === "section_manager" || formData.role === "receptor" ? (
+                {userData.userRole === "EquipmentReceptor" ? (
+                <>
                     <div>
                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
                         Department
@@ -121,16 +180,33 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                         type="text"
                         id="department"
                         name="department"
-                        value={formData.department}
+                        value={formData.departamentId}
                         onChange={handleChange}
                         placeholder="Enter department"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                     />
                     </div>
+
+                    <div>
+                    <label htmlFor="section" className="block text-sm font-medium text-gray-700">
+                        Section
+                    </label>
+                    <input
+                        type="text"
+                        id="section"
+                        name="section"
+                        value={formData.sectionId}
+                        placeholder=""
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        required
+                        disabled
+                    />
+                    </div>
+                </>
                 ) : null}
 
-                {formData.role === "technician" ? (
+                {userData.userRole === "Technician" ? (
                     <>
                     <div>
                         <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
@@ -140,7 +216,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                         type="number"
                         id="experience"
                         name="experience"
-                        value={formData.experience}
+                        value={formData.expYears}
                         onChange={handleChange}
                         placeholder="Enter years of experience"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -164,16 +240,16 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     </div>
 
                     <div>
-                        <label htmlFor="supervisorRating" className="block text-sm font-medium text-gray-700">
-                        Supervisor Rating
+                        <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
+                        Salary
                         </label>
                         <input
                         type="number"
-                        id="supervisorRating"
-                        name="supervisorRating"
-                        value={formData.supervisorRating}
+                        id="salary"
+                        name="salary"
+                        value={formData.salary}
                         onChange={handleChange}
-                        placeholder="Enter rating (1-5)"
+                        placeholder="Salary"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                     </div>

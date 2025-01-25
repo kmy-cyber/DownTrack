@@ -32,7 +32,7 @@ public class EvaluationController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Evaluation>> GetUserById(int evaluationId)
+    public async Task<ActionResult<EvaluationDto>> GetUserById(int evaluationId)
     {
         var result = await _evaluationService.GetByIdAsync(evaluationId);
 

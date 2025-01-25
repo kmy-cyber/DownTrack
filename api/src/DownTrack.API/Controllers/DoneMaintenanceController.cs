@@ -32,7 +32,7 @@ public class DoneMaintenanceController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<DoneMaintenance>> GetDoneMaintenanceById(int doneMaintenanceId)
+    public async Task<ActionResult<DoneMaintenanceDto>> GetDoneMaintenanceById(int doneMaintenanceId)
     {
         var result = await _doneMaintenanceService.GetByIdAsync(doneMaintenanceId);
 

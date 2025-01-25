@@ -1,3 +1,4 @@
+
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
@@ -15,7 +16,6 @@ public class EquipmentReceptorServices : IEquipmentReceptorServices
 
     public EquipmentReceptorServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _equipmentReceptorRepository = equipmentReceptorRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -24,11 +24,16 @@ public class EquipmentReceptorServices : IEquipmentReceptorServices
     {
         var equipmentReceptor = _mapper.Map<EquipmentReceptor>(dto);
 
-        var department = await _unitOfWork.DepartmentRepository
-                        .GetByIdAndSectionIdAsync(equipmentReceptor.DepartamentId, equipmentReceptor.SectionId);
-
-        equipmentReceptor.Departament = department;
+        Console.WriteLine($"==========={equipmentReceptor.DepartmentId}=================");
+        var department = await _unitOfWork.GetRepository<Department>()
+                                          .GetByIdAsync(equipmentReceptor.DepartmentId);
+        Console.WriteLine($"======================={department.Id}========={department.SectionId}=======");
+        if(dto.SectionId != department.SectionId)
+            throw new Exception($"Department with Id :{department.Id} not belong to Section with Id :{dto.SectionId}");
         
+        equipmentReceptor.Department = department;
+        Console.WriteLine(equipmentReceptor.DepartmentId);
+        Console.WriteLine(department.SectionId);
         await _unitOfWork.GetRepository<EquipmentReceptor>().CreateAsync(equipmentReceptor);
 
         await _unitOfWork.CompleteAsync();
@@ -72,8 +77,12 @@ public class EquipmentReceptorServices : IEquipmentReceptorServices
     /// <returns>A Task representing the asynchronous operation that fetches the equipmentReceptor</returns>
     public async Task<EquipmentReceptorDto> GetByIdAsync(int equipmentReceptorDto)
     {
-        var result = await _unitOfWork.GetRepository<EquipmentReceptor>().GetByIdAsync(equipmentReceptorDto);
         
+        var result = await _unitOfWork.GetRepository<EquipmentReceptor>()
+                                        .GetByIdAsync(
+                                            equipmentReceptorDto,default,
+                                            er => er.Department);
+
         return _mapper.Map<EquipmentReceptorDto>(result);
 
     }
@@ -82,9 +91,12 @@ public class EquipmentReceptorServices : IEquipmentReceptorServices
     public async Task<PagedResultDto<EquipmentReceptorDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
-        IQueryable<EquipmentReceptor> queryEquipmentReceptor = _unitOfWork.GetRepository<EquipmentReceptor>().GetAll();
+        IQueryable<EquipmentReceptor> queryEquipmentReceptor = _unitOfWork.GetRepository<EquipmentReceptor>()
+                                                                          .GetAll()
+                                                                          .Include(er=> er.Department);
 
         var totalCount = await queryEquipmentReceptor.CountAsync();
+
 
         var items = await queryEquipmentReceptor // Apply pagination to the query.
                         .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page

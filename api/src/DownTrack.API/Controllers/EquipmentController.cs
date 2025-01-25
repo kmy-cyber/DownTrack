@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
@@ -47,7 +46,7 @@ public class EquipmentController : ControllerBase
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Equipment>> GetUserById(int equipmentId)
+    public async Task<ActionResult<EquipmentDto>> GetUserById(int equipmentId)
     {
         var result = await _equipmentService.GetByIdAsync(equipmentId);
 

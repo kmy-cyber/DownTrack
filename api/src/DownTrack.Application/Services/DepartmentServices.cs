@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
@@ -41,6 +42,14 @@ public class DepartmentServices : IDepartmentServices
 
         var department = _mapper.Map<Department>(dto);
 
+        var departmentRepository = _unitOfWork.DepartmentRepository;
+        
+        bool existDepartment = await departmentRepository
+                                    .ExistsByNameAndSectionAsync(department.Name,department.SectionId);
+
+        if(existDepartment)
+            throw new Exception("A department with the same name already exists in this section.");
+
         department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
 
         //Adds the new department to the repository.
@@ -54,13 +63,13 @@ public class DepartmentServices : IDepartmentServices
 
     }
 
-    public async Task DeleteAsync(int departmentId, int sectionId)
-    {
+    // public async Task DeleteAsync(int departmentId, int sectionId)
+    // {
 
-        await _unitOfWork.DepartmentRepository.DeleteAsync(departmentId, sectionId);
+    //     await _unitOfWork.DepartmentRepository.DeleteAsync(departmentId, sectionId);
 
-        await _unitOfWork.CompleteAsync();
-    }
+    //     await _unitOfWork.CompleteAsync();
+    // }
 
 
 
@@ -97,17 +106,21 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> UpdateAsync(DepartmentDto dto)
     {
 
-        var existingDepartment = await _unitOfWork.DepartmentRepository.GetByIdAndSectionIdAsync(dto.Id, dto.SectionId);
+        var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAsync(dto.Id);
 
         if (existingDepartment == null)
         {
             throw new ConflictException($"Department with ID '{dto.Id}' in section '{dto.SectionId}' does not exist.");
         }
 
+        var existingSection = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
+
+        if(existingSection == null)
+            throw new ConflictException($"Section '{dto.SectionId}' does not exist.");
 
         _mapper.Map(dto, existingDepartment);
 
-        _unitOfWork.DepartmentRepository.Update(existingDepartment);
+        _unitOfWork.GetRepository<Department>().Update(existingDepartment);
 
         await _unitOfWork.CompleteAsync();
 
@@ -124,7 +137,17 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The DepartmentDto of the retrieved department.</returns>
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
-        var result = await _unitOfWork.DepartmentRepository.GetByIdAsync(departmentDto);
+
+        var filter = new List<Expression<Func<Department,bool>>> ()
+        {
+            d=> d.Id == departmentDto
+        };
+
+        var result = await _unitOfWork.GetRepository<Department>()
+                                      .GetAllByItems(filter)
+                                      .Include(d=>d.Section)
+                                      .ToListAsync();
+                                        
 
         return _mapper.Map<DepartmentDto>(result);
 
