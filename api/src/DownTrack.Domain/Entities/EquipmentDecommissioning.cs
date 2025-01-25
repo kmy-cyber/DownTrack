@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-using DownTrack.Domain.Enum;
 
 namespace DownTrack.Domain.Entities;
 
@@ -10,14 +8,9 @@ public class EquipmentDecommissioning : GenericEntity
     public int? ReceptorId { get; set; }
     public DateTime Date { get; set; }
     public string Cause { get; set; } = string.Empty;
-    public DecommissioningStatus Status { get; set; } = DecommissioningStatus.Pending;
-
-
-    [JsonIgnore]
+    public string Status { get; set; } = string.Empty;
     public Technician? Technician { get; set; }
-    [JsonIgnore]
     public Equipment? Equipment { get; set; }
-    [JsonIgnore]
     public EquipmentReceptor? Receptor { get; set; }
     
 

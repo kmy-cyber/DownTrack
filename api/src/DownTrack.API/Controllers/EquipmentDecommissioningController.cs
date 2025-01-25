@@ -1,6 +1,5 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -29,7 +28,7 @@ public class EquipmentDecommissioningController : ControllerBase
     [HttpGet]
     [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<EquipmentDecommissioning>>> GetAllEquipmentDecommissioning()
+    public async Task<ActionResult<IEnumerable<EquipmentDecommissioningDto>>> GetAllEquipmentDecommissioning()
     {
         var results = await _equipmentDecommissioningServices.ListAsync();
 
@@ -39,7 +38,7 @@ public class EquipmentDecommissioningController : ControllerBase
     
     [HttpGet]
     [Route("{equipmentDecommissioningId}/GET_BY_ID")]
-    public async Task<ActionResult<EquipmentDecommissioning>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
+    public async Task<ActionResult<EquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
     {
         var result = await _equipmentDecommissioningServices.GetByIdAsync(equipmentDecommissioningId);
 

@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
@@ -63,16 +63,6 @@ public class DepartmentServices : IDepartmentServices
 
     }
 
-    // public async Task DeleteAsync(int departmentId, int sectionId)
-    // {
-
-    //     await _unitOfWork.DepartmentRepository.DeleteAsync(departmentId, sectionId);
-
-    //     await _unitOfWork.CompleteAsync();
-    // }
-
-
-
     /// <summary>
     /// Deletes a department by its ID.
     /// </summary>
@@ -108,15 +98,12 @@ public class DepartmentServices : IDepartmentServices
 
         var existingDepartment = await _unitOfWork.GetRepository<Department>().GetByIdAsync(dto.Id);
 
-        if (existingDepartment == null)
-        {
-            throw new ConflictException($"Department with ID '{dto.Id}' in section '{dto.SectionId}' does not exist.");
-        }
+        bool existDepartment = await _unitOfWork.DepartmentRepository
+                                    .ExistsByIdAndSectionAsync(dto.Id,dto.SectionId);
 
-        var existingSection = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
 
-        if(existingSection == null)
-            throw new ConflictException($"Section '{dto.SectionId}' does not exist.");
+        if(existDepartment)
+            throw new ConflictException($"Department '{dto.Id}' does not exist in Section '{dto.SectionId}' ");
 
         _mapper.Map(dto, existingDepartment);
 
@@ -137,7 +124,6 @@ public class DepartmentServices : IDepartmentServices
     /// <returns>The DepartmentDto of the retrieved department.</returns>
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
-
 
         var result = await _unitOfWork.GetRepository<Department>()
                                       .GetByIdAsync(departmentDto,default,
