@@ -1,4 +1,6 @@
 
+using System.Linq.Expressions;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IRepository;
@@ -30,14 +32,17 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// <typeparam name="TId">The type of the identifier.</typeparam>
     /// <param name="elementId">The identifier of the entity to retrieve.</param>
     /// <param name="cancellationToken">A token to cancel the operation, if needed.</param>
+    /// <param name="includes">An optional array of expressions specifying the related entities to include in the query. </param>/// 
     /// <returns>A Task representing the asynchronous operation, returning the entity with the specified identifier.</returns>
-    Task<T> GetByIdAsync<TId>(TId elementId, CancellationToken cancellationToken = default);
+    Task<T> GetByIdAsync<TId>(TId elementId, CancellationToken cancellationToken = default
+                                , params Expression<Func<T,object>>[]includes);
 
+                                                
     /// <summary>
     /// Retrieves all entities as an <see cref="IQueryable{T}"/>.
     /// </summary>
     /// <returns>An <see cref="IQueryable{T}"/> representing all entities in the repository.</returns>
-    IQueryable<T> GetAllAsync();
+    IQueryable<T> GetAll();
 
     /// <summary>
     /// Asynchronously deletes an entity by its identifier.
@@ -55,5 +60,11 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// <returns>The entity with the specified identifier.</returns>
     T GetById<TId>(TId elementId);
 
+    /// <summary>
+    /// Retrieves all entities that satisfy the specified filter expressions.
+    /// </summary>
+    /// <param name="expressions">A collection of filter expressions to apply to the query.</param>
+    /// <returns>An <see cref="IQueryable{T}"/> containing all entities that match the provided filters.</returns>
+    IQueryable<T> GetAllByItems(IEnumerable<Expression<Func<T, bool>>> expressions);
 }
 

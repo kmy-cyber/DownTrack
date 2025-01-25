@@ -9,5 +9,6 @@ public class Technician : Employee
     public int ExpYears { get; set; }
     public ICollection<Evaluation> ReceivedEvaluations {get;set;} = new List<Evaluation>();
     public ICollection<EquipmentDecommissioning> EquipmentDecommissionings { get; set; } = new List<EquipmentDecommissioning>();
-  
+    public ICollection<DoneMaintenance> DoneMaintenances { get; set; } = new List<DoneMaintenance>();
+
 }

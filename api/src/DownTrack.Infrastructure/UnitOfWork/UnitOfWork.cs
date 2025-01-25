@@ -17,7 +17,9 @@ public class UnitOfWork : IUnitOfWork
 
     public UnitOfWork(DownTrackContext context,
                       IUserRepository userRepository,
-                      IDepartmentRepository departmentRepository)
+                      IDepartmentRepository departmentRepository
+                     )
+
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
 

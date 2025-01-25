@@ -6,7 +6,8 @@
 POST {{host}}/api/Authentication/login/
 Content-Type:  application/json
 
+  
 {
-  "userName": "jPerez",
+  "userName": "pedro_sanches",
   "password": "julio9009_L"
 }

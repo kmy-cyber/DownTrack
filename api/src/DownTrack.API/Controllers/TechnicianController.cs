@@ -1,12 +1,13 @@
 
-
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class TechnicianController : ControllerBase
@@ -18,32 +19,11 @@ public class TechnicianController : ControllerBase
         _technicianService = technicianServices;
     }
 
-    [HttpPost]
-    [Route("POST")]
-
-    public async Task<IActionResult> CreateTechnician(TechnicianDto technician)
-    {
-        await _technicianService.CreateAsync(technician);
-
-        return Ok("Technician added successfully");
-    }
-
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Technician>>> GetAllTechnician()
-    {
-        var results = await _technicianService.ListAsync();
-
-        return Ok(results);
-
-    }
-
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Technician>> GetUserById(int technicianId)
+    public async Task<ActionResult<TechnicianDto>> GetUserById(int technicianId)
     {
         var result = await _technicianService.GetByIdAsync(technicianId);
 
@@ -54,26 +34,28 @@ public class TechnicianController : ControllerBase
 
     }
 
-    [HttpPut]
-    [Route("PUT")]
+    [HttpGet]
+    [Route("GetPaged")]
 
-    public async Task<IActionResult> UpdateTechnician(TechnicianDto technician)
+    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
     {
-        var result = await _technicianService.UpdateAsync(technician);
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        return Ok(result);
-    }
-
-    [HttpDelete]
-    [Route("DELETE")]
-
-    public async Task<IActionResult> DeleteTechnician(int technicianId)
-    {
-        await _technicianService.DeleteAsync(technicianId);
-
-        return Ok("Technician deleted successfully");
+        var result = await _technicianService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
 
+    // [HttpGet]
+    // [Route("Get_All_By")]
+
+    // public async Task<ActionResult<IEnumerable<Technician>>> GetAllByItems ([FromQuery] Prueba<Technician> prueba)
+    // {
+    //     var result = await _technicianService.GetPagedResultWithFilterAsync(prueba.paged,prueba.expressions[0]);
+
+    //     return Ok(result);
+    // }
 }
 

@@ -63,17 +63,6 @@ export const routes = [
       },
     ],
   },
-  // {
-  //   title: "section",
-  //   layout: "section",
-  //   pages: [
-  //     {
-  //       icon: <RectangleStackIcon {...icon}/>,
-  //       name: "section",
-  //       path: "/"
-  //     }
-  //   ]
-  // }
 ];
 
 export default routes;

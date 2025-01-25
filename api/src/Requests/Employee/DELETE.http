@@ -1,0 +1,5 @@
+@host = http://localhost:5217
+
+
+DELETE  {{host}}/api/Employee/DELETE?employeeId=4
+Content-Type:  application/json

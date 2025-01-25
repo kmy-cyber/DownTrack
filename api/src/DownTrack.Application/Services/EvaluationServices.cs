@@ -1,6 +1,7 @@
-using System.Security.Cryptography.X509Certificates;
+
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -10,14 +11,12 @@ namespace DownTrack.Application.Services;
 
 public class EvaluationServices : IEvaluationServices
 {
-    //private readonly IEvaluationRepository _evaluationRepository;
     private readonly IMapper _mapper;
 
     private readonly IUnitOfWork _unitOfWork;
 
     public EvaluationServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _evaluationRepository = evaluationRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -27,7 +26,7 @@ public class EvaluationServices : IEvaluationServices
         var evaluation = _mapper.Map<Evaluation>(dto);
 
         var technician = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(evaluation.TechnicianId);
-        // ya esta garantizado que no sea null
+
         var manager = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(evaluation.SectionManagerId);
 
         evaluation.Technician = technician;
@@ -50,8 +49,9 @@ public class EvaluationServices : IEvaluationServices
 
     public async Task<IEnumerable<EvaluationDto>> ListAsync()
     {
-        var evaluation = await _unitOfWork.GetRepository<Evaluation>().GetAllAsync().ToListAsync();
-        //var evaluation = await _evaluationRepository.ListAsync();
+        var evaluation = await _unitOfWork.GetRepository<Evaluation>().GetAll().ToListAsync();
+        
+
         return evaluation.Select(_mapper.Map<EvaluationDto>);
     }
 
@@ -59,13 +59,12 @@ public class EvaluationServices : IEvaluationServices
     {
         var evaluation = await _unitOfWork.GetRepository<Evaluation>().GetByIdAsync(dto.Id);
 
-        //var evaluation = _evaluationRepository.GetById(dto.Id);
         _mapper.Map(dto, evaluation);
 
         _unitOfWork.GetRepository<Evaluation>().Update(evaluation);
 
         await _unitOfWork.CompleteAsync();
-        //await _evaluationRepository.UpdateAsync(evaluation);
+        
         return _mapper.Map<EvaluationDto>(evaluation);
     }
 
@@ -78,10 +77,37 @@ public class EvaluationServices : IEvaluationServices
     {
         var result = await _unitOfWork.GetRepository<Evaluation>().GetByIdAsync(evaluationDto);
 
-        //var result = await _evaluationRepository.GetByIdAsync(evaluationDto);
-
         /// and returns the updated evaluation as an EvaluationDto.
         return _mapper.Map<EvaluationDto>(result);
 
+    }
+
+    public async Task<PagedResultDto<EvaluationDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Evaluation> queryEvaluation = _unitOfWork.GetRepository<Evaluation>().GetAll();
+
+        var totalCount = await queryEvaluation.CountAsync();
+
+        var items = await queryEvaluation // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<EvaluationDto>
+        {
+            Items = items?.Select(_mapper.Map<EvaluationDto>) ?? Enumerable.Empty<EvaluationDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
     }
 }

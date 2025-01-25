@@ -1,9 +1,7 @@
 using DownTrack.Application.DTO;
 
 namespace DownTrack.Application.IServices;
-
-
-public interface IMaintenanceServices : IGenericService<MaintenanceDto>
+public interface ITransferServices : IGenericService<TransferDto>
 {
-
+    
 }

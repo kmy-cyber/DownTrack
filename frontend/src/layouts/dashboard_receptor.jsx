@@ -11,14 +11,12 @@ import routesReceptor from "@/routes/routes_receptor";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 import { useEffect } from "react";
 import {jwtDecode} from 'jwt-decode';
+import { useAuth } from "@/context/AuthContext";
 
 export function Dashboard_Receptor() {
     const [controller, dispatch] = useMaterialTailwindController();
     const { sidenavType } = controller;
-    const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
-    const roleClaimValue = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-    console.log("ROL:", roleClaimValue);
+    const { user } = useAuth();
 
 
     return (
@@ -30,9 +28,9 @@ export function Dashboard_Receptor() {
             <DashboardNavbar />
             
             <UserInfoSidebar
-                id={decodedToken.sub}
-                name={decodedToken.given_name} 
-                role={roleClaimValue}
+                id={user.id}
+                name={user.name} 
+                role={user.role}
             />
             <Routes>
             {routesReceptor.map(

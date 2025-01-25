@@ -1,11 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DownTrack.API\DownTrack.API.csproj" />
-    <ProjectReference Include="..\..\src\DownTrack.Infrastructure\DownTrack.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\DownTrack.Application\DownTrack.Application.csproj" />
-    <ProjectReference Include="..\..\src\DownTrack.Domain\DownTrack.Domain.csproj" />
-  </ItemGroup>
+ 
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />

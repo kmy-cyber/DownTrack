@@ -1,0 +1,40 @@
+@host = http://localhost:5217
+
+### Maintenance request ( Id - [0-100]
+POST {{host}}/api/DoneMaintenance/POST 
+Content-Type:  application/json
+
+{
+  "id": 2,
+  "technicianId": 100,
+  "type": "aklkdlas",
+  "equipmentId": 100,
+  "date": "2025-01-15T02:40:49.279Z",
+  "cost": 190
+}
+
+### Technician request ( Technician Id - [100,200] )
+
+POST {{host}}/api/Technician/POST 
+Content-Type:  application/json
+
+{
+  "id": 101,
+  "specialty": "electricista",
+  "salary": 10,
+  "expYears": 10,
+  "name": "Julio"
+}
+
+### Equipment request ( Equipment Id - [100,200] )
+
+POST {{host}}/api/Equipment/POST 
+Content-Type:  application/json
+
+{
+  "id": 101,
+  "name": "stringjdkjsfkd",
+  "type": "stringskjdf",
+  "status": "stringskjdfkj",
+  "dateOfadquisition": "2025-01-15T02:58:18.354Z"
+}

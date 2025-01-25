@@ -36,7 +36,7 @@ public class IdentityService : IIdentityService
         var user = _mapper.Map<User>(userDto);
 
         // Check if the mapping or the user object is null.
-        if (user == null) 
+        if (user == null)
             throw new Exception();
 
         // Validate the user's credentials.
@@ -45,7 +45,7 @@ public class IdentityService : IIdentityService
         // If the credentials are invalid, return null.
         if (savedUser is null)
             throw new Exception();
-        
+
         // If the credentials are valid, generate a token for the authenticated user.
         return await _jwtTokenGenerator.GenerateToken(savedUser);
 
@@ -53,6 +53,7 @@ public class IdentityService : IIdentityService
 
     public async Task<string> RegisterUserAsync(RegisterUserDto userDto)
     {
+        Console.WriteLine(userDto.DepartmentId);
         try
         {
             if (!UserRoleHelper.IsValidRole(userDto.UserRole))
@@ -61,21 +62,53 @@ public class IdentityService : IIdentityService
 
             var user = _mapper.Map<User>(userDto);
 
-            if (userDto.UserRole == UserRole.Technician.ToString())
+            if (userDto.UserRole == UserRole.ShippingSupervisor.ToString())
+            {
+                var supervisor = _mapper.Map<Employee>(userDto);
+
+                await _unitOfWork.GetRepository<Employee>().CreateAsync(supervisor);
+
+                await _unitOfWork.CompleteAsync();
+
+                return "Not token for this user";
+
+            }
+
+            else if (userDto.UserRole == UserRole.Technician.ToString())
             {
 
                 var technician = _mapper.Map<Technician>(userDto);
 
+                technician.User = user;
+                Console.WriteLine("======================================");
+                Console.WriteLine(technician.User);
+                Console.WriteLine("======================================");
                 await _unitOfWork.GetRepository<Technician>().CreateAsync(technician);
+
 
             }
 
             else if (userDto.UserRole == UserRole.EquipmentReceptor.ToString())
             {
 
+                Console.WriteLine(userDto.DepartmentId);
                 var equipmentReceptor = _mapper.Map<EquipmentReceptor>(userDto);
+                equipmentReceptor.User = user;
+                Console.WriteLine(equipmentReceptor.User);
+
+                Console.WriteLine(equipmentReceptor.DepartmentId);
+                var department = await _unitOfWork.GetRepository<Department>()
+                                          .GetByIdAsync(equipmentReceptor.DepartmentId);
+
+                Console.WriteLine($"======================={department.Id}========={department.SectionId}=======");
+
+                if (userDto.SectionId != department.SectionId)
+                    throw new Exception($"Department with Id :{department.Id} not belong to Section with Id :{userDto.SectionId}");
+
+                equipmentReceptor.Department = department;
 
                 await _unitOfWork.GetRepository<EquipmentReceptor>().CreateAsync(equipmentReceptor);
+
 
             }
 
@@ -83,8 +116,10 @@ public class IdentityService : IIdentityService
             {
 
                 var employee = _mapper.Map<Employee>(userDto);
-
+                employee.User = user;
+                Console.WriteLine(employee.User);
                 await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
+
 
 
             }
@@ -106,4 +141,44 @@ public class IdentityService : IIdentityService
             throw;
         }
     }
+
+
+    public async Task UpdateUserAsync(UpdateUserDto updateDto)
+    {
+        try
+        {
+            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Password, updateDto.Email);
+
+            if (updateDto.UserRole == UserRole.Technician.ToString())
+            {
+                var technician = _mapper.Map<Technician>(updateDto);
+
+                _unitOfWork.GetRepository<Technician>().Update(technician);
+
+            }
+
+            else if (updateDto.UserRole == UserRole.EquipmentReceptor.ToString())
+            {
+                var receptor = _mapper.Map<EquipmentReceptor>(updateDto);
+
+                _unitOfWork.GetRepository<EquipmentReceptor>().Update(receptor);
+            }
+
+            else
+            {
+                var employee = _mapper.Map<Employee>(updateDto);
+
+                _unitOfWork.GetRepository<Employee>().Update(employee);
+            }
+
+            await _unitOfWork.CompleteAsync();
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+
 }

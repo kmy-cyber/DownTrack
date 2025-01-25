@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardHeader,
@@ -16,6 +16,7 @@ export const MaintenanceCreationForm = () => {
     specialty: "",
     salary: "",
     });
+    const [startDate, setStartDate] = useState("");
 
     const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,8 +25,27 @@ export const MaintenanceCreationForm = () => {
 
     const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User created:", formData);
+    const currentDate = new Date().toISOString().split('T')[0];
+    date: currentDate
+    console.log("Maintenance", formData);
     };
+
+
+    
+    // Generar la fecha y hora en formato YYYY-MM-DD HH:MM:SS
+    const generateDateTime = () => {
+        const currentDate = new Date();
+        return currentDate
+            .toISOString()
+            .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
+            .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
+    };
+        
+    // Establecer la fecha al cargar el componente
+    useEffect(() => {
+        const currentDate = generateDateTime();
+        setStartDate(currentDate);
+    }, []);
 
     return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
@@ -71,124 +91,19 @@ export const MaintenanceCreationForm = () => {
                 </div>
 
                 <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
                     Date
                 </label>
                 <input
-                    type="date"
+                    type="text"
                     id="date"
                     name="date"
-                    value={formData.date}
-                    onChange={handleChange}
-                    placeholder=""
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
+                    value={startDate}
+                    readOnly
+                    className="mt-1 block w-full px-3 py-2 border  text-gray-700 border-gray-300 sel focus:border-gray-300 rounded-md shadow-sm"
                 />
                 </div>
 
-                <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Cost
-                </label>
-                <input
-                    type="number"
-                    id="cost"
-                    name="cost"
-                    value={formData.cost}
-                    onChange={handleChange}
-                    placeholder="Enter cost"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
-                </div>
-
-                {/*<div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                    Role
-                </label>
-                <select
-                    id="role"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                >
-                    <option value="admin">Administrator</option>
-                    <option value="section_manager">Section Manager</option>
-                    <option value="technician">Technician</option>
-                    <option value="receptor">Equipment Receptor</option>
-                    <option value="director">Center Director</option>
-                </select>
-                </div>*/}
-
-                {formData.role === "section_manager" || formData.role === "receptor" ? (
-                <div>
-                    <label htmlFor="section" className="block text-sm font-medium text-gray-700">
-                    Section
-                    </label>
-                    <input
-                    type="text"
-                    id="section"
-                    name="section"
-                    value={formData.section}
-                    onChange={handleChange}
-                    placeholder="Enter section"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                    />
-                </div>
-                ) : null}
-
-                {formData.role === "technician" ? (
-                <>
-                    <div>
-                    <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
-                        Years of Experience
-                    </label>
-                    <input
-                        type="number"
-                        id="experience"
-                        name="experience"
-                        value={formData.experience}
-                        onChange={handleChange}
-                        placeholder="Enter years of experience"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                    </div>
-
-                    <div>
-                    <label htmlFor="specialty" className="block text-sm font-medium text-gray-700">
-                        Specialty
-                    </label>
-                    <input
-                        type="text"
-                        id="specialty"
-                        name="specialty"
-                        value={formData.specialty}
-                        onChange={handleChange}
-                        placeholder="Enter specialty"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    </div>
-
-                    <div>
-                    <label htmlFor="salary" className="block text-sm font-medium text-gray-700">
-                        Salary
-                    </label>
-                    <input
-                        type="number"
-                        id="salary"
-                        name="salary"
-                        value={formData.salary}
-                        onChange={handleChange}
-                        placeholder="Enter money to pay"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    </div>
-                </>
-                ) : null}
             </div>
 
             <button

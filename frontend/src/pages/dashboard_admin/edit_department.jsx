@@ -4,13 +4,23 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    } from "@material-tailwind/react";
+} from "@material-tailwind/react";
+import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import api from "@/middlewares/api";
+import { ConnectingAirportsOutlined } from "@mui/icons-material";
+
 
 export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const[alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('success');
+
+    const [departmentList, setDepartmentList] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         id: "",
-        section: "",
+        sectionId: "",
+        sectionName: "",
     });
 
     useEffect(() => {
@@ -24,13 +34,46 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(formData);
-        console.log("Updated department:", formData);
+
+        try {
+            
+            console.log(formData.id);
+            console.log(formData.name);
+            console.log(formData.sectionId);
+
+            const response = await api(`/Department/PUT`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    'id': formData.id,
+                    'name': formData.name,
+                    'sectionId': formData.sectionId,
+                    'sectionName': formData.sectionName,
+                })
+            });
+        if (!response.ok) {
+            setAlertMessage('Failed to edit department');
+            setAlertType('error');
+            throw new Error('Failed to edit department');
+        }
+        else
+        {
+            setAlertMessage('Edit completed successfully');
+            setAlertType('success');
+            onSave(formData);
+        }
+        } catch (error) {
+            setAlertMessage('Error editing department:');
+            setAlertType('error');
+            console.log(error);
+        }
     };
 
     return (
+        <>
+        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
+
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <Typography variant="h6" color="white">
@@ -65,7 +108,7 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
                     type="text"
                     id="section"
                     name="section"
-                    value={formData.section}
+                    value={formData.sectionName}
                     onChange={handleChange}
                     placeholder="Enter section"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -91,6 +134,7 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
             </form>
         </CardBody>
         </div>
+        </>
     );
 };
 

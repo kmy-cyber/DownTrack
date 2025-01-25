@@ -19,6 +19,7 @@ public static class DependencyInjection
     /// <returns>The modified IServiceCollection.</returns>
     public static IServiceCollection AddAplication(this IServiceCollection services, ConfigurationManager configurationManager)
     {
+
         // Registers AutoMapper to enable mapping between DTOs and domain models.
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -26,7 +27,7 @@ public static class DependencyInjection
         // Registers services related to Entities
         services.AddScoped<ITechnicianServices, TechnicianServices>();
         services.AddScoped<IEmployeeServices, EmployeeServices>();
-        services.AddScoped<IMaintenanceServices,MaintenanceServices>();
+        services.AddScoped<IDoneMaintenanceServices, DoneMaintenanceServices>();
         services.AddScoped<IIdentityService,IdentityService>();
         services.AddScoped<IEquipmentServices, EquipmentServices>();
         services.AddScoped<ISectionServices, SectionServices>();
@@ -34,9 +35,12 @@ public static class DependencyInjection
         services.AddScoped<IEquipmentReceptorServices, EquipmentReceptorServices>();
         services.AddScoped<IEvaluationServices, EvaluationServices>();
         services.AddScoped<IEquipmentDecommissioningServices, EquipmentDecommissioningServices>();
-
+        services.AddScoped<ITransferRequestServices, TransferRequestServices>();
+        services.AddScoped<ITransferServices, TransferServices>();
+      
 
         return services;
+
 
     }
 }

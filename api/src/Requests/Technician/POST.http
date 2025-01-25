@@ -1,0 +1,17 @@
+
+@host = http://localhost:5217
+
+
+POST {{host}}/api/Technician/POST 
+Content-Type:  application/json
+
+{
+  "id": 1,
+  "specialty": "electricista",
+  "salary": 10,
+  "expYears": 10,
+  "name": "JUlio"
+}
+
+
+
