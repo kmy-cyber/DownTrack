@@ -20,11 +20,12 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-
+    //[Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
-
+        Console.WriteLine(registerDto.DepartmentId);
         var result = await _identityService.RegisterUserAsync(registerDto);
+        Console.WriteLine(result);
         return Ok(result);
 
     }
@@ -36,7 +37,6 @@ public class AuthenticationController : ControllerBase
     {
 
         var token = await _identityService.LoginUserAsync(loginDto);
-
         return Ok(token);
 
     }

@@ -1,9 +1,11 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 public class DepartmentController : ControllerBase
@@ -20,32 +22,48 @@ public class DepartmentController : ControllerBase
 
     public async Task<IActionResult> CreateDepartmen(DepartmentDto department)
     {
+        
         await _departmentService.CreateAsync(department);
+
 
         return Ok("Department added successfully");
     }
 
 
     [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Department>>> GetAllDepartents()
-    {
-        var results = await _departmentService.ListAsync();
-
-        return Ok(results);
-
-    }
-
-    [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Department>> GetUserById(int departmentId)
+    public async Task<ActionResult<DepartmentDto>> GetDepartmentById(int departmentId)
     {
         var result = await _departmentService.GetByIdAsync(departmentId);
 
         if (result == null)
             return NotFound($"Department with ID {departmentId} not found");
+
+        return Ok(result);
+
+    }
+
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedDepartment ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _departmentService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _departmentService.ListAsync();
 
         return Ok(result);
 
@@ -63,9 +81,9 @@ public class DepartmentController : ControllerBase
     [HttpDelete]
     [Route("DELETE")]
 
-    public async Task<IActionResult> DeleteDepartment(int departmentId, int SectionId)
+    public async Task<IActionResult> DeleteDepartment(int departmentId)
     {
-        await _departmentService.DeleteAsync(departmentId, SectionId);
+        await _departmentService.DeleteAsync(departmentId);
 
         return Ok("Department deleted successfully");
     }

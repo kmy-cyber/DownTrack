@@ -1,22 +1,22 @@
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Status;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
 public class EquipmentServices : IEquipmentServices
 {
-    //private readonly IEquipmentRepository _equipmentRepository;
     private readonly IMapper _mapper;
 
     private readonly IUnitOfWork _unitOfWork;
 
     public EquipmentServices(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        // _equipmentRepository = equipmentRepository;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
@@ -25,8 +25,16 @@ public class EquipmentServices : IEquipmentServices
     {
         var equipment = _mapper.Map<Equipment>(dto);
 
-        //await _equipmentRepository.CreateAsync(equipment);
-        
+        var department = await _unitOfWork.DepartmentRepository
+                                  .GetByIdAsync(equipment.DepartmentId);
+
+        if(department.SectionId != dto.SectionId)
+            throw new Exception($"Department with Id: {department.SectionId} not exist in Section with Id : {dto.SectionId}");
+
+
+        if(!EquipmentStatusHelper.IsValidStatus(equipment.Status))
+            throw new Exception("Invalid status");
+            
         await _unitOfWork.GetRepository<Equipment>().CreateAsync(equipment);
 
         await _unitOfWork.CompleteAsync();
@@ -44,7 +52,7 @@ public class EquipmentServices : IEquipmentServices
 
     public async Task<IEnumerable<EquipmentDto>> ListAsync()
     {
-        var equipment = await _unitOfWork.GetRepository<Equipment>().GetAllAsync().ToListAsync();
+        var equipment = await _unitOfWork.GetRepository<Equipment>().GetAll().ToListAsync();
         
         return equipment.Select(_mapper.Map<EquipmentDto>);
     }
@@ -69,10 +77,44 @@ public class EquipmentServices : IEquipmentServices
     /// <returns>A Task representing the asynchronous operation that fetches the equipment</returns>
     public async Task<EquipmentDto> GetByIdAsync(int equipmentDto)
     {
-        var result = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(equipmentDto);
+        var result = await _unitOfWork.GetRepository<Equipment>()
+                                      .GetByIdAsync(equipmentDto,default,e=> e.Department);
         
         /// and returns the updated equipment as an EquipmentDto.
         return _mapper.Map<EquipmentDto>(result);
 
+    }
+
+
+
+    public async Task<PagedResultDto<EquipmentDto>> GetPagedResultAsync(PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>()
+                                                          .GetAll()
+                                                          .Include(e=> e.Department);
+
+        var totalCount = await queryEquipment.CountAsync();
+
+        var items = await queryEquipment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<EquipmentDto>
+        {
+            Items = items?.Select(_mapper.Map<EquipmentDto>) ?? Enumerable.Empty<EquipmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
     }
 }

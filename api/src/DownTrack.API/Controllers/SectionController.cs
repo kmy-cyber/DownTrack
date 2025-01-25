@@ -1,5 +1,6 @@
 
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -22,26 +23,17 @@ public class SectionController : ControllerBase
 
     public async Task<IActionResult> CreateSection(SectionDto section)
     {
+        Console.WriteLine(section.Name);
         await _sectionService.CreateAsync(section);
 
         return Ok("Section added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Section>>> GetAllSections()
-    {
-        var results = await _sectionService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Section>> GetUserById(int sectionId)
+    public async Task<ActionResult<SectionDto>> GetUserById(int sectionId)
     {
         var result = await _sectionService.GetByIdAsync(sectionId);
 
@@ -50,6 +42,39 @@ public class SectionController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<Section>> GetAll()
+    {
+        var result = await _sectionService.ListAsync();
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedSection ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _sectionService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+    [HttpGet]
+    [Route("Get_ALL_Departments")]
+    public async Task<ActionResult> GetAllDepartments (int sectionId)
+    {
+        var result = await _sectionService.GetAllDepartments(sectionId);
+
+        return Ok(result);
     }
 
 

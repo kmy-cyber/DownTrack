@@ -5,7 +5,13 @@ POST {{host}}/api/Department/POST/
 Content-Type:  application/json
 
 {
-  "id": 1,
-  "name": "strinasasg",
-  "sectionId": 1
+  "id": 4,
+  "name": "s90trin90asasg",
+  "sectionId": 1,
+  "sectionName":""
 }
+
+
+###
+
+GET {{host}}/api/Department/GET_ALL

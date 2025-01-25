@@ -1,4 +1,5 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -27,21 +28,11 @@ public class DoneMaintenanceController : ControllerBase
         return Ok("Done Maintenance added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<DoneMaintenance>>> GetAllDoneMaintenance()
-    {
-        var results = await _doneMaintenanceService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<DoneMaintenance>> GetDoneMaintenanceById(int doneMaintenanceId)
+    public async Task<ActionResult<DoneMaintenanceDto>> GetDoneMaintenanceById(int doneMaintenanceId)
     {
         var result = await _doneMaintenanceService.GetByIdAsync(doneMaintenanceId);
 
@@ -50,6 +41,20 @@ public class DoneMaintenanceController : ControllerBase
 
         return Ok(result);
 
+    }
+
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedDoneMaintenance ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _doneMaintenanceService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
     [HttpPut]

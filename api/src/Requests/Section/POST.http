@@ -6,7 +6,11 @@ Content-Type:  application/json
 
 
 {
-  "id": 1,
-  "name": "stasas",
-  "sectionManagerId": 7
+  "id": 2,
+  "name": "IT",
+  "sectionManagerId": 3
 }
+
+###Delete
+
+DELETE {{host}}/api/Section/DELETE?sectionId=3

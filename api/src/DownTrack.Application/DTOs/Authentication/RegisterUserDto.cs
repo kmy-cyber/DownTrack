@@ -1,5 +1,4 @@
 
-
 namespace DownTrack.Application.DTO.Authentication;
 
 public class RegisterUserDto
@@ -13,6 +12,6 @@ public class RegisterUserDto
     public string Specialty { get; set; } = null!;
     public double Salary { get; set; }
     public int ExpYears { get; set; }
-    public int DepartamentId {get;set;}
+    public int DepartmentId {get;set;}
     public int SectionId {get;set;}
 }

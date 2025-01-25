@@ -1,5 +1,5 @@
-using System.Security.Claims;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -42,21 +42,11 @@ public class EquipmentController : ControllerBase
         return Ok("Equipment added successfully");
     }
 
-    [HttpGet]
-    [Route("GET_ALL")]
-
-    public async Task<ActionResult<IEnumerable<Equipment>>> GetAllEquipment()
-    {
-        var results = await _equipmentService.ListAsync();
-
-        return Ok(results);
-
-    }
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<Equipment>> GetUserById(int equipmentId)
+    public async Task<ActionResult<EquipmentDto>> GetUserById(int equipmentId)
     {
         var result = await _equipmentService.GetByIdAsync(equipmentId);
 
@@ -65,6 +55,19 @@ public class EquipmentController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedEquipment ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
     [HttpPut]

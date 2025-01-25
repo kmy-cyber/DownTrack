@@ -5,10 +5,12 @@ import {
 } from "@/context";
 import { Button } from "@material-tailwind/react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/solid";
+import { useAuth } from "@/context/AuthContext";
 
 export const UserInfoSidebar = ({ id, name, role }) => {
     const [controller, dispatch] = useMaterialTailwindController();
     const { openUserInfo } = controller;
+    const { logout } = useAuth();
 
     return (
         <div
@@ -54,7 +56,10 @@ export const UserInfoSidebar = ({ id, name, role }) => {
                 <span className="ml-2 text-sm text-gray-800">{role}</span>
             </div>
             <hr />
-            <div className="hover:bg-gray-100 rounded p-2 flex items-center">
+            <div 
+                className="hover:bg-gray-100 rounded p-2 flex items-center"
+                onClick={() => {logout();}}
+            >
                 <ArrowRightOnRectangleIcon className="w-5 h-5   text-white-500" />
                 <p className="ml-5">Logout</p>
             </div>
