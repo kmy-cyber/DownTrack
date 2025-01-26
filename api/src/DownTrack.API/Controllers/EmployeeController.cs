@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace DownTrack.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeeController : ControllerBase
+public class EmployeesController : ControllerBase
 {
     private readonly IEmployeeServices _employeeService;
 
-    public EmployeeController(IEmployeeServices employeeServices)
+    public EmployeesController(IEmployeeServices employeeServices)
     {
         _employeeService = employeeServices;
     }
