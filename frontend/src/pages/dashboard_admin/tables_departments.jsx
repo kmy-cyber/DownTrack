@@ -12,6 +12,7 @@ import {EditDepartmentForm} from "@/pages/dashboard_admin/edit_department";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";   
+import { Pagination } from '@mui/material';
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
 
@@ -20,7 +21,10 @@ import api from "@/middlewares/api";
         const[alertMessage, setAlertMessage] = useState('');
         const [alertType, setAlertType] = useState('success');
 
-        const [departmentList, setDepartmentList] = useState([]);
+        const [totalPages, setTotalPages] = useState(0);
+        const [currentItems, setCurrentItems] = useState([]);
+        const [currentPage, setCurrentPage] = useState(1);
+
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
         const [dptData, setDptData] = useState({
@@ -33,31 +37,38 @@ import api from "@/middlewares/api";
         // TODO: Connect with backend and replace static values
 
         useEffect(() => {
-            fetchDepartments();
+            fetchDepartments(1);
         }, []);
+
+        const handlePageChange = async (event, newPage) => {
+            setCurrentPage(newPage);
+            await fetchEmployees(newPage);
+        };
     
-        const fetchDepartments = async () => {
+        const fetchDepartments = async (page) => {
             try {
-                const response = await api('/Department/GET_ALL', {
+                const response = await api(`/Department/GetPaged?PageNumber=${page}&PageSize=10`, {
                     method: 'GET',
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setDepartmentList(data);
-                console.log(data);
+                
+                setCurrentItems(data.items);
+                setTotalPages(Math.ceil(data.totalCount / data.pageSize));
+
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching departments:", error);
-                setDepartmentList([]);
+                setCurrentItems([]);
                 setIsLoading(false);
             }
         };
         
         const handleSave = (updatedDepartment) => {
-            departmentList[keyEdit] = updatedDepartment;
-            setDepartmentList(departmentList);
+            currentItems[keyEdit] = updatedDepartment;
+            setCurrentItems(currentItems);
     
             // Reset the values
             setDptData({
@@ -102,7 +113,7 @@ import api from "@/middlewares/api";
             {
                 setAlertMessage('Delete completed successfully');
                 setAlertType('success');
-                setDepartmentList(departmentList.filter(d => d.id !== id));
+                setCurrentItems(currentItems.filter(d => d.id !== id));
             }
             } catch (error) {
                 setAlertMessage('Error deleting department:');
@@ -151,10 +162,10 @@ import api from "@/middlewares/api";
                             </tr>
                             </thead>
                             <tbody>
-                            {departmentList.map(
+                            {currentItems.map(
                                 (dept, key) => {
                                 const className = `py-3 px-5 ${
-                                    key === departmentList.length - 1
+                                    key === currentItems.length - 1
                                     ? ""
                                     : "border-b border-blue-gray-50"
                                 }`;
@@ -223,7 +234,12 @@ import api from "@/middlewares/api";
                         </table>
                         </CardBody>
                     </Card>
-    
+                    <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        className="self-center"
+                    />
                     </div>
                 }
             </>

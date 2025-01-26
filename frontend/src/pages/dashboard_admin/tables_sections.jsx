@@ -14,6 +14,7 @@ import { sectionData } from "@/data/sections-data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import EditSectionForm from "./edit_section";
+import { Pagination } from '@mui/material';
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
     
@@ -22,43 +23,53 @@ import api from "@/middlewares/api";
         const[alertMessage, setAlertMessage] = useState('');
         const [alertType, setAlertType] = useState('success');
 
+        const [totalPages, setTotalPages] = useState(0);
+        const [currentPage, setCurrentPage] = useState(1);
+
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
-        const [sectionList, setSectionList] = useState([]);
+        const [currentItems, setCurrentItems] = useState([]);
         const [sectData, setSectData] = useState({
             id: "",
             name: "",
         });
     
-        // TODO: Connect with backend and replace static values
+        // funcion que se llama cada vez que se cambia de pagina
+        const handlePageChange = async (event, newPage) => {
+            setCurrentPage(newPage);
+            await fetchEmployees(newPage);
+        };
 
         useEffect(() => {
-            fetchSections();
+            fetchSections(1);
         }, []);
         
-        const fetchSections = async () => {
+        const fetchSections = async (page) => {
             try {
-                const response = await api('/Section/GET_ALL', {
+                const response = await api(`/Section/GetPaged?PageNumber=${page}&PageSize=10`, {
                     method: 'GET',
                 });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setSectionList(data);
+
+                setCurrentItems(data.items);
+                setTotalPages(Math.ceil(data.totalCount / data.pageSize));
+
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching sections:", error);
-                setSectionList([]);
+                setCurrentItems([]);
                 setIsLoading(false);
             }
         };
         
         const handleSave = (updateSection) => {
-            const index = sectionList.findIndex(s => s.id === updateSection.id)
-            sectionList[index] = updateSection;
+            const index = currentItems.findIndex(s => s.id === updateSection.id)
+            currentItems[index] = updateSection;
 
-            setSectionList(sectionList);
+            setCurrentItems(currentItems);
 
             setSectData({
                 id: "",
@@ -102,7 +113,7 @@ import api from "@/middlewares/api";
             {
                 setAlertMessage('Delete completed successfully');
                 setAlertType('success');
-                setSectionList(sectionList.filter(s => s.id !== id));
+                setCurrentItems(currentItems.filter(s => s.id !== id));
             }
             } catch (error) {
                 setAlertMessage('Error deleting section:');
@@ -151,10 +162,10 @@ import api from "@/middlewares/api";
                             </tr>
                             </thead>
                             <tbody>
-                            {sectionList.map(
+                            {currentItems.map(
                                 (sect, key) => {
                                 const className = `py-3 px-5 ${
-                                    key === sectionList.length - 1
+                                    key === currentItems.length - 1
                                     ? ""
                                     : "border-b border-blue-gray-50"
                                 }`;
@@ -209,7 +220,12 @@ import api from "@/middlewares/api";
                         </table>
                         </CardBody>
                     </Card>
-    
+                    <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    className="self-center"
+                    />
                     </div>
                 }
             </>
