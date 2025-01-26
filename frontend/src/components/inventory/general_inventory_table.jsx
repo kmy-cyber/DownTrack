@@ -1,62 +1,84 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
+import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import api from "@/middlewares/api";
 
 const GeneralInventoryTable = () => {
   const [equipmentData, setEquipmentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const [totalPages, setTotalPages] = useState(0); // Total de páginas
   const pageSize = 15;
 
   useEffect(() => {
     fetchAllEquipments();
-  }, []);
+  }, [currentPage]); // Re-fetch cuando cambie la página
 
   const fetchAllEquipments = async () => {
     let allEquipments = [];
-    let pageNumber = 1;
     let hasMore = true;
+    const pageNumber = currentPage;
 
     try {
-      while (hasMore) {
-        const response = await api(`/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
-          method: 'GET',
-          params: {
-            PageNumber: pageNumber,
-            PageSize: pageSize,
-          },
-        });
+      const response = await api(`/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        method: 'GET',
+        params: {
+          PageNumber: pageNumber,
+          PageSize: pageSize,
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch equipment data');
-        }
-
-        console.log(response)
-        const data = await response.json();
-
-        console.log(data);
-
-        if (!data.items) {
-          throw new Error('Unexpected response structure');
-        }
-
-        allEquipments = [...allEquipments, ...data.items];
-
-        if (data.items.length < pageSize) {
-          hasMore = false; // Si hay menos registros que pageSize, no hay más páginas
-        } else {
-          pageNumber += 1; // Avanza al siguiente número de página
-        }
+      if (!response.ok) {
+        throw new Error('Failed to fetch equipment data');
       }
 
+      const data = await response.json();
+
+      if (!data.items) {
+        throw new Error('Unexpected response structure');
+      }
+
+      allEquipments = data.items;
+
+      // Establecer los datos y la cantidad total de páginas
       setEquipmentData(allEquipments);
+      setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcular el número total de páginas
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-  
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const renderPaginationButtons = () => {
+    const visibleButtons = 5; // Número máximo de botones visibles
+    let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
+    let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
+
+    // Ajustar rango si estamos cerca del inicio o final
+    if (endPage - startPage + 1 < visibleButtons) {
+      startPage = Math.max(1, endPage - visibleButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+      <Button
+        key={page}
+        variant={page === currentPage ? "filled" : "outlined"}
+        color="gray"
+        onClick={() => handlePageChange(page)}
+        className="px-4 py-2"
+      >
+        {page}
+      </Button>
+    ));
+  };
+
   return (
     <Card className="mt-8 shadow-lg">
       <CardHeader variant="gradient" color="gray" className="p-6">
@@ -117,6 +139,33 @@ const GeneralInventoryTable = () => {
             </table>
           </div>
         )}
+        {/* Paginación */}
+        <div className="flex justify-center mt-4 space-x-2">
+          {/* Botón "Anterior" */}
+          <Button
+            variant="outlined"
+            color="gray"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2"
+          >
+            Prev
+          </Button>
+
+          {/* Botones dinámicos de paginación */}
+          {renderPaginationButtons()}
+
+          {/* Botón "Siguiente" */}
+          <Button
+            variant="outlined"
+            color="gray"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2"
+          >
+            Next
+          </Button>
+        </div>
       </CardBody>
     </Card>
   );
