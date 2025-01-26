@@ -1,4 +1,3 @@
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
@@ -8,12 +7,12 @@ namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DepartmentNewController : ControllerBase
+public class DepartmentController : ControllerBase
 {
     private readonly IDepartmentQueryServices _departmentQueryService;
     private readonly IDepartmentCommandServices _departmentCommandService;
 
-    public DepartmentNewController(IDepartmentQueryServices departmentQueryServices,
+    public DepartmentController(IDepartmentQueryServices departmentQueryServices,
                                 IDepartmentCommandServices departmentCommandServices)
     {
         _departmentQueryService = departmentQueryServices;
