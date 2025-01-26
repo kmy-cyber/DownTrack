@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -12,32 +12,86 @@ import {
   Button,
   Radio,
 } from "@material-tailwind/react";
-import { userListData } from "@/data/users-table-data";
+import api from "@/middlewares/api"; // Suponiendo que tienes un middleware para las peticiones
 
 export function Evaluation() {
-  const [searchTerm, setSearchTerm] = useState(""); // State to store search term
-  const [selectedTechnician, setSelectedTechnician] = useState(null); // State to store the selected technician
-  const [evaluation, setEvaluation] = useState(""); // State to store the selected evaluation
-  const [evaluations, setEvaluations] = useState({}); // State to store evaluations and their timestamps
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
+  const [selectedTechnician, setSelectedTechnician] = useState(null); // Estado para el técnico seleccionado
+  const [evaluation, setEvaluation] = useState(""); // Estado para la evaluación seleccionada
+  const [evaluations, setEvaluations] = useState({}); // Estado para las evaluaciones y sus timestamps
+  const [technicians, setTechnicians] = useState([]); // Estado para los técnicos
+  const [totalPages, setTotalPages] = useState(0); // Total de páginas
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const pageSize = 10; // Tamaño de la página
 
-  // Filter users with the role "technician"
-  const technicians = userListData.filter((user) => user.role === "technician");
+  // Función para obtener técnicos de la API
+  const fetchTechnicians = async (pageNumber) => {
+    try {
+      const response = await api(`/Technician/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+        setTechnicians(data.items);
+        setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcular las páginas totales
+      } else {
+        throw new Error("Failed to fetch technicians");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  // Filter technicians by the search term
+  useEffect(() => {
+    fetchTechnicians(currentPage); // Llamar a la API cada vez que cambie la página
+  }, [currentPage]);
+
+  // Filtrar técnicos por el término de búsqueda
   const filteredTechnicians = technicians.filter((technician) =>
-    technician.username.toLowerCase().includes(searchTerm.toLowerCase())
+    technician.name.includes(searchTerm.toLowerCase())
   );
 
-  // Handle the evaluation submission
+  // Función para manejar el cambio de página
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  // Función para renderizar los botones de paginación
+  const renderPaginationButtons = () => {
+    const visibleButtons = 5; // Número máximo de botones visibles
+    let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
+    let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
+
+    // Ajustar rango si estamos cerca del inicio o final
+    if (endPage - startPage + 1 < visibleButtons) {
+      startPage = Math.max(1, endPage - visibleButtons + 1);
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+      <Button
+        key={page}
+        variant={page === currentPage ? "filled" : "outlined"}
+        color="gray"
+        onClick={() => handlePageChange(page)}
+        className="px-4 py-2"
+      >
+        {page}
+      </Button>
+    ));
+  };
+
+  // Manejar la evaluación
   const handleEvaluation = () => {
     if (selectedTechnician && evaluation) {
-      const now = new Date().toISOString(); // Get the current timestamp
+      const now = new Date().toISOString(); // Obtener el timestamp actual
       setEvaluations((prev) => ({
         ...prev,
         [selectedTechnician.username]: { evaluation, date: now },
       }));
-      setSelectedTechnician(null); // Close the modal
-      setEvaluation(""); // Reset evaluation state
+      setSelectedTechnician(null); // Cerrar el modal
+      setEvaluation(""); // Resetear estado de evaluación
     }
   };
 
@@ -49,7 +103,7 @@ export function Evaluation() {
             <Typography variant="h6" color="white">
               Evaluate Technicians
             </Typography>
-            {/* Search bar for filtering by username */}
+            {/* Barra de búsqueda para filtrar por nombre de usuario */}
             <div className="w-72">
               <Input
                 type="text"
@@ -57,113 +111,78 @@ export function Evaluation() {
                 label="Search by Username"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-white" // Ensuring text is white
+                className="text-white" // Asegurando que el texto sea blanco
               />
             </div>
           </div>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          {/* Table displaying technicians */}
+          {/* Tabla mostrando los técnicos */}
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["Technician", "Username", "Specialty", "Experience"].map(
-                  (header) => (
-                    <th
-                      key={header}
-                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                {["Name", "Specialty", "Years of Experience"].map((header) => (
+                  <th key={header} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                    <Typography
+                      variant="small"
+                      className="text-[11px] font-bold uppercase text-blue-gray-400"
                     >
-                      <Typography
-                        variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
-                      >
-                        {header}
-                      </Typography>
-                    </th>
-                  )
-                )}
+                      {header}
+                    </Typography>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {filteredTechnicians.map(
-                ({ username, name, specialty, experience }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === filteredTechnicians.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                  }`;
+              {filteredTechnicians.map(({name,specialty,expYears}, key) => {
+                const className = `py-3 px-5 ${key === filteredTechnicians.length - 1 ? "" : "border-b border-blue-gray-50"}`;
 
-                  return (
-                    <tr
-                      key={username}
-                      onClick={() =>
-                        setSelectedTechnician({ username, name, specialty })
-                      }
-                      className="cursor-pointer hover:bg-blue-gray-50"
-                    >
-                      <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
-                          {name}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-semibold"
-                        >
-                          {username}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-medium text-blue-gray-600">
-                          {specialty || "N/A"}
-                        </Typography>
-                      </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-medium text-blue-gray-600">
-                          {experience || "N/A"} years
-                        </Typography>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
+                return (
+                  <tr
+                    key={name}
+                    onClick={() => setSelectedTechnician({ name, specialty, expYears })}
+                    className="cursor-pointer hover:bg-blue-gray-50"
+                  >
+                    <td className={className}>
+                      <Typography variant="small" color="blue-gray" className="font-semibold">
+                        {name}
+                      </Typography>
+                    </td>
+                    <td className={className}>
+                      <Typography className="text-xs font-medium text-blue-gray-600">
+                        {specialty || "N/A"}
+                      </Typography>
+                    </td>
+                    <td className={className}>
+                      <Typography className="text-xs font-medium text-blue-gray-600">
+                        {expYears || "N/A"} years
+                      </Typography>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {filteredTechnicians.length === 0 && (
-            <Typography
-              className="text-center text-sm font-medium text-blue-gray-600 mt-4"
-            >
+            <Typography className="text-center text-sm font-medium text-blue-gray-600 mt-4">
               No technicians found matching "{searchTerm}".
             </Typography>
           )}
         </CardBody>
       </Card>
 
-      {/* Modal for technician evaluation */}
-      <Dialog
-        open={!!selectedTechnician}
-        handler={() => setSelectedTechnician(null)}
-        className="max-w-sm" // Smaller modal width
-      >
+      {/* Modal para evaluar al técnico */}
+      <Dialog open={!!selectedTechnician} handler={() => setSelectedTechnician(null)} className="max-w-sm">
         <DialogHeader>
           <Typography variant="h6" className="text-center">
             Evaluate {selectedTechnician?.name}
           </Typography>
         </DialogHeader>
-        <DialogBody
-          divider
-          className="flex flex-col gap-2 items-center text-center"
-        >
+        <DialogBody divider className="flex flex-col gap-2 items-center text-center">
           <Typography variant="small" className="text-blue-gray-600">
             Select an evaluation:
           </Typography>
-          {/* Radio buttons for evaluation options (in a row) */}
+          {/* Botones de radio para opciones de evaluación */}
           <div className="flex flex-row items-center gap-4">
             <Radio
               id="good"
@@ -189,26 +208,44 @@ export function Evaluation() {
           </div>
         </DialogBody>
         <DialogFooter className="flex justify-end">
-          {/* Cancel button */}
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => setSelectedTechnician(null)}
-            className="mr-2"
-          >
+          {/* Botón de cancelar */}
+          <Button variant="text" color="red" onClick={() => setSelectedTechnician(null)} className="mr-2">
             Cancel
           </Button>
-          {/* Accept button */}
-          <Button
-            variant="gradient"
-            color="green"
-            onClick={handleEvaluation}
-            disabled={!evaluation}
-          >
+          {/* Botón de aceptar */}
+          <Button variant="gradient" color="green" onClick={handleEvaluation} disabled={!evaluation}>
             Accept
           </Button>
         </DialogFooter>
       </Dialog>
+
+      {/* Paginación */}
+      <div className="flex justify-center mt-4 space-x-2">
+        {/* Botón "Anterior" */}
+        <Button
+          variant="outlined"
+          color="gray"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2"
+        >
+          Prev
+        </Button>
+
+        {/* Botones dinámicos de paginación */}
+        {renderPaginationButtons()}
+
+        {/* Botón "Siguiente" */}
+        <Button
+          variant="outlined"
+          color="gray"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2"
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
