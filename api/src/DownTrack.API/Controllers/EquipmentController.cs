@@ -126,5 +126,20 @@ public async Task<IActionResult> GetPagedEquipmentsBySectionId(
     return Ok(result);
 }
 
+[HttpGet("equipments/department/{departmentId}")]
+public async Task<IActionResult> GetPagedEquipmentsByDepartmentId(
+    int departmentId,
+    [FromQuery] PagedRequestDto paged)
+{
+    // Asignar la URL base para construir los enlaces de paginación
+    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    // Llamar al servicio para obtener los resultados paginados
+    var result = await _equipmentService.GetPagedEquipmentsByDepartmentIdAsync(departmentId, paged);
+
+    // Retornar la respuesta
+    return Ok(result);
+}
+
 
 }
