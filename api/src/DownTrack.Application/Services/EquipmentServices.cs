@@ -217,4 +217,67 @@ public class EquipmentServices : IEquipmentServices
         return result;
     }
 
+
+    public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionIdAsync(
+    int sectionId,
+    PagedRequestDto pagedRequest)
+{
+    // Crear el filtro para los departamentos de la sección específica
+    var departmentParameter = Expression.Parameter(typeof(Department), "department");
+    var departmentBody = Expression.Equal(
+        Expression.Property(departmentParameter, "SectionId"),
+        Expression.Constant(sectionId)
+    );
+    var departmentFilter = Expression.Lambda<Func<Department, bool>>(departmentBody, departmentParameter);
+
+    // Obtener los IDs de los departamentos asociados a la sección
+    var departmentIds = _departmentRepository
+        .GetAllByItems(new[] { departmentFilter })
+        .Select(d => d.Id);
+
+    // Crear el filtro para los equipos pertenecientes a esos departamentos
+    var equipmentParameter = Expression.Parameter(typeof(Equipment), "equipment");
+    var equipmentBody = Expression.Call(
+        Expression.Constant(departmentIds),
+        typeof(Enumerable).GetMethod("Contains", new[] { typeof(int) })!,
+        Expression.Property(equipmentParameter, "DepartmentId")
+    );
+    var equipmentFilter = Expression.Lambda<Func<Equipment, bool>>(equipmentBody, equipmentParameter);
+
+    // Aplicar el filtro al repositorio
+    var query = _equipmentRepository.GetAllByItems(new[] { equipmentFilter });
+
+    // Obtener el número total de registros
+    var totalRecords = query.Count();
+
+    // Aplicar paginación
+    var pagedItems = await query
+        .Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
+        .Take(pagedRequest.PageSize)
+        .ToListAsync();
+
+    // Construir URLs para las páginas siguiente y anterior
+    var nextPageUrl = totalRecords > pagedRequest.PageNumber * pagedRequest.PageSize
+        ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber + 1}&pageSize={pagedRequest.PageSize}"
+        : null;
+
+    var previousPageUrl = pagedRequest.PageNumber > 1
+        ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber - 1}&pageSize={pagedRequest.PageSize}"
+        : null;
+
+    // Crear el resultado paginado
+    var result = new PagedResultDto<Equipment>
+    {
+        Items = pagedItems,
+        TotalCount = totalRecords,
+        PageNumber = pagedRequest.PageNumber,
+        PageSize = pagedRequest.PageSize,
+        NextPageUrl = nextPageUrl,
+        PreviousPageUrl = previousPageUrl
+    };
+
+    return result;
+}
+
+
 }

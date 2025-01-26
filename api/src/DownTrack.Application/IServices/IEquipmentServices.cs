@@ -11,4 +11,9 @@ public interface IEquipmentServices : IGenericService<EquipmentDto>
         int sectionManagerId,
         PagedRequestDto pagedRequest);
 
+    public Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionIdAsync(
+        int sectionId,
+        PagedRequestDto pagedRequest);
+
+
 }

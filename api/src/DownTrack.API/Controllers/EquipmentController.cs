@@ -110,4 +110,21 @@ public class EquipmentController : ControllerBase
         return Ok(result);
     }
 
+
+    [HttpGet("equipments/section/{sectionId}")]
+public async Task<IActionResult> GetPagedEquipmentsBySectionId(
+    int sectionId,
+    [FromQuery] PagedRequestDto paged)
+{
+    // Asignar la URL base para construir los enlaces de paginación
+    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    // Llamar al servicio para obtener los resultados paginados
+    var result = await _equipmentService.GetPagedEquipmentsBySectionIdAsync(sectionId, paged);
+
+    // Retornar la respuesta
+    return Ok(result);
+}
+
+
 }
