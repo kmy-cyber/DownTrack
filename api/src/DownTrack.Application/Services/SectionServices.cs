@@ -138,6 +138,17 @@ public class SectionServices : ISectionServices
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
     public async Task<PagedResultDto<Section>> GetPagedSectionsByManagerIdAsync(
         int managerId,
         PagedRequestDto pagedRequest)
