@@ -170,7 +170,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
       entity.HasOne(tr => tr.SectionManager)
                 .WithMany(e => e.TransferRequests)
-                .HasForeignKey(tr => tr.EmployeeId)
+                .HasForeignKey(tr => tr.SectionManagerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
 
