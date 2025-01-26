@@ -1,0 +1,1 @@
+export * from "@/components/departments/departments_table"
