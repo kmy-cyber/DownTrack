@@ -41,34 +41,38 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
     }
 
 
-    public virtual async Task<T> GetByIdAsync<TId>(TId elementId ,
-                                                    CancellationToken cancellationToken =default,
-                                                    params Expression<Func<T,object>>[]includes)
+    public virtual async Task<T> GetByIdAsync<TId>(TId elementId,
+                                                    CancellationToken cancellationToken = default,
+                                                    params Expression<Func<T, object>>[]? includes)
     {
         IQueryable<T> query = _entity;
 
-        foreach(var include in includes)
-            query = query.Include(include);
+        if (includes != null)
+        {
+            foreach (var include in includes)
+                query = query.Include(include);
+
+        }
 
         if (elementId == null)
             throw new ArgumentNullException(nameof(elementId), "The ID cannot be null.");
 
 
-        var result = await query.FirstOrDefaultAsync(e=> EF.Property<TId>(e,"Id")!.Equals(elementId),cancellationToken);
+        var result = await query.FirstOrDefaultAsync(e => EF.Property<TId>(e, "Id")!.Equals(elementId), cancellationToken);
 
         if (result == null) // Check if the entity was not found.
-             throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
+            throw new KeyNotFoundException($"No entity was found with the ID '{elementId}'.");
 
         return result;
     }
     public virtual async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
-    {   
+    {
         // Retrieve the entity by its ID.
-        var result = await GetByIdAsync(elementId,cancellationToken);
+        var result = await GetByIdAsync(elementId, cancellationToken);
 
         // Remove the retrieved entity from the DbSet.
         _entity.Remove(result);
-        
+
     }
     public virtual T GetById<TId>(TId elementId)
     {
@@ -76,15 +80,18 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
     }
 
 
-     public virtual IQueryable<T> GetAllByItems(IEnumerable<Expression<Func<T,bool>>> expressions)
+    public virtual IQueryable<T> GetAllByItems(params Expression<Func<T, bool>>[]? expressions)
     {
         IQueryable<T> query = _entity; // Initialize the query with the DbSet.
 
-        foreach(var exp in expressions) // Loop through each filter expression.
+        if (expressions != null)
         {
-            query = query.Where(exp); // Apply the filter expression to the query.
+            foreach (var exp in expressions) // Loop through each filter expression.
+            {
+                query = query.Where(exp); // Apply the filter expression to the query.
+            }
         }
-        
+
         // Return the filtered query.
         return query;
     }

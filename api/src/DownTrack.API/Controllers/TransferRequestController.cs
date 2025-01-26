@@ -1,7 +1,6 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -10,48 +9,26 @@ namespace DownTrack.Api.Controllers;
 [Route("api/[controller]")]
 public class TransferRequestController : ControllerBase
 {
-    private readonly ITransferRequestServices _transferRequestService;
+    private readonly ITransferRequestQueryServices _transferRequestQueryService;
+    private readonly ITransferRequestCommandServices _transferRequestCommandService;
 
-    public TransferRequestController(ITransferRequestServices transferRequestServices)
+    public TransferRequestController(ITransferRequestQueryServices transferRequestQueryServices,
+                                     ITransferRequestCommandServices transferRequestCommandServices)
     {
-        _transferRequestService = transferRequestServices;
+        _transferRequestQueryService = transferRequestQueryServices;
+        _transferRequestCommandService = transferRequestCommandServices;
     }
+
+    #region Command
 
     [HttpPost]
     [Route("POST")]
 
     public async Task<IActionResult> CreateTransferRequest(TransferRequestDto transferRequest)
     {
-        await _transferRequestService.CreateAsync(transferRequest);
+        await _transferRequestCommandService.CreateAsync(transferRequest);
 
         return Ok("TransferRequest added successfully");
-    }
-
-    [HttpGet]
-    [Route("GetPaged")]
-
-    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
-    {
-        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-
-        var result = await _transferRequestService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
-    }
-
-    [HttpGet]
-    [Route("{transferRequestId}")]
-
-    public async Task<ActionResult<TransferRequestDto>> GetTransferRequestById(int transferRequestId)
-    {
-        var result = await _transferRequestService.GetByIdAsync(transferRequestId);
-
-        if (result == null)
-            return NotFound($"TransferRequest with ID {transferRequestId} not found");
-
-        return Ok(result);
-
     }
 
     [HttpPut]
@@ -59,7 +36,7 @@ public class TransferRequestController : ControllerBase
 
     public async Task<IActionResult> UpdateTransferRequest(TransferRequestDto transferRequest)
     {
-        var result = await _transferRequestService.UpdateAsync(transferRequest);
+        var result = await _transferRequestCommandService.UpdateAsync(transferRequest);
 
         return Ok(result);
     }
@@ -69,10 +46,43 @@ public class TransferRequestController : ControllerBase
 
     public async Task<IActionResult> DeleteTransferRequest(int transferRequestId)
     {
-        await _transferRequestService.DeleteAsync(transferRequestId);
+        await _transferRequestCommandService.DeleteAsync(transferRequestId);
 
         return Ok("TransferRequest deleted successfully");
     }
+
+    #endregion
+
+    #region Query
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _transferRequestQueryService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+    [HttpGet]
+    [Route("{transferRequestId}")]
+
+    public async Task<ActionResult<GetTransferRequestDto>> GetTransferRequestById(int transferRequestId)
+    {
+        var result = await _transferRequestQueryService.GetByIdAsync(transferRequestId);
+
+        if (result == null)
+            return NotFound($"TransferRequest with ID {transferRequestId} not found");
+
+        return Ok(result);
+
+    }
+
+    #endregion
 
 
 }
