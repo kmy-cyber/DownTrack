@@ -142,104 +142,52 @@ public class EquipmentServices : IEquipmentServices
 
 
     //query for the section manager 
-    public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionManagerIdAsync(
-        int sectionManagerId,
-        PagedRequestDto pagedRequest)
-    {
-        // Crear el filtro para las secciones del jefe de sección
-        var sectionParameter = Expression.Parameter(typeof(Section), "section");
-        var sectionBody = Expression.Equal(
-            Expression.Property(sectionParameter, "SectionManagerId"),
-            Expression.Constant(sectionManagerId)
-        );
-        var sectionFilter = Expression.Lambda<Func<Section, bool>>(sectionBody, sectionParameter);
-
-        // Obtener las secciones gestionadas por el jefe de sección
-        var sectionIds = _sectionRepository
-            .GetAllByItems(new[] { sectionFilter })
-            .Select(s => s.Id);
-
-        // Crear el filtro para los departamentos pertenecientes a esas secciones
-        var departmentParameter = Expression.Parameter(typeof(Department), "department");
-        var departmentBody = Expression.Call(
-            Expression.Constant(sectionIds),
-            typeof(Enumerable).GetMethod("Contains", new[] { typeof(int) })!,
-            Expression.Property(departmentParameter, "SectionId")
-        );
-        var departmentFilter = Expression.Lambda<Func<Department, bool>>(departmentBody, departmentParameter);
-
-        // Obtener los departamentos asociados a esas secciones
-        var departmentIds = _departmentRepository
-            .GetAllByItems(new[] { departmentFilter })
-            .Select(d => d.Id);
-
-        // Crear el filtro para los equipos pertenecientes a esos departamentos
-        var equipmentParameter = Expression.Parameter(typeof(Equipment), "equipment");
-        var equipmentBody = Expression.Call(
-            Expression.Constant(departmentIds),
-            typeof(Enumerable).GetMethod("Contains", new[] { typeof(int) })!,
-            Expression.Property(equipmentParameter, "DepartmentId")
-        );
-        var equipmentFilter = Expression.Lambda<Func<Equipment, bool>>(equipmentBody, equipmentParameter);
-
-        // Aplicar el filtro al repositorio
-        var query = _equipmentRepository.GetAllByItems(new[] { equipmentFilter });
-
-        // Obtener el número total de registros
-        var totalRecords = query.Count();
-
-        // Aplicar paginación
-        var pagedItems = await query
-            .Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
-            .Take(pagedRequest.PageSize)
-            .ToListAsync();
-
-        // Construir URLs para las páginas siguiente y anterior
-        var nextPageUrl = totalRecords > pagedRequest.PageNumber * pagedRequest.PageSize
-            ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber + 1}&pageSize={pagedRequest.PageSize}"
-            : null;
-
-        var previousPageUrl = pagedRequest.PageNumber > 1
-            ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber - 1}&pageSize={pagedRequest.PageSize}"
-            : null;
-
-        // Crear el resultado paginado
-        var result = new PagedResultDto<Equipment>
-        {
-            Items = pagedItems,
-            TotalCount = totalRecords,
-            PageNumber = pagedRequest.PageNumber,
-            PageSize = pagedRequest.PageSize,
-            NextPageUrl = nextPageUrl,
-            PreviousPageUrl = previousPageUrl
-        };
-
-        return result;
-    }
-
-
-    public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionIdAsync(
-    int sectionId,
+public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionManagerIdAsync(
+    int sectionManagerId,
     PagedRequestDto pagedRequest)
 {
-    // Crear el filtro para los departamentos de la sección específica
+    // Crear el filtro para las secciones del jefe de sección
+    var sectionParameter = Expression.Parameter(typeof(Section), "section");
+    var sectionBody = Expression.Equal(
+        Expression.Property(sectionParameter, "SectionManagerId"),
+        Expression.Constant(sectionManagerId)
+    );
+    var sectionFilter = Expression.Lambda<Func<Section, bool>>(sectionBody, sectionParameter);
+
+    // Obtener las secciones gestionadas por el jefe de sección
+    var sectionIds = _sectionRepository
+        .GetAllByItems(new[] { sectionFilter })
+        .Select(s => s.Id)
+        .ToList(); // Convertir a lista para ser compatible con Expression.Constant
+
+    // Crear el filtro para los departamentos pertenecientes a esas secciones
+    var containsMethodForSections = typeof(Enumerable).GetMethods()
+        .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+        .MakeGenericMethod(typeof(int));
+
     var departmentParameter = Expression.Parameter(typeof(Department), "department");
-    var departmentBody = Expression.Equal(
-        Expression.Property(departmentParameter, "SectionId"),
-        Expression.Constant(sectionId)
+    var departmentBody = Expression.Call(
+        containsMethodForSections,
+        Expression.Constant(sectionIds), // Pasamos la lista de sectionIds
+        Expression.Property(departmentParameter, "SectionId")
     );
     var departmentFilter = Expression.Lambda<Func<Department, bool>>(departmentBody, departmentParameter);
 
-    // Obtener los IDs de los departamentos asociados a la sección
+    // Obtener los departamentos asociados a esas secciones
     var departmentIds = _departmentRepository
         .GetAllByItems(new[] { departmentFilter })
-        .Select(d => d.Id);
+        .Select(d => d.Id)
+        .ToList(); // Convertir a lista para ser compatible con Expression.Constant
 
     // Crear el filtro para los equipos pertenecientes a esos departamentos
+    var containsMethodForEquipments = typeof(Enumerable).GetMethods()
+        .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+        .MakeGenericMethod(typeof(int));
+
     var equipmentParameter = Expression.Parameter(typeof(Equipment), "equipment");
     var equipmentBody = Expression.Call(
-        Expression.Constant(departmentIds),
-        typeof(Enumerable).GetMethod("Contains", new[] { typeof(int) })!,
+        containsMethodForEquipments,
+        Expression.Constant(departmentIds), // Pasamos la lista de departmentIds
         Expression.Property(equipmentParameter, "DepartmentId")
     );
     var equipmentFilter = Expression.Lambda<Func<Equipment, bool>>(equipmentBody, equipmentParameter);
@@ -280,11 +228,109 @@ public class EquipmentServices : IEquipmentServices
 }
 
 
+public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsBySectionIdAsync(
+    int sectionId,
+    PagedRequestDto pagedRequest)
+{
+    // Crear el filtro para los departamentos de la sección específica
+    var departmentParameter = Expression.Parameter(typeof(Department), "department");
+    var departmentBody = Expression.Equal(
+        Expression.Property(departmentParameter, "SectionId"),
+        Expression.Constant(sectionId)
+    );
+    var departmentFilter = Expression.Lambda<Func<Department, bool>>(departmentBody, departmentParameter);
+
+    // Obtener los IDs de los departamentos asociados a la sección
+    var departmentIds = _departmentRepository
+        .GetAllByItems(new[] { departmentFilter })
+        .Select(d => d.Id)
+        .ToList(); // Convertir a lista para ser compatible con Expression.Constant
+
+    // Validar si no hay departamentos para evitar procesar innecesariamente
+    if (!departmentIds.Any())
+    {
+        return new PagedResultDto<Equipment>
+        {
+            Items = new List<Equipment>(),
+            TotalCount = 0,
+            PageNumber = pagedRequest.PageNumber,
+            PageSize = pagedRequest.PageSize,
+            NextPageUrl = null,
+            PreviousPageUrl = null
+        };
+    }
+
+    // Crear el filtro para los equipos pertenecientes a esos departamentos
+    var containsMethod = typeof(Enumerable).GetMethods()
+        .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+        .MakeGenericMethod(typeof(int));
+
+    var equipmentParameter = Expression.Parameter(typeof(Equipment), "equipment");
+    var equipmentBody = Expression.Call(
+        containsMethod,
+        Expression.Constant(departmentIds), // Pasamos la lista de departmentIds
+        Expression.Property(equipmentParameter, "DepartmentId")
+    );
+    var equipmentFilter = Expression.Lambda<Func<Equipment, bool>>(equipmentBody, equipmentParameter);
+
+    // Aplicar el filtro al repositorio
+    var query = _equipmentRepository.GetAllByItems(new[] { equipmentFilter });
+
+    // Obtener el número total de registros
+    var totalRecords = query.Count();
+
+    // Aplicar paginación
+    var pagedItems = await query
+        .Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
+        .Take(pagedRequest.PageSize)
+        .ToListAsync();
+
+    // Construir URLs para las páginas siguiente y anterior
+    var nextPageUrl = totalRecords > pagedRequest.PageNumber * pagedRequest.PageSize
+        ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber + 1}&pageSize={pagedRequest.PageSize}"
+        : null;
+
+    var previousPageUrl = pagedRequest.PageNumber > 1
+        ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber - 1}&pageSize={pagedRequest.PageSize}"
+        : null;
+
+    // Crear el resultado paginado
+    var result = new PagedResultDto<Equipment>
+    {
+        Items = pagedItems,
+        TotalCount = totalRecords,
+        PageNumber = pagedRequest.PageNumber,
+        PageSize = pagedRequest.PageSize,
+        NextPageUrl = nextPageUrl,
+        PreviousPageUrl = previousPageUrl
+    };
+
+    return result;
+}
+
+
+
 public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsByDepartmentIdAsync(
     int departmentId,
     PagedRequestDto pagedRequest)
 {
-    // Crear el filtro para los equipos del departamento específico
+    // Validar si el departamento existe para evitar consultas innecesarias
+    var departmentExists = await _departmentRepository.GetAll()
+        .AnyAsync(d => d.Id == departmentId);
+    if (!departmentExists)
+    {
+        return new PagedResultDto<Equipment>
+        {
+            Items = new List<Equipment>(),
+            TotalCount = 0,
+            PageNumber = pagedRequest.PageNumber,
+            PageSize = pagedRequest.PageSize,
+            NextPageUrl = null,
+            PreviousPageUrl = null
+        };
+    }
+
+    // Crear el filtro para los equipos asociados al departamento
     var equipmentParameter = Expression.Parameter(typeof(Equipment), "equipment");
     var equipmentBody = Expression.Equal(
         Expression.Property(equipmentParameter, "DepartmentId"),
@@ -296,7 +342,7 @@ public async Task<PagedResultDto<Equipment>> GetPagedEquipmentsByDepartmentIdAsy
     var query = _equipmentRepository.GetAllByItems(new[] { equipmentFilter });
 
     // Obtener el número total de registros
-    var totalRecords = query.Count();
+    var totalRecords = await query.CountAsync();
 
     // Aplicar paginación
     var pagedItems = await query
