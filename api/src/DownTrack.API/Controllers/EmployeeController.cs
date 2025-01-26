@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]s")]
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeServices _employeeService;

@@ -1,10 +1,8 @@
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-
 namespace DownTrack.Api.Controllers;
 
 [ApiController]
@@ -58,19 +56,19 @@ public class SectionController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedSection ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedSection([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _sectionService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
+
+        return Ok(result);
+
     }
 
     [HttpGet]
     [Route("Get_ALL_Departments")]
-    public async Task<ActionResult> GetAllDepartments (int sectionId)
+    public async Task<ActionResult> GetAllDepartments(int sectionId)
     {
         var result = await _sectionService.GetAllDepartments(sectionId);
 
@@ -96,5 +94,20 @@ public class SectionController : ControllerBase
 
         return Ok("Section deleted successfully");
     }
+
+[HttpGet("sections/manager/{managerId}")]
+public async Task<IActionResult> GetPagedSectionsByManagerId(
+    int managerId, 
+    [FromQuery] PagedRequestDto paged)
+{
+    // Asignar la URL base para construir los enlaces de paginación
+    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    // Llamar al servicio para obtener los resultados paginados
+    var result = await _sectionService.GetPagedSectionsByManagerIdAsync(managerId, paged);
+
+    // Retornar la respuesta
+    return Ok(result);
+}
 }
 
