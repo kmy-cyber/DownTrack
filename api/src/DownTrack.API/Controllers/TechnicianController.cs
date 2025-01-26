@@ -2,20 +2,18 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TechnicianNewController : ControllerBase
+public class TechnicianController : ControllerBase
 {
     private readonly ITechnicianQueryServices _technicianQueryService;
     private readonly ITechnicianCommandServices _technicianCommandService;
 
-    public TechnicianNewController(ITechnicianQueryServices technicianQueryServices,
+    public TechnicianController(ITechnicianQueryServices technicianQueryServices,
                                    ITechnicianCommandServices technicianCommandServices)
     {
         _technicianQueryService = technicianQueryServices;

@@ -1,5 +1,3 @@
-
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
@@ -9,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace DownTrack.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeeNewController : ControllerBase
+public class EmployeeController : ControllerBase
 {
      private readonly IEmployeeQueryServices _employeeQueryService;
      private readonly IEmployeeCommandServices _employeeCommandService;
 
-    public EmployeeNewController(IEmployeeQueryServices employeeQueryServices,
+    public EmployeeController(IEmployeeQueryServices employeeQueryServices,
                                  IEmployeeCommandServices employeeCommandServices)
 
     {
