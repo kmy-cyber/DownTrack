@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
+import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"; // Importar los íconos
 import api from "@/middlewares/api";
+import { useAuth } from "@/context/AuthContext";
 
 const GeneralInventoryTable = () => {
   const [equipmentData, setEquipmentData] = useState([]);
@@ -10,18 +12,23 @@ const GeneralInventoryTable = () => {
   const [totalPages, setTotalPages] = useState(0); // Total de páginas
   const pageSize = 15;
 
-  useEffect(() => {
-    fetchAllEquipments();
-  }, [currentPage]); // Re-fetch cuando cambie la página
+  const { user } = useAuth();
 
-  const fetchAllEquipments = async () => {
+  useEffect(() => {
+    if (user.role.toLowerCase() === "director") {
+      fetchAllDirectorEquipments();
+    } else if (user.role.toLowerCase() === "sectionmanager") {
+      fetchAllManagerEquipments();
+    }
+  }, [user.role, currentPage]); // Re-fetch cuando cambie la página
+
+  const fetchAllDirectorEquipments = async () => {
     let allEquipments = [];
-    let hasMore = true;
     const pageNumber = currentPage;
 
     try {
       const response = await api(`/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
-        method: 'GET',
+        method: "GET",
         params: {
           PageNumber: pageNumber,
           PageSize: pageSize,
@@ -29,13 +36,48 @@ const GeneralInventoryTable = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch equipment data');
+        throw new Error("Failed to fetch equipment data");
       }
 
       const data = await response.json();
 
       if (!data.items) {
-        throw new Error('Unexpected response structure');
+        throw new Error("Unexpected response structure");
+      }
+
+      allEquipments = data.items;
+
+      // Establecer los datos y la cantidad total de páginas
+      setEquipmentData(allEquipments);
+      setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcular el número total de páginas
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAllManagerEquipments = async () => {
+    let allEquipments = [];
+    const pageNumber = currentPage;
+
+    try {
+      const response = await api(`/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        method: "GET",
+        params: {
+          PageNumber: pageNumber,
+          PageSize: pageSize,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch equipment data");
+      }
+
+      const data = await response.json();
+
+      if (!data.items) {
+        throw new Error("Unexpected response structure");
       }
 
       allEquipments = data.items;
@@ -141,30 +183,30 @@ const GeneralInventoryTable = () => {
         )}
         {/* Paginación */}
         <div className="flex justify-center mt-4 space-x-2">
-          {/* Botón "Anterior" */}
-          <Button
+          {/* Botón "Anterior" con ícono de Chevron */}
+          <IconButton
             variant="outlined"
             color="gray"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className="px-4 py-2"
           >
-            Prev
-          </Button>
+            <ChevronLeftIcon className="h-5 w-5" />
+          </IconButton>
 
           {/* Botones dinámicos de paginación */}
           {renderPaginationButtons()}
 
-          {/* Botón "Siguiente" */}
-          <Button
+          {/* Botón "Siguiente" con ícono de Chevron */}
+          <IconButton
             variant="outlined"
             color="gray"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             className="px-4 py-2"
           >
-            Next
-          </Button>
+            <ChevronRightIcon className="h-5 w-5" />
+          </IconButton>
         </div>
       </CardBody>
     </Card>
