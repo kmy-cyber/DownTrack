@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -11,6 +12,7 @@ export function SectionsTable() {
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const navigate = useNavigate();
     const pageSize = 7;
 
     useEffect(() => {
@@ -21,23 +23,19 @@ export function SectionsTable() {
         }
     }, [user.role, currentPage]);
 
-    const fetchSectionsForDirector = async () => {
+    const fetchSectionsForDirector = async (pageNumber) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await api(`/Section/GET_ALL`, {
-                method: "GET",
-            });
+            const response = await api(`/Section/GetPaged?pageNumber=${pageNumber}&pageSize=${pageSize}`, { method: "GET" });
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             const data = await response.json();
-            setSectionList(data);
-            setTotalPages(Math.ceil(data.length / pageSize));
+            setSectionList(data.items);
+            setTotalPages(Math.ceil(data.totalCount / pageSize));
         } catch (error) {
-            console.error("Error fetching sections for director:", error);
             setError("Failed to fetch sections");
-            setSectionList([]);
         } finally {
             setLoading(false);
         }
@@ -57,12 +55,17 @@ export function SectionsTable() {
             setSectionList(data.items);
             setTotalPages(Math.ceil(data.totalCount / pageSize));
         } catch (error) {
-            console.error("Error fetching sections for manager:", error);
             setError("Failed to fetch sections");
-            setSectionList([]);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleViewDepartments = (sectionId, sectionName) => {
+        console.log(`ID : ${sectionId}, NAME : ${sectionName}`);
+        navigate("departments/", {
+            state: { sectionId, sectionName }
+        });
     };
 
     const handlePageChange = (pageNumber) => {
@@ -72,11 +75,10 @@ export function SectionsTable() {
     };
 
     const renderPaginationButtons = () => {
-        const visibleButtons = 5; // Número máximo de botones visibles
+        const visibleButtons = 5;
         let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
         let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
 
-        // Ajustar rango si estamos cerca del inicio o final
         if (endPage - startPage + 1 < visibleButtons) {
             startPage = Math.max(1, endPage - visibleButtons + 1);
         }
@@ -103,66 +105,70 @@ export function SectionsTable() {
                     </Typography>
                 </CardHeader>
                 <CardBody className="px-4 py-2">
-                    {loading && (
-                        <Typography variant="small" color="gray">
-                            Loading sections...
-                        </Typography>
-                    )}
-                    {error && (
-                        <Typography variant="small" color="red">
-                            {error}
-                        </Typography>
-                    )}
+                    {loading && <Typography variant="small" color="gray">Loading sections...</Typography>}
+                    {error && <Typography variant="small" color="red">{error}</Typography>}
                     <div className="space-y-4">
-                        {Array.isArray(sectionList) && sectionList.length > 0 ? (
-                            sectionList.map((section) => (
-                                <div
-                                    key={section.id}
-                                    className="border border-gray-200 rounded-lg shadow-sm p-4 hover:bg-gray-200 hover:shadow-md transition duration-300"
-                                >
-                                    <Typography variant="h6" color="blue-gray">
-                                        Section: {section.name}
-                                    </Typography>
-                                    <Typography variant="small" color="gray">
-                                        Manager ID: {section.sectionManagerId}
-                                    </Typography>
+                        {sectionList.map((section) => (
+                            <div
+                                key={section.id}
+                                className="flex items-center justify-between border border-gray-200 rounded-lg shadow-sm p-4 hover:bg-gray-200 hover:shadow-md transition duration-300"
+                            >
+                                <div>
+                                    <Typography variant="h6" color="blue-gray">Section: {section.name}</Typography>
+                                    <Typography variant="small" color="gray">Manager: {section.sectionManagerId}</Typography>
                                 </div>
-                            ))
-                        ) : (
-                            !loading && (
-                                <Typography variant="small" color="gray">
-                                    No sections available.
-                                </Typography>
-                            )
-                        )}
+                                <div className="flex gap-2">
+                                    <Button
+                                        size="sm"
+                                        color="gray"
+                                        className="bg-gray-700 hover:bg-gray-800"
+                                        onClick={() => console.log(`View Inventory: ${section.id}`)}
+                                    >
+                                        View Inventory
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        color="gray"
+                                        className="bg-gray-700 hover:bg-gray-800"
+                                        onClick={() => handleViewDepartments(section.id, section.name)}
+                                    >
+                                        View Departments
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    
-                    {user.role.toLowerCase() == "sectionmanager" &&
-                        <div className="flex justify-center mt-4 space-x-2">
-                            {/* Botón "Anterior" */}
+
+                    <div className="flex justify-center mt-4 gap-2">
+                        {/* Botón "Anterior" con icono */}
+                        {currentPage > 1 && (
                             <IconButton
                                 variant="outlined"
+                                size="sm"
                                 color="gray"
                                 onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
+                                className="px-4 py-2"
                             >
-                                <ChevronLeftIcon className="w-4 h-4" />
+                                <ChevronLeftIcon className="h-5 w-5" />
                             </IconButton>
+                        )}
+                        
+                        {/* Botones dinámicos de paginación */}
+                        {renderPaginationButtons()}
 
-                            {/* Botones dinámicos */}
-                            {renderPaginationButtons()}
-
-                            {/* Botón "Siguiente" */}
+                        {/* Botón "Siguiente" con icono */}
+                        {currentPage < totalPages && (
                             <IconButton
                                 variant="outlined"
+                                size="sm"
                                 color="gray"
                                 onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
+                                className="px-4 py-2"
                             >
-                                <ChevronRightIcon className="w-4 h-4" />
+                                <ChevronRightIcon className="h-5 w-5" />
                             </IconButton>
-                        </div>
-                    }
+                        )}
+                    </div>
                 </CardBody>
             </Card>
         </div>

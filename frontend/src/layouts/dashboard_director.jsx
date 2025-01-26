@@ -9,6 +9,7 @@ import {
 } from "@/components/layout";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 import routesDirector from "@/routes/routes_director";
+import DepartmentsTable from "@/components/departments/departments_table"; // Asegúrate de que el componente esté importado
 import {jwtDecode} from 'jwt-decode';
 
 export function Dashboard_Director() {
@@ -51,7 +52,7 @@ export function Dashboard_Director() {
                                 <Route key={path} path={path} element={element} />
                             ))
                     )}
-
+                    <Route path="sections/departments" element={<DepartmentsTable />} />
                 </Routes>
                 <Outlet/>
             </div>
