@@ -30,9 +30,9 @@ public class EquipmentController : ControllerBase
         //     Console.WriteLine("es null");
         //     throw new Exception();
         // }    
-        
+
         // Console.WriteLine(roleClaim.Value);
-        
+
         // if (roleClaim == null || roleClaim.Value != "Technician")
         // {
         //     return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
@@ -60,14 +60,14 @@ public class EquipmentController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEquipment ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipment([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
+
+        return Ok(result);
+
     }
 
     [HttpPut]
@@ -88,4 +88,58 @@ public class EquipmentController : ControllerBase
 
         return Ok("Equipment deleted successfully");
     }
+
+
+
+
+
+
+    //endpoint for the section manager
+    [HttpGet("equipments/section-manager/{sectionManagerId}")]
+    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId(
+    int sectionManagerId,
+    [FromQuery] PagedRequestDto paged)
+    {
+        // Asignar la URL base para construir los enlaces de paginación
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        // Llamar al servicio para obtener los resultados paginados
+        var result = await _equipmentService.GetPagedEquipmentsBySectionManagerIdAsync(sectionManagerId, paged);
+
+        // Retornar la respuesta
+        return Ok(result);
+    }
+
+
+    [HttpGet("equipments/section/{sectionId}")]
+public async Task<IActionResult> GetPagedEquipmentsBySectionId(
+    int sectionId,
+    [FromQuery] PagedRequestDto paged)
+{
+    // Asignar la URL base para construir los enlaces de paginación
+    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    // Llamar al servicio para obtener los resultados paginados
+    var result = await _equipmentService.GetPagedEquipmentsBySectionIdAsync(sectionId, paged);
+
+    // Retornar la respuesta
+    return Ok(result);
+}
+
+[HttpGet("equipments/department/{departmentId}")]
+public async Task<IActionResult> GetPagedEquipmentsByDepartmentId(
+    int departmentId,
+    [FromQuery] PagedRequestDto paged)
+{
+    // Asignar la URL base para construir los enlaces de paginación
+    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    // Llamar al servicio para obtener los resultados paginados
+    var result = await _equipmentService.GetPagedEquipmentsByDepartmentIdAsync(departmentId, paged);
+
+    // Retornar la respuesta
+    return Ok(result);
+}
+
+
 }
