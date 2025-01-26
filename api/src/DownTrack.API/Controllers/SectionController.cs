@@ -95,6 +95,14 @@ public class SectionController : ControllerBase
         return Ok("Section deleted successfully");
     }
 
+
+
+
+
+
+
+
+
 [HttpGet("sections/manager/{managerId}")]
 public async Task<IActionResult> GetPagedSectionsByManagerId(
     int managerId, 

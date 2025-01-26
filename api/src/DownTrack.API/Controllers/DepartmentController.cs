@@ -22,7 +22,7 @@ public class DepartmentController : ControllerBase
 
     public async Task<IActionResult> CreateDepartmen(DepartmentDto department)
     {
-        
+
         await _departmentService.CreateAsync(department);
 
 
@@ -48,14 +48,14 @@ public class DepartmentController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedDepartment ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedDepartment([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _departmentService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
+
+        return Ok(result);
+
     }
 
     [HttpGet]
@@ -87,5 +87,24 @@ public class DepartmentController : ControllerBase
 
         return Ok("Department deleted successfully");
     }
+
+
+
+
+    [HttpGet("departments/section/{sectionId}")]
+    public async Task<IActionResult> GetPagedDepartmentsBySectionId(
+    int sectionId,
+    [FromQuery] PagedRequestDto paged)
+    {
+        // Asignar la URL base para construir los enlaces de paginación
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        // Llamar al servicio para obtener los resultados paginados
+        var result = await _departmentService.GetPagedDepartmentsBySectionIdAsync(sectionId, paged);
+
+        // Retornar la respuesta
+        return Ok(result);
+    }
+
 }
 

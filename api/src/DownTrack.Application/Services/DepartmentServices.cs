@@ -6,6 +6,7 @@ using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using DownTrack.Application.IRepository;
 
 namespace DownTrack.Application.Services;
 
@@ -23,10 +24,12 @@ public class DepartmentServices : IDepartmentServices
     // Unit of Work instance for managing repositories and transactions.
     private readonly IUnitOfWork _unitOfWork;
 
-    public DepartmentServices(IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IGenericRepository<Department> _departmentRepository;
+    public DepartmentServices(IUnitOfWork unitOfWork, IMapper mapper, IGenericRepository<Department> departmentRepository)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _departmentRepository = departmentRepository;
     }
 
 
@@ -43,11 +46,11 @@ public class DepartmentServices : IDepartmentServices
         var department = _mapper.Map<Department>(dto);
 
         var departmentRepository = _unitOfWork.DepartmentRepository;
-        
-        bool existDepartment = await departmentRepository
-                                    .ExistsByNameAndSectionAsync(department.Name,department.SectionId);
 
-        if(existDepartment)
+        bool existDepartment = await departmentRepository
+                                    .ExistsByNameAndSectionAsync(department.Name, department.SectionId);
+
+        if (existDepartment)
             throw new Exception("A department with the same name already exists in this section.");
 
         department.Section = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
@@ -89,7 +92,7 @@ public class DepartmentServices : IDepartmentServices
     {
         var departments = await _unitOfWork
                                 .GetRepository<Department>()
-                                .GetAll() 
+                                .GetAll()
                                 .Include(d => d.Section) // Load the relation Section
                                 .ToListAsync(); // List the values
 
@@ -115,7 +118,7 @@ public class DepartmentServices : IDepartmentServices
 
         var existingSection = await _unitOfWork.GetRepository<Section>().GetByIdAsync(dto.SectionId);
 
-        if(existingSection == null)
+        if (existingSection == null)
             throw new ConflictException($"Section '{dto.SectionId}' does not exist.");
 
         _mapper.Map(dto, existingDepartment);
@@ -138,22 +141,22 @@ public class DepartmentServices : IDepartmentServices
     public async Task<DepartmentDto> GetByIdAsync(int departmentDto)
     {
 
-        var filter = new List<Expression<Func<Department,bool>>> ()
+        var filter = new List<Expression<Func<Department, bool>>>()
         {
             d=> d.Id == departmentDto
         };
 
         var result = await _unitOfWork.GetRepository<Department>()
                                       .GetAllByItems(filter)
-                                      .Include(d=>d.Section)
+                                      .Include(d => d.Section)
                                       .ToListAsync();
-                                        
+
 
         return _mapper.Map<DepartmentDto>(result);
 
     }
 
-     public async Task<PagedResultDto<DepartmentDto>> GetPagedResultAsync(PagedRequestDto paged)
+    public async Task<PagedResultDto<DepartmentDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
         IQueryable<Department> queryDepartment = _unitOfWork.GetRepository<Department>().GetAll();
@@ -180,6 +183,54 @@ public class DepartmentServices : IDepartmentServices
                         : null
 
         };
+    }
+
+
+    public async Task<PagedResultDto<Department>> GetPagedDepartmentsBySectionIdAsync(
+    int sectionId,
+    PagedRequestDto pagedRequest)
+    {
+        // Crear el filtro para departamentos de la sección específica
+        var parameter = Expression.Parameter(typeof(Department), "department");
+        var body = Expression.Equal(
+            Expression.Property(parameter, "SectionId"),
+            Expression.Constant(sectionId)
+        );
+        var filterExpression = Expression.Lambda<Func<Department, bool>>(body, parameter);
+
+        // Aplicar el filtro al repositorio
+        var query = _departmentRepository.GetAllByItems(new[] { filterExpression });
+
+        // Obtener el número total de registros
+        var totalRecords = query.Count();
+
+        // Aplicar paginación
+        var pagedItems = await query
+            .Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
+            .Take(pagedRequest.PageSize)
+            .ToListAsync();
+
+        // Construir URLs para las páginas siguiente y anterior
+        var nextPageUrl = totalRecords > pagedRequest.PageNumber * pagedRequest.PageSize
+            ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber + 1}&pageSize={pagedRequest.PageSize}"
+            : null;
+
+        var previousPageUrl = pagedRequest.PageNumber > 1
+            ? $"{pagedRequest.BaseUrl}?pageNumber={pagedRequest.PageNumber - 1}&pageSize={pagedRequest.PageSize}"
+            : null;
+
+        // Crear el resultado paginado
+        var result = new PagedResultDto<Department>
+        {
+            Items = pagedItems,
+            TotalCount = totalRecords,
+            PageNumber = pagedRequest.PageNumber,
+            PageSize = pagedRequest.PageSize,
+            NextPageUrl = nextPageUrl,
+            PreviousPageUrl = previousPageUrl
+        };
+
+        return result;
     }
 
 
