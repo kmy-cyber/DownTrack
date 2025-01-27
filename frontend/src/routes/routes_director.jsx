@@ -11,11 +11,11 @@ import {
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
 import { Reports } from "@/components/reports/reports"
-import GeneralInventoryTable from "@/components/inventory/general_inventory_table";
+import InventoryTable from "@/components/inventory/inventory_table";
 import EquipmentDisposalTable from "@/pages/dashboard_director/disposals_table";
-import MaintenanceHistory from "@/pages/dashboard_director/maintenance_table";
+import MaintenanceHistory from "@/pages/dashboard_director/maintenances_table";
 import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
-import UserTable from "@/pages/dashboard_director/employee_table";
+import UserTable from "@/pages/dashboard_director/employees_table";
   
   const typeUser = 1;
   
@@ -49,7 +49,7 @@ export const routesDirector = [
           icon: <CubeIcon {...icon}/>,
           name: "Inventory",
           path: "/inventory",
-          element: <GeneralInventoryTable/>
+          element: <InventoryTable/>
         },
         {
           icon: <MinusCircleIcon {...icon}/>,

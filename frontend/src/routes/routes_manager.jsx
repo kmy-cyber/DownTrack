@@ -2,12 +2,14 @@ import {
     HomeIcon,
     RectangleStackIcon,
     ArrowsRightLeftIcon,
-    DocumentCheckIcon
+    DocumentCheckIcon,
+    CubeIcon
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_manager/home";
 import { SectionsTable } from "@/components/sections";
 import { Evaluation } from "@/pages/dashboard_manager/evaluation";
 import TransferRequestForm from "@/pages/dashboard_manager/request_transfer";
+import InventoryTable from "@/components/inventory/inventory_table";
   
   const typeUser = 1;
   
@@ -36,6 +38,12 @@ export const routesManager = [
           name: "Request Transfer",
           path: "/transfer_request",
           element: <TransferRequestForm/>
+        },
+        {
+          icon: <CubeIcon {...icon}/>,
+          name: "Inventory",
+          path: "/inventory",
+          element: <InventoryTable/>
         },
         {
           icon: <DocumentCheckIcon {...icon}/>,

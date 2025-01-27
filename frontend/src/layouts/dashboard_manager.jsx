@@ -8,6 +8,7 @@ import routesManager from "@/routes/routes_manager";
 import { jwtDecode } from 'jwt-decode';
 import { SectionsTable } from "@/components/sections";
 import DepartmentsTable from "@/components/departments/departments_table"; // Asegúrate de que el componente esté importado
+import InventoryTable from "@/components/inventory/inventory_table";
 
 export function Dashboard_Manager() {
     const [controller, dispatch] = useMaterialTailwindController();
@@ -48,6 +49,10 @@ export function Dashboard_Manager() {
 
                     {/* Ruta para los departamentos de una sección */}
                     <Route path="sections/departments" element={<DepartmentsTable />} />
+                    {/* Ruta para el inventario de una sección */}
+                    <Route path="sections/inventory" element={<InventoryTable/>} />
+                    {/* Ruta para el inventario de un departamento */}
+                    <Route path="sections/departments/inventory" element={<InventoryTable/>} />
                 </Routes>
 
                 <Outlet />

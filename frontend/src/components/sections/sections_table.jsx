@@ -68,6 +68,12 @@ export function SectionsTable() {
         });
     };
 
+    const handleViewInventory = (sectionId) => {
+        const departmentId = null;
+        navigate("inventory/", { state: { sectionId, departmentId} });
+    };
+    
+
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
@@ -122,7 +128,7 @@ export function SectionsTable() {
                                         size="sm"
                                         color="gray"
                                         className="bg-gray-700 hover:bg-gray-800"
-                                        onClick={() => console.log(`View Inventory: ${section.id}`)}
+                                        onClick={() => handleViewInventory(section.id)}
                                     >
                                         View Inventory
                                     </Button>

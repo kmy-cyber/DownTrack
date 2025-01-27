@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon,ArrowLeftIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api";
 
 export function DepartmentsTable() {
@@ -71,9 +71,9 @@ export function DepartmentsTable() {
         ));
     };
 
-    // Función para regresar a la página de "Sections"
-    const onBack = () => {
-        navigate(-1);
+    const handleViewInventory = (departmentId) => {
+        const _sectionId = null;
+        navigate("inventory/", { state: { _sectionId, departmentId } });
     };
 
     return (
@@ -81,17 +81,16 @@ export function DepartmentsTable() {
             <Card>
                 <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <div className="flex justify-between items-center">
+                        <IconButton
+                            variant="text"
+                            color="white"
+                            onClick={() => navigate(-1)}
+                        >
+                            <ArrowLeftIcon className="h-6 w-6" />
+                        </IconButton>
                         <Typography variant="h6" color="white">
                             Departments in {sectionName}
                         </Typography>
-                        <Button
-                            size="sm"
-                            color="gray"
-                            onClick={onBack} // Usamos la función onBack para redirigir
-                            className="bg-gray-800 hover:bg-gray-600"
-                        >
-                            Back to Sections
-                        </Button>
                     </div>
                 </CardHeader>
                 <CardBody className="px-4 py-2">
@@ -109,6 +108,7 @@ export function DepartmentsTable() {
                                         size="sm" 
                                         color="gray"
                                         className="bg-gray-700 hover:bg-gray-500"
+                                        onClick={() => handleViewInventory(department.id)}
                                     >
                                         View Inventory
                                     </Button>
@@ -117,7 +117,6 @@ export function DepartmentsTable() {
                         ))}
                     </div>
                     <div className="flex justify-center mt-4 space-x-2">
-                        {/* Botón "Anterior" con icono */}
                         {currentPage > 1 && (
                             <IconButton
                                 variant="outlined"
@@ -129,11 +128,7 @@ export function DepartmentsTable() {
                                 <ChevronLeftIcon className="h-5 w-5" />
                             </IconButton>
                         )}
-                        
-                        {/* Botones dinámicos de paginación */}
                         {renderPaginationButtons()}
-
-                        {/* Botón "Siguiente" con icono */}
                         {currentPage < totalPages && (
                             <IconButton
                                 variant="outlined"
