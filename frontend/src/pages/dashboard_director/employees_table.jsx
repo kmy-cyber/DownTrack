@@ -3,13 +3,13 @@ import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@mat
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
-const EmployeeTable = () => {
+const EmployeesTable = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 15;
+  const pageSize = 14;
 
   useEffect(() => {
     fetchEmployees(currentPage);
@@ -149,4 +149,4 @@ const EmployeeTable = () => {
   );
 };
 
-export default EmployeeTable;
+export default EmployeesTable;

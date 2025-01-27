@@ -92,10 +92,13 @@ const EquipmentTransferTable = () => {
                   <thead>
                     <tr>
                       <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Source Section
+                        Transfer Id
                       </th>
                       <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Equipment
+                        Shipping Supervisor
+                      </th>
+                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
+                        Equipment Receptor
                       </th>
                       <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
                         Date
@@ -105,6 +108,7 @@ const EquipmentTransferTable = () => {
                   <tbody>
                     {transferData.map((transfer, index) => (
                       <tr key={index} className="hover:bg-gray-50">
+                        <td className="border border-gray-200 px-4 py-2">{transfer.requestId}</td>
                         <td className="border border-gray-200 px-4 py-2">{transfer.shippingSupervisorId}</td>
                         <td className="border border-gray-200 px-4 py-2">{transfer.equipmentReceptorId}</td>
                         <td className="border border-gray-200 px-4 py-2">{transfer.date}</td>
