@@ -1,69 +1,40 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
 import { Pagination } from '@mui/material';
+import { equipmentData } from '@/data/equipment-data';
 import { useState, useEffect } from "react";
-import api from "@/middlewares/api";
-import { TrashIcon, InformationCircleIcon, PlusCircleIcon, WrenchIcon } from '@heroicons/react/24/solid';
-import DropdownMenu from "@/components/DropdownMenu";
-import { ArrowDownwardSharp } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 
-export function EquipmentInventory() {
+const itemsPerPage = 7;
+
+export function EquipmentMaintenance() {
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+    const [totalPages, setTotalPages] = useState(Math.ceil(equipmentData.length / itemsPerPage));
     const [currentItems, setCurrentItems] = useState([]);
-    const navigate = useNavigate();
 
     // Inicializa los valores. Es lo que se ejecuta al cargar el componente
     useEffect(()=>{
-        fetchEquipments(1);
+        handlePageChange(1);
     }, []);
 
-    const options =(id, name, type) => [
-        { 
-            label: 'Do Maintenance', 
-            className: 'text-gray-500 h-5 w-5', 
-            icon: WrenchIcon,
-            action: () => {
-                navigate(`/dashboard/technic/insert_maintenance/${id}/${name}/${type}`);
-            }
-        },
-        { 
-            label: 'Decommission', 
-            className: 'text-red-500 h-5 w-5', 
-            icon: ArrowDownwardSharp,
-            action: () => {
-                navigate(`/dashboard/technic/insert_technical_leave/${id}/${name}/${type}`);
-            }
-        },
-    ];
+    // Esto es un evento se activa cada vez que equipmentData.length cambia su valor
+    useEffect(()=>{
+        setTotalPages(Math.ceil(equipmentData.length / itemsPerPage));
+    }, [equipmentData.length]);
 
     // funcion que se llama cada vez que se cambia de pagina
-    const handlePageChange = async (event, newPage) => {
+    const handlePageChange = (event, newPage) => {
         setCurrentPage(newPage);
-        await fetchEquipments(newPage);
-    };
 
-    const fetchEquipments = async (page) => {
-        try {
-            const response = await api(`/Equipment/GetPaged?PageNumber=${page}&PageSize=10`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            
-            setCurrentItems(data.items);
-            setTotalPages(Math.ceil(data.totalCount / data.pageSize));
+        const lastIndex = newPage * itemsPerPage;
+        const firstIndex = lastIndex - itemsPerPage;
 
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error fetching inventory:", error);
-            setCurrentItems([]);
-            setIsLoading(false);
-        }
+        // Actualizar los elementos actuales
+        setCurrentItems(equipmentData.slice(firstIndex, lastIndex));
+
+        console.log("--> ", firstIndex, lastIndex, currentPage, newPage, currentItems);
+
+        // Actualizar el total de páginas
+        setTotalPages(Math.ceil(equipmentData.length / itemsPerPage));
     };
 
     return (
@@ -72,14 +43,14 @@ export function EquipmentInventory() {
                 <Card>
                     <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                         <Typography variant="h6" color="white">
-                            Equipment Inventory
+                            Equipment Maintenance
                         </Typography>
                     </CardHeader>
                     <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {["ID", "Equipment", "type"].map((el) => (
+                                    {["ID", "Equipment", "type", "date"].map((el) => (
                                         <th
                                             key={el}
                                             className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
@@ -92,7 +63,6 @@ export function EquipmentInventory() {
                                             </Typography>
                                         </th>
                                     ))}
-                                    <th key="sadf" className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"></th>
                                 </tr>
                             </thead>
                             <tbody >
@@ -131,9 +101,25 @@ export function EquipmentInventory() {
                                                         {equipment.type}
                                                     </Typography>
                                                 </td>
-                                                <td className={className + "items-center text-center"}>
-                                                    <DropdownMenu options={options(equipment.id, equipment.name, equipment.type)} />
-                                                </td>
+
+                                                <td className={className}>
+                                        <div className="flex items-center gap-4">
+                                            <div 
+                                                className="flex items-center gap-1"
+                                                onClick={() => EndMaintenance(dept, key)}
+                                            >
+                                                <Typography
+                                                    as="a"
+                                                    href="#"
+                                                    className="text-xs font-semibold text-green-600"
+                                                    >
+                                                    Done
+                                                </Typography>
+                                                <PencilIcon className="w-3 text-green-600"/>
+                                            </div>
+                                    
+                                        </div>
+                                    </td>
                                             </tr>
                                         );
                                     }
@@ -154,4 +140,4 @@ export function EquipmentInventory() {
     );
 }
 
-export default EquipmentInventory;
+export default EquipmentMaintenance;

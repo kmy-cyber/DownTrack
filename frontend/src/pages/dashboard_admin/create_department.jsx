@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
-    Card,
     CardHeader,
     CardBody,
     Typography,
-
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
@@ -95,7 +93,7 @@ export const DepartmentCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
-                setFormData({ name: "", section: formData.section });
+                setFormData({ name: "", section: formData.section, sectionName: formData.sectionName });
             } else {
                 setAlertMessage("Failed to login");
             }

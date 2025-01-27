@@ -10,9 +10,10 @@ Progress,
 } from "@material-tailwind/react";
 import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
 import { UserIcon, KeyIcon} from "@heroicons/react/24/outline";
-//import { userListData } from "@/data";
+//import { currentItemsData } from "@/data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
+import { Pagination } from '@mui/material';
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
 
@@ -21,9 +22,13 @@ export function Tables() {
     const [onEdit, setOnEdit] = useState(false);
     const [keyEdit, setKeyEdit] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentItems, setCurrentItems] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const[alertMessage, setAlertMessage] = useState('');
     const [alertType, setAlertType] = useState('success');
-    const [userList, setUserList] = useState([]);
     const [userData, setUserData] = useState({
         id:0,
         name: "",
@@ -33,34 +38,40 @@ export function Tables() {
     });
     
     useEffect(() => {
-        fetchEmployees();
+        fetchEmployees(1);
     }, []);
     
-    const fetchEmployees = async () => {
+    // funcion que se llama cada vez que se cambia de pagina
+    const handlePageChange = async (event, newPage) => {
+        setCurrentPage(newPage);
+        await fetchEmployees(newPage);
+    };
+
+    const fetchEmployees = async (page) => {
         try {
-            const response = await api('/Employee/GET_ALL/', {
+            const response = await api(`/Employee/GetPaged?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log(data);
-            setUserList(data);
-            console.log(userList);
-            console.log(userData);
+
+            setCurrentItems(data.items);
+            setTotalPages(Math.ceil(data.totalCount / data.pageSize));
+
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching employees:", error);
-            setUserList([]);
+            setCurrentItems([]);
             setIsLoading(false);
         }
     };
 
     const handleSave = (updatedUser) => {
-        const index = userList.findIndex(user => user.id === updatedUser.id);
-        userList[index] = updatedUser;
-        setUserList([...userList]);
+        const index = currentItems.findIndex(user => user.id === updatedUser.id);
+        currentItems[index] = updatedUser;
+        setCurrentItems([...currentItems]);
         setUserData({
             id:id,
             name: "",
@@ -105,7 +116,7 @@ export function Tables() {
         {
             setAlertMessage('Delete completed successfully');
             setAlertType('success');
-            setUserList(userList.filter(user => user.id !== id));
+            setCurrentItems(currentItems.filter(user => user.id !== id));
         }
         } catch (error) {
             setAlertMessage('Error deleting employee:');
@@ -153,10 +164,10 @@ export function Tables() {
                         </tr>
                         </thead>
                         <tbody>
-                        {userList.map(
+                        {currentItems.map(
                             (user, key) => {
                             const className = `py-3 px-5 ${
-                                key === userList.length - 1
+                                key === currentItems.length - 1
                                 ? ""
                                 : "border-b border-blue-gray-50"
                             }`;
@@ -241,7 +252,12 @@ export function Tables() {
                     </table>
                     </CardBody>
                 </Card>
-
+                <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    className="self-center"
+                />
                 </div>
             }
         </>

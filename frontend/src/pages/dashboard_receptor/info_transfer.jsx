@@ -15,16 +15,16 @@ const TransferInfoForm = ({ transfer, onClose  }) => {
                 <div className="space-y-4">
                     <div className="p-4 border rounded-md shadow-sm">
                         <Typography variant="h6" className="font-semibold">
-                            {transfer.equipment}
+                            {transfer.equipment.name}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Source Section: {transfer.sourceSection}
+                            Source Section: {transfer.equipment.sectionName}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
                             Section Boss: {transfer.requestingOfficer}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Department: {transfer.department}
+                            Department: {transfer.equipment.departmentName}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
                             Date: {transfer.date}
