@@ -15,5 +15,5 @@ public static class EquipmentStatusHelper
     /// Validates whether the specified status belongs to any of the registered equipmentStatus
     /// </summary>
     public static bool IsValidStatus(string status) =>
-        Enum.TryParse(typeof(EquipmentStatus), status, out _);
+        System.Enum.TryParse(typeof(EquipmentStatus), status, out _);
 }

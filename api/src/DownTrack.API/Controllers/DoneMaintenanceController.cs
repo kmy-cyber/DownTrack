@@ -1,7 +1,6 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -11,30 +10,56 @@ namespace DownTrack.Api.Controllers;
 
 public class DoneMaintenanceController : ControllerBase
 {
-    private readonly IDoneMaintenanceServices _doneMaintenanceService;
-
-    public DoneMaintenanceController(IDoneMaintenanceServices doneMaintenanceServices)
+    private readonly IDoneMaintenanceQueryServices _doneMaintenanceQueryService;
+    private readonly IDoneMaintenanceCommandServices _doneMaintenanceCommandService;
+    public DoneMaintenanceController(IDoneMaintenanceQueryServices doneMaintenanceQueryServices,
+                                     IDoneMaintenanceCommandServices doneMaintenanceCommandServices)
     {
-        _doneMaintenanceService = doneMaintenanceServices;
+        _doneMaintenanceQueryService = doneMaintenanceQueryServices;
+        _doneMaintenanceCommandService = doneMaintenanceCommandServices;
+        
     }
 
+    #region Command
     [HttpPost]
     [Route("POST")]
 
     public async Task<IActionResult> CreateDoneMaintenance(DoneMaintenanceDto doneMaintenance)
     {
-        await _doneMaintenanceService.CreateAsync(doneMaintenance);
+        await _doneMaintenanceCommandService.CreateAsync(doneMaintenance);
 
         return Ok("Done Maintenance added successfully");
     }
 
+     [HttpPut]
+    [Route("PUT")]
+
+    public async Task<IActionResult> UpdateDoneMaintenance(DoneMaintenanceDto doneMaintenance)
+    {
+        var result = await _doneMaintenanceCommandService.UpdateAsync(doneMaintenance);
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    [Route("{doneMaintenanceId}")]
+
+    public async Task<IActionResult> DeleteDoneMaintenance(int doneMaintenanceId)
+    {
+        await _doneMaintenanceCommandService.DeleteAsync(doneMaintenanceId);
+
+        return Ok("Done Maintenance deleted successfully");
+    }
+
+    #endregion
+
+    #region Query
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<DoneMaintenanceDto>> GetDoneMaintenanceById(int doneMaintenanceId)
+    public async Task<ActionResult<GetDoneMaintenanceDto>> GetDoneMaintenanceById(int doneMaintenanceId)
     {
-        var result = await _doneMaintenanceService.GetByIdAsync(doneMaintenanceId);
+        var result = await _doneMaintenanceQueryService.GetByIdAsync(doneMaintenanceId);
 
         if (result == null)
             return NotFound($"Done Maintenance with ID {doneMaintenanceId} not found");
@@ -51,28 +76,13 @@ public class DoneMaintenanceController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _doneMaintenanceService.GetPagedResultAsync(paged);
+        var result = await _doneMaintenanceQueryService.GetPagedResultAsync(paged);
         
         return Ok (result);
         
     }
 
-    [HttpPut]
-    [Route("PUT")]
+    #endregion
 
-    public async Task<IActionResult> UpdateDoneMaintenance(DoneMaintenanceDto doneMaintenance)
-    {
-        var result = await _doneMaintenanceService.UpdateAsync(doneMaintenance);
-        return Ok(result);
-    }
-
-    [HttpDelete]
-    [Route("{doneMaintenanceId}")]
-
-    public async Task<IActionResult> DeleteDoneMaintenance(int doneMaintenanceId)
-    {
-        await _doneMaintenanceService.DeleteAsync(doneMaintenanceId);
-
-        return Ok("Done Maintenance deleted successfully");
-    }
+   
 }
