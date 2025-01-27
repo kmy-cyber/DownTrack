@@ -1,30 +1,197 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardHeader,
     CardBody,
     Typography,
-
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    Button,
+    DialogFooter,
+    Input
 } from "@material-tailwind/react";
+import api from "@/middlewares/api";
+import { useAuth } from "@/context/AuthContext";
+import { ChevronDownIcon } from "@heroicons/react/24/solid"; 
+import { useParams } from "react-router-dom";
+
+
 export const LeaveCreationForm = () => {
+    const { id, name:nameEquipment, type } = useParams();
+
+
+    const{user} = useAuth(); 
     const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    role: "admin",
-    department: "",
-    experience: "",
-    specialty: "",
-    salary: "",
+        id: "",
+        technicianId: user.id,
+        equipmentId: id,
+        equipmentName: nameEquipment + " - " + type,
+        receptorId: "",
+        receptorName: "",
+        date: "",
+        cause: "",
+        status: "something",
     });
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredReceptor, setFilteredReceptor] = useState([]);
+    const [startDate, setStartDate] = useState("");
+    const [alertMessage, setAlertMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [alertType, setAlertType] = useState('success');
+    const [dateFormat, setDateFormat] = useState("");
+    const [receptorList, setReceptorList] = useState([]);
+    const [showReceptors, setShowReceptors] = useState(false);
+    
+    // Generar la fecha y hora en formato YYYY-MM-DD HH:MM:SS
+    const generateDateTime = () => {
+        const currentDate = new Date();
+        return currentDate
+            .toISOString()
+            .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
+            .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
+    };
+
+    const inFormatDate = () => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+        const milliseconds = String(currentDate.getMilliseconds()).padStart(3, '0');
+    
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+    };
+    
+    // Establecer la fecha al cargar el componente
+    useEffect(() => {
+        setIsLoading(true);
+        const currentDate = generateDateTime();
+        setStartDate(currentDate);
+        const dateInFormat = inFormatDate();
+        setDateFormat(dateInFormat);
+        fetchReceptors();
+        setIsLoading(false);
+    }, []);
+
+    const fetchReceptors = async () => {
+        try {
+            const response = await api(`/Employee/GetAllSectionManager`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setReceptorList(data);
+            setFormData((prev) => ({
+                ...prev, 
+                ['receptorId']: data[0].id, 
+                ['receptorName']: data[0].name, 
+            }));
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            setReceptorList([]);
+            setIsLoading(false);
+        }
+    };
+
+    const submitLeave = async () => {
+        try {
+            const response = await api("/EquipmentDecommissioning/POST/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                
+                body: JSON.stringify({
+                    "technicianId": user.id,
+                    "equipmentId": formData.equipment,
+                    "receptorId": formData.receptorId,
+                    "date": dateFormat,
+                    "cause": formData.cause,
+                    "status": formData.status,
+                }),
+            });
+            
+            if (!response.ok) { 
+            if (response.status === 400) {
+                setAlertType('error');
+                setAlertMessage("Something fail, validation error please review the fields");
+                setAlertMessage("Validation error. Please review the fields.");
+            } else if (response.status === 500) {
+                setAlertType('error');
+                setAlertMessage("Something fail,a server error occurred. Try again later",'error');
+                setAlertMessage("A server error occurred. Try again later.");
+            }
+            }
+            else if (response.ok) {
+                setAlertType('success');
+                setAlertMessage("Successful registration");
+            } else {
+                setAlertMessage("Failed to login");
+            }
+            
+
+            
+        } catch (error) {
+            setAlertType('error');
+            console.error("Error logging in:", error);
+            setAlertMessage('An error occurred during the login process');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("User created:", formData);
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+        console.log("Baja propuesta:", formData);
+        const currentDate = new Date().toISOString().split('T')[0];
+        date: currentDate
+        setIsLoading(true);
+        setAlertMessage(null);
+        await submitLeave();
+    };
+
+    const handleSearch = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        
+        if (query) {
+            setFilteredReceptor(
+                receptorList.filter(
+                    (receptor) => receptor.name.toLowerCase().includes(query.toLowerCase())
+                )
+            );
+        } else {
+            setFilteredReceptor(receptorList);
+        }
+    };
+
+
+    const handleShowROpen = () => {
+        setShowReceptors(true);
+    };
+    
+    const handleShowRClose = () => {
+        setShowReceptors(false);
+    };
+    
+    const handleReceptorSelect = (receptorId, receptorName) => {
+        setFormData((prev) => ({
+            ...prev, 
+            ['receptorId']: receptorId, 
+            ['receptorName']: receptorName, 
+        }));
+        handleShowRClose("receptor");
     };
 
     return (
@@ -39,18 +206,19 @@ export const LeaveCreationForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* General Fields */}
                 <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="equipmentId" className="block text-sm font-medium text-gray-700">
                     Equipment
                 </label>
                 <input
-                    type="text"
-                    id="equipment"
-                    name="equipment"
-                    value={formData.equipment}
+                    type="equipmentId"
+                    id="equipmentId"
+                    name="equipmentId"
+                    value={formData.equipmentName}
                     onChange={handleChange}
                     placeholder="Enter the equipment"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     required
+                    disabled
                 />
                 </div>
 
@@ -75,14 +243,15 @@ export const LeaveCreationForm = () => {
                     Date
                 </label>
                 <input
-                    type="date"
+                    type="text"
                     id="date"
                     name="date"
-                    value={formData.date}
+                    value={startDate}
                     onChange={handleChange}
                     placeholder=""
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border  text-gray-900 border-gray-300 rounded-md shadow-sm"
                     required
+                    disabled
                 />
                 </div>
 
@@ -105,41 +274,27 @@ export const LeaveCreationForm = () => {
                 </select>
                 </div>
 
-
-                {formData.destiny === "transfer" ? (
-                <>
-                    <div>
-                    <label htmlFor="Unit" className="block text-sm font-medium text-gray-700">
-                        Destiny Unit
-                    </label>
-                    <input
-                        type="text"
-                        id="unit"
-                        name="unit"
-                        value={formData.unit}
-                        onChange={handleChange}
-                        placeholder="Enter the unit to tranfer the equipment"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                    </div>
-                </>
-                ) : null}
-
                 <div>
-                <label htmlFor="receptor" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="receptorId" className="block text-sm font-medium text-gray-700">
                     Receptor
                 </label>
-                <input
-                    type="text"
-                    id="receptor"
-                    name="receptor"
-                    value={formData.receptor}
-                    onChange={handleChange}
-                    placeholder="Enter receptor name"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                />
+                <div className="relative">
+                    <input
+                        type="text"
+                        id="receptorId"
+                        name="receptorId"
+                        value={formData.receptorName}
+                        onClick={handleShowROpen}
+                        placeholder="Enter receptor"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm pr-10"
+                        required
+                        readOnly
+                    />
+                    <ChevronDownIcon
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                        style={{ width: '2rem', height: '2rem', color: 'gray' }}
+                    />
+                </div>
                 </div>
             </div>
 
@@ -151,8 +306,46 @@ export const LeaveCreationForm = () => {
             </button>
             </form>
         </CardBody>
+
+        {/* Modal de selección de equipo */}
+        <Dialog open={showReceptors} handler={() => handleShowROpen()}>
+        <DialogHeader>Select Receptor</DialogHeader>
+        <DialogBody>
+        <Input
+            type="text"
+            placeholder="Search Receptor"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e, "receptor")}
+            className="mb-4 w-full"            
+        />
+        <div className="max-h-72 overflow-y-auto mt-3">
+            {filteredReceptor.map((receptor) => (
+            <div
+                key={receptor.id}
+                className="p-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleReceptorSelect(receptor.id, receptor.name)}
+            >
+                {receptor.name} - {receptor.username}
+            </div>
+            ))}
+        </div>
+        </DialogBody>
+        <DialogFooter>
+        <Button
+            onClick={() => handleShowRClose()}
+            variant="outlined"
+        >
+            Close
+        </Button>
+        </DialogFooter>
+        </Dialog>
+
+        <div>
+
+    </div>
     </div>
     );
 };
 
 export default LeaveCreationForm;
+

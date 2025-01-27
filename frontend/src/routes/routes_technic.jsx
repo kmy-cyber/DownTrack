@@ -33,7 +33,7 @@ export const routesTechnic = [
             name: "equipment_maintenance",
             path: "/equipment_maintenance",
             element: <EquipmentMaintenance />,
-            },
+        },
         {
         icon: <ArrowDownCircleIcon {...icon} />,
         name: "technical leave",
@@ -45,6 +45,20 @@ export const routesTechnic = [
         name: "Equipment Inventory",
         path: "/equipment_inventory",
         element: <EquipmentInventory />,
+        },
+        {
+            icon: <WrenchScrewdriverIcon {...icon} />,
+            name: "insert maintenance",
+            path: "/insert_maintenance/:id/:name/:type",
+            element: <MaintenanceCreationForm />,
+            hidden: true,
+        },
+        {
+            icon: <ArrowDownCircleIcon {...icon} />,
+            name: "insert technical leave",
+            path: "/insert_technical_leave/:id/:name/:type",
+            element: <LeaveCreationForm />,
+            hidden: true,
         },
     ],
 },];
