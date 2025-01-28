@@ -29,7 +29,6 @@ const EmployeesTable = () => {
 
       const data = await response.json();
       setEmployeeList(data.items); // Ajusta la estructura si es necesario
-      console.log(data.items)
       setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
     } catch (err) {
       console.error("Error fetching employees:", err);
@@ -68,84 +67,82 @@ const EmployeesTable = () => {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-4 p-6">
-          <Typography variant="h6" color="white">
-            Employees
+    <Card className="mt-8 shadow-lg">
+      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
+        <Typography variant="h6" color="white" className="text-xl font-semibold">
+          Employees
+        </Typography>
+      </CardHeader>
+      <CardBody className="px-0 py-4">
+        {loading ? (
+          <Typography className="text-center">Loading...</Typography>
+        ) : error ? (
+          <Typography color="red" className="text-center">
+            {error}
           </Typography>
-        </CardHeader>
-        <CardBody>
-          {/* Show load or error message */}
-          {loading && (
-            <Typography variant="small" color="gray">
-              Loading employees...
-            </Typography>
-          )}
-          {error && (
-            <Typography variant="small" color="red">
-              {error}
-            </Typography>
-          )}
-
-          {/* Employee Table */}
-          {!loading && !error && (
+        ) : (
+          <>
+            {/* Employee Table */}
             <div className="overflow-x-auto">
-              <table className="w-full table-auto border-collapse border border-gray-200">
-                <thead>
+              <table className="min-w-full table-auto text-sm text-gray-900">
+                <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Username</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Role</th>
+                    <th className="px-6 py-3 border-b text-center">Username</th>
+                    <th className="px-6 py-3 border-b text-center">Role</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {employeeList.map((user) => (
+                <tbody className="bg-white">
+                  {employeeList.length > 0 ? (
+                    employeeList.map((user) => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-3 border-b text-center">{user.userRole.toLowerCase() == "shippingsupervisor" ? user.name : user.userName}</td>
+                        <td className="px-6 py-3 border-b text-center">{user.userRole || "N/A"}</td>
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
-                      <td className="border border-gray-200 px-4 py-2">{user.name}</td>
-                      <td className="border border-gray-200 px-4 py-2">{user.userRole || "N/A"}</td>
+                      <td colSpan="2" className="px-6 py-3 text-center">No employees found</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
+          </>
+        )}
 
-          {/* Pagination */}
-          {!loading && !error && totalPages > 1 && (
-            <div className="flex justify-center mt-4 gap-2">
-              {/* Previous button */}
-              {currentPage > 1 && (
-                <IconButton
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="px-4 py-2"
-                >
-                  <ChevronLeftIcon className="h-5 w-5" />
-                </IconButton>
-              )}
+        {/* Paginación */}
+        {!loading && !error && totalPages > 1 && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {/* Previous button */}
+            {currentPage > 1 && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2"
+              >
+                <ChevronLeftIcon className="h-5 w-5" />
+              </IconButton>
+            )}
 
-              {/* Page numbers */}
-              {renderPaginationButtons()}
+            {/* Page numbers */}
+            {renderPaginationButtons()}
 
-              {/* Next button */}
-              {currentPage < totalPages && (
-                <IconButton
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="px-4 py-2"
-                >
-                  <ChevronRightIcon className="h-5 w-5" />
-                </IconButton>
-              )}
-            </div>
-          )}
-        </CardBody>
-      </Card>
-    </div>
+            {/* Next button */}
+            {currentPage < totalPages && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2"
+              >
+                <ChevronRightIcon className="h-5 w-5" />
+              </IconButton>
+            )}
+          </div>
+        )}
+      </CardBody>
+    </Card>
   );
 };
 

@@ -1,15 +1,18 @@
-import React, { useState,useEffect } from "react";
-import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react";
-import { equipmentDisposalData } from "@/data"; // Asegúrate de importar los datos correctamente
+import React, { useState, useEffect } from "react";
+import {
+    Card, CardHeader, CardBody, Typography, Button, IconButton
+} from "@material-tailwind/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api";
 
 const EquipmentDisposalTable = () => {
-    const [disposals_list,setDisposalsList] = useState([]);
+    const [disposalsList, setDisposalsList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 14;
+
     useEffect(() => {
         fetchDisposals(currentPage);
     }, [currentPage]);
@@ -18,127 +21,128 @@ const EquipmentDisposalTable = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await api(`/EquipmentDecommissioning/Get_Paged_All?PageNumber=${pageNumber}&PageSize=${pageSize}`,
-                {
-                    method: 'GET',
-                }
-            );
+            const response = await api(`/EquipmentDecommissioning/Get_Paged_All?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+                method: 'GET',
+            });
 
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error("Failed to fetch equipment decommissionings");
             }
+
             const data = await response.json();
-            setDisposalsList(data.items);
-            console.log(data.items);
-            setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
-        }
-        catch (err) {
-            console.error("Error fetching decommissionings:", err);
+            setDisposalsList(data.items || []);
+            setTotalPages(Math.ceil(data.totalCount / pageSize));
+        } catch (err) {
             setError("Failed to load decommissionings data");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
-          setCurrentPage(pageNumber);
+            setCurrentPage(pageNumber);
         }
-      };
+    };
 
     const renderPaginationButtons = () => {
         const visibleButtons = 5;
         let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
         let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
-    
+
         if (endPage - startPage + 1 < visibleButtons) {
-        startPage = Math.max(1, endPage - visibleButtons + 1);
+            startPage = Math.max(1, endPage - visibleButtons + 1);
         }
-    
+
         return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
-        <Button
-            key={page}
-            variant={page === currentPage ? "filled" : "outlined"}
-            color="gray"
-            onClick={() => handlePageChange(page)}
-            className="px-4 py-2"
-        >
-            {page}
-        </Button>
+            <Button
+                key={page}
+                variant={page === currentPage ? "filled" : "outlined"}
+                color="gray"
+                onClick={() => handlePageChange(page)}
+                className="px-4 py-2"
+            >
+                {page}
+            </Button>
         ));
     };
 
     return (
-        <div className="mt-12 mb-8 flex flex-col gap-12">
-            <Card>
-                <CardHeader variant="gradient" color="gray" className="mb-4 p-6">
-                    <Typography variant="h6" color="white">
-                        Equipment Disposal Records
+        <Card className="mt-8 shadow-lg">
+            <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
+                <Typography variant="h6" color="white" className="text-xl font-semibold">
+                    Equipment Disposal Records
+                </Typography>
+            </CardHeader>
+            <CardBody className="px-0 py-4">
+                {loading ? (
+                    <Typography className="text-center">Loading...</Typography>
+                ) : error ? (
+                    <Typography color="red" className="text-center">
+                        {error}
                     </Typography>
-                </CardHeader>
-                <CardBody>
-                    {/* Tabla de bajas técnicas */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full table-auto border-collapse border border-gray-200">
-                            <thead>
-                                <tr>
-                                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Technician</th>
-                                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment</th>
-                                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Reason for Removal</th>
-                                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {disposals_list ? disposals_list.map((disposal) => (
-                                    <tr key={disposal.id} className="hover:bg-gray-50">
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.technicianId}</td>
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.equipmentId}</td>
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.cause}</td>
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.date}</td>
+                ) : (
+                    <>
+                        {/* Tabla de Desincorporación de Equipos */}
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full table-auto text-sm text-gray-900">
+                                <thead className="bg-gray-800 text-white">
+                                    <tr>
+                                        <th className="px-6 py-3 border-b text-center">Technician</th>
+                                        <th className="px-6 py-3 border-b text-center">Equipment</th>
+                                        <th className="px-6 py-3 border-b text-center">Receptor</th>
+                                        <th className="px-6 py-3 border-b text-center">Reason for Removal</th>
+                                        <th className="px-6 py-3 border-b text-center">Date</th>
                                     </tr>
-                                )) : <p>Theres no disposals yet</p>
-
-                            }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Pagination */}
-                    {!loading && !error && totalPages > 1 && (
-                        <div className="flex justify-center mt-4 gap-2">
-                        {/* Previous button */}
-                        {currentPage > 1 && (
-                            <IconButton
-                            variant="outlined"
-                            size="sm"
-                            color="gray"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            className="px-4 py-2"
-                            >
-                            <ChevronLeftIcon className="h-5 w-5" />
-                            </IconButton>
-                        )}
-
-                        {/* Page numbers */}
-                        {renderPaginationButtons()}
-
-                        {/* Next button */}
-                        {currentPage < totalPages && (
-                            <IconButton
-                            variant="outlined"
-                            size="sm"
-                            color="gray"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            className="px-4 py-2"
-                            >
-                            <ChevronRightIcon className="h-5 w-5" />
-                            </IconButton>
-                        )}
+                                </thead>
+                                <tbody className="bg-white">
+                                    {disposalsList.length > 0 ? (
+                                        disposalsList.map((disposal) => (
+                                            <tr key={disposal.id}>
+                                                <td className="px-6 py-3 border-b text-center">{disposal.technicianUserName}</td>
+                                                <td className="px-6 py-3 border-b text-center">{disposal.equipmentId}</td>
+                                                <td className="px-6 py-3 border-b text-center">{disposal.receptorUserName}</td>
+                                                <td className="px-6 py-3 border-b text-center">{disposal.cause}</td>
+                                                <td className="px-6 py-3 border-b text-center">{disposal.date}</td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" className="px-6 py-3 text-center">No disposals found</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
-                    )}
-                </CardBody>
-            </Card>
-        </div>
+                    </>
+                )}
+
+                {/* Paginación */}
+                <div className="flex justify-center mt-4 space-x-2">
+                    <IconButton
+                        variant="outlined"
+                        color="gray"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2"
+                    >
+                        <ChevronLeftIcon className="h-5 w-5" />
+                    </IconButton>
+
+                    {renderPaginationButtons()}
+
+                    <IconButton
+                        variant="outlined"
+                        color="gray"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2"
+                    >
+                        <ChevronRightIcon className="h-5 w-5" />
+                    </IconButton>
+                </div>
+            </CardBody>
+        </Card>
     );
 };
 

@@ -30,7 +30,6 @@ const MaintenanceHistory = () => {
       const data = await response.json();
       setMaintenanceList(data.items); // Ajusta la estructura si es necesario
       setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
-      console.log(data)
     } catch (err) {
       console.error("Error fetching maintenance data:", err);
       setError("Failed to load maintenance data");
@@ -68,92 +67,90 @@ const MaintenanceHistory = () => {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-4 p-6">
-          <Typography variant="h6" color="white">
-            Equipment Maintenance History
+    <Card className="mt-8 shadow-lg">
+      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
+        <Typography variant="h6" color="white" className="text-xl font-semibold">
+          Equipment Maintenance History
+        </Typography>
+      </CardHeader>
+      <CardBody className="px-0 py-4">
+        {loading ? (
+          <Typography className="text-center">Loading...</Typography>
+        ) : error ? (
+          <Typography color="red" className="text-center">
+            {error}
           </Typography>
-        </CardHeader>
-        <CardBody>
-          {/* Show load or error message */}
-          {loading && (
-            <Typography variant="small" color="gray">
-              Loading maintenance history...
-            </Typography>
-          )}
-          {error && (
-            <Typography variant="small" color="red">
-              {error}
-            </Typography>
-          )}
-
-          {/* Maintenance History Table */}
-          {!loading && !error && (
+        ) : (
+          <>
+            {/* Maintenance History Table */}
             <div className="overflow-x-auto">
-              <table className="w-full table-auto border-collapse border border-gray-200">
-                <thead>
+              <table className="min-w-full table-auto text-sm text-gray-900">
+                <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Technician</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment Name</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment ID</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Maintenance Type</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Date</th>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Cost</th>
+                    <th className="px-6 py-3 border-b text-center">Technician</th>
+                    <th className="px-6 py-3 border-b text-center">Equipment Name</th>
+                    <th className="px-6 py-3 border-b text-center">Equipment ID</th>
+                    <th className="px-6 py-3 border-b text-center">Maintenance Type</th>
+                    <th className="px-6 py-3 border-b text-center">Date</th>
+                    <th className="px-6 py-3 border-b text-center">Cost</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {maintenanceList.map((maintenance) => (
-                    <tr key={maintenance.id} className="hover:bg-gray-50">
-                      <td className="border border-gray-200 px-4 py-2">{maintenance.technicianUserName}</td>
-                      <td className="border border-gray-200 px-4 py-2">{maintenance.equipmentName}</td>
-                      <td className="border border-gray-200 px-4 py-2">{maintenance.equipmentId}</td>
-                      <td className="border border-gray-200 px-4 py-2">{maintenance.type}</td>
-                      <td className="border border-gray-200 px-4 py-2">{new Date(maintenance.date).toLocaleDateString()}</td>
-                      <td className="border border-gray-200 px-4 py-2">${maintenance.cost}</td>
+                <tbody className="bg-white">
+                  {maintenanceList.length > 0 ? (
+                    maintenanceList.map((maintenance) => (
+                      <tr key={maintenance.id}>
+                        <td className="px-6 py-3 border-b text-center">{maintenance.technicianUserName}</td>
+                        <td className="px-6 py-3 border-b text-center">{maintenance.equipmentName}</td>
+                        <td className="px-6 py-3 border-b text-center">{maintenance.equipmentId}</td>
+                        <td className="px-6 py-3 border-b text-center">{maintenance.type}</td>
+                        <td className="px-6 py-3 border-b text-center">{new Date(maintenance.date).toLocaleDateString()}</td>
+                        <td className="px-6 py-3 border-b text-center">${maintenance.cost}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-3 text-center">No maintenance records found</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
+          </>
+        )}
 
-          {/* Pagination */}
-          {!loading && !error && totalPages > 1 && (
-            <div className="flex justify-center mt-4 gap-2">
-              {/* Previous button */}
-              {currentPage > 1 && (
-                <IconButton
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="px-4 py-2"
-                >
-                  <ChevronLeftIcon className="h-5 w-5" />
-                </IconButton>
-              )}
+        {/* Paginación */}
+        {!loading && !error && totalPages > 1 && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {/* Previous button */}
+            {currentPage > 1 && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2"
+              >
+                <ChevronLeftIcon className="h-5 w-5" />
+              </IconButton>
+            )}
 
-              {/* Page numbers */}
-              {renderPaginationButtons()}
+            {/* Page numbers */}
+            {renderPaginationButtons()}
 
-              {/* Next button */}
-              {currentPage < totalPages && (
-                <IconButton
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="px-4 py-2"
-                >
-                  <ChevronRightIcon className="h-5 w-5" />
-                </IconButton>
-              )}
-            </div>
-          )}
-        </CardBody>
-      </Card>
-    </div>
+            {/* Next button */}
+            {currentPage < totalPages && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2"
+              >
+                <ChevronRightIcon className="h-5 w-5" />
+              </IconButton>
+            )}
+          </div>
+        )}
+      </CardBody>
+    </Card>
   );
 };
 

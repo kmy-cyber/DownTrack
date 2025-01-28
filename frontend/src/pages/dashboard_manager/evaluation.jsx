@@ -11,7 +11,9 @@ import {
   DialogFooter,
   Button,
   Radio,
+  IconButton
 } from "@material-tailwind/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api"; // Suponiendo que tienes un middleware para las peticiones
 
 export function Evaluation() {
@@ -27,11 +29,9 @@ export function Evaluation() {
   // Función para obtener técnicos de la API
   const fetchTechnicians = async (pageNumber) => {
     try {
-      const response = await api(`/Technician/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`
-      );
+      const response = await api(`/Technician/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`);
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
         setTechnicians(data.items);
         setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcular las páginas totales
       } else {
@@ -48,7 +48,7 @@ export function Evaluation() {
 
   // Filtrar técnicos por el término de búsqueda
   const filteredTechnicians = technicians.filter((technician) =>
-    technician.name.includes(searchTerm.toLowerCase())
+    technician.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Función para manejar el cambio de página
@@ -75,7 +75,7 @@ export function Evaluation() {
         variant={page === currentPage ? "filled" : "outlined"}
         color="gray"
         onClick={() => handlePageChange(page)}
-        className="px-4 py-2"
+        className="px-4 py-2 text-sm"
       >
         {page}
       </Button>
@@ -97,13 +97,12 @@ export function Evaluation() {
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+      <Card className="shadow-xl">
+        <CardHeader variant="gradient" color="gray" className="p-6">
           <div className="flex justify-between items-center">
-            <Typography variant="h6" color="white">
+            <Typography variant="h5" color="white" className="font-semibold">
               Evaluate Technicians
             </Typography>
-            {/* Barra de búsqueda para filtrar por nombre de usuario */}
             <div className="w-72">
               <Input
                 type="text"
@@ -111,22 +110,18 @@ export function Evaluation() {
                 label="Search by Username"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-white" // Asegurando que el texto sea blanco
+                className="text-white text-sm"
               />
             </div>
           </div>
         </CardHeader>
-        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          {/* Tabla mostrando los técnicos */}
+        <CardBody className="overflow-x-scroll p-0">
           <table className="w-full min-w-[640px] table-auto">
-            <thead>
+            <thead className="bg-gray-800 text-sm">
               <tr>
                 {["Name", "Specialty", "Years of Experience"].map((header) => (
-                  <th key={header} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                    <Typography
-                      variant="small"
-                      className="text-[11px] font-bold uppercase text-blue-gray-400"
-                    >
+                  <th key={header} className="border-b border-blue-gray-50 py-3 px-5 text-center">
+                    <Typography variant="small" className="font-medium uppercase text-white text-xs">
                       {header}
                     </Typography>
                   </th>
@@ -134,27 +129,26 @@ export function Evaluation() {
               </tr>
             </thead>
             <tbody>
-              {filteredTechnicians.map(({name,specialty,expYears}, key) => {
+              {filteredTechnicians.map(({ name, specialty, expYears, username }, key) => {
                 const className = `py-3 px-5 ${key === filteredTechnicians.length - 1 ? "" : "border-b border-blue-gray-50"}`;
-
                 return (
                   <tr
-                    key={name}
-                    onClick={() => setSelectedTechnician({ name, specialty, expYears })}
+                    key={username}
+                    onClick={() => setSelectedTechnician({ name, specialty, expYears, username })}
                     className="cursor-pointer hover:bg-blue-gray-50"
                   >
                     <td className={className}>
-                      <Typography variant="small" color="blue-gray" className="font-semibold">
+                      <Typography variant="small" color="blue-gray" className="font-semibold text-sm text-center">
                         {name}
                       </Typography>
                     </td>
                     <td className={className}>
-                      <Typography className="text-xs font-medium text-blue-gray-600">
+                      <Typography className="text-xs font-medium text-blue-gray-600 text-center">
                         {specialty || "N/A"}
                       </Typography>
                     </td>
                     <td className={className}>
-                      <Typography className="text-xs font-medium text-blue-gray-600">
+                      <Typography className="text-xs font-medium text-blue-gray-600 text-center">
                         {expYears || "N/A"} years
                       </Typography>
                     </td>
@@ -179,10 +173,9 @@ export function Evaluation() {
           </Typography>
         </DialogHeader>
         <DialogBody divider className="flex flex-col gap-2 items-center text-center">
-          <Typography variant="small" className="text-blue-gray-600">
+          <Typography variant="small" className="text-blue-gray-600 text-sm">
             Select an evaluation:
           </Typography>
-          {/* Botones de radio para opciones de evaluación */}
           <div className="flex flex-row items-center gap-4">
             <Radio
               id="good"
@@ -208,12 +201,10 @@ export function Evaluation() {
           </div>
         </DialogBody>
         <DialogFooter className="flex justify-end">
-          {/* Botón de cancelar */}
-          <Button variant="text" color="red" onClick={() => setSelectedTechnician(null)} className="mr-2">
+          <Button variant="text" color="red" onClick={() => setSelectedTechnician(null)} className="mr-2 text-sm">
             Cancel
           </Button>
-          {/* Botón de aceptar */}
-          <Button variant="gradient" color="green" onClick={handleEvaluation} disabled={!evaluation}>
+          <Button variant="gradient" color="green" onClick={handleEvaluation} disabled={!evaluation} className="text-sm">
             Accept
           </Button>
         </DialogFooter>
@@ -221,30 +212,25 @@ export function Evaluation() {
 
       {/* Paginación */}
       <div className="flex justify-center mt-4 space-x-2">
-        {/* Botón "Anterior" */}
-        <Button
+        <IconButton
           variant="outlined"
           color="gray"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="px-4 py-2"
         >
-          Prev
-        </Button>
-
-        {/* Botones dinámicos de paginación */}
+          <ChevronLeftIcon className="h-5 w-5" />
+        </IconButton>
         {renderPaginationButtons()}
-
-        {/* Botón "Siguiente" */}
-        <Button
+        <IconButton
           variant="outlined"
           color="gray"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="px-4 py-2"
         >
-          Next
-        </Button>
+          <ChevronRightIcon className="h-5 w-5" />
+        </IconButton>
       </div>
     </div>
   );

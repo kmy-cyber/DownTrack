@@ -52,6 +52,7 @@ const InventoryTable = () => {
       }
 
       const data = await response.json();
+      console.log(data);
 
       if (!data.items) {
         throw new Error("Unexpected response structure");
@@ -72,7 +73,8 @@ const InventoryTable = () => {
     let allEquipments = [];
     const pageNumber = currentPage;
 
-    let url = `/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    // http://localhost:5217/api/Equipment/equipments/section-manager/2?PageNumber=1&PageSize=5
+    let url = `/Equipment/equipments/section-manager/${user.id}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
     if (sectionId) {
       // Filtro por sección específica
@@ -166,20 +168,21 @@ const InventoryTable = () => {
               <table className="min-w-full table-auto text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 border-b text-left">Name</th>
-                    <th className="px-6 py-3 border-b text-left">Type</th>
-                    <th className="px-6 py-3 border-b text-left">Status</th>
-                    <th className="px-6 py-3 border-b text-left">Acquisition Date</th>
-                    <th className="px-6 py-3 border-b text-left">Location</th>
+                    <th className="px-6 py-3 border-b text-center">Name</th>
+                    <th className="px-6 py-3 border-b text-center">Type</th>
+                    <th className="px-6 py-3 border-b text-center">Status</th>
+                    <th className="px-6 py-3 border-b text-center">Acquisition Date</th>
+                    <th className="px-6 py-3 border-b text-center">Section</th>
+                    <th className="px-6 py-3 border-b text-center">Department</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
                   {equipmentData.length > 0 ? (
                     equipmentData.map((equipment, index) => (
                       <tr key={index}>
-                        <td className="px-6 py-3 border-b">{equipment.name}</td>
-                        <td className="px-6 py-3 border-b">{equipment.type}</td>
-                        <td className="px-6 py-3 border-b">
+                        <td className="px-6 py-3 border-b text-center">{equipment.name}</td>
+                        <td className="px-6 py-3 border-b text-center">{equipment.type}</td>
+                        <td className="px-6 py-3 border-b text-center">
                           <span
                             className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${
                               equipment.status.toLowerCase() === "active"
@@ -192,10 +195,11 @@ const InventoryTable = () => {
                             {equipment.status}
                           </span>
                         </td>
-                        <td className="px-6 py-3 border-b">
+                        <td className="px-6 py-3 border-b text-center">
                           {equipment.dateOfadquisition || "N/A"}
                         </td>
-                        <td className="px-6 py-3 border-b">{equipment.departmentId || "N/A"}</td>
+                        <td className="px-6 py-3 border-b text-center">{equipment.sectionName|| "N/A"}</td>
+                        <td className="px-6 py-3 border-b text-center">{equipment.departmentName || "N/A"}</td>
                       </tr>
                     ))
                   ) : (
