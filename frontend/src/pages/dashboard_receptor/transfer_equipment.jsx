@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
+import { Card, CardHeader, CardBody, Typography, Button, Dialog, DialogTitle, DialogHeader,DialogFooter, DialogBody, Input, DialogContent, DialogActions, TextField, Select, MenuItem
+} from "@material-tailwind/react";
 import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import TransferInfoForm from "./info_transfer";
@@ -13,10 +14,19 @@ export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
     const [selectedTransfer, setSelectedTransfer] = useState(null);
     const [isRegistered, setIsRegistered] = useState(false);
-    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-    const [assignedPerson, setAssignedPerson] = useState("");
     const [registeredTransfers, setRegisteredTransfers] = useState([]); 
     
+
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+    const [shippingSupervisors, setShippingSupervisors] = useState([]);
+    const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+
+    const [dateFormat, setDateFormat] = useState("");
+    const [startDate, setStartDate] = useState("");
+
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredShippingS, setFilteredShippingS] = useState([]);
+
     const [isLoading, setIsLoading] = useState(true);
 
     const[alertMessage, setAlertMessage] = useState('');
@@ -32,20 +42,20 @@ export function EquipmentTransferTable() {
         "id": 0,
         "requestId": 0,
         "shippingSupervisorId": 0,
+        "shippingSupervisorName": "",
         "equipmentReceptorId": 0,
-        "date": "",
 
-        "id": 1,
-        "name": "",
-        "type": "",
-        "status": "",
-        "departmentName": 4,
-        "sectionName": 1,
-        "dateRequest": "",
     });
 
     useEffect(() => {
+        setIsLoading(true);
+        const currentDate = generateDateTime();
+        setStartDate(currentDate);
+        const dateInFormat = inFormatDate();
+        setDateFormat(dateInFormat);
         fetchTransfers(1);
+        fetchShippingSupervisors();
+        setIsLoading(false);
     }, []);
     
     const handleShowInfo = (transfer) => {
@@ -63,9 +73,43 @@ export function EquipmentTransferTable() {
         setSelectedTransfer(transfer);
     };
 
+
     const handlePageChange = async (event, newPage) => {
         setCurrentPage(newPage);
         await fetchTransfers(newPage);
+    };
+
+    const handleOpenDialog  = (id) => {
+        setSelectedTransfer(id);
+        setShowRegistrationForm(true);
+    }
+
+    const handleShippingSelect = (shippingId, shippingName) => {
+        setSelectedSupervisor({
+            id: shippingId,
+            name: shippingName
+        });
+    };
+
+    const generateDateTime = () => {
+        const currentDate = new Date();
+        return currentDate
+            .toISOString()
+            .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
+            .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
+    };
+
+    const inFormatDate = () => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+        const milliseconds = String(currentDate.getMilliseconds()).padStart(3, '0');
+    
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
     };
 
     const fetchTransfers = async (page) => {
@@ -100,6 +144,22 @@ export function EquipmentTransferTable() {
         }
     };
 
+    const fetchShippingSupervisors = async () => {
+        try {
+            const response = await api('/Employee/GetAllShippingSupervisor', {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log("Responsibles data", data);
+            setShippingSupervisors(data);
+        } catch (error) {
+            console.error("Error fetching responsibles:", error);
+        }
+    };
+
     const getEquipment= async (id) => {
         try {
             const response = await api(`/Equipment/Get?EquipmentId=${id}`, {
@@ -117,25 +177,26 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const transferPostData = async (transferData) => {
+    const handleSubmit = async () => {
         try {
             const response = await api('/Transfer/POST', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({
-                    "requestId": transferData.id,
-                    "shippingSupervisorId": transferData.assignedPerson,
-                    "equipmentReceptorId": user.id,
-                    "date": transferData.date,
+                    "requestId": selectedTransfer.id,
+                    "shippingSupervisorId": selectedSupervisor.id,
+                    "equipmentReceptorId": parseInt(user.id),
+                    "date": dateFormat,
                 }),
             });
 
             if (!response.ok) {
+                setAlertType('error');
+                setAlertMessage('Error saving transfer');
                 throw new Error('Network response was not ok');
             }
-
+            
+            setAlertType('success');
+            setAlertMessage('Transfer saved successfully')
             const data = await response.json();
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
@@ -145,37 +206,19 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const handleAcceptRegister = async (person) => {
-        console.log("handleAcceptRegister called with person:", person); 
-        if (selectedTransfer) {
-            console.log("selectedTransfer:", selectedTransfer); 
-            const updatedData = [...currentItems];
-            const index = updatedData.findIndex(item => item.id === selectedTransfer.id);
-            if (index !== -1) {
-                console.log("Updating transfer at index:", index); 
-                updatedData[index].registered = true;
-                updatedData[index].assignedPerson = person;
-                currentItems.splice(index, 1, ...updatedData.slice(index, index + 1));
-
-                await transferPostData(selectedTransfer);
-
-                setIsRegistered(true);
-                setShowRegistrationForm(false);
-                setAssignedPerson("");
-                setRegisteredTransfers([...registeredTransfers, { id: selectedTransfer.id, assignedPerson: person }]);
-                setAlertMessage("Successful registration");
-            }
-            else {
-                console.log("Transfer not found in data"); 
-            }
-        } 
-        else {
-            console.log("No selected transfer or already registered");
+    const handleSearch = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        
+        if (query) {
+            setFilteredShippingS(
+                shippingSupervisors.filter(
+                    (receptor) => receptor.name.toLowerCase().includes(query.toLowerCase())
+                )
+            );
+        } else {
+            setFilteredShippingS(shippingSupervisors);
         }
-    };
-
-    const handleCancelRegister = () => {
-        setShowRegistrationForm(false);
     };
 
 
@@ -186,12 +229,6 @@ return (
                 transfer={selectedTransfer}
                 onClose={handleCloseInfo}
             />
-        )}
-        {showRegistrationForm && (
-        <RegisterForm
-            onAccept={handleAcceptRegister}
-            onCancel={handleCancelRegister}
-        />
         )}
 
         <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
@@ -208,7 +245,7 @@ return (
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                             <tr>
-                                {[ "Source Section","Source Department", "Equipment","Type","Date"].map((el) => (
+                                {[ "Source Section","Source Department", "Equipment","Type","Date", ""].map((el) => (
                                     <th
                                         key={el}
                                         className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
@@ -300,6 +337,37 @@ return (
                         </tbody>
                     </table>
                 </CardBody>
+                    <Dialog open={showRegistrationForm} handler={() => handleOpenDialog()}>
+                    <DialogHeader>Select Shipping Supervisor</DialogHeader>
+                        <DialogBody>
+                        <Input
+                            type="text"
+                            placeholder="Search Shipping Supervisor"
+                            value={searchQuery}
+                            onChange={(e) => handleSearch(e, "shippingS")}
+                            className="mb-4 w-full"            
+                        />
+                        <div className="max-h-72 overflow-y-auto mt-3">
+                            {filteredShippingS.map((shipping) => (
+                            <div
+                                key={shipping.id}
+                                className={`p-2 cursor-pointer hover:bg-gray-300 ${selectedSupervisor?.id === shipping.id ? 'bg-gray-200' : ''}`}
+                                onClick={() => handleShippingSelect(shipping.id, shipping.name)}
+                            >
+                                {shipping.name}
+                            </div>
+                            ))}
+                        </div>
+                        </DialogBody>
+                    <DialogFooter>
+                            <Button onClick={() => setShowRegistrationForm(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button className='ml-2' onClick={() => {handleSubmit()}} color="primary">
+                                Accept
+                            </Button>
+                        </DialogFooter>
+                    </Dialog>
             </Card>
             <Pagination
                     count={totalPages}
