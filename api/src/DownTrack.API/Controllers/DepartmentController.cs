@@ -103,6 +103,19 @@ public class DepartmentController : ControllerBase
 
         return Ok(result);
     }
+    
+
+    [HttpGet]
+    [Route("Get_Paged_AllDepartment_In_Section")]
+    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged,int sectionId)
+    {
+         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _departmentQueryService.GetPagedAllDepartmentsInSection(paged,sectionId);
+        
+        return Ok (result);
+
+    }
 
     #endregion
   
