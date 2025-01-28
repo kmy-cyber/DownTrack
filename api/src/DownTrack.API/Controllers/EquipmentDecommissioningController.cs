@@ -1,4 +1,5 @@
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,6 +50,7 @@ public class EquipmentDecommissioningController : ControllerBase
 
         return Ok("Equipment Decommissioning deleted successfully");
     }
+
     [HttpPost]
     [Route("{equipmentDecommissioningId}/accept")]
     public async Task<IActionResult> AcceptDecommissioning(int equipmentDecommissioningId)
@@ -70,6 +72,18 @@ public class EquipmentDecommissioningController : ControllerBase
         var results = await _equipmentDecommissioningQueryServices.ListAsync();
 
         return Ok(results);
+
+    }
+
+    [HttpGet]
+    [Route("Get_Paged_All")]
+    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged)
+    {
+         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentDecommissioningQueryServices.GetAllPagedResultAsync(paged);
+        
+        return Ok (result);
 
     }
     

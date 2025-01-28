@@ -87,7 +87,20 @@ public class SectionController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _sectionQueryService.GetPagedResultAsync(paged);
+        var result = await _sectionQueryService.GetAllPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+    [HttpGet]
+    [Route("GetSectionsByManager")]
+
+    public async Task<ActionResult> GetSectionsByManager ([FromQuery]PagedRequestDto paged, int sectionManagerId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _sectionQueryService.GetSectionsByManagerAsync(paged,sectionManagerId);
         
         return Ok (result);
         

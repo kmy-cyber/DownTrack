@@ -14,7 +14,7 @@ public static class EquipmentReceptor
 
     public static async Task<List<DepartmentDto>> GetDepartmentsAsync(HttpClient client)
     {
-        var response = await client.GetAsync("/api/DepartmentNew/GET_ALL");
+        var response = await client.GetAsync("/api/Department/GET_ALL");
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Error fetching departments: {response.StatusCode}");

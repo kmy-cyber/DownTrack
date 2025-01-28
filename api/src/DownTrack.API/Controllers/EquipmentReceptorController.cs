@@ -40,7 +40,7 @@ public class EquipmentReceptorController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentReceptorQueryService.GetPagedResultAsync(paged);
+        var result = await _equipmentReceptorQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

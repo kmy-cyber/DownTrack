@@ -31,12 +31,14 @@ public class DoneMaintenanceController : ControllerBase
         return Ok("Done Maintenance added successfully");
     }
 
-    // public async Task<IActionResult> FinishingMaintenance(int Cost)
-    // {
-    //     await _doneMaintenanceCommandService.FinishMaintenance(Cost);
+    [HttpPut]
+    [Route("finish")]
+    public async Task<IActionResult> FinalizeMaintenance(FinalizeMaintenanceDto requestFinalize)
+    {
+        await _doneMaintenanceCommandService.FinalizeMaintenanceAsync(requestFinalize);
 
-    //     return Ok("Done Maintenance finishing successfully");
-    // }
+        return Ok("Maintenance process finished successfully");
+    }
 
 
     [HttpPut]
@@ -84,7 +86,7 @@ public class DoneMaintenanceController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _doneMaintenanceQueryService.GetPagedResultAsync(paged);
+        var result = await _doneMaintenanceQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

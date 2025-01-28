@@ -54,7 +54,7 @@ public class EmployeeController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _employeeQueryService.GetPagedResultAsync(paged);
+        var result = await _employeeQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         
