@@ -30,6 +30,7 @@ const MaintenanceHistory = () => {
       const data = await response.json();
       setMaintenanceList(data.items); // Ajusta la estructura si es necesario
       setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
+      console.log(data)
     } catch (err) {
       console.error("Error fetching maintenance data:", err);
       setError("Failed to load maintenance data");
@@ -103,7 +104,7 @@ const MaintenanceHistory = () => {
                 <tbody>
                   {maintenanceList.map((maintenance) => (
                     <tr key={maintenance.id} className="hover:bg-gray-50">
-                      <td className="border border-gray-200 px-4 py-2">{maintenance.technicianId}</td>
+                      <td className="border border-gray-200 px-4 py-2">{maintenance.technicianUserName}</td>
                       <td className="border border-gray-200 px-4 py-2">{maintenance.equipmentId}</td>
                       <td className="border border-gray-200 px-4 py-2">{maintenance.type}</td>
                       <td className="border border-gray-200 px-4 py-2">{new Date(maintenance.date).toLocaleDateString()}</td>

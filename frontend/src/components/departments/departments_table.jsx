@@ -26,16 +26,19 @@ export function DepartmentsTable() {
         setLoading(true);
         setError(null);
         try {
-            const response = await api(`/Department/departments/section/${id}?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+            const response = await api(`/Department/GetAllDepartment_In_Section?sectionId=${sectionId}`, {
                 method: "GET",
             });
+            console.log(response)
 
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             const data = await response.json();
-            setDepartments(data.items);
-            setTotalPages(Math.ceil(data.totalCount / pageSize));
+
+            console.log(data)
+            setDepartments(data);
+            setTotalPages(Math.ceil(data.length / pageSize));
         } catch (error) {
             setError("Failed to fetch departments");
         } finally {
@@ -128,8 +131,8 @@ export function DepartmentsTable() {
                                 <ChevronLeftIcon className="h-5 w-5" />
                             </IconButton>
                         )}
-                        {renderPaginationButtons()}
-                        {currentPage < totalPages && (
+                        {/*renderPaginationButtons()*/}
+                        {/* {currentPage < totalPages && (
                             <IconButton
                                 variant="outlined"
                                 size="sm"
@@ -139,7 +142,7 @@ export function DepartmentsTable() {
                             >
                                 <ChevronRightIcon className="h-5 w-5" />
                             </IconButton>
-                        )}
+                        )} */}
                     </div>
                 </CardBody>
             </Card>
