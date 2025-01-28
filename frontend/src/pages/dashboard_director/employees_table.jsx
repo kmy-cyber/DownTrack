@@ -19,7 +19,7 @@ const EmployeesTable = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(`/Employees/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+      const response = await api(`/Employee/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
         method: "GET",
       });
 

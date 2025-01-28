@@ -94,7 +94,8 @@ const MaintenanceHistory = () => {
               <table className="w-full table-auto border-collapse border border-gray-200">
                 <thead>
                   <tr>
-                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Technician ID</th>
+                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Technician</th>
+                    <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment Name</th>
                     <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment ID</th>
                     <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Maintenance Type</th>
                     <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Date</th>
@@ -105,6 +106,7 @@ const MaintenanceHistory = () => {
                   {maintenanceList.map((maintenance) => (
                     <tr key={maintenance.id} className="hover:bg-gray-50">
                       <td className="border border-gray-200 px-4 py-2">{maintenance.technicianUserName}</td>
+                      <td className="border border-gray-200 px-4 py-2">{maintenance.equipmentName}</td>
                       <td className="border border-gray-200 px-4 py-2">{maintenance.equipmentId}</td>
                       <td className="border border-gray-200 px-4 py-2">{maintenance.type}</td>
                       <td className="border border-gray-200 px-4 py-2">{new Date(maintenance.date).toLocaleDateString()}</td>
