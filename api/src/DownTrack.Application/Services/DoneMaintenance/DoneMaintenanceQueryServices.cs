@@ -23,8 +23,8 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
     {
         var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                .GetByIdAsync(dto,default,
-                                                             dm=> dm.Equipment!,
-                                                             dm=> dm.Technician!);
+                                                            dm=> dm.Technician!.User!,
+                                                            dm=> dm.Equipment!);
 
         return _mapper.Map<GetDoneMaintenanceDto>(doneMaintenance);
     }
@@ -33,8 +33,8 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
     {
         var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                .GetAll()
-                                               .Include(dm => dm.Equipment)
-                                               .Include(dm => dm.Technician)
+                                               .Include(dm=> dm.Technician!.User)
+                                               .Include(dm=> dm.Equipment)
                                                .ToListAsync();
 
         return doneMaintenance.Select(_mapper.Map<GetDoneMaintenanceDto>);
@@ -45,8 +45,8 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
         //The queryable collection of entities to paginate
         IQueryable<DoneMaintenance> queryDoneMaintenance = _unitOfWork.GetRepository<DoneMaintenance>()
                                                                       .GetAll()
-                                                                      .Include(dm => dm.Equipment)
-                                                                      .Include(dm => dm.Technician);
+                                                                      .Include(dm=> dm.Technician!.User)
+                                                                      .Include(dm=> dm.Equipment);
 
         var totalCount = await queryDoneMaintenance.CountAsync();
 
@@ -83,6 +83,7 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
                         .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
                         .Take(paged.PageSize) // Take only the number of items specified by the page size.
                         .Include(dm=> dm.Technician!.User)
+                        .Include(dm=> dm.Equipment)
                         .ToListAsync(); // Convert the result to a list asynchronously.
 
 
