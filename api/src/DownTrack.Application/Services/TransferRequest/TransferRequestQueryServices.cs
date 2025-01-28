@@ -45,13 +45,14 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
                                                     tr=> tr.Equipment,
                                                     tr=> tr.ArrivalDepartment,
                                                     tr=> tr.ArrivalDepartment.Section,
-                                                    tr=> tr.SectionManager!.User!);
+                                                    tr=> tr.SectionManager!.User!,
+                                                    tr=> tr.Equipment.Department,
+                                                    tr=> tr.Equipment.Department.Section);
         
         // and returns the updated transferRequest as a transferRequestDto.
         return _mapper.Map<GetTransferRequestDto>(result);
 
     }
-
 
     public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
@@ -60,8 +61,9 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
                                                                       .GetAll()
                                                                       .Include(tr => tr.SectionManager!.User)
                                                                       .Include(tr=> tr.ArrivalDepartment)
-                                                                      .Include(tr=> tr.Equipment)
-                                                                      .Include(tr=> tr.ArrivalDepartment.Section);
+                                                                      .Include(tr=> tr.Equipment)                                                                  
+                                                                      .ThenInclude(e=> e.Department)
+                                                                      .ThenInclude(d=> d.Section);
 
         var totalCount = await queryTransferRequest.CountAsync();
 

@@ -77,7 +77,15 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.SectionManagerUserName, opt => opt.MapFrom(src=> src.SectionManager!.User!.UserName))
             .ForMember(dest => dest.ArrivalDepartmentName, opt => opt.MapFrom(src=> src.ArrivalDepartment.Name))
             .ForMember(dest => dest.ArrivalSectionId, opt => opt.MapFrom(src=> src.ArrivalDepartment.SectionId))
-            .ForMember(dest => dest.ArrivalSectionName, opt => opt.MapFrom(src=> src.ArrivalDepartment.Section.Name));
+            .ForMember(dest => dest.ArrivalSectionName, opt => opt.MapFrom(src=> src.ArrivalDepartment.Section.Name))
+            .ForMember(dest => dest.EquipmentName, opt=> opt.MapFrom(src=> src.Equipment.Name))
+            .ForMember(dest => dest.EquipmentStatus, opt=> opt.MapFrom(src=> src.Equipment.Status))
+            .ForMember(dest => dest.EquipmentType, opt=> opt.MapFrom(src=> src.Equipment.Type))
+            .ForMember(dest => dest.RequestDepartmentId, opt => opt.MapFrom(src => src.Equipment.DepartmentId))
+            .ForMember(dest => dest.RequestDepartmentName, opt => opt.MapFrom(src => src.Equipment.Department.Name))
+            .ForMember(dest=> dest.RequestSectionId, opt => opt.MapFrom(src => src.Equipment.Department.SectionId))
+            .ForMember(dest=> dest.RequestSectionName, opt => opt.MapFrom(src => src.Equipment.Department.Section.Name));
+
 
 
         CreateMap<TransferDto, Transfer>();
