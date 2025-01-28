@@ -28,6 +28,7 @@ const EquipmentTransferTable = () => {
       }
 
       const data = await response.json();
+      console.log(data.items)
       setTransferData(data.items); // Ajusta según la estructura de tu respuesta
       setTotalPages(Math.ceil(data.totalCount / pageSize));
     } catch (err) {
@@ -91,26 +92,16 @@ const EquipmentTransferTable = () => {
                 <table className="w-full table-auto border-collapse border border-gray-200">
                   <thead>
                     <tr>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Transfer Id
-                      </th>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Shipping Supervisor
-                      </th>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Equipment Receptor
-                      </th>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">
-                        Date
-                      </th>
+                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Shipping Supervisor</th>
+                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment Receptor</th>
+                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {transferData.map((transfer, index) => (
                       <tr key={index} className="hover:bg-gray-50">
-                        <td className="border border-gray-200 px-4 py-2">{transfer.requestId}</td>
-                        <td className="border border-gray-200 px-4 py-2">{transfer.shippingSupervisorId}</td>
-                        <td className="border border-gray-200 px-4 py-2">{transfer.equipmentReceptorId}</td>
+                        <td className="border border-gray-200 px-4 py-2">{transfer.shippingSupervisorName}</td>
+                        <td className="border border-gray-200 px-4 py-2">{transfer.equipmentReceptorUserName}</td>
                         <td className="border border-gray-200 px-4 py-2">{transfer.date}</td>
                       </tr>
                     ))}
