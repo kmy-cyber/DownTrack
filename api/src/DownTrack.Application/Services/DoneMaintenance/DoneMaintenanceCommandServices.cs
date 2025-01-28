@@ -52,7 +52,6 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
         {
             doneMaintenance.Technician = await _unitOfWork.GetRepository<Technician>()
                                                           .GetByIdAsync(dto.TechnicianId!);
-
         }
 
         if (dto.EquipmentId != doneMaintenance.EquipmentId)
@@ -77,8 +76,9 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
     public async Task FinalizeMaintenanceAsync(FinalizeMaintenanceDto requestFinalize)
     {
         var maintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
-                                            .GetByIdAsync(requestFinalize.MaintenanceId);
-
+                                            .GetByIdAsync(requestFinalize.MaintenanceId,default,
+                                                        m=> m.Equipment!);
+                                                        
         maintenance.Cost = requestFinalize.Cost;
 
         maintenance.Equipment!.Status = EquipmentStatus.Active.ToString();

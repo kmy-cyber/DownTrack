@@ -21,7 +21,7 @@ public static class Department
 
      private static async Task<List<SectionDto>> GetSectionAsync(HttpClient client)
     {
-        var response = await client.GetAsync("/api/SectionNew/GET_ALL");
+        var response = await client.GetAsync("/api/Section/GET_ALL");
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Error fetching users: {response.StatusCode}");
@@ -58,7 +58,7 @@ public static class Department
                 "application/json"
             );
 
-            var response = await client.PostAsync("/api/DepartmentNew/POST", content);
+            var response = await client.PostAsync("/api/Department/POST", content);
 
             if (response.IsSuccessStatusCode)
             {

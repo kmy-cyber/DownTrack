@@ -1,11 +1,13 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IServices;
 
-public interface ISectionQueryServices : IGenericQueryService<GetSectionDto>
+public interface ISectionQueryServices : IGenericQueryService<Section,GetSectionDto>
 {
-    //Task<IEnumerable<DepartmentDto>> GetAllDepartments (int sectionId);
-    Task<PagedResultDto<GetSectionDto>> GetSectionsByManageAsync(PagedRequestDto paged, int sectionManagerId);
+    Task<PagedResultDto<GetSectionDto>> GetSectionsByManagerAsync(PagedRequestDto paged, int sectionManagerId);
+
+    Task<GetSectionDto> GetSectionByNameAsync(string sectionName);
 }

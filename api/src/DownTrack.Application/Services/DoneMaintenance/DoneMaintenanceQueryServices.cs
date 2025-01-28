@@ -1,106 +1,40 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
-public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
+public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance,GetDoneMaintenanceDto>,
+                                            IDoneMaintenanceQueryServices
 {
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
+     private static readonly Expression<Func<DoneMaintenance, object>>[] includes = 
+                            { dm=> dm.Technician!.User!,
+                              dm=> dm.Equipment! };
 
     public DoneMaintenanceQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
     {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
+
     }
 
-    public async Task<GetDoneMaintenanceDto> GetByIdAsync(int dto)
-    {
-        var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
-                                               .GetByIdAsync(dto,default,
-                                                            dm=> dm.Technician!.User!,
-                                                            dm=> dm.Equipment!);
-
-        return _mapper.Map<GetDoneMaintenanceDto>(doneMaintenance);
-    }
-
-    public async Task<IEnumerable<GetDoneMaintenanceDto>> ListAsync()
-    {
-        var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
-                                               .GetAll()
-                                               .Include(dm=> dm.Technician!.User)
-                                               .Include(dm=> dm.Equipment)
-                                               .ToListAsync();
-
-        return doneMaintenance.Select(_mapper.Map<GetDoneMaintenanceDto>);
-    }
-
-    public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetPagedResultAsync(PagedRequestDto paged)
-    {
-        //The queryable collection of entities to paginate
-        IQueryable<DoneMaintenance> queryDoneMaintenance = _unitOfWork.GetRepository<DoneMaintenance>()
-                                                                      .GetAll()
-                                                                      .Include(dm=> dm.Technician!.User)
-                                                                      .Include(dm=> dm.Equipment);
-
-        var totalCount = await queryDoneMaintenance.CountAsync();
-
-        var items = await queryDoneMaintenance // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
-
-
-        return new PagedResultDto<GetDoneMaintenanceDto>
-        {
-            Items = items?.Select(_mapper.Map<GetDoneMaintenanceDto>) ?? Enumerable.Empty<GetDoneMaintenanceDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
-    }
+    public override Expression<Func<DoneMaintenance, object>>[] GetIncludes()=> includes;
 
     public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetByTechnicianIdAsync (PagedRequestDto paged, int technicianId)
     {
+        var technician = await _unitOfWork.GetRepository<Technician>()
+                                          .GetByIdAsync(technicianId);
+        
+        if(technician == null)
+            throw new Exception($"The techncian with ID {technicianId} was not found.");
+
         IQueryable<DoneMaintenance> queryMaintenancesByTechnician = _unitOfWork.GetRepository<DoneMaintenance>()
                                                                                 .GetAllByItems(dm=> dm.TechnicianId ==technicianId);
 
-        var totalCount = await queryMaintenancesByTechnician.CountAsync();
-
-        var items = await queryMaintenancesByTechnician // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .Include(dm=> dm.Technician!.User)
-                        .Include(dm=> dm.Equipment)
-                        .ToListAsync(); // Convert the result to a list asynchronously.
-
-
-        return new PagedResultDto<GetDoneMaintenanceDto>
-        {
-            Items = items?.Select(_mapper.Map<GetDoneMaintenanceDto>) ?? Enumerable.Empty<GetDoneMaintenanceDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
+        return await GetPagedResultByQueryAsync(paged,queryMaintenancesByTechnician);
 
     }
 }

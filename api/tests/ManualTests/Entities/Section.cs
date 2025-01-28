@@ -23,7 +23,7 @@ public static class Section
 
     public static async Task<List<UserDto>> GetUsersAsync(HttpClient client)
     {
-        var response = await client.GetAsync("/api/EmployeeNew/GET_ALL");
+        var response = await client.GetAsync("/api/Employee/GET_ALL");
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Error fetching users: {response.StatusCode}");
@@ -60,7 +60,7 @@ public static class Section
                 "application/json"
             );
 
-            var response = await client.PostAsync("/api/SectionNew/POST", content);
+            var response = await client.PostAsync("/api/Section/POST", content);
 
             if (response.IsSuccessStatusCode)
             {

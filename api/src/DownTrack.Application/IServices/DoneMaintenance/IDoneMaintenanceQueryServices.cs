@@ -1,9 +1,10 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IServices;
 
-public interface IDoneMaintenanceQueryServices : IGenericQueryService<GetDoneMaintenanceDto>
+public interface IDoneMaintenanceQueryServices : IGenericQueryService<DoneMaintenance,GetDoneMaintenanceDto>
 {
     Task<PagedResultDto<GetDoneMaintenanceDto>> GetByTechnicianIdAsync (PagedRequestDto paged, int technicianId);
 }

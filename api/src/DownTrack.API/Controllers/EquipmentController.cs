@@ -74,7 +74,7 @@ public class EquipmentController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentQueryService.GetPagedResultAsync(paged);
+        var result = await _equipmentQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

@@ -81,7 +81,7 @@ public class EquipmentDecommissioningController : ControllerBase
     {
          paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentDecommissioningQueryServices.GetPagedResultAsync(paged);
+        var result = await _equipmentDecommissioningQueryServices.GetAllPagedResultAsync(paged);
         
         return Ok (result);
 

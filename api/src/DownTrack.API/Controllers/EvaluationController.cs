@@ -75,7 +75,7 @@ public class EvaluationController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _evaluationQueryService.GetPagedResultAsync(paged);
+        var result = await _evaluationQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         
