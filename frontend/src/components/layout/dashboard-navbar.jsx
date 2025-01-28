@@ -32,26 +32,28 @@ export function DashboardNavbar() {
   const breadcrumbs = pathParts.map((part, index) => {
     const route = `/${pathParts.slice(0, index + 1).join("/")}`;
     const isLast = index === pathParts.length - 1;
-    return isLast ? (
-      <Typography
-        key={route}
-        variant="small"
-        // color="blue-gray"
-        className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
-      >
-        {part}
-      </Typography>
-    ) : (
-      <Link key={route} to={route}>
-        <Typography
-          variant="small"
-          color="blue-gray"
-          className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
-        >
-          {part}
-        </Typography>
-      </Link>
-    );
+
+    // Reminder: Handle navigation logic
+    // return isLast ? (
+    //   <Typography
+    //     key={route}
+    //     variant="small"
+    //     // color="blue-gray"
+    //     className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
+    //   >
+    //     {part}
+    //   </Typography>
+    // ) : (
+    //   <Link key={route} to={route}>
+    //     <Typography
+    //       variant="small"
+    //       color="blue-gray"
+    //       className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
+    //     >
+    //       {part}
+    //     </Typography>
+    //   </Link>
+    // );
   });
 
   return (
