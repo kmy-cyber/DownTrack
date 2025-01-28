@@ -61,7 +61,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, path }) => (
+            {pages
+              .filter(route => !route.hidden)
+              .map(({ icon, name, path, hidden }) => (
               <li key={name}>
                 <NavLink to={`/${layout}${path}`}>
                   {({ isActive }) => (
