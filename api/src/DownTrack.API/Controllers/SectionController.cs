@@ -1,0 +1,101 @@
+using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.IServices;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DownTrack.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class SectionController : ControllerBase
+{
+    private readonly ISectionQueryServices _sectionQueryService;
+    private readonly ISectionCommandServices _sectionCommandService;
+
+
+    public SectionController(ISectionQueryServices sectionQueryServices,
+                             ISectionCommandServices sectionCommandServices)
+    {
+        _sectionQueryService = sectionQueryServices;
+        _sectionCommandService = sectionCommandServices;
+    }
+
+
+    #region Command
+    [HttpPost]
+    [Route("POST")]
+
+    public async Task<IActionResult> CreateSection(SectionDto section)
+    {
+        await _sectionCommandService.CreateAsync(section);
+
+        return Ok("Section added successfully");
+    }
+
+     [HttpPut]
+    [Route("PUT")]
+
+    public async Task<IActionResult> UpdateSection(SectionDto section)
+    {
+        var result = await _sectionCommandService.UpdateAsync(section);
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    [Route("DELETE")]
+
+    public async Task<IActionResult> DeleteSection(int sectionId)
+    {
+        await _sectionCommandService.DeleteAsync(sectionId);
+
+        return Ok("Section deleted successfully");
+    }
+
+    #endregion
+
+    #region Query
+
+    [HttpGet]
+    [Route("GET")]
+
+    public async Task<ActionResult<GetSectionDto>> GetUserById(int sectionId)
+    {
+        var result = await _sectionQueryService.GetByIdAsync(sectionId);
+
+        if (result == null)
+            return NotFound($"Section with ID {sectionId} not found");
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("GET_ALL")]
+
+    public async Task<ActionResult<GetSectionDto>> GetAll()
+    {
+        var result = await _sectionQueryService.ListAsync();
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("GetPaged")]
+
+    public async Task<ActionResult> GetPagedSection ([FromQuery]PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _sectionQueryService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
+    }
+
+
+    #endregion
+
+   
+}
+

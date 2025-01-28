@@ -1,5 +1,3 @@
-
-
 using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +18,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    //[Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> RegisterUser(RegisterUserDto registerDto)
     {
         Console.WriteLine(registerDto.DepartmentId);

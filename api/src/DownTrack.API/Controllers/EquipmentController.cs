@@ -80,6 +80,36 @@ public class EquipmentController : ControllerBase
         
     }
 
+    [HttpGet("equipments/section-manager/{sectionManagerId}")]
+    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId ([FromQuery] PagedRequestDto paged , int sectionManagerId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsBySectionManagerIdAsync(paged, sectionManagerId);
+        
+        return Ok (result);
+    }
+
+    [HttpGet("equipments/section/{sectionId}")]
+    public async Task<IActionResult> GetPagedEquipmentsBySectionId ([FromQuery] PagedRequestDto paged , int sectionId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsBySectionIdAsync(paged, sectionId);
+        
+        return Ok (result);
+    }
+
+    [HttpGet("equipments/department/{departmentId}")]
+    public async Task<IActionResult> GetPagedEquipmentsByDepartmentId ([FromQuery] PagedRequestDto paged , int departmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsByDepartmentIdAsync(paged, departmentId);
+        
+        return Ok (result);
+    }
+
     #endregion
 
   

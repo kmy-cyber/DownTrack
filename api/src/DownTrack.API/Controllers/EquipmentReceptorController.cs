@@ -45,6 +45,21 @@ public class EquipmentReceptorController : ControllerBase
         return Ok (result);
         
     }
+    
+    [HttpGet]
+    [Route("GetAll")]
+
+    public async Task<IActionResult> GetAllEquipmentReceptor ()
+    {
+
+        var result = await _equipmentReceptorQueryService.ListAsync();
+        
+        return Ok (result);
+        
+    }
+
+
+    
 
 }
 
