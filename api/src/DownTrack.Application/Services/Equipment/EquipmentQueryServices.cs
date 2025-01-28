@@ -81,4 +81,122 @@ public class EquipmentQueryServices : IEquipmentQueryServices
 
         };
     }
+
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsBySectionManagerIdAsync(PagedRequestDto paged ,
+                                                                                                int sectionManagerId)
+    {
+        //check sectionManagerId es valid
+
+        var checkSectionManager = await _unitOfWork.GetRepository<Employee>()
+                                             .GetByIdAsync(sectionManagerId);
+
+        if(checkSectionManager.UserRole != "SectionManager")
+            throw new Exception($"SectionManager with Id : {sectionManagerId} not exists");
+
+
+        var queryEquipment = _unitOfWork.GetRepository<Equipment>()
+                                         .GetAllByItems(e=> e.Department.Section.SectionManagerId == sectionManagerId)
+                                         .Include(e=> e.Department)
+                                         .Include(e=> e.Department.Section);;
+        
+         var totalCount = await queryEquipment.CountAsync();
+
+        var items = await queryEquipment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetEquipmentDto>
+        {
+            Items = items?.Select(_mapper.Map<GetEquipmentDto>) ?? Enumerable.Empty<GetEquipmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+        
+    }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsBySectionIdAsync(PagedRequestDto paged 
+                                                                                            , int sectionId)
+    {
+        //check section exist
+
+        var checkSection = await _unitOfWork.GetRepository<Section>()
+                                             .GetByIdAsync(sectionId);
+
+
+        var queryEquipment = _unitOfWork.GetRepository<Equipment>()
+                                         .GetAllByItems(e=> e.Department.SectionId == sectionId)
+                                         .Include(e=> e.Department)
+                                         .Include(e=> e.Department.Section);;
+        
+         var totalCount = await queryEquipment.CountAsync();
+
+        var items = await queryEquipment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetEquipmentDto>
+        {
+            Items = items?.Select(_mapper.Map<GetEquipmentDto>) ?? Enumerable.Empty<GetEquipmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByDepartmentIdAsync(PagedRequestDto paged , 
+                                                                                            int departmentId)
+    {
+        // check the department exist
+        var checkDepartment = await _unitOfWork.DepartmentRepository
+                                             .GetByIdAsync(departmentId);
+
+        var queryEquipment = _unitOfWork.GetRepository<Equipment>()
+                                         .GetAllByItems(e=> e.DepartmentId== departmentId)
+                                         .Include(e=> e.Department)
+                                         .Include(e=> e.Department.Section);;
+        
+         var totalCount = await queryEquipment.CountAsync();
+
+        var items = await queryEquipment // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetEquipmentDto>
+        {
+            Items = items?.Select(_mapper.Map<GetEquipmentDto>) ?? Enumerable.Empty<GetEquipmentDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
+    
 }

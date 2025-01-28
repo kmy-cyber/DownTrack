@@ -71,4 +71,35 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
 
         };
     }
+
+    public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetByTechnicianIdAsync (PagedRequestDto paged, int technicianId)
+    {
+        IQueryable<DoneMaintenance> queryMaintenancesByTechnician = _unitOfWork.GetRepository<DoneMaintenance>()
+                                                                                .GetAllByItems(dm=> dm.TechnicianId ==technicianId);
+
+        var totalCount = await queryMaintenancesByTechnician.CountAsync();
+
+        var items = await queryMaintenancesByTechnician // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .Include(dm=> dm.Technician!.User)
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetDoneMaintenanceDto>
+        {
+            Items = items?.Select(_mapper.Map<GetDoneMaintenanceDto>) ?? Enumerable.Empty<GetDoneMaintenanceDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+
+    }
 }
