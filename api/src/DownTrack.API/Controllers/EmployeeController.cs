@@ -38,6 +38,18 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GetByUsername")]
+    public async Task<ActionResult<GetEmployeeDto>> GetEmployeeByUserName(string employeeUsername)
+    {
+        var result = await _employeeQueryService.GetByUserNameAsync(employeeUsername);
+
+        if (result == null)
+            return NotFound($"Employee with ID {employeeUsername} not found");
+
+        return Ok(result);
+
+    }
+    [HttpGet]
     [Route("GET_ALL")]
 
     public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee ()

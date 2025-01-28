@@ -14,27 +14,27 @@ namespace DownTrack.Application.Services;
 /// to interact with the client , using the repository interface to access
 /// the database 
 /// </summary> 
-public class EmployeeQueryServices : GenericQueryServices<Employee,GetEmployeeDto>,
+public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeDto>,
                                      IEmployeeQueryServices
 {
 
-    private static readonly Expression<Func<Employee, object>>[] includes = 
+    private static readonly Expression<Func<Employee, object>>[] includes =
                             { e => e.User! };
 
     public EmployeeQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork,mapper)
+        : base(unitOfWork, mapper)
     {
 
     }
 
 
-    public override Expression<Func<Employee, object>>[] GetIncludes()=> includes;
+    public override Expression<Func<Employee, object>>[] GetIncludes() => includes;
 
     public async Task<IEnumerable<GetEmployeeDto>> ListAllByRole(UserRole role)
     {
 
         var rolesQuery = _unitOfWork.GetRepository<Employee>()
-                                      .GetAllByItems(u=>u.UserRole == role.ToString());
+                                      .GetAllByItems(u => u.UserRole == role.ToString());
         var includes = GetIncludes();
 
         if (includes != null)
@@ -47,7 +47,28 @@ public class EmployeeQueryServices : GenericQueryServices<Employee,GetEmployeeDt
         var rolesList = await rolesQuery.ToListAsync();
 
         return rolesList.Select(_mapper.Map<GetEmployeeDto>);
+
+    }
+
+    public async Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName)
+    {
         
+        var expressions = new Expression<Func<Employee, bool>>[]
+        {
+            e=> e.User!.UserName == employeeUserName
+        };
+
+        var includes = GetIncludes();
+
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                 .GetByItems(expressions, includes);
+
+
+        if (employee == null)
+            throw new Exception($"No employee found with the username '{employeeUserName}'.");
+
+        return _mapper.Map<GetEmployeeDto>(employee);
+
     }
 
 

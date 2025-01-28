@@ -9,4 +9,6 @@ public interface IEmployeeQueryServices : IGenericQueryService<Employee,GetEmplo
 {
     Task<IEnumerable<GetEmployeeDto>> ListAllByRole(UserRole role);
 
+    Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName);
+
 }

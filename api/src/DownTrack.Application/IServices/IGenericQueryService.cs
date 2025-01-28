@@ -26,7 +26,7 @@ public interface IGenericQueryService<TEntity,TDto> where TEntity : GenericEntit
     /// <param name="dto">The identifier of the entity to retrieve.</param>
     /// <returns>A Task representing the asynchronous operation, returning the DTO of the retrieved entity.</returns>
     Task<TDto> GetByIdAsync(int dto);
-
+    
     /// <summary>
     /// Asynchronously retrieves a paginated list of entities .
     /// </summary>

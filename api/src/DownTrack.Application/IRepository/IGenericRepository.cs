@@ -67,7 +67,8 @@ public interface IGenericRepository<T> where T : GenericEntity
     /// <returns>An <see cref="IQueryable{T}"/> containing all entities that match the provided filters.</returns>
     IQueryable<T> GetAllByItems(params Expression<Func<T,bool>>[] expressions);
 
-    Task<T?> GetByItems (params Expression<Func<T,bool>>[] expressions);
+    Task<T?> GetByItems (Expression<Func<T,bool>>[] expressions,
+                         Expression<Func<T,object>>[] includes);
 
 }
 

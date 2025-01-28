@@ -8,4 +8,6 @@ namespace DownTrack.Application.IServices;
 public interface ISectionQueryServices : IGenericQueryService<Section,GetSectionDto>
 {
     Task<PagedResultDto<GetSectionDto>> GetSectionsByManagerAsync(PagedRequestDto paged, int sectionManagerId);
+
+    Task<GetSectionDto> GetSectionByNameAsync(string sectionName);
 }

@@ -43,11 +43,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 
     public virtual async Task<T> GetByIdAsync<TId>(TId elementId,
                                                     CancellationToken cancellationToken = default,
-                                                    params Expression<Func<T, object>> [] includes)
+                                                    params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = _entity;
 
-        if(includes!= null)
+        if (includes != null)
         {
             foreach (var include in includes)
             {
@@ -94,9 +94,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
     }
 
 
-    public async Task<T?> GetByItems(params Expression<Func<T,bool>>[] expressions)
+    public async Task<T?> GetByItems(Expression<Func<T, bool>>[] expressions,
+                                     Expression<Func<T, object>>[] includes)
     {
-        IQueryable<T> query =_entity;
+        IQueryable<T> query = _entity;
+
+
 
         if (expressions != null)
         {
@@ -106,10 +109,18 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
             }
         }
 
-        var result = await _entity.FirstOrDefaultAsync();
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include); // Apply each include to the query.
+            }
+        }
+
+        var result = await query.FirstOrDefaultAsync();
 
 
-        return result ;
+        return result;
     }
 
 

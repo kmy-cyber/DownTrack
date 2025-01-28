@@ -8,19 +8,19 @@ using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.Services;
 
-public class SectionQueryServices : GenericQueryServices<Section,GetSectionDto>,
+public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>,
                                     ISectionQueryServices
 {
-    private static readonly Expression<Func<Section, object>>[] includes = 
+    private static readonly Expression<Func<Section, object>>[] includes =
                             { d => d.SectionManager.User! };
 
     public SectionQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
-        : base (unitOfWork,mapper)
+        : base(unitOfWork, mapper)
     {
 
     }
 
-    public override Expression<Func<Section, object>>[] GetIncludes()=> includes;
+    public override Expression<Func<Section, object>>[] GetIncludes() => includes;
 
 
     public async Task<PagedResultDto<GetSectionDto>> GetSectionsByManagerAsync(PagedRequestDto paged, int sectionManagerId)
@@ -28,14 +28,34 @@ public class SectionQueryServices : GenericQueryServices<Section,GetSectionDto>,
         //check if a valid section
         var section = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(sectionManagerId);
 
-        if(section.UserRole != "SectionManager")
+        if (section.UserRole != "SectionManager")
             throw new Exception($"This SectionManager with Id : {sectionManagerId} not exist");
-            
+
         //The queryable collection of entities to paginate
         IQueryable<Section> querySection = _unitOfWork.GetRepository<Section>()
-                                                      .GetAllByItems(s=> s.SectionManagerId == sectionManagerId);
+                                                      .GetAllByItems(s => s.SectionManagerId == sectionManagerId);
 
-        return await GetPagedResultByQueryAsync(paged,querySection);
+        return await GetPagedResultByQueryAsync(paged, querySection);
+    }
+
+
+    public async Task<GetSectionDto> GetSectionByNameAsync(string sectionName)
+    {
+        var expressions = new Expression<Func<Section, bool>>[]
+        {
+            e=> e.Name == sectionName
+        };
+
+        var includes = GetIncludes();
+
+        var section = await _unitOfWork.GetRepository<Section>()
+                                 .GetByItems(expressions, includes);
+
+
+        if (section == null)
+            throw new Exception($"No section found with the username '{sectionName}'.");
+
+        return _mapper.Map<GetSectionDto>(section);
     }
 
 }
