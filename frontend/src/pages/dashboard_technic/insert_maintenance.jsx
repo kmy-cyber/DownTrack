@@ -8,17 +8,16 @@ import {
 } from "@material-tailwind/react";
 import { useParams } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
-
+import api from "@/middlewares/api";
 
 export const MaintenanceCreationForm = () => {
     const { id, name:nameEquipment, type } = useParams();
     console.log("ENTER:",id, nameEquipment, type);
 
     const{user} = useAuth(); 
-    
+
     const [formData, setFormData] = useState({
     technicianId: user.id,
-    type: "",
     equipmentId: id,
     equipmentName: nameEquipment + " - " + type,
     date: "",

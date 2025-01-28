@@ -31,7 +31,7 @@ export const LeaveCreationForm = () => {
         receptorName: "",
         date: "",
         cause: "",
-        status: "something",
+        status: "Pending",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredReceptor, setFilteredReceptor] = useState([]);
