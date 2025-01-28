@@ -13,3 +13,11 @@ public class GetEquipmentDecommissioningDto
     public string Cause { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
 }
+
+/*
+el nombre del equipo a trasladar
+el tipo del equipo
+el status del equipo
+el departamento al que pertenece 
+deben salir solo las trasnferencias solicitadas al departamento al que pertenece el receptor y que esten pendientes.
+*/

@@ -89,9 +89,13 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
         };
     }
 
-    public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedRequestsofArrivalDepartmentAsync(int arrivalDepartment, PagedRequestDto paged)
+    public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedRequestsofArrivalDepartmentAsync(int receptorId, PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
+        
+        var arrivalDepartment =  _unitOfWork.GetRepository<EquipmentReceptor>().GetById(receptorId).DepartmentId;
+
+
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
                                                                       .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment)
                                                                       .Include(tr => tr.SectionManager!.User)

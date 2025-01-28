@@ -83,13 +83,13 @@ public class TransferRequestController : ControllerBase
     }
     
     [HttpGet]
-    [Route("GetByArrivalDepartment/{arrivalDepartmentId}")]
+    [Route("GetByArrivalDepartment/{receptorId}")]
 
-    public async Task<IActionResult> GetTransferRequestByDepartment(int arrivalDepartmentId, [FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetTransferRequestByDepartment(int receptorId, [FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _transferRequestQueryService.GetPagedRequestsofArrivalDepartmentAsync(arrivalDepartmentId, paged);
+        var result = await _transferRequestQueryService.GetPagedRequestsofArrivalDepartmentAsync(receptorId, paged);
 
         return Ok(result);
 
