@@ -28,11 +28,9 @@ const EquipmentTransferTable = () => {
       }
 
       const data = await response.json();
-      console.log(data.items)
       setTransferData(data.items); // Ajusta según la estructura de tu respuesta
       setTotalPages(Math.ceil(data.totalCount / pageSize));
     } catch (err) {
-      console.error("Error fetching transfers:", err);
       setError("Failed to load transfer data");
     } finally {
       setLoading(false);
@@ -68,81 +66,77 @@ const EquipmentTransferTable = () => {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-4 p-6">
-          <Typography variant="h6" color="white">
-            Equipment Transfer Records
+    <Card className="mt-8 shadow-lg">
+      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
+        <Typography variant="h6" color="white" className="text-xl font-semibold">
+          Equipment Transfer Records
+        </Typography>
+      </CardHeader>
+      <CardBody className="px-0 py-4">
+        {loading ? (
+          <Typography className="text-center">Loading...</Typography>
+        ) : error ? (
+          <Typography color="red" className="text-center">
+            {error}
           </Typography>
-        </CardHeader>
-        <CardBody>
-          {loading && (
-            <Typography variant="small" color="gray">
-              Loading transfer records...
-            </Typography>
-          )}
-          {error && (
-            <Typography variant="small" color="red">
-              {error}
-            </Typography>
-          )}
-          {!loading && !error && (
-            <>
-              <div className="overflow-x-auto">
-                <table className="w-full table-auto border-collapse border border-gray-200">
-                  <thead>
-                    <tr>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Shipping Supervisor</th>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Equipment Receptor</th>
-                      <th className="border border-gray-200 px-4 py-2 bg-gray-50 text-gray-700">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transferData.map((transfer, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="border border-gray-200 px-4 py-2">{transfer.shippingSupervisorName}</td>
-                        <td className="border border-gray-200 px-4 py-2">{transfer.equipmentReceptorUserName}</td>
-                        <td className="border border-gray-200 px-4 py-2">{transfer.date}</td>
+        ) : (
+          <>
+            {/* Tabla de Transferencias de Equipos */}
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto text-sm text-gray-900">
+                <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="px-6 py-3 border-b text-center">Shipping Supervisor</th>
+                    <th className="px-6 py-3 border-b text-center">Equipment Receptor</th>
+                    <th className="px-6 py-3 border-b text-center">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {transferData.length > 0 ? (
+                    transferData.map((transfer, index) => (
+                      <tr key={index}>
+                        <td className="px-6 py-3 border-b text-center">{transfer.shippingSupervisorName}</td>
+                        <td className="px-6 py-3 border-b text-center">{transfer.equipmentReceptorUserName}</td>
+                        <td className="px-6 py-3 border-b text-center">{transfer.date}</td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex justify-center mt-4 gap-2">
-                {/* Previous button */}
-                {currentPage > 1 && (
-                  <IconButton
-                    variant="outlined"
-                    size="sm"
-                    color="gray"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    className="px-4 py-2"
-                  >
-                    <ChevronLeftIcon className="h-5 w-5" />
-                  </IconButton>
-                )}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="px-6 py-3 text-center">No transfer records found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
 
-                {/* Page numbers */}
-                {renderPaginationButtons()}
+        {/* Paginación */}
+        <div className="flex justify-center mt-4 space-x-2">
+          <IconButton
+            variant="outlined"
+            color="gray"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2"
+          >
+            <ChevronLeftIcon className="h-5 w-5" />
+          </IconButton>
 
-                {/* Next button */}
-                {currentPage < totalPages && (
-                  <IconButton
-                    variant="outlined"
-                    size="sm"
-                    color="gray"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    className="px-4 py-2"
-                  >
-                    <ChevronRightIcon className="h-5 w-5" />
-                  </IconButton>
-                )}
-              </div>
-            </>
-          )}
-        </CardBody>
-      </Card>
-    </div>
+          {renderPaginationButtons()}
+
+          <IconButton
+            variant="outlined"
+            color="gray"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2"
+          >
+            <ChevronRightIcon className="h-5 w-5" />
+          </IconButton>
+        </div>
+      </CardBody>
+    </Card>
   );
 };
 
