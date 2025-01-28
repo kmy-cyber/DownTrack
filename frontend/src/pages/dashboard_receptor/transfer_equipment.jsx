@@ -211,11 +211,11 @@ return (
                                 {[ "Source Section","Source Department", "Equipment","Type","Date"].map((el) => (
                                     <th
                                         key={el}
-                                        className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                        className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
                                     >
                                         <Typography
                                             variant="small"
-                                            className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                            className="text-[11px] font-extrabold uppercase text-blue-gray-800"
                                         >
                                             {el}
                                         </Typography>

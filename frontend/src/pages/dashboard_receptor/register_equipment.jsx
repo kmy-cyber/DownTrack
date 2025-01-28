@@ -84,7 +84,6 @@ export const EquipmentRegisterForm = () => {
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching departments:", error);
-                setDepartmentList([]);
                 setIsLoading(false);
             }
         };
