@@ -74,6 +74,41 @@ public class SectionQueryServices : ISectionQueryServices
         };
     }
 
+    public async Task<PagedResultDto<GetSectionDto>> GetSectionsByManageAsync(PagedRequestDto paged, int sectionManagerId)
+    {
+        //check if a valid section
+        var section = await _unitOfWork.GetRepository<Employee>().GetByIdAsync(sectionManagerId);
 
+        if(section.UserRole != "SectionManager")
+            throw new Exception($"This SectionManager with Id : {sectionManagerId} not exist");
+            
+        //The queryable collection of entities to paginate
+        IQueryable<Section> querySection = _unitOfWork.GetRepository<Section>()
+                                                      .GetAllByItems(s=> s.SectionManagerId == sectionManagerId)
+                                                      .Include(s=> s.SectionManager.User);
+
+        var totalCount = await querySection.CountAsync();
+
+        var items = await querySection // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetSectionDto>
+        {
+            Items = items?.Select(_mapper.Map<GetSectionDto>) ?? Enumerable.Empty<GetSectionDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+    }
 
 }
