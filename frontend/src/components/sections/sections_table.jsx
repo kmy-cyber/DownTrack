@@ -16,7 +16,7 @@ export function SectionsTable() {
     const [searchTerm, setSearchTerm] = useState(""); // Para el cuadro de búsqueda
     const [searchingById, setSearchingById] = useState(false); // Nuevo estado para verificar si estamos buscando por ID
     const navigate = useNavigate();
-    const pageSize = 7;
+    const pageSize = 6;
 
     useEffect(() => {
         if (user.role?.toLowerCase() === "director") {
