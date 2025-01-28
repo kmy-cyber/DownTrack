@@ -1,9 +1,9 @@
-using System.Xml;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Status;
 
 namespace DownTrack.Application.Services;
 
@@ -28,6 +28,7 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
         doneMaintenance.Equipment = await _unitOfWork.GetRepository<Equipment>()
                                         .GetByIdAsync(doneMaintenance.EquipmentId!.Value);
 
+        doneMaintenance.Equipment.Status = EquipmentStatus.UnderMaintenance.ToString();
 
         await _unitOfWork.GetRepository<DoneMaintenance>().CreateAsync(doneMaintenance);
         await _unitOfWork.CompleteAsync();
@@ -38,7 +39,7 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
     public async Task DeleteAsync(int dto)
     {
         await _unitOfWork.GetRepository<DoneMaintenance>().DeleteByIdAsync(dto);
-        
+
         await _unitOfWork.CompleteAsync();
     }
 
@@ -47,21 +48,23 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
         var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                .GetByIdAsync(dto.Id);
 
-        if(dto.TechnicianId != doneMaintenance.TechnicianId)
+        if (dto.TechnicianId != doneMaintenance.TechnicianId)
         {
             doneMaintenance.Technician = await _unitOfWork.GetRepository<Technician>()
                                                           .GetByIdAsync(dto.TechnicianId!);
 
         }
 
-        if(dto.EquipmentId != doneMaintenance.EquipmentId)
+        if (dto.EquipmentId != doneMaintenance.EquipmentId)
         {
             doneMaintenance.Equipment = await _unitOfWork.GetRepository<Equipment>()
                                                          .GetByIdAsync(dto.EquipmentId!);
 
+            doneMaintenance.Equipment.Status = EquipmentStatus.UnderMaintenance.ToString();
+
         }
-        
-        
+
+
         _mapper.Map(dto, doneMaintenance);
 
         _unitOfWork.GetRepository<DoneMaintenance>().Update(doneMaintenance);
@@ -69,6 +72,20 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
         await _unitOfWork.CompleteAsync();
 
         return _mapper.Map<DoneMaintenanceDto>(doneMaintenance);
+    }
+
+    public async Task FinalizeMaintenanceAsync(FinalizeMaintenanceDto requestFinalize)
+    {
+        var maintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
+                                            .GetByIdAsync(requestFinalize.MaintenanceId);
+
+        maintenance.Cost = requestFinalize.Cost;
+
+        maintenance.Equipment!.Status = EquipmentStatus.Active.ToString();
+
+        _unitOfWork.GetRepository<DoneMaintenance>().Update(maintenance);
+
+        await _unitOfWork.CompleteAsync();
     }
 
 }
