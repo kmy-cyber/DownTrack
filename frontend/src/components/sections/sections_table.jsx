@@ -34,6 +34,7 @@ export function SectionsTable() {
             const data = await response.json();
             setSectionList(data.items);
             setTotalPages(Math.ceil(data.totalCount / pageSize));
+            console.log(sectionList)
         } catch (error) {
             setError("Failed to fetch sections");
         } finally {
@@ -121,7 +122,7 @@ export function SectionsTable() {
                             >
                                 <div>
                                     <Typography variant="h6" color="blue-gray">Section: {section.name}</Typography>
-                                    <Typography variant="small" color="gray">Manager: {section.sectionManagerId}</Typography>
+                                    <Typography variant="small" color="gray">Manager: {section.sectionManagerUserName}</Typography>
                                 </div>
                                 <div className="flex gap-2">
                                     <Button
