@@ -23,8 +23,8 @@ public class TransferQueryServices : ITransferQueryServices
     {
         var transfer = await _unitOfWork.GetRepository<Transfer>()
                                         .GetAll()
-                                        .Include(t => t.ShippingSupervisor)
-                                        .Include(t => t.EquipmentReceptor)
+                                        .Include(t => t.ShippingSupervisor!.User)
+                                        .Include(t => t.EquipmentReceptor!.User)
                                         .ToListAsync();
 
         return transfer.Select(_mapper.Map<GetTransferDto>);
@@ -39,8 +39,8 @@ public class TransferQueryServices : ITransferQueryServices
     {
         var result = await _unitOfWork.GetRepository<Transfer>()
                                       .GetByIdAsync(transferDto, default,
-                                                    t => t.ShippingSupervisor!,
-                                                    t => t.EquipmentReceptor!);
+                                                    t => t.ShippingSupervisor!.User!,
+                                                    t => t.EquipmentReceptor!.User!);
 
         // and returns the updated transfer as a transferDto.
         return _mapper.Map<GetTransferDto>(result);
@@ -54,8 +54,8 @@ public class TransferQueryServices : ITransferQueryServices
         //The queryable collection of entities to paginate
         IQueryable<Transfer> queryTransfer = _unitOfWork.GetRepository<Transfer>()
                                                         .GetAll()
-                                                        .Include(t => t.ShippingSupervisor)
-                                                        .Include(t => t.EquipmentReceptor);                               
+                                                        .Include(t => t.ShippingSupervisor!.User)
+                                                        .Include(t => t.EquipmentReceptor!.User);                               
 
         var totalCount = await queryTransfer.CountAsync();
 

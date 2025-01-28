@@ -23,7 +23,7 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
     {
         var transferRequest = await _unitOfWork.GetRepository<TransferRequest>()
                                                .GetAll()
-                                               .Include(tr => tr.SectionManager)
+                                               .Include(tr => tr.SectionManager!.User)
                                                .Include(tr=> tr.ArrivalDepartment)
                                                .Include(tr=> tr.Equipment)
                                                .Include(tr=> tr.ArrivalDepartment.Section)
@@ -45,7 +45,7 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
                                                     tr=> tr.Equipment,
                                                     tr=> tr.ArrivalDepartment,
                                                     tr=> tr.ArrivalDepartment.Section,
-                                                    tr=> tr.SectionManager!);
+                                                    tr=> tr.SectionManager!.User!);
         
         // and returns the updated transferRequest as a transferRequestDto.
         return _mapper.Map<GetTransferRequestDto>(result);
@@ -58,7 +58,7 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
         //The queryable collection of entities to paginate
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
                                                                       .GetAll()
-                                                                      .Include(tr => tr.SectionManager)
+                                                                      .Include(tr => tr.SectionManager!.User)
                                                                       .Include(tr=> tr.ArrivalDepartment)
                                                                       .Include(tr=> tr.Equipment)
                                                                       .Include(tr=> tr.ArrivalDepartment.Section);
