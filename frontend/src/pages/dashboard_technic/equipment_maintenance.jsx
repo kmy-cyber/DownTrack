@@ -124,8 +124,13 @@ export function EquipmentMaintenance() {
                 },
             });
             if (!response.ok) {
+                setAlertType('error');
+                setAlertMessage("Failed maintenance cancellation");
                 throw new Error('Network response was not ok');
             }
+            await fetchTechMaintenance(currentPage);
+            setAlertType('success');
+            setAlertMessage("Maintenance cancelled");
             setCurrentItems(currentItems.filter(item => item.id !== id));
         } catch (error) {
             console.error('Error:', error);
@@ -141,7 +146,7 @@ export function EquipmentMaintenance() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            
+
             setCurrentItems(data.items);
             setTotalPages(Math.ceil(data.totalCount / data.pageSize));
 

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardBody, Typography, Button, Input } from "@material-tailwind/react";
+import { Card,
+    CardBody, 
+    Typography, 
+    Button, 
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    DialogFooter,
+    Input 
+} from "@material-tailwind/react";
 import api from "@/middlewares/api";
 
 const RegisterForm = ({ onAccept, onCancel }) => {

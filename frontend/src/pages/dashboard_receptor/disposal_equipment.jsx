@@ -27,7 +27,7 @@ export function EquipmentDisposalTable() {
 
 
     useEffect(() => {
-        fetchDecommissions();
+        fetchDecommissions(1);
     }, []);
 
     const handleShowInfo = (disposal) => {
@@ -40,9 +40,14 @@ export function EquipmentDisposalTable() {
         setOnInfo(false);
     };
 
-    const fetchDecommissions = async () => {
+    const handlePageChange = async (event, newPage) => {
+        setCurrentPage(newPage);
+        await fetchDecommissions(newPage);
+    };
+
+    const fetchDecommissions = async (page) => {
         try {
-            const response = await api(`/EquipmentDecommissioning/GET_ALL`, {
+            const response = await api(`/EquipmentDecommissioning/Get_Paged_All?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -50,7 +55,8 @@ export function EquipmentDisposalTable() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setCurrentItems(data);
+            setCurrentItems(data.items);
+            setTotalPages(Math.ceil(data.totalCount / data.pageSize));
 
             setIsLoading(false);
         } catch (error) {
@@ -68,22 +74,20 @@ export function EquipmentDisposalTable() {
                 },
             });
             if (response.ok) {
-                const updatedData = [...currentItems];
+            
                 setAlertType('success');
-                setAlertMessage('Successful registration');
-                const index = updatedData.findIndex(item => item.id === selectedDisposal.id);
-                if (index !== -1) {
-                    updatedData[index].registered = true;
-                    setCurrentItems(updatedData);
-                }
+                setAlertMessage("Decommision accepted successfully");
+                await fetchDecommissions(currentPage);
+                setIsLoading(false);
+                setShowDialog(false);
+
             } else {
                 setAlertType('error');
                 setAlertMessage('Failed to register item');
             }
         } catch (error) {
             console.error('Error registering item:', error);
-            setAlertType('error');
-            setAlertMessage('Error registering item');
+
         }
     };
 
@@ -117,12 +121,13 @@ export function EquipmentDisposalTable() {
                     onClose={handleCloseInfo}
                 />
             )}
+            <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
             { !onInfo &&
                 (<div className="mt-12 mb-8 flex flex-col gap-12 ">
                 <Card>
                     <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                         <Typography variant="h6" color="white">
-                            Equipment Disposal
+                            Equipment Decommission
                         </Typography>
                     </CardHeader>
                     <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -246,6 +251,12 @@ export function EquipmentDisposalTable() {
                         </table>
                     </CardBody>
                 </Card>
+                <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    className="self-center"
+                />
                 </div>)
             }
         </>
