@@ -25,8 +25,8 @@ public class EvaluationQueryServices : IEvaluationQueryServices
     {
         var evaluation = await _unitOfWork.GetRepository<Evaluation>()
                                           .GetAll()
-                                          .Include(ev => ev.SectionManager)
-                                          .Include(ev => ev.Technician)
+                                          .Include(ev => ev.SectionManager!.User)
+                                          .Include(ev => ev.Technician.User)
                                           .ToListAsync();
 
 
@@ -42,8 +42,8 @@ public class EvaluationQueryServices : IEvaluationQueryServices
     {
         var result = await _unitOfWork.GetRepository<Evaluation>()
                                       .GetByIdAsync(evaluationDto, default,
-                                      ev => ev.SectionManager!,
-                                      ev => ev.Technician);
+                                      ev => ev.SectionManager!.User!,
+                                      ev => ev.Technician!.User!);
 
         /// and returns the updated evaluation as an EvaluationDto.
         return _mapper.Map<GetEvaluationDto>(result);
@@ -55,8 +55,8 @@ public class EvaluationQueryServices : IEvaluationQueryServices
         //The queryable collection of entities to paginate
         IQueryable<Evaluation> queryEvaluation = _unitOfWork.GetRepository<Evaluation>()
                                                             .GetAll()
-                                                            .Include(ev => ev.SectionManager)
-                                                            .Include(ev => ev.Technician);
+                                                            .Include(ev => ev.SectionManager!.User)
+                                                            .Include(ev => ev.Technician!.User);
 
         var totalCount = await queryEvaluation.CountAsync();
 
