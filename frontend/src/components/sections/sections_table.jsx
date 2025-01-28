@@ -45,7 +45,7 @@ export function SectionsTable() {
         setLoading(true);
         setError(null);
         try {
-            const response = await api(`/Section/sections/manager/${user.id}?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+            const response = await api(`/Section/GetSectionsByManager?PageNumber=${pageNumber}&PageSize=${pageSize}&sectionManagerId=${user.id}`, {
                 method: "GET",
             });
             if (!response.ok) {
