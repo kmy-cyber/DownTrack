@@ -27,7 +27,6 @@ const EquipmentDisposalTable = () => {
             if(!response.ok){
                 throw new Error("Failed to fetch equipment decommissionings");
             }
-
             const data = await response.json();
             setDisposalsList(data.items);
             console.log(data.items);
@@ -90,14 +89,16 @@ const EquipmentDisposalTable = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map((disposal) => (
+                                {disposals_list ? disposals_list.map((disposal) => (
                                     <tr key={disposal.id} className="hover:bg-gray-50">
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.technician}</td>
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.equipment}</td>
-                                        <td className="border border-gray-200 px-4 py-2">{disposal.reasonForRemoval}</td>
+                                        <td className="border border-gray-200 px-4 py-2">{disposal.technicianId}</td>
+                                        <td className="border border-gray-200 px-4 py-2">{disposal.equipmentId}</td>
+                                        <td className="border border-gray-200 px-4 py-2">{disposal.cause}</td>
                                         <td className="border border-gray-200 px-4 py-2">{disposal.date}</td>
                                     </tr>
-                                ))}
+                                )) : <p>Theres no disposals yet</p>
+
+                            }
                             </tbody>
                         </table>
                     </div>
