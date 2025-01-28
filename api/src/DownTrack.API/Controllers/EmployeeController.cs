@@ -1,5 +1,3 @@
-
-
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
@@ -7,24 +5,30 @@ using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeesController : ControllerBase
-{
-    private readonly IEmployeeServices _employeeService;
 
-    public EmployeesController(IEmployeeServices employeeServices)
+public class EmployeeController : ControllerBase
+{
+     private readonly IEmployeeQueryServices _employeeQueryService;
+     private readonly IEmployeeCommandServices _employeeCommandService;
+
+    public EmployeeController(IEmployeeQueryServices employeeQueryServices,
+                                 IEmployeeCommandServices employeeCommandServices)
+
     {
-        _employeeService = employeeServices;
+        _employeeQueryService = employeeQueryServices;
+        _employeeCommandService = employeeCommandServices;
     }
 
-
+    #region  Query
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<EmployeeDto>> GetEmployeeById(int employeeId)
+    public async Task<ActionResult<GetEmployeeDto>> GetEmployeeById(int employeeId)
     {
-        var result = await _employeeService.GetByIdAsync(employeeId);
+        var result = await _employeeQueryService.GetByIdAsync(employeeId);
 
         if (result == null)
             return NotFound($"Employee with ID {employeeId} not found");
@@ -38,7 +42,7 @@ public class EmployeesController : ControllerBase
 
     public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllEmployee ()
     {
-        var result = await _employeeService.AllAsync();
+        var result = await _employeeQueryService.ListAsync();
 
         return Ok(result);
     }   
@@ -50,7 +54,7 @@ public class EmployeesController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _employeeService.GetPagedResultAsync(paged);
+        var result = await _employeeQueryService.GetPagedResultAsync(paged);
         
         return Ok (result);
         
@@ -59,9 +63,9 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     [Route("GetAllSectionManager")]
 
-    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAllSectionManager ()
+    public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllSectionManager ()
     {
-        var sectionManager = await _employeeService.ListAllByRole(UserRole.SectionManager);
+        var sectionManager = await _employeeQueryService.ListAllByRole(UserRole.SectionManager);
 
         return Ok(sectionManager);
     }
@@ -69,24 +73,26 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     [Route("GetAllShippingSupervisor")]
 
-    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAllShippingSupervisor()
+    public async Task<ActionResult<IEnumerable<GetEmployeeDto>>> GetAllShippingSupervisor()
     {
-        var supervisor = await _employeeService.ListAllByRole(UserRole.ShippingSupervisor);
+        var supervisor = await _employeeQueryService.ListAllByRole(UserRole.ShippingSupervisor);
 
         return Ok(supervisor);
     }
 
+    #endregion
 
+    #region Command
     [HttpDelete]
     [Route("DELETE")]
 
     public async Task<IActionResult> DeleteEmployee(int employeeId)
     {
-        await _employeeService.DeleteAsync(employeeId);
+        await _employeeCommandService.DeleteAsync(employeeId);
 
         return Ok("Employee deleted successfully");
     }
-
+    
+    #endregion
 
 }
-

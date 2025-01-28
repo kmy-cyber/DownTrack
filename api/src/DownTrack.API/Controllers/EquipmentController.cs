@@ -1,8 +1,6 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -11,44 +9,56 @@ namespace DownTrack.Api.Controllers;
 [Route("api/[controller]")]
 public class EquipmentController : ControllerBase
 {
-    private readonly IEquipmentServices _equipmentService;
+    private readonly IEquipmentQueryServices _equipmentQueryService;
+    private readonly IEquipmentCommandServices _equipmentCommandService;
 
-    public EquipmentController(IEquipmentServices equipmentServices)
+    public EquipmentController(IEquipmentCommandServices equipmentCommandServices,
+                                IEquipmentQueryServices equipmentQueryServices)
     {
-        _equipmentService = equipmentServices;
+        _equipmentQueryService = equipmentQueryServices;
+        _equipmentCommandService = equipmentCommandServices;
     }
+
+    #region Command
 
     [HttpPost]
     [Route("POST")]
     public async Task<IActionResult> CreateEquipment(EquipmentDto equipment)
     {
-        // Obtener el claim "role"
-        // var roleClaim = User?.FindFirst(ClaimTypes.Role);  // ClaimTypes.Role es el nombre estándar para el claim de rol
-
-        // if(roleClaim == null)
-        // {
-        //     Console.WriteLine("es null");
-        //     throw new Exception();
-        // }    
-
-        // Console.WriteLine(roleClaim.Value);
-
-        // if (roleClaim == null || roleClaim.Value != "Technician")
-        // {
-        //     return Unauthorized();  // Si el claim "role" no es igual a "Technician", se deniega el acceso
-        // }
-        await _equipmentService.CreateAsync(equipment);
+        await _equipmentCommandService.CreateAsync(equipment);
 
         return Ok("Equipment added successfully");
     }
 
+      [HttpPut]
+    [Route("PUT")]
+
+    public async Task<IActionResult> UpdateEquipment(EquipmentDto equipment)
+    {
+        var result = await _equipmentCommandService.UpdateAsync(equipment);
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    [Route("{equipmentId}")]
+
+    public async Task<IActionResult> DeleteEquipment(int equipmentId)
+    {
+        await _equipmentCommandService.DeleteAsync(equipmentId);
+
+        return Ok("Equipment deleted successfully");
+    }
+
+    #endregion
+
+    #region Query
 
     [HttpGet]
     [Route("GET")]
 
-    public async Task<ActionResult<EquipmentDto>> GetUserById(int equipmentId)
+    public async Task<ActionResult<GetEquipmentDto>> GetUserById(int equipmentId)
     {
-        var result = await _equipmentService.GetByIdAsync(equipmentId);
+        var result = await _equipmentQueryService.GetByIdAsync(equipmentId);
 
         if (result == null)
             return NotFound($"Equipment with ID {equipmentId} not found");
@@ -60,86 +70,47 @@ public class EquipmentController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEquipment([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipment ([FromQuery]PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentService.GetPagedResultAsync(paged);
-
-        return Ok(result);
-
+        var result = await _equipmentQueryService.GetPagedResultAsync(paged);
+        
+        return Ok (result);
+        
     }
 
-    [HttpPut]
-    [Route("PUT")]
-
-    public async Task<IActionResult> UpdateEquipment(EquipmentDto equipment)
-    {
-        var result = await _equipmentService.UpdateAsync(equipment);
-        return Ok(result);
-    }
-
-    [HttpDelete]
-    [Route("{equipmentId}")]
-
-    public async Task<IActionResult> DeleteEquipment(int equipmentId)
-    {
-        await _equipmentService.DeleteAsync(equipmentId);
-
-        return Ok("Equipment deleted successfully");
-    }
-
-
-
-
-
-
-    //endpoint for the section manager
     [HttpGet("equipments/section-manager/{sectionManagerId}")]
-    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId(
-    int sectionManagerId,
-    [FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId ([FromQuery] PagedRequestDto paged , int sectionManagerId)
     {
-        // Asignar la URL base para construir los enlaces de paginación
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        // Llamar al servicio para obtener los resultados paginados
-        var result = await _equipmentService.GetPagedEquipmentsBySectionManagerIdAsync(sectionManagerId, paged);
-
-        // Retornar la respuesta
-        return Ok(result);
+        var result = await _equipmentQueryService.GetPagedEquipmentsBySectionManagerIdAsync(paged, sectionManagerId);
+        
+        return Ok (result);
     }
-
 
     [HttpGet("equipments/section/{sectionId}")]
-public async Task<IActionResult> GetPagedEquipmentsBySectionId(
-    int sectionId,
-    [FromQuery] PagedRequestDto paged)
-{
-    // Asignar la URL base para construir los enlaces de paginación
-    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+    public async Task<IActionResult> GetPagedEquipmentsBySectionId ([FromQuery] PagedRequestDto paged , int sectionId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-    // Llamar al servicio para obtener los resultados paginados
-    var result = await _equipmentService.GetPagedEquipmentsBySectionIdAsync(sectionId, paged);
+        var result = await _equipmentQueryService.GetPagedEquipmentsBySectionIdAsync(paged, sectionId);
+        
+        return Ok (result);
+    }
 
-    // Retornar la respuesta
-    return Ok(result);
-}
+    [HttpGet("equipments/department/{departmentId}")]
+    public async Task<IActionResult> GetPagedEquipmentsByDepartmentId ([FromQuery] PagedRequestDto paged , int departmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-[HttpGet("equipments/department/{departmentId}")]
-public async Task<IActionResult> GetPagedEquipmentsByDepartmentId(
-    int departmentId,
-    [FromQuery] PagedRequestDto paged)
-{
-    // Asignar la URL base para construir los enlaces de paginación
-    paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        var result = await _equipmentQueryService.GetPagedEquipmentsByDepartmentIdAsync(paged, departmentId);
+        
+        return Ok (result);
+    }
 
-    // Llamar al servicio para obtener los resultados paginados
-    var result = await _equipmentService.GetPagedEquipmentsByDepartmentIdAsync(departmentId, paged);
+    #endregion
 
-    // Retornar la respuesta
-    return Ok(result);
-}
-
-
+  
 }

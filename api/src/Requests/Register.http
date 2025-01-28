@@ -2,15 +2,15 @@
 
 POST {{host}}/api/Authentication/register/
 Content-Type:  application/json
-//Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjhjMTY2NDQ5LTM1NGYtNGM1ZC1iMWYxLWQzNzRmYmM0OGRhMyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzM5NTUsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.0ipM82Yfd_6l1UFHOl8eSVvyycdqbafZjz5RzAiVwkI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwiZ2l2ZW5fbmFtZSI6InVzZXJuYW1lXzUiLCJqdGkiOiI1ZjYxMzVlOC0yZjQ2LTQzOWItOTI4YS1hNTEzODA3NDhhM2YiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzM3OTIwNDU3LCJpc3MiOiJEb3duVHJhY2siLCJhdWQiOiJEb3duVHJhY2sifQ.afk6cbRMIyYX4MJhvf5rpENU3CaEaPcbRsGCIKx2Cfw
 
 {
-  "id":8,
-  "name": "pedrito",
-  "userName": "jabelResendiz08",
-  "email": "juliohernandez@gmail.com",
-  "password": "jabelResendiz_0304",
-  "userRole": "EquipmentReceptor",
+  "id":333,
+  "name": "User_333",
+  "userName": "username_333",
+  "email": "example3@gmail.com",
+  "password": "Password_333!",
+  "userRole": "Technician",
   "specialty": "mechanic",
   "salary": 19090,
   "expYears": 10,

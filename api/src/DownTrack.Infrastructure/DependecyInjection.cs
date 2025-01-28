@@ -60,10 +60,11 @@ public static class DependencyInjection
         services.AddScoped<IIdentityManager, IdentityManager>();
         services.AddScoped<IDoneMaintenanceRepository, DoneMaintenanceRepository>();
         services.AddScoped<IEvaluationRepository, EvaluationRepository>();
+        services.AddScoped<IEquipmentDecommissioningRepository, EquipmentDecommissioningRepository>();
         services.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
         services.AddScoped<ITransferRepository, TransferRepository>();
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        //services.AddScoped<DownTrackContextIni
+        
+ 
         //Register a service of type IHostedService in the dependency container
         services.AddHostedService<RoleInitializer>();
 

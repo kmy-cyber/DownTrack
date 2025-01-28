@@ -7,19 +7,21 @@ import {
 } from "@material-tailwind/react";
 import api from "@/middlewares/api";
 
+const defaultFormData = {
+    id: "",
+    name: "",
+    userRole: "",
+    email:"",
+    password: "",
+    salary: 0,
+    specialty: "",
+    expYears: 0,
+    departamentId: 0,
+    sectionId: 0,
+};
+
 export const EditUserForm = ({ userData, onSave, onCancel }) => {
-    const [formData, setFormData] = useState({
-        id: "",
-        name: "",
-        userRole: "",
-        email:"",
-        password: "",
-        salary: 0,
-        specialty: "",
-        expYears: 0,
-        departamentId: 0,
-        sectionId: 0,
-    });
+    const [formData, setFormData] = useState(defaultFormData);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -27,10 +29,9 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
         
         if (userData) {
             if(userData.userRole === "EquipmentReceptor"){
-
+                getEquipmentRData(userData.id);
             }
             else if(userData.userRole === "Technician"){
-                setFormData({...formData, ...userData});
                 getTechnicianData(userData.id);
             }
             else{
@@ -53,8 +54,10 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
             const data = await response.json();
 
             setFormData({
-                ...formData,
                 id: data.id,
+                name: userData.name,
+                userRole: userData.userRole,
+                email: userData.email,
                 salary: data.salary,
                 specialty: data.specialty,
                 expYears: data.expYears,
@@ -62,7 +65,36 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
             setIsLoading(false);
         } catch (error) {
             console.error("Error fetching sections:", error);
-            setFormData([]);
+            setFormData(defaultFormData);
+            setIsLoading(false);
+        }
+    };
+
+    const getEquipmentRData = async (id) => {
+        console.log(id);
+        try {
+            const response = await api(`/EquipmentReceptor/GET?equipmentReceptorId=${id}`, {
+                method: 'GET',
+                params: {technicianId: id}
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+
+            setFormData({
+                id: data.id,
+                name: userData.name,
+                userRole: userData.userRole,
+                email: userData.email,
+                departamentId: data.departmentId,
+                sectionId: data.sectionId,
+
+            });
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error fetching sections:", error);
+            setFormData(defaultFormData);
             setIsLoading(false);
         }
     };
@@ -138,23 +170,6 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
-                    </label>
-                    <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                    placeholder="Enter identification number"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-
-                    />
-                </div>
-
-                <div>
                     <label htmlFor="userRole" className="block text-sm font-medium text-gray-700">
                     userRole
                     </label>
@@ -169,6 +184,26 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     readOnly
                     />
                 </div>
+
+                {userData.userRole !== "ShippingSupervisor" ? (
+                <>
+                    <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email
+                    </label>
+                    <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                    placeholder="Enter identification number"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                    />
+                </div>
+                </>
+                ) : null}
 
                 {userData.userRole === "EquipmentReceptor" ? (
                 <>

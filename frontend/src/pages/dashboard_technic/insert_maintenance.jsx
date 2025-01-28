@@ -6,15 +6,22 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
+import { useParams } from 'react-router-dom';
+import { useAuth } from "@/context/AuthContext";
+
+
 export const MaintenanceCreationForm = () => {
+    const { id, name:nameEquipment, type } = useParams();
+    console.log("ENTER:",id, nameEquipment, type);
+
+    const{user} = useAuth(); 
+    
     const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    role: "admin",
-    department: "",
-    experience: "",
-    specialty: "",
-    salary: "",
+    technicianId: user.id,
+    type: "",
+    equipmentId: id,
+    equipmentName: nameEquipment + " - " + type,
+    date: "",
     });
     const [startDate, setStartDate] = useState("");
 
@@ -66,7 +73,7 @@ export const MaintenanceCreationForm = () => {
                     type="text"
                     id="equipment"
                     name="equipment"
-                    value={formData.equipment}
+                    value={formData.equipmentName}
                     onChange={handleChange}
                     placeholder="Enter the equipment"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

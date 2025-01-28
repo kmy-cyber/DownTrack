@@ -35,6 +35,7 @@ public class IdentityService : IIdentityService
         // Map the login DTO to the User model.
         var user = _mapper.Map<User>(userDto);
 
+
         // Check if the mapping or the user object is null.
         if (user == null)
             throw new Exception();

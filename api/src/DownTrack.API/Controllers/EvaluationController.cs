@@ -1,7 +1,6 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -10,31 +9,56 @@ namespace DownTrack.Api.Controllers;
 [Route("api/[controller]")]
 public class EvaluationController : ControllerBase
 {
-    private readonly IEvaluationServices _evaluationService;
+    private readonly IEvaluationQueryServices _evaluationQueryService;
+    private readonly IEvaluationCommandServices _evaluationCommandService;
 
-    public EvaluationController(IEvaluationServices evaluationServices)
+    public EvaluationController(IEvaluationQueryServices evaluationQueryServices,
+                                IEvaluationCommandServices evaluationCommandServices)
     {
-        _evaluationService = evaluationServices;
+        _evaluationQueryService = evaluationQueryServices;
+        _evaluationCommandService = evaluationCommandServices;
+
     }
 
+    #region Command
     [HttpPost]
     [Route("POST")]
 
     public async Task<IActionResult> CreateEvaluation(EvaluationDto evaluation)
     {
-        await _evaluationService.CreateAsync(evaluation);
+        await _evaluationCommandService.CreateAsync(evaluation);
 
         return Ok("Evaluation added successfully");
     }
 
+     [HttpPut]
+    [Route("PUT")]
 
+    public async Task<IActionResult> UpdateEvaluation(EvaluationDto evaluation)
+    {
+        var result = await _evaluationCommandService.UpdateAsync(evaluation);
+        return Ok(result);
+    }
 
+    [HttpDelete]
+    [Route("DELETE")]
+
+    public async Task<IActionResult> DeleteEvaluation(int evaluationId)
+    {
+        await _evaluationCommandService.DeleteAsync(evaluationId);
+
+        return Ok("Evaluation deleted successfully");
+    }
+
+    #endregion
+
+    #region Query
     [HttpGet]
     [Route("GET")]
 
     public async Task<ActionResult<EvaluationDto>> GetUserById(int evaluationId)
     {
-        var result = await _evaluationService.GetByIdAsync(evaluationId);
+        var result = await _evaluationQueryService.GetByIdAsync(evaluationId);
 
         if (result == null)
             return NotFound($"Evaluation with ID {evaluationId} not found");
@@ -51,28 +75,12 @@ public class EvaluationController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _evaluationService.GetPagedResultAsync(paged);
+        var result = await _evaluationQueryService.GetPagedResultAsync(paged);
         
         return Ok (result);
         
     }
 
-    [HttpPut]
-    [Route("PUT")]
-
-    public async Task<IActionResult> UpdateEvaluation(EvaluationDto evaluation)
-    {
-        var result = await _evaluationService.UpdateAsync(evaluation);
-        return Ok(result);
-    }
-
-    [HttpDelete]
-    [Route("DELETE")]
-
-    public async Task<IActionResult> DeleteEvaluation(int evaluationId)
-    {
-        await _evaluationService.DeleteAsync(evaluationId);
-
-        return Ok("Evaluation deleted successfully");
-    }
+    #endregion
+   
 }

@@ -24,15 +24,13 @@ public class DownTrackContext : IdentityDbContext<User>
   public DbSet<EquipmentReceptor> EquipmentReceptors { get; set; }
   public DbSet<TransferRequest> TransferRequests { get; set; }
   public DbSet<Transfer> Transfers { get; set; }
+  public DbSet<EquipmentDecommissioning> EquipmentDecommissionings { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
 
     // Employee Region
-    modelBuilder.Entity<Employee>()
-    .ToTable("employees"); 
-
     modelBuilder.Entity<Employee>(entity =>
     {
       entity.HasKey(e => e.Id);
@@ -133,9 +131,11 @@ public class DownTrackContext : IdentityDbContext<User>
     {
       entity.HasKey(e => e.Id);
 
+
       entity.Property(e => e.Name)
               .IsRequired()
               .HasMaxLength(100);
+
 
       entity.Property(e => e.Type)
               .IsRequired()
@@ -167,10 +167,12 @@ public class DownTrackContext : IdentityDbContext<User>
     {
       entity.HasKey(tr => tr.Id);
 
+
       entity.HasOne(tr => tr.SectionManager)
                 .WithMany(e => e.TransferRequests)
-                .HasForeignKey(tr => tr.EmployeeId)
+                .HasForeignKey(tr => tr.SectionManagerId)
                 .OnDelete(DeleteBehavior.SetNull);
+
 
       entity.HasOne(tr => tr.Equipment)
                 .WithMany(e => e.TransferRequests)
@@ -181,6 +183,50 @@ public class DownTrackContext : IdentityDbContext<User>
                 .WithMany(d => d.TransferRequests)
                 .HasForeignKey(tr => tr.ArrivalDepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+    });
+
+    // Equipment decommissioning region
+
+    modelBuilder.Entity<EquipmentDecommissioning>(entity =>
+    {
+
+      entity.HasKey(ed => ed.Id);
+
+      entity.Property(ed => ed.Date)
+            .HasColumnType("date")
+            .IsRequired();
+
+      entity.Property(ed => ed.Cause)
+            .IsRequired();
+
+      entity.Property(ed => ed.Status)
+            .IsRequired();
+
+      entity.HasIndex(ed => ed.Date);
+      entity.HasIndex(ed => ed.Status);
+
+      // EquipmentDecommissioning - Technician relationship (one-to-many)
+
+      entity.HasOne(ed => ed.Technician) // EquipmentDecommissioning has one Technician
+            .WithMany(t => t.EquipmentDecommissionings) // Technician has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.TechnicianId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If Technician is deleted, set TechnicianId to null
+
+      // EquipmentDecommissioning - Equipment relationship (one-to-many)
+
+      entity.HasOne(ed => ed.Equipment) // 
+            .WithMany(e => e.EquipmentDecommissionings) //
+            .HasForeignKey(ed => ed.EquipmentId) // 
+            .OnDelete(DeleteBehavior.SetNull); // 
+
+      // EquipmentDecommissioning - Receptor relationship (one-to-many)
+
+      entity.HasOne(ed => ed.Receptor) // EquipmentDecommissioning has one Receptor
+            .WithMany(r => r.EquipmentDecommissionings) // Receptor has many EquipmentDecommissionings
+            .HasForeignKey(ed => ed.ReceptorId) // Foreign key in EquipmentDecommissioning
+            .OnDelete(DeleteBehavior.SetNull); // If Receptor is deleted, set ReceptorId to null
 
     });
 
@@ -199,6 +245,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
       entity.Property(dm => dm.Cost)
                 .IsRequired();
+
 
       entity.HasIndex(dm => dm.Date);
 
@@ -269,6 +316,7 @@ public class DownTrackContext : IdentityDbContext<User>
 
 
   }
+
 }
 
 
