@@ -31,7 +31,17 @@ public class DoneMaintenanceController : ControllerBase
         return Ok("Done Maintenance added successfully");
     }
 
-     [HttpPut]
+    [HttpPut]
+    [Route("finish")]
+    public async Task<IActionResult> FinalizeMaintenance(FinalizeMaintenanceDto requestFinalize)
+    {
+        await _doneMaintenanceCommandService.FinalizeMaintenanceAsync(requestFinalize);
+
+        return Ok("Maintenance process finished successfully");
+    }
+
+
+    [HttpPut]
     [Route("PUT")]
 
     public async Task<IActionResult> UpdateDoneMaintenance(DoneMaintenanceDto doneMaintenance)
@@ -80,6 +90,19 @@ public class DoneMaintenanceController : ControllerBase
         
         return Ok (result);
         
+    }
+
+    [HttpGet]
+    [Route("GetAllMaintenanceByTechnicianId")]
+
+    
+    public async Task<ActionResult<GetDoneMaintenanceDto>> GetDoneMaintenanceByTechnicianId(
+                                                            [FromQuery]PagedRequestDto paged,int technicianId)
+    {
+        var result = await _doneMaintenanceQueryService.GetByTechnicianIdAsync(paged,technicianId);
+
+        return Ok(result);
+
     }
 
     #endregion

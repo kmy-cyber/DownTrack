@@ -93,6 +93,19 @@ public class SectionController : ControllerBase
         
     }
 
+    [HttpGet]
+    [Route("GetSectionsByManager")]
+
+    public async Task<ActionResult> GetSectionsByManager ([FromQuery]PagedRequestDto paged, int sectionManagerId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _sectionQueryService.GetSectionsByManageAsync(paged,sectionManagerId);
+        
+        return Ok (result);
+        
+    }
+
 
     #endregion
 

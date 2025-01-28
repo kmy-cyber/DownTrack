@@ -5,8 +5,10 @@ using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
+
 public class EmployeeController : ControllerBase
 {
      private readonly IEmployeeQueryServices _employeeQueryService;

@@ -58,8 +58,11 @@ public class AutomapperProfile : Profile
         CreateMap<DoneMaintenanceDto, DoneMaintenance>();
         CreateMap<DoneMaintenance, DoneMaintenanceDto>();
         CreateMap<DoneMaintenance, GetDoneMaintenanceDto>()
-            .ForMember(dest => dest.TechnicianUserName, opt => opt.MapFrom(src=> src.Technician!.User!.UserName));
-        
+            .ForMember(dest => dest.TechnicianUserName, opt => opt.MapFrom(src=> src.Technician!.User!.UserName))
+            .ForMember(dest => dest.EquipmentName, opt => opt.MapFrom(src=> src.Equipment!.Name));
+            
+
+
 
         CreateMap<EvaluationDto, Evaluation>();
         CreateMap<Evaluation, EvaluationDto>();
