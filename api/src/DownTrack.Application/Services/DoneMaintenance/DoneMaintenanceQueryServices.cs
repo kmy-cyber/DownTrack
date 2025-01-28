@@ -23,8 +23,7 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
     {
         var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                .GetByIdAsync(dto,default,
-                                                             dm=> dm.Equipment!,
-                                                             dm=> dm.Technician!);
+                                                            dm=> dm.Technician!.User!);
 
         return _mapper.Map<GetDoneMaintenanceDto>(doneMaintenance);
     }
@@ -33,8 +32,7 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
     {
         var doneMaintenance = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                .GetAll()
-                                               .Include(dm => dm.Equipment)
-                                               .Include(dm => dm.Technician)
+                                               .Include(dm=> dm.Technician!.User)
                                                .ToListAsync();
 
         return doneMaintenance.Select(_mapper.Map<GetDoneMaintenanceDto>);
@@ -45,8 +43,7 @@ public class DoneMaintenanceQueryServices : IDoneMaintenanceQueryServices
         //The queryable collection of entities to paginate
         IQueryable<DoneMaintenance> queryDoneMaintenance = _unitOfWork.GetRepository<DoneMaintenance>()
                                                                       .GetAll()
-                                                                      .Include(dm => dm.Equipment)
-                                                                      .Include(dm => dm.Technician);
+                                                                      .Include(dm=> dm.Technician!.User);
 
         var totalCount = await queryDoneMaintenance.CountAsync();
 
