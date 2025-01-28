@@ -5,11 +5,26 @@ public class GetEquipmentDecommissioningDto
 {
     public int Id { get; set; }
     public int? TechnicianId { get; set; }
-    public string? TechnicianUserName {get;set;}
+    public string? TechnicianUserName { get; set; }
     public int? EquipmentId { get; set; }
+    public string? EquipmentName { get; set; }
+    public string? EquipmentStatus { get; set; }
+    public string? EquipmentType { get; set; }
+    public string? RequestDepartmentId { get; set; }
+    public string? RequestDepartmentName { get; set; }
+    public string? RequestSectionId { get; set; }
+    public string? RequestSectionName { get; set; }
     public int? ReceptorId { get; set; }
-    public string? ReceptorUserName {get;set;}
+    public string? ReceptorUserName { get; set; }
     public DateTime Date { get; set; }
     public string Cause { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
 }
+
+/*
+el nombre del equipo a trasladar
+el tipo del equipo
+el status del equipo
+el departamento al que pertenece 
+deben salir solo las trasnferencias solicitadas al departamento al que pertenece el receptor y que esten pendientes.
+*/

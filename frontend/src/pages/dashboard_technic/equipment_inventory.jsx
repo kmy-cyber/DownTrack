@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, Typography } from "@material-tailwind/react
 import { Pagination } from '@mui/material';
 import { useState, useEffect } from "react";
 import api from "@/middlewares/api";
-import { TrashIcon, InformationCircleIcon, PlusCircleIcon, WrenchIcon } from '@heroicons/react/24/solid';
+import { WrenchIcon } from '@heroicons/react/24/solid';
 import DropdownMenu from "@/components/DropdownMenu";
 import { ArrowDownwardSharp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';

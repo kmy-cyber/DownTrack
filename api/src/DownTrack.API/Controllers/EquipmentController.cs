@@ -110,6 +110,16 @@ public class EquipmentController : ControllerBase
         return Ok (result);
     }
 
+    [HttpGet("active equipment")]
+    public async Task<IActionResult> GetActiveEquipment ([FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetActiveEquipment(paged);
+        
+        return Ok (result);
+    }
+
     #endregion
 
   

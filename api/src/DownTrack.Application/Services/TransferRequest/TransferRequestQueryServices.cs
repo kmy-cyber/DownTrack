@@ -45,13 +45,14 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
                                                     tr=> tr.Equipment,
                                                     tr=> tr.ArrivalDepartment,
                                                     tr=> tr.ArrivalDepartment.Section,
-                                                    tr=> tr.SectionManager!.User!);
+                                                    tr=> tr.SectionManager!.User!,
+                                                    tr=> tr.Equipment.Department,
+                                                    tr=> tr.Equipment.Department.Section);
         
         // and returns the updated transferRequest as a transferRequestDto.
         return _mapper.Map<GetTransferRequestDto>(result);
 
     }
-
 
     public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedResultAsync(PagedRequestDto paged)
     {
@@ -60,8 +61,9 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
                                                                       .GetAll()
                                                                       .Include(tr => tr.SectionManager!.User)
                                                                       .Include(tr=> tr.ArrivalDepartment)
-                                                                      .Include(tr=> tr.Equipment)
-                                                                      .Include(tr=> tr.ArrivalDepartment.Section);
+                                                                      .Include(tr=> tr.Equipment)                                                                  
+                                                                      .ThenInclude(e=> e.Department)
+                                                                      .ThenInclude(d=> d.Section);
 
         var totalCount = await queryTransferRequest.CountAsync();
 
@@ -86,6 +88,48 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
 
         };
     }
+
+    public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedRequestsofArrivalDepartmentAsync(int receptorId, PagedRequestDto paged)
+    {
+        //The queryable collection of entities to paginate
+        
+        var arrivalDepartment =  _unitOfWork.GetRepository<EquipmentReceptor>().GetById(receptorId).DepartmentId;
+
+
+        IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
+                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment)
+                                                                      .Include(tr => tr.SectionManager!.User)
+                                                                      .Include(tr=> tr.ArrivalDepartment)
+                                                                      .Include(tr=> tr.Equipment)                                                                  
+                                                                      .ThenInclude(e=> e.Department)
+                                                                      .ThenInclude(d=> d.Section);
+
+        var totalCount = await queryTransferRequest.CountAsync();
+
+        var items = await queryTransferRequest // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetTransferRequestDto>
+        {
+            Items = items?.Select(_mapper.Map<GetTransferRequestDto>) ?? Enumerable.Empty<GetTransferRequestDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
+
+    }
+
+
 }
 
 
