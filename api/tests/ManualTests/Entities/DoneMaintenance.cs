@@ -37,7 +37,7 @@ public static class Maintenance
 
     public static async Task<List<EquipmentDto>> GetEquipmentAsync(HttpClient client)
     {
-        var response = await client.GetAsync("/api/EmployeeNew/GetPaged/?pageNumber=1&pageSize=1000");
+        var response = await client.GetAsync("/api/Employee/GetPaged/?pageNumber=1&pageSize=1000");
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Error fetching equipment: {response.StatusCode}");
