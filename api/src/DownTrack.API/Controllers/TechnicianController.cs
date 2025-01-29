@@ -42,7 +42,7 @@ public class TechnicianController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _technicianQueryService.GetPagedResultAsync(paged);
+        var result = await _technicianQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

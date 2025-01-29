@@ -6,16 +6,20 @@ import {
     MinusCircleIcon,
     WrenchScrewdriverIcon,
     ArrowsRightLeftIcon,
-    UserIcon
+    UserIcon,
+    DocumentCheckIcon,
+    ArchiveBoxArrowDownIcon
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
 import { Reports } from "@/components/reports/reports"
-import GeneralInventoryTable from "@/components/inventory/general_inventory_table";
-import EquipmentDisposalTable from "@/pages/dashboard_director/disposals_table";
-import MaintenanceHistory from "@/pages/dashboard_director/maintenance_table";
+import InventoryTable from "@/components/inventory/inventory_table";
+import MaintenanceHistory from "@/pages/dashboard_director/maintenances_table";
 import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
-import UserTable from "@/pages/dashboard_director/technicians_table";
+import UserTable from "@/pages/dashboard_director/employees_table";
+import EvaluationsTable from "@/pages/dashboard_director/evaluations_table";
+import EquipmentDecommissionsTable from "@/pages/dashboard_director/decommissions_table";
+import TransferRequestsTable from "@/pages/dashboard_director/transfer_requests";
   
   const typeUser = 1;
   
@@ -49,13 +53,13 @@ export const routesDirector = [
           icon: <CubeIcon {...icon}/>,
           name: "Inventory",
           path: "/inventory",
-          element: <GeneralInventoryTable/>
+          element: <InventoryTable/>
         },
         {
           icon: <MinusCircleIcon {...icon}/>,
-          name: "Disposals",
-          path: "/disposals",
-          element: <EquipmentDisposalTable/>
+          name: "Decommissions",
+          path: "/decommissions",
+          element: <EquipmentDecommissionsTable/>
         },
         {
           icon: <WrenchScrewdriverIcon {...icon}/>,
@@ -70,9 +74,21 @@ export const routesDirector = [
           element: <EquipmentTransferTable/>
         },
         {
+          icon: <ArchiveBoxArrowDownIcon {...icon}/>,
+          name: "Transfers Requests",
+          path: "/transfer_requests",
+          element: <TransferRequestsTable/>
+        },
+        {
+          icon: <DocumentCheckIcon {...icon}/>,
+          name: "Evaluations",
+          path: "/evaluations",
+          element: <EvaluationsTable/>
+        },
+        {
           icon: <UserIcon {...icon}/>,
-          name: "Technicians",
-          path: "/technicians",
+          name: "Employees",
+          path: "/employees",
           element: <UserTable/>
         }
         

@@ -5,7 +5,7 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api";
 
-const EquipmentDisposalTable = () => {
+const EquipmentDecommissionsTable = () => {
     const [disposalsList, setDisposalsList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -68,7 +68,7 @@ const EquipmentDisposalTable = () => {
     };
 
     return (
-        <Card className="mt-8 shadow-lg">
+        <Card className="mt-8 shadow-lg rounded-lg">
             <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
                 <Typography variant="h6" color="white" className="text-xl font-semibold">
                     Equipment Disposal Records
@@ -85,7 +85,7 @@ const EquipmentDisposalTable = () => {
                     <>
                         {/* Tabla de Desincorporación de Equipos */}
                         <div className="overflow-x-auto">
-                            <table className="min-w-full table-auto text-sm text-gray-900">
+                            <table className="min-w-full table-auto text-sm text-gray-900 border-collapse">
                                 <thead className="bg-gray-800 text-white">
                                     <tr>
                                         <th className="px-6 py-3 border-b text-center">Technician</th>
@@ -146,4 +146,4 @@ const EquipmentDisposalTable = () => {
     );
 };
 
-export default EquipmentDisposalTable;
+export default EquipmentDecommissionsTable;

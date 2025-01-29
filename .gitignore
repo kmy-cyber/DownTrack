@@ -6,5 +6,8 @@
 **/Migrations/
 
 ToDo.md
+<<<<<<< HEAD
+
+=======
 api/src/DownTrack.API/appsettings.json
-api/src/DownTrack.API/appsettings.json
+>>>>>>> fc2

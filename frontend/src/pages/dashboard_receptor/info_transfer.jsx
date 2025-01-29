@@ -9,25 +9,22 @@ const TransferInfoForm = ({ transfer, onClose  }) => {
                 <div className="flex items-center justify-center">
                     <InformationCircleIcon className="h-20 w-120 text-blue-800" />
                 </div>
-                <Typography variant="h4" className="mb-4 flex items-center justify-center">
+                <Typography variant="h5" className="mb-4 flex items-center justify-center">
                     Transfer Information
                 </Typography>
                 <div className="space-y-4">
                     <div className="p-4 border rounded-md shadow-sm">
-                        <Typography variant="h5" className="font-semibold">
-                            {transfer.equipmentName}
+                        <Typography variant="h6" className="font-semibold">
+                            {transfer.equipment.name}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Equipment Type: {transfer.equipmentType}
+                            Source Section: {transfer.equipment.sectionName}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Equipment Status: {transfer.equipmentStatus}
+                            Section Boss: {transfer.requestingOfficer}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Source Section: {transfer.requestSectionName}
-                        </Typography>
-                        <Typography variant="body2" className="text-gray-600">
-                            Source Department: {transfer.requestDepartmentName}
+                            Department: {transfer.equipment.departmentName}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
                             Date: {transfer.date}

@@ -7,6 +7,7 @@ await Section.RegisterSectionAsync();
 await Department.RegisterDepartmentAsync();
 await Equipment.RegisterEquipmentAsync();
 await EquipmentReceptor.RegisterEquipmentReceptorAsync();
+
 await Evaluation.RegisterEvaluationAsync();
 await Maintenance. RegisterMaintenanceAsync();
 await EquipmentDecommissioning.RegisterEquipmentDecomissioningAsync();

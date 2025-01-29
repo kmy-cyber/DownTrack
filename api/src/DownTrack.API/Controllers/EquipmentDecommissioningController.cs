@@ -77,16 +77,16 @@ public class EquipmentDecommissioningController : ControllerBase
 
     [HttpGet]
     [Route("Get_Paged_All")]
-    public async Task<IActionResult> GetPagedAllDepartmentInSection([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged)
     {
-        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentDecommissioningQueryServices.GetPagedResultAsync(paged);
-
-        return Ok(result);
+        var result = await _equipmentDecommissioningQueryServices.GetAllPagedResultAsync(paged);
+        
+        return Ok (result);
 
     }
-
+    
     [HttpGet]
     [Route("{equipmentDecommissioningId}/GET_BY_ID")]
     public async Task<ActionResult<EquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)

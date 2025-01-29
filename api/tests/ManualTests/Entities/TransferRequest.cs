@@ -35,6 +35,7 @@ public static class TransferRequest
             {
                 Id = i,
                 Date = DateTime.UtcNow.ToString("o"), // Fecha en formato ISO8601
+                Status = "Unregistered",
                 SectionManagerId = manager.id,
                 EquipmentId = equip.id,
                 ArrivalDepartmentId = departament.id,

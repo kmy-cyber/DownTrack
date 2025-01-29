@@ -56,13 +56,14 @@ export const UserInfoSidebar = ({ id, name, role }) => {
                 <span className="ml-2 text-sm text-gray-800">{role}</span>
             </div>
             <hr />
-            <div 
-                className="hover:bg-gray-100 rounded p-2 flex items-center"
-                onClick={() => {logout();}}
+            <button
+                className="w-full hover:bg-gray-100 rounded p-2 flex items-center justify-start"
+                onClick={() => logout()}
             >
-                <ArrowRightOnRectangleIcon className="w-5 h-5   text-white-500" />
+                <ArrowRightOnRectangleIcon className="w-5 h-5 text-gray-500" />
                 <p className="ml-5">Logout</p>
-            </div>
+            </button>
+
             </div>
         </div>
     );

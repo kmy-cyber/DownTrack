@@ -86,7 +86,7 @@ public class DoneMaintenanceController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _doneMaintenanceQueryService.GetPagedResultAsync(paged);
+        var result = await _doneMaintenanceQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

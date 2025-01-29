@@ -32,7 +32,7 @@ public class SectionController : ControllerBase
         return Ok("Section added successfully");
     }
 
-     [HttpPut]
+    [HttpPut]
     [Route("PUT")]
 
     public async Task<IActionResult> UpdateSection(SectionDto section)
@@ -70,6 +70,19 @@ public class SectionController : ControllerBase
     }
 
     [HttpGet]
+    [Route("GetBySectionName")]
+    public async Task<ActionResult<GetEmployeeDto>> GetSectionByName(string sectionName)
+    {
+        var result = await _sectionQueryService.GetSectionByNameAsync(sectionName);
+
+        if (result == null)
+            return NotFound($"Employee with ID {sectionName} not found");
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
     [Route("GET_ALL")]
 
     public async Task<ActionResult<GetSectionDto>> GetAll()
@@ -83,32 +96,32 @@ public class SectionController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<ActionResult> GetPagedSection ([FromQuery]PagedRequestDto paged)
+    public async Task<ActionResult> GetPagedSection([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _sectionQueryService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
+        var result = await _sectionQueryService.GetAllPagedResultAsync(paged);
+
+        return Ok(result);
+
     }
 
     [HttpGet]
     [Route("GetSectionsByManager")]
 
-    public async Task<ActionResult> GetSectionsByManager ([FromQuery]PagedRequestDto paged, int sectionManagerId)
+    public async Task<ActionResult> GetSectionsByManager([FromQuery] PagedRequestDto paged, int sectionManagerId)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _sectionQueryService.GetSectionsByManageAsync(paged,sectionManagerId);
-        
-        return Ok (result);
-        
+        var result = await _sectionQueryService.GetSectionsByManagerAsync(paged, sectionManagerId);
+
+        return Ok(result);
+
     }
 
 
     #endregion
 
-   
+
 }
 

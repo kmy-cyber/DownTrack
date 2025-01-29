@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import api from "@/middlewares/api"; // Asegúrate de importar correctamente
+import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
-const EquipmentTransferTable = () => {
-  const [transferData, setTransferData] = useState([]);
+const EmployeesTable = () => {
+  const [employeeList, setEmployeeList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,26 +12,27 @@ const EquipmentTransferTable = () => {
   const pageSize = 14;
 
   useEffect(() => {
-    fetchTransfers(currentPage);
+    fetchEmployees(currentPage);
   }, [currentPage]);
 
-  const fetchTransfers = async (pageNumber) => {
+  const fetchEmployees = async (pageNumber) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(`/Transfer/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
+      const response = await api(`/Employee/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
         method: "GET",
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch transfers");
+        throw new Error("Failed to fetch employees");
       }
 
       const data = await response.json();
-      setTransferData(data.items); // Ajusta según la estructura de tu respuesta
-      setTotalPages(Math.ceil(data.totalCount / pageSize));
+      setEmployeeList(data.items); // Ajusta la estructura si es necesario
+      setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
     } catch (err) {
-      setError("Failed to load transfer data");
+      console.error("Error fetching employees:", err);
+      setError("Failed to load employee data");
     } finally {
       setLoading(false);
     }
@@ -69,7 +70,7 @@ const EquipmentTransferTable = () => {
     <Card className="mt-8 shadow-lg">
       <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
         <Typography variant="h6" color="white" className="text-xl font-semibold">
-          Equipment Transfer Records
+          Employees
         </Typography>
       </CardHeader>
       <CardBody className="px-0 py-4">
@@ -81,28 +82,26 @@ const EquipmentTransferTable = () => {
           </Typography>
         ) : (
           <>
-            {/* Tabla de Transferencias de Equipos */}
+            {/* Employee Table */}
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 border-b text-center">Shipping Supervisor</th>
-                    <th className="px-6 py-3 border-b text-center">Equipment Receptor</th>
-                    <th className="px-6 py-3 border-b text-center">Date</th>
+                    <th className="px-6 py-3 border-b text-center">Username</th>
+                    <th className="px-6 py-3 border-b text-center">Role</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {transferData.length > 0 ? (
-                    transferData.map((transfer, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-3 border-b text-center">{transfer.shippingSupervisorName}</td>
-                        <td className="px-6 py-3 border-b text-center">{transfer.equipmentReceptorUserName}</td>
-                        <td className="px-6 py-3 border-b text-center">{transfer.date}</td>
+                  {employeeList.length > 0 ? (
+                    employeeList.map((user) => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-3 border-b text-center">{user.userRole.toLowerCase() == "shippingsupervisor" ? user.name : user.userName}</td>
+                        <td className="px-6 py-3 border-b text-center">{user.userRole || "N/A"}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="3" className="px-6 py-3 text-center">No transfer records found</td>
+                      <td colSpan="2" className="px-6 py-3 text-center">No employees found</td>
                     </tr>
                   )}
                 </tbody>
@@ -112,32 +111,39 @@ const EquipmentTransferTable = () => {
         )}
 
         {/* Paginación */}
-        <div className="flex justify-center mt-4 space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2"
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
+        {!loading && !error && totalPages > 1 && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {/* Previous button */}
+            {currentPage > 1 && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2"
+              >
+                <ChevronLeftIcon className="h-5 w-5" />
+              </IconButton>
+            )}
 
-          {renderPaginationButtons()}
+            {/* Page numbers */}
+            {renderPaginationButtons()}
 
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2"
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
-        </div>
+            {/* Next button */}
+            {currentPage < totalPages && (
+              <IconButton
+                variant="outlined"
+                color="gray"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2"
+              >
+                <ChevronRightIcon className="h-5 w-5" />
+              </IconButton>
+            )}
+          </div>
+        )}
       </CardBody>
     </Card>
   );
 };
 
-export default EquipmentTransferTable;
+export default EmployeesTable;

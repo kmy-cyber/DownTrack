@@ -15,7 +15,6 @@ import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 import { ChevronDownIcon } from "@heroicons/react/24/solid"; 
 import { useParams } from "react-router-dom";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 
 
 export const LeaveCreationForm = () => {
@@ -30,16 +29,15 @@ export const LeaveCreationForm = () => {
         equipmentName: nameEquipment + " - " + type,
         receptorId: "",
         receptorName: "",
-        receptorUsername:"",
         date: "",
         cause: "",
-        status: "Pending",
+        status: "something",
     });
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredReceptor, setFilteredReceptor] = useState([]);
     const [startDate, setStartDate] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [alertType, setAlertType] = useState('success');
     const [dateFormat, setDateFormat] = useState("");
     const [receptorList, setReceptorList] = useState([]);
@@ -80,7 +78,7 @@ export const LeaveCreationForm = () => {
 
     const fetchReceptors = async () => {
         try {
-            const response = await api(`/EquipmentReceptor/GetAll`, {
+            const response = await api(`/Employee/GetAllSectionManager`, {
                 method: 'GET',
             });
             if (!response.ok) {
@@ -92,7 +90,6 @@ export const LeaveCreationForm = () => {
                 ...prev, 
                 ['receptorId']: data[0].id, 
                 ['receptorName']: data[0].name, 
-                ['receptorUsername']: data[0].userName,
             }));
             setIsLoading(false);
         } catch (error) {
@@ -103,7 +100,6 @@ export const LeaveCreationForm = () => {
     };
 
     const submitLeave = async () => {
-        console.log("Submit leave:", formData);
         try {
             const response = await api("/EquipmentDecommissioning/POST/", {
                 method: "POST",
@@ -113,7 +109,7 @@ export const LeaveCreationForm = () => {
                 
                 body: JSON.stringify({
                     "technicianId": user.id,
-                    "equipmentId": formData.equipmentId,
+                    "equipmentId": formData.equipment,
                     "receptorId": formData.receptorId,
                     "date": dateFormat,
                     "cause": formData.cause,
@@ -142,8 +138,8 @@ export const LeaveCreationForm = () => {
 
             
         } catch (error) {
-            console.error("Error logging in:", error);
             setAlertType('error');
+            console.error("Error logging in:", error);
             setAlertMessage('An error occurred during the login process');
         } finally {
             setIsLoading(false);
@@ -199,158 +195,155 @@ export const LeaveCreationForm = () => {
     };
 
     return (
-    <>
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-        <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-            <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-                <Typography variant="h6" color="white">
-                    Register Technical Decommissioning
-                </Typography>
-            </CardHeader>
-            <CardBody>
-                <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* General Fields */}
-                    <div>
-                    <label htmlFor="equipmentId" className="block text-sm font-medium text-gray-700">
-                        Equipment
-                    </label>
-                    <input
-                        type="equipmentId"
-                        id="equipmentId"
-                        name="equipmentId"
-                        value={formData.equipmentName}
-                        onChange={handleChange}
-                        placeholder="Enter the equipment"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                        disabled
-                    />
-                    </div>
-
-                    <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                        Cause
-                    </label>
-                    <input
-                        type="text"
-                        id="cause"
-                        name="cause"
-                        value={formData.cause}
-                        onChange={handleChange}
-                        placeholder="Enter cause"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                    </div>
-
-                    <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                        Date
-                    </label>
-                    <input
-                        type="text"
-                        id="date"
-                        name="date"
-                        value={startDate}
-                        onChange={handleChange}
-                        placeholder=""
-                        className="mt-1 block w-full px-3 py-2 border  text-gray-900 border-gray-300 rounded-md shadow-sm"
-                        required
-                        disabled
-                    />
-                    </div>
-
-
-                    <div>
-                    <label htmlFor="destiny" className="block text-sm font-medium text-gray-700">
-                        Final destiny
-                    </label>
-                    <select
-                        id="destiny"
-                        name="destiny"
-                        value={formData.destiny}
-                        onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    >
-                        <option value="storage">Storage</option>
-                        <option value="disposal">Disposal</option>
-                        <option value="transfer">Transfer to another Unit</option>
-                    </select>
-                    </div>
-
-                    <div>
-                    <label htmlFor="receptorId" className="block text-sm font-medium text-gray-700">
-                        Receptor
-                    </label>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            id="receptorId"
-                            name="receptorId"
-                            value={formData.receptorName}
-                            onClick={handleShowROpen}
-                            placeholder="Enter receptor"
-                            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm pr-10"
-                            required
-                            readOnly
-                        />
-                        <ChevronDownIcon
-                            className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                            style={{ width: '2rem', height: '2rem', color: 'gray' }}
-                        />
-                    </div>
-                    </div>
+    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+            <Typography variant="h6" color="white">
+                Register Technical Leave
+            </Typography>
+        </CardHeader>
+        <CardBody>
+            <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* General Fields */}
+                <div>
+                <label htmlFor="equipmentId" className="block text-sm font-medium text-gray-700">
+                    Equipment
+                </label>
+                <input
+                    type="equipmentId"
+                    id="equipmentId"
+                    name="equipmentId"
+                    value={formData.equipmentName}
+                    onChange={handleChange}
+                    placeholder="Enter the equipment"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                    disabled
+                />
                 </div>
 
-                <button
-                    type="submit"
-                    className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Accept
-                </button>
-                </form>
-            </CardBody>
-
-            {/* Modal de selección de equipo */}
-            <Dialog open={showReceptors} handler={() => handleShowROpen()}>
-            <DialogHeader>Select Receptor</DialogHeader>
-            <DialogBody>
-            <Input
-                type="text"
-                placeholder="Search Receptor"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e, "receptor")}
-                className="mb-4 w-full"            
-            />
-            <div className="max-h-72 overflow-y-auto mt-3">
-                {filteredReceptor.map((receptor) => (
-                <div
-                    key={receptor.id}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleReceptorSelect(receptor.id, receptor.name)}
-                >
-                    {receptor.name} - @{receptor.userName}
+                <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Cause
+                </label>
+                <input
+                    type="text"
+                    id="cause"
+                    name="cause"
+                    value={formData.cause}
+                    onChange={handleChange}
+                    placeholder="Enter cause"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                />
                 </div>
-                ))}
+
+                <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Date
+                </label>
+                <input
+                    type="text"
+                    id="date"
+                    name="date"
+                    value={startDate}
+                    onChange={handleChange}
+                    placeholder=""
+                    className="mt-1 block w-full px-3 py-2 border  text-gray-900 border-gray-300 rounded-md shadow-sm"
+                    required
+                    disabled
+                />
+                </div>
+
+
+                <div>
+                <label htmlFor="destiny" className="block text-sm font-medium text-gray-700">
+                    Final destiny
+                </label>
+                <select
+                    id="destiny"
+                    name="destiny"
+                    value={formData.destiny}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                >
+                    <option value="storage">Storage</option>
+                    <option value="disposal">Disposal</option>
+                    <option value="transfer">Transfer to another Unit</option>
+                </select>
+                </div>
+
+                <div>
+                <label htmlFor="receptorId" className="block text-sm font-medium text-gray-700">
+                    Receptor
+                </label>
+                <div className="relative">
+                    <input
+                        type="text"
+                        id="receptorId"
+                        name="receptorId"
+                        value={formData.receptorName}
+                        onClick={handleShowROpen}
+                        placeholder="Enter receptor"
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm pr-10"
+                        required
+                        readOnly
+                    />
+                    <ChevronDownIcon
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                        style={{ width: '2rem', height: '2rem', color: 'gray' }}
+                    />
+                </div>
+                </div>
             </div>
-            </DialogBody>
-            <DialogFooter>
-            <Button
-                onClick={() => handleShowRClose()}
-                variant="outlined"
+
+            <button
+                type="submit"
+                className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                Close
-            </Button>
-            </DialogFooter>
-            </Dialog>
+                Accept
+            </button>
+            </form>
+        </CardBody>
 
-            <div>
+        {/* Modal de selección de equipo */}
+        <Dialog open={showReceptors} handler={() => handleShowROpen()}>
+        <DialogHeader>Select Receptor</DialogHeader>
+        <DialogBody>
+        <Input
+            type="text"
+            placeholder="Search Receptor"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e, "receptor")}
+            className="mb-4 w-full"            
+        />
+        <div className="max-h-72 overflow-y-auto mt-3">
+            {filteredReceptor.map((receptor) => (
+            <div
+                key={receptor.id}
+                className="p-2 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleReceptorSelect(receptor.id, receptor.name)}
+            >
+                {receptor.name} - {receptor.username}
+            </div>
+            ))}
+        </div>
+        </DialogBody>
+        <DialogFooter>
+        <Button
+            onClick={() => handleShowRClose()}
+            variant="outlined"
+        >
+            Close
+        </Button>
+        </DialogFooter>
+        </Dialog>
 
-        </div>
-        </div>
-    </>
+        <div>
+
+    </div>
+    </div>
     );
 };
 
