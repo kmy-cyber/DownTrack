@@ -128,10 +128,11 @@ export function EquipmentMaintenance() {
                 setAlertMessage("Failed maintenance cancellation");
                 throw new Error('Network response was not ok');
             }
+
             await fetchTechMaintenance(currentPage);
             setAlertType('success');
             setAlertMessage("Maintenance cancelled");
-            setCurrentItems(currentItems.filter(item => item.id !== id));
+            setCurrentItems(currentItems.filter(item => item.id !== doneMaintenanceId));
         } catch (error) {
             console.error('Error:', error);
         }

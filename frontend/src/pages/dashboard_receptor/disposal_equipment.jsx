@@ -100,15 +100,19 @@ export function EquipmentDisposalTable() {
                 },
             });
             if (response.ok) {
+                setAlertType('success');
+                setAlertMessage("Successful deletion");
                 const updatedData = currentItems.filter(item => item.id !== equipmentId);
                 setCurrentItems(updatedData);
-                alert('Successful deletion');
+                await fetchDecommissions(currentPage);
+
             } else {
-                alert('Failed to delete item');
+                setAlertType('error');
+                setAlertMessage("Failed to delete")
+
             }
         } catch (error) {
             console.error('Error deleting item:', error);
-            alert('Error deleting item');
         }
     };
 
@@ -121,7 +125,7 @@ export function EquipmentDisposalTable() {
                     onClose={handleCloseInfo}
                 />
             )}
-            <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
+            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             { !onInfo &&
                 (<div className="mt-12 mb-8 flex flex-col gap-12 ">
                 <Card>

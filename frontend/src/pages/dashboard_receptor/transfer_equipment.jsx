@@ -114,7 +114,7 @@ export function EquipmentTransferTable() {
 
     const fetchTransfers = async (page) => {
         try {
-            const response = await api(`/TransferRequest/GetPaged?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/TransferRequest/GetByArrivalDepartment/${user.id}?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -122,18 +122,7 @@ export function EquipmentTransferTable() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-
-            const transfersWithEquipment = await Promise.all(
-                data.items.map(async (transfer) => {
-                    const equipment = await getEquipment(transfer.equipmentId);            
-                    return { 
-                        ...transfer, 
-                        equipment 
-                    };
-                }
-            ));
-            
-            setCurrentItems(transfersWithEquipment);
+            setCurrentItems(data.items);
             setTotalPages(Math.ceil(data.totalCount / data.pageSize));
 
             setIsLoading(false);
@@ -160,23 +149,6 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const getEquipment= async (id) => {
-        try {
-            const response = await api(`/Equipment/Get?EquipmentId=${id}`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return await response.json();
-            
-        } catch (error) {
-            console.error("Error fetching equipment:", error);
-            return null;
-
-        }
-    };
-
     const handleSubmit = async () => {
         try {
             const response = await api('/Transfer/POST', {
@@ -189,6 +161,7 @@ export function EquipmentTransferTable() {
                 }),
             });
 
+            const data = await response.json();
             if (!response.ok) {
                 setAlertType('error');
                 setAlertMessage('Error saving transfer');
@@ -197,7 +170,7 @@ export function EquipmentTransferTable() {
             
             setAlertType('success');
             setAlertMessage('Transfer saved successfully')
-            const data = await response.json();
+            setShowRegistrationForm(false);
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
         } catch (error) {
@@ -231,7 +204,7 @@ return (
             />
         )}
 
-        <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
+        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
         
         { !onInfo &&
             (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
@@ -274,24 +247,24 @@ return (
                                                 <div className="flex items-center gap-4">
                                                     <div>
                                                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                            {transfer.equipment.sectionName}
+                                                            {transfer.requestSectionName}
                                                         </Typography>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.departmentName}
+                                                    {transfer.requestDepartmentName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.name}
+                                                    {transfer.equipmentName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.status}
+                                                    {transfer.equipmentType}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
