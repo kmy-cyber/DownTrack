@@ -8,6 +8,7 @@ import { Pagination } from '@mui/material';
 import DisposalInfoForm from "./info_disposal";
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
+import { useAuth } from '@/context/AuthContext';
 
 
 export function EquipmentDisposalTable() {
@@ -24,7 +25,7 @@ export function EquipmentDisposalTable() {
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     
-
+    const {user} = useAuth();
 
     useEffect(() => {
         fetchDecommissions(1);
@@ -47,7 +48,7 @@ export function EquipmentDisposalTable() {
 
     const fetchDecommissions = async (page) => {
         try {
-            const response = await api(`/EquipmentDecommissioning/Get_Paged_All?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/EquipmentDecommissioning/Get_Paged_All_By_ReceptorId/${user.id}?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -138,7 +139,7 @@ export function EquipmentDisposalTable() {
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {[ "Technic", "Equipment", "Date", "Cause", "Status"].map((el) => (
+                                    {[ "Technic", "Equipment", "Date", "Cause", "Status",""].map((el) => (
                                         <th
                                             key={el}
                                             className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
@@ -168,7 +169,7 @@ export function EquipmentDisposalTable() {
                                                     <div className="flex items-center gap-4">
                                                         <div>
                                                             <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                                {disposal.technicianId}
+                                                                {disposal.technicianUserName}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -181,7 +182,7 @@ export function EquipmentDisposalTable() {
                                                                 color="blue-gray"
                                                                 className="font-semibold"
                                                             >
-                                                                {disposal.equipmentId}
+                                                                {disposal.equipmentName}
                                                             </Typography>
                                                         </div>
                                                     </div>

@@ -47,7 +47,7 @@ export function EquipmentInventory() {
 
     const fetchEquipments = async (page) => {
         try {
-            const response = await api(`/Equipment/GetPaged?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/Equipment/active equipment?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             if (!response.ok) {
