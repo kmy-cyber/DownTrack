@@ -1,12 +1,9 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
-using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
 namespace DownTrack.Application.Services;
 
 public class TechnicianQueryServices : GenericQueryServices<Technician,GetTechnicianDto>,
