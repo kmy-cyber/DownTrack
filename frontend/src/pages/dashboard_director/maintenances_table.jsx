@@ -9,7 +9,7 @@ const MaintenanceHistory = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 10;
+  const pageSize = 14;
 
   useEffect(() => {
     fetchMaintenanceHistory(currentPage);
