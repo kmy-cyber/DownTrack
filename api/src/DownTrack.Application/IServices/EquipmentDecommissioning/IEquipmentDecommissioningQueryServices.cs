@@ -1,8 +1,5 @@
 using DownTrack.Application.DTO;
-<<<<<<< HEAD
 using DownTrack.Application.DTO.Paged;
-=======
->>>>>>> fc2
 using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.IServices;

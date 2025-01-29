@@ -97,7 +97,6 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         
         return await GetPagedResultByQueryAsync(paged,equipmentQuery);
     }
-<<<<<<< HEAD
 
 
     public async Task<PagedResultDto<GetEquipmentDto>> GetActiveEquipment(PagedRequestDto paged)
@@ -111,6 +110,4 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
     }
                                                                                         
 
-=======
->>>>>>> fc2
 }
