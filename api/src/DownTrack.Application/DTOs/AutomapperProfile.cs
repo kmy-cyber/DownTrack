@@ -104,7 +104,31 @@ public class AutomapperProfile : Profile
         CreateMap<EquipmentDecommissioning,EquipmentDecommissioningDto>();
         CreateMap<EquipmentDecommissioning,GetEquipmentDecommissioningDto>()
             .ForMember(dest => dest.TechnicianUserName, opt=> opt.MapFrom(src => src.Technician!.User!.UserName))
-            .ForMember(dest => dest.ReceptorUserName, opt=> opt.MapFrom(src => src.Receptor!.User!.UserName));
+            .ForMember(dest => dest.ReceptorUserName, opt=> opt.MapFrom(src => src.Receptor!.User!.UserName))
+
+            .ForMember(dest => dest.EquipmentName, opt=> opt.MapFrom(src=> src.Equipment!.Name))
+            .ForMember(dest => dest.EquipmentStatus, opt=> opt.MapFrom(src=> src.Equipment!.Status))
+            .ForMember(dest => dest.EquipmentType, opt=> opt.MapFrom(src=> src.Equipment!.Type))
+            
+            .ForMember(dest => dest.RequestDepartmentId, opt => opt.MapFrom(src => src.Equipment!.DepartmentId))
+            .ForMember(dest => dest.RequestDepartmentName, opt => opt.MapFrom(src => src.Equipment!.Department.Name))
+            .ForMember(dest=> dest.RequestSectionId, opt => opt.MapFrom(src => src.Equipment!.Department.SectionId))
+            .ForMember(dest=> dest.RequestSectionName, opt => opt.MapFrom(src => src.Equipment!.Department.Section.Name));
 
     }
 }
+
+/*
+    public int? TechnicianId { get; set; }
+    public int? EquipmentId { get; set; }
+    public int? ReceptorId { get; set; }
+    public DateTime Date { get; set; }
+    public string Cause { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public Technician? Technician { get; set; }
+    public Equipment? Equipment { get; set; }
+    public EquipmentReceptor? Receptor { get; set; }
+
+
+
+*/
