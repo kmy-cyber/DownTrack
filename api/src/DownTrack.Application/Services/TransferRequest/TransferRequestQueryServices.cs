@@ -34,7 +34,8 @@ public class TransferRequestQueryServices :GenericQueryServices<TransferRequest,
 
 
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
-                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment);
+                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment,
+                                                                                     tr=> tr.Status == "Unregistered");
 
         
         return await GetPagedResultByQueryAsync(paged,queryTransferRequest);
@@ -43,6 +44,7 @@ public class TransferRequestQueryServices :GenericQueryServices<TransferRequest,
     }
 
     
+
 
 }
 

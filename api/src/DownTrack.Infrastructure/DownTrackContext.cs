@@ -184,6 +184,8 @@ public class DownTrackContext : IdentityDbContext<User>
                 .HasForeignKey(tr => tr.ArrivalDepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+      entity.Property(tr=> tr.Status)
+            .HasDefaultValue("Unregistered");       
 
     });
 

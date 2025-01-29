@@ -5,6 +5,7 @@ public class TransferRequest : GenericEntity
 {
     public int? SectionManagerId { get; set; }
 
+    public string Status {get; set;} = "Unregistered";
     public  Employee? SectionManager { get; set; } 
 
     public int EquipmentId { get; set; }
