@@ -62,11 +62,10 @@ const InventoryTable = () => {
     }
   };
 
-  const getEquipment = async (targetId) => {
+  const getEquipmentById = async (targetId) => {
     setLoading(true);
     setError(null);
     try {
-      // http://localhost:5217/api/Equipment/GET?equipmentId=1
       const response = await api(`/Equipment/GET?equipmentId=${targetId}`);
       if (!response.ok)
         throw new Error(
@@ -74,32 +73,50 @@ const InventoryTable = () => {
         );
       const equipment = await response.json();
       setEquipmentData([equipment]);
-      // setTotalPages(Math.ceil(data.totalCount / pageSize));
+      setTotalPages(0); // No paginación al buscar por ID
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
-  
+  };
+
+  const getEquipmentByName = async (targetName) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api(`/Equipment/SearchByNameAndBySectionManagerId/${user.id}?PageNumber=${currentPage}&PageSize=${pageSize}&equipmentName=${targetName}`);
+      if (!response.ok)
+        throw new Error(
+          response.status === 500 ? "Server Internal Error." : "Equipment not found."
+        );
+      const data = await response.json();
+      setEquipmentData(data.items);
+      setTotalPages(Math.ceil(data.totalCount / pageSize));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Función de cambio de página con validación de rango
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages && pageNumber !== currentPage) {
       setCurrentPage(pageNumber);
     }
   };
-  
 
   const getStatusColor = (status) => {
     switch (status) {
       case "Active":
-        return "bg-green-100 text-green-800"; // Green for Active
+        return "bg-green-100 text-green-800";
       case "UnderMaintenance":
-        return "bg-yellow-100 text-yellow-800"; // Yellow for Under Maintenance
+        return "bg-yellow-100 text-yellow-800";
       case "Decommissioned":
-        return "bg-red-100 text-red-800"; // Red for Decommissioned
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800"; // Default if status is unknown
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -146,7 +163,14 @@ const InventoryTable = () => {
             label="Search"
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && getEquipment(searchTerm)}
+            onKeyDown={(e) => 
+              {if(e.key === "Enter" && searchTerm.trim()){
+                e.preventDefault();
+                searchType === "id" ? 
+                getEquipmentById(searchTerm):
+                getEquipmentByName(searchTerm)
+              }}
+            }
           />
         </div>
 
@@ -194,7 +218,7 @@ const InventoryTable = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
+        {searchType === "name" && totalPages > 1 && (
           <div className="flex justify-center mt-4 space-x-2">
             <IconButton
               variant="outlined"
