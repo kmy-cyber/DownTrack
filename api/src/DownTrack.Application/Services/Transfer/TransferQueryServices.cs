@@ -21,4 +21,8 @@ public class TransferQueryServices : GenericQueryServices<Transfer,GetTransferDt
 
     public override Expression<Func<Transfer, object>>[] GetIncludes()=> includes;
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fc2
