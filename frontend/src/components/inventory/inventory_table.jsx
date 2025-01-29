@@ -34,13 +34,13 @@ const InventoryTable = () => {
     setError(null);
 
     let url = `/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    // console.log(`idSect:${sectionId} idDept ${departmentId}`);
+    console.log(`idSect:${sectionId} idDept ${departmentId}`);
 
     if (sectionId) {
       url = `/Equipment/equipments/section/${sectionId}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     } else if (departmentId) {
       url = `/Equipment/equipments/department/${departmentId}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
-    } else if (isSectionManager !== "director") {
+    } else if (isSectionManager) {
       url = `/Equipment/equipments/section-manager/${user.id}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     }
 
@@ -53,6 +53,7 @@ const InventoryTable = () => {
 
     try {
       const response = await api(url);
+      console.log(url);
       if (!response.ok)
         throw new Error(
           response.status === 500 ? "Server Internal Error." : "Equipment not found."
