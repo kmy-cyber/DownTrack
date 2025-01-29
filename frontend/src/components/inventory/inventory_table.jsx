@@ -23,6 +23,7 @@ const InventoryTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState(null); // Estado para el equipo seleccionado
   const isSectionManager = user.role.toLowerCase() === "sectionmanager";
+  console.log(`is section manager: ${isSectionManager}`);
   const pageSize = 12;
 
   useEffect(() => {
@@ -214,7 +215,7 @@ const InventoryTable = () => {
                       <td className="px-6 py-3 border-b text-center">{equipment.dateOfadquisition || "N/A"}</td>
                       <td className="px-6 py-3 border-b text-center">{equipment.sectionName || "N/A"}</td>
                       <td className="px-6 py-3 border-b text-center">{equipment.departmentName || "N/A"}</td>
-                      <td className="px-6 py-3 border-b text-center">
+                      {isSectionManager && (<td className="px-6 py-3 border-b text-center">
                         <IconButton 
                           onClick={() => {
                             setSelectedEquipmentId(equipment.id); // Guardar el ID del equipo seleccionado
@@ -224,7 +225,7 @@ const InventoryTable = () => {
                         >
                           <ArrowsRightLeftIcon className="h-5 w-5" />
                         </IconButton>
-                      </td>
+                      </td>)}
                     </tr>
                   ))
                 ) : (
