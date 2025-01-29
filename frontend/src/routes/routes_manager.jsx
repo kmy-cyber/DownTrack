@@ -33,12 +33,12 @@ export const routesManager = [
             path: "/sections",
             element: <SectionsTable/>,
         },
-        {
-          icon: <ArrowsRightLeftIcon {...icon}/>,
-          name: "Request Transfer",
-          path: "/transfer_request",
-          element: <TransferRequestForm/>
-        },
+          // {
+          //   icon: <ArrowsRightLeftIcon {...icon}/>,
+          //   name: "Request Transfer",
+          //   path: "/transfer_request",
+          //   element: <TransferRequestForm/>
+          // },
         {
           icon: <CubeIcon {...icon}/>,
           name: "Inventory",
