@@ -97,7 +97,7 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
 
 
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
-                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment)
+                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment && tr.Status == "Unregistered")
                                                                       .Include(tr => tr.SectionManager!.User)
                                                                       .Include(tr=> tr.ArrivalDepartment)
                                                                       .Include(tr=> tr.Equipment)                                                                  
@@ -128,6 +128,7 @@ public class TransferRequestQueryServices : ITransferRequestQueryServices
         };
 
     }
+
 
 
 }
