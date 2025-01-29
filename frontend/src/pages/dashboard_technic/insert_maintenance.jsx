@@ -10,6 +10,8 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
 import api from "@/middlewares/api";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { useNavigate} from "react-router-dom";
+
 
 export const MaintenanceCreationForm = () => {
     const { id, name:nameEquipment, type } = useParams();
@@ -31,6 +33,7 @@ export const MaintenanceCreationForm = () => {
     const [alertType, setAlertType] = useState('success');
     const [dateFormat, setDateFormat] = useState("");
 
+    const {navigate} = useNavigate();
     const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -111,6 +114,8 @@ export const MaintenanceCreationForm = () => {
             else if (response.ok) {
                 setAlertType('success');
                 setAlertMessage("Successful registration");
+                window.location.href = '/dashboard/technic/equipment_inventory';
+                
             } else {
                 setAlertMessage("Failed to login");
             }
@@ -118,9 +123,8 @@ export const MaintenanceCreationForm = () => {
 
             
         } catch (error) {
-            setAlertType('error');
             console.error("Error logging in:", error);
-            setAlertMessage('An error occurred during the login process');
+
         } finally {
             setIsLoading(false);
         }

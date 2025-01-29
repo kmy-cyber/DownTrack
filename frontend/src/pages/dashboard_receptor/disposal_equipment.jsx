@@ -8,7 +8,8 @@ import { Pagination } from '@mui/material';
 import DisposalInfoForm from "./info_disposal";
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
-
+import { useAuth } from '@/context/AuthContext';
+import DropdownMenu from '@/components/DropdownMenu';
 
 export function EquipmentDisposalTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -24,11 +25,33 @@ export function EquipmentDisposalTable() {
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     
-
+    const {user} = useAuth();
 
     useEffect(() => {
         fetchDecommissions(1);
     }, []);
+
+    const options =(disposal) => [
+        { 
+            label: 'Information', 
+            className: 'text-blue-500 h-5 w-5', 
+            icon: InformationCircleIcon,
+            action: () => handleShowInfo(disposal)
+        },
+        { 
+            label: 'Register', 
+            className: 'text-green-500 h-5 w-5', 
+            icon: CheckCircleIcon,
+            action: () => registerItem(disposal.id)
+        },
+        {
+            label: 'Delete', 
+            className: 'text-red-500 h-5 w-5', 
+            icon: TrashIcon,
+            action: () => deleteItem(disposal.id)
+        }
+
+    ];
 
     const handleShowInfo = (disposal) => {
         setSelectedDisposal(disposal);
@@ -47,7 +70,7 @@ export function EquipmentDisposalTable() {
 
     const fetchDecommissions = async (page) => {
         try {
-            const response = await api(`/EquipmentDecommissioning/Get_Paged_All?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/EquipmentDecommissioning/Get_Paged_All_By_ReceptorId/${user.id}?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -100,15 +123,19 @@ export function EquipmentDisposalTable() {
                 },
             });
             if (response.ok) {
+                setAlertType('success');
+                setAlertMessage("Successful deletion");
                 const updatedData = currentItems.filter(item => item.id !== equipmentId);
                 setCurrentItems(updatedData);
-                alert('Successful deletion');
+                await fetchDecommissions(currentPage);
+
             } else {
-                alert('Failed to delete item');
+                setAlertType('error');
+                setAlertMessage("Failed to delete")
+
             }
         } catch (error) {
             console.error('Error deleting item:', error);
-            alert('Error deleting item');
         }
     };
 
@@ -121,7 +148,7 @@ export function EquipmentDisposalTable() {
                     onClose={handleCloseInfo}
                 />
             )}
-            <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
+            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             { !onInfo &&
                 (<div className="mt-12 mb-8 flex flex-col gap-12 ">
                 <Card>
@@ -134,7 +161,7 @@ export function EquipmentDisposalTable() {
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {[ "Technic", "Equipment", "Date", "Cause", "Status"].map((el) => (
+                                    {[ "Technic", "Equipment", "Date", "Cause", "Status",""].map((el) => (
                                         <th
                                             key={el}
                                             className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
@@ -164,7 +191,7 @@ export function EquipmentDisposalTable() {
                                                     <div className="flex items-center gap-4">
                                                         <div>
                                                             <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                                {disposal.technicianId}
+                                                                {disposal.technicianUserName}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -177,7 +204,7 @@ export function EquipmentDisposalTable() {
                                                                 color="blue-gray"
                                                                 className="font-semibold"
                                                             >
-                                                                {disposal.equipmentId}
+                                                                {disposal.equipmentName}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -198,48 +225,10 @@ export function EquipmentDisposalTable() {
                                                     </Typography>
                                                 </td>
                                                 <td className={className}>
-                                                    <div className="flex items-center gap-4">
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => handleShowInfo(disposal)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-blue-600"
-                                                            >
-                                                                Info
-                                                            </Typography>
-                                                            <InformationCircleIcon className="w-5 text-blue-600" />
-                                                        </div>
-
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => registerItem(disposal.id)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-green-600"
-                                                            >
-                                                                Register
-                                                            </Typography>
-                                                            <CheckCircleIcon className="w-5 text-green-600" />
-                                                        </div>
-
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => deleteItem(disposal.id)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-red-800"
-                                                            >
-                                                                Delete
-                                                            </Typography>
-                                                            <TrashIcon className="w-4 text-red-800" />
-                                                        </div>
+                                                    <div className="text-right">
+                                                    <td className={className + "items-center text-right"}>
+                                                            <DropdownMenu options={options(disposal)} />
+                                                    </td>
 
                                                     </div>
                                                 </td>
