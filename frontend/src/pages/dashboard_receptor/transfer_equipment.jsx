@@ -9,6 +9,7 @@ import { Pagination } from '@mui/material';
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
+import DropdownMenu from '@/components/DropdownMenu';
 
 export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -38,14 +39,20 @@ export function EquipmentTransferTable() {
 
     const { user } = useAuth();
 
-    const [formData, setFormData] = useState({
-        "id": 0,
-        "requestId": 0,
-        "shippingSupervisorId": 0,
-        "shippingSupervisorName": "",
-        "equipmentReceptorId": 0,
-
-    });
+    const options =(transfer) => [
+        { 
+            label: 'Information',
+            className: 'text-blue-500 h-5 w-5', 
+            icon: InformationCircleIcon,
+            action: () => handleShowInfo(transfer)
+        },
+        { 
+            label: 'Register',
+            className: 'text-green-500 h-5 w-5', 
+            icon: CheckCircleIcon,
+            action: () => handleRegister(transfer)
+        },
+    ];
 
     useEffect(() => {
         setIsLoading(true);
@@ -59,6 +66,7 @@ export function EquipmentTransferTable() {
     }, []);
     
     const handleShowInfo = (transfer) => {
+        console.log("selected tranfer", transfer);
         setSelectedTransfer(transfer);
         setOnInfo(true);
     };
@@ -274,33 +282,9 @@ return (
                                             </td>
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
-                                                    <div 
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => handleShowInfo(transfer)}
-                                                    >
-                                                        <Typography
-                                                            as="a"
-                                                            href="#"
-                                                            className="text-xs font-semibold text-blue-600"
-                                                        >
-                                                            Info
-                                                        </Typography>
-                                                        <InformationCircleIcon className="w-5 text-blue-600" />
-                                                    </div>
-                                                    <div 
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => handleRegister(transfer)}
-                                                    >
-                                                        <Typography
-                                                            as="a"
-                                                            href="#"
-                                                            className="text-xs font-semibold text-green-600"
-                                                        >
-                                                            Register
-                                                        </Typography>
-                                                        <CheckCircleIcon className="w-5 text-green-600" />
-                                                    </div>
-
+                                                    <td className={className + "items-center text-center"}>
+                                                            <DropdownMenu options={options(transfer)} />
+                                                </td>
                                                 </div>
                                             </td>
                                         </tr>

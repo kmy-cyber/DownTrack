@@ -9,7 +9,7 @@ import DisposalInfoForm from "./info_disposal";
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
-
+import DropdownMenu from '@/components/DropdownMenu';
 
 export function EquipmentDisposalTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -30,6 +30,28 @@ export function EquipmentDisposalTable() {
     useEffect(() => {
         fetchDecommissions(1);
     }, []);
+
+    const options =(disposal) => [
+        { 
+            label: 'Information', 
+            className: 'text-blue-500 h-5 w-5', 
+            icon: InformationCircleIcon,
+            action: () => handleShowInfo(disposal)
+        },
+        { 
+            label: 'Register', 
+            className: 'text-green-500 h-5 w-5', 
+            icon: CheckCircleIcon,
+            action: () => registerItem(disposal.id)
+        },
+        {
+            label: 'Delete', 
+            className: 'text-red-500 h-5 w-5', 
+            icon: TrashIcon,
+            action: () => deleteItem(disposal.id)
+        }
+
+    ];
 
     const handleShowInfo = (disposal) => {
         setSelectedDisposal(disposal);
@@ -203,48 +225,10 @@ export function EquipmentDisposalTable() {
                                                     </Typography>
                                                 </td>
                                                 <td className={className}>
-                                                    <div className="flex items-center gap-4">
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => handleShowInfo(disposal)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-blue-600"
-                                                            >
-                                                                Info
-                                                            </Typography>
-                                                            <InformationCircleIcon className="w-5 text-blue-600" />
-                                                        </div>
-
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => registerItem(disposal.id)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-green-600"
-                                                            >
-                                                                Register
-                                                            </Typography>
-                                                            <CheckCircleIcon className="w-5 text-green-600" />
-                                                        </div>
-
-                                                        <div 
-                                                            className="flex items-center gap-1"
-                                                            onClick={() => deleteItem(disposal.id)}
-                                                        >
-                                                            <Typography
-                                                                as="a"
-                                                                href="#"
-                                                                className="text-xs font-semibold text-red-800"
-                                                            >
-                                                                Delete
-                                                            </Typography>
-                                                            <TrashIcon className="w-4 text-red-800" />
-                                                        </div>
+                                                    <div className="text-right">
+                                                    <td className={className + "items-center text-right"}>
+                                                            <DropdownMenu options={options(disposal)} />
+                                                    </td>
 
                                                     </div>
                                                 </td>
