@@ -4,7 +4,6 @@ import { ArrowLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
-import { string } from "prop-types";
 
 export function SectionsTable() {
     const { user } = useAuth();
@@ -47,6 +46,28 @@ export function SectionsTable() {
         }
     };
 
+    const fetchSectionsForManager = async (pageNumber) => {
+        setLoading(true);
+        setError(null);
+        try {
+            // http://localhost:5217/api/Section/GetSectionsByManager?PageNumber=1&PageSize=7&sectionManagerId=2
+            const response = await api(`/Section/GetSectionsByManager?PageNumber=${pageNumber}&PageSize=${pageSize}&sectionManagerId=${user.id}`, { method: "GET" });
+            if (!response.ok) {
+                if (response.status === 500) {
+                    throw new Error("There is no sections yet.");
+                }
+                throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            setSectionList(data.items);
+            setTotalPages(Math.ceil(data.totalCount / pageSize));
+        } catch (error) {
+            setError(error.message || "Failed to fetch sections");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const searchSectionByName = async (name) => {
         setLoading(true);
         setError(null);
@@ -71,12 +92,10 @@ export function SectionsTable() {
         }
     };
 
-    const handleSearchKeyDown = (e) => {
-        if (e.key === "Enter") {
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && searchTerm.trim()) {
             e.preventDefault(); // Prevenimos el comportamiento por defecto (como submit de un formulario)
-            if (searchTerm.trim()) {
-                searchSectionByName(searchTerm);
-            }
+            searchSectionByName(searchTerm);
         }
     };
 
@@ -113,7 +132,7 @@ export function SectionsTable() {
                                 label="Search Section by Name"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                onKeyDown={handleSearchKeyDown} // Solo se ejecuta en Enter
+                                onKeyDown={handleKeyDown} // Solo se ejecuta en Enter
                                 className="w-full"
                             />
                         </div>
