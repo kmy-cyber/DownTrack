@@ -46,16 +46,6 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
             e=> e.Name == sectionName
         };
 
-<<<<<<< HEAD
-=======
-    public async Task<GetSectionDto> GetSectionByNameAsync(string sectionName)
-    {
-        var expressions = new Expression<Func<Section, bool>>[]
-        {
-            e=> e.Name == sectionName
-        };
-
->>>>>>> fc2
         var includes = GetIncludes();
 
         var section = await _unitOfWork.GetRepository<Section>()
@@ -66,10 +56,6 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
             throw new Exception($"No section found with the username '{sectionName}'.");
 
         return _mapper.Map<GetSectionDto>(section);
-<<<<<<< HEAD
-
-=======
->>>>>>> fc2
     }
 
 }
