@@ -111,7 +111,6 @@ export const UserCreationForm = () => {
                     },
                     
                     body: JSON.stringify({
-                        id: globalId,
                         name: formData.name,
                         userName: formData.username,
                         email: formData.email,

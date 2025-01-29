@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Typography, Button, Dialog, DialogTitle, DialogHeader,DialogFooter, DialogBody, Input, DialogContent, DialogActions, TextField, Select, MenuItem
-} from "@material-tailwind/react";
+import { Card, CardHeader, CardBody, Typography, Button } from "@material-tailwind/react";
 import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import TransferInfoForm from "./info_transfer";
@@ -9,25 +8,15 @@ import { Pagination } from '@mui/material';
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
-import DropdownMenu from '@/components/DropdownMenu';
 
 export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
     const [selectedTransfer, setSelectedTransfer] = useState(null);
     const [isRegistered, setIsRegistered] = useState(false);
+    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+    const [assignedPerson, setAssignedPerson] = useState("");
     const [registeredTransfers, setRegisteredTransfers] = useState([]); 
     
-
-    const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-    const [shippingSupervisors, setShippingSupervisors] = useState([]);
-    const [selectedSupervisor, setSelectedSupervisor] = useState(null);
-
-    const [dateFormat, setDateFormat] = useState("");
-    const [startDate, setStartDate] = useState("");
-
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filteredShippingS, setFilteredShippingS] = useState([]);
-
     const [isLoading, setIsLoading] = useState(true);
 
     const[alertMessage, setAlertMessage] = useState('');
@@ -39,34 +28,27 @@ export function EquipmentTransferTable() {
 
     const { user } = useAuth();
 
-    const options =(transfer) => [
-        { 
-            label: 'Information',
-            className: 'text-blue-500 h-5 w-5', 
-            icon: InformationCircleIcon,
-            action: () => handleShowInfo(transfer)
-        },
-        { 
-            label: 'Register',
-            className: 'text-green-500 h-5 w-5', 
-            icon: CheckCircleIcon,
-            action: () => handleRegister(transfer)
-        },
-    ];
+    const [formData, setFormData] = useState({
+        "id": 0,
+        "requestId": 0,
+        "shippingSupervisorId": 0,
+        "equipmentReceptorId": 0,
+        "date": "",
+
+        "id": 1,
+        "name": "",
+        "type": "",
+        "status": "",
+        "departmentName": 4,
+        "sectionName": 1,
+        "dateRequest": "",
+    });
 
     useEffect(() => {
-        setIsLoading(true);
-        const currentDate = generateDateTime();
-        setStartDate(currentDate);
-        const dateInFormat = inFormatDate();
-        setDateFormat(dateInFormat);
         fetchTransfers(1);
-        fetchShippingSupervisors();
-        setIsLoading(false);
     }, []);
     
     const handleShowInfo = (transfer) => {
-        console.log("selected tranfer", transfer);
         setSelectedTransfer(transfer);
         setOnInfo(true);
     };
@@ -81,48 +63,14 @@ export function EquipmentTransferTable() {
         setSelectedTransfer(transfer);
     };
 
-
     const handlePageChange = async (event, newPage) => {
         setCurrentPage(newPage);
         await fetchTransfers(newPage);
     };
 
-    const handleOpenDialog  = (id) => {
-        setSelectedTransfer(id);
-        setShowRegistrationForm(true);
-    }
-
-    const handleShippingSelect = (shippingId, shippingName) => {
-        setSelectedSupervisor({
-            id: shippingId,
-            name: shippingName
-        });
-    };
-
-    const generateDateTime = () => {
-        const currentDate = new Date();
-        return currentDate
-            .toISOString()
-            .slice(0, 19) // Recorta para obtener la fecha y hora en formato YYYY-MM-DDTHH:MM:SS
-            .replace("T", " "); // Reemplaza "T" con espacio para formato MySQL
-    };
-
-    const inFormatDate = () => {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-        const milliseconds = String(currentDate.getMilliseconds()).padStart(3, '0');
-    
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-    };
-
     const fetchTransfers = async (page) => {
         try {
-            const response = await api(`/TransferRequest/GetByArrivalDepartment/${user.id}?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/TransferRequest/GetPaged?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -130,7 +78,18 @@ export function EquipmentTransferTable() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setCurrentItems(data.items);
+
+            const transfersWithEquipment = await Promise.all(
+                data.items.map(async (transfer) => {
+                    const equipment = await getEquipment(transfer.equipmentId);            
+                    return { 
+                        ...transfer, 
+                        equipment 
+                    };
+                }
+            ));
+            
+            setCurrentItems(transfersWithEquipment);
             setTotalPages(Math.ceil(data.totalCount / data.pageSize));
 
             setIsLoading(false);
@@ -141,44 +100,43 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const fetchShippingSupervisors = async () => {
+    const getEquipment= async (id) => {
         try {
-            const response = await api('/Employee/GetAllShippingSupervisor', {
+            const response = await api(`/Equipment/Get?EquipmentId=${id}`, {
                 method: 'GET',
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            const data = await response.json();
-            console.log("Responsibles data", data);
-            setShippingSupervisors(data);
+            return await response.json();
+            
         } catch (error) {
-            console.error("Error fetching responsibles:", error);
+            console.error("Error fetching equipment:", error);
+            return null;
+
         }
     };
 
-    const handleSubmit = async () => {
+    const transferPostData = async (transferData) => {
         try {
             const response = await api('/Transfer/POST', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    "requestId": selectedTransfer.id,
-                    "shippingSupervisorId": selectedSupervisor.id,
-                    "equipmentReceptorId": parseInt(user.id),
-                    "date": dateFormat,
+                    "requestId": transferData.id,
+                    "shippingSupervisorId": transferData.assignedPerson,
+                    "equipmentReceptorId": user.id,
+                    "date": transferData.date,
                 }),
             });
 
-            const data = await response.json();
             if (!response.ok) {
-                setAlertType('error');
-                setAlertMessage('Error saving transfer');
                 throw new Error('Network response was not ok');
             }
-            
-            setAlertType('success');
-            setAlertMessage('Transfer saved successfully')
-            setShowRegistrationForm(false);
+
+            const data = await response.json();
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
         } catch (error) {
@@ -187,19 +145,37 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const handleSearch = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-        
-        if (query) {
-            setFilteredShippingS(
-                shippingSupervisors.filter(
-                    (receptor) => receptor.name.toLowerCase().includes(query.toLowerCase())
-                )
-            );
-        } else {
-            setFilteredShippingS(shippingSupervisors);
+    const handleAcceptRegister = async (person) => {
+        console.log("handleAcceptRegister called with person:", person); 
+        if (selectedTransfer) {
+            console.log("selectedTransfer:", selectedTransfer); 
+            const updatedData = [...currentItems];
+            const index = updatedData.findIndex(item => item.id === selectedTransfer.id);
+            if (index !== -1) {
+                console.log("Updating transfer at index:", index); 
+                updatedData[index].registered = true;
+                updatedData[index].assignedPerson = person;
+                currentItems.splice(index, 1, ...updatedData.slice(index, index + 1));
+
+                await transferPostData(selectedTransfer);
+
+                setIsRegistered(true);
+                setShowRegistrationForm(false);
+                setAssignedPerson("");
+                setRegisteredTransfers([...registeredTransfers, { id: selectedTransfer.id, assignedPerson: person }]);
+                setAlertMessage("Successful registration");
+            }
+            else {
+                console.log("Transfer not found in data"); 
+            }
+        } 
+        else {
+            console.log("No selected transfer or already registered");
         }
+    };
+
+    const handleCancelRegister = () => {
+        setShowRegistrationForm(false);
     };
 
 
@@ -211,8 +187,14 @@ return (
                 onClose={handleCloseInfo}
             />
         )}
+        {showRegistrationForm && (
+        <RegisterForm
+            onAccept={handleAcceptRegister}
+            onCancel={handleCancelRegister}
+        />
+        )}
 
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
+        <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
         
         { !onInfo &&
             (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
@@ -226,14 +208,14 @@ return (
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                             <tr>
-                                {[ "Source Section","Source Department", "Equipment","Type","Date", ""].map((el) => (
+                                {[ "Source Section","Source Department", "Equipment","Type","Date"].map((el) => (
                                     <th
                                         key={el}
-                                        className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                        className="border-b border-blue-gray-50 py-3 px-5 text-left"
                                     >
                                         <Typography
                                             variant="small"
-                                            className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                            className="text-[11px] font-bold uppercase text-blue-gray-400"
                                         >
                                             {el}
                                         </Typography>
@@ -255,24 +237,24 @@ return (
                                                 <div className="flex items-center gap-4">
                                                     <div>
                                                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                            {transfer.requestSectionName}
+                                                            {transfer.equipment.sectionName}
                                                         </Typography>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.requestDepartmentName}
+                                                    {transfer.equipment.departmentName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipmentName}
+                                                    {transfer.equipment.name}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipmentType}
+                                                    {transfer.equipment.status}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
@@ -282,9 +264,33 @@ return (
                                             </td>
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
-                                                    <td className={className + "items-center text-center"}>
-                                                            <DropdownMenu options={options(transfer)} />
-                                                </td>
+                                                    <div 
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => handleShowInfo(transfer)}
+                                                    >
+                                                        <Typography
+                                                            as="a"
+                                                            href="#"
+                                                            className="text-xs font-semibold text-blue-600"
+                                                        >
+                                                            Info
+                                                        </Typography>
+                                                        <InformationCircleIcon className="w-5 text-blue-600" />
+                                                    </div>
+                                                    <div 
+                                                        className="flex items-center gap-1"
+                                                        onClick={() => handleRegister(transfer)}
+                                                    >
+                                                        <Typography
+                                                            as="a"
+                                                            href="#"
+                                                            className="text-xs font-semibold text-green-600"
+                                                        >
+                                                            Register
+                                                        </Typography>
+                                                        <CheckCircleIcon className="w-5 text-green-600" />
+                                                    </div>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -294,37 +300,6 @@ return (
                         </tbody>
                     </table>
                 </CardBody>
-                    <Dialog open={showRegistrationForm} handler={() => handleOpenDialog()}>
-                    <DialogHeader>Select Shipping Supervisor</DialogHeader>
-                        <DialogBody>
-                        <Input
-                            type="text"
-                            placeholder="Search Shipping Supervisor"
-                            value={searchQuery}
-                            onChange={(e) => handleSearch(e, "shippingS")}
-                            className="mb-4 w-full"            
-                        />
-                        <div className="max-h-72 overflow-y-auto mt-3">
-                            {filteredShippingS.map((shipping) => (
-                            <div
-                                key={shipping.id}
-                                className={`p-2 cursor-pointer hover:bg-gray-300 ${selectedSupervisor?.id === shipping.id ? 'bg-gray-200' : ''}`}
-                                onClick={() => handleShippingSelect(shipping.id, shipping.name)}
-                            >
-                                {shipping.name}
-                            </div>
-                            ))}
-                        </div>
-                        </DialogBody>
-                    <DialogFooter>
-                            <Button onClick={() => setShowRegistrationForm(false)} color="primary">
-                                Cancel
-                            </Button>
-                            <Button className='ml-2' onClick={() => {handleSubmit()}} color="primary">
-                                Accept
-                            </Button>
-                        </DialogFooter>
-                    </Dialog>
             </Card>
             <Pagination
                     count={totalPages}

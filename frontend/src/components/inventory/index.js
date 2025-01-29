@@ -1,1 +1,1 @@
-export * from "@/components/inventory/general_inventory_table"
+export * from "@/components/inventory/inventory_table"
