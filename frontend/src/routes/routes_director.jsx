@@ -7,7 +7,8 @@ import {
     WrenchScrewdriverIcon,
     ArrowsRightLeftIcon,
     UserIcon,
-    DocumentCheckIcon
+    DocumentCheckIcon,
+    ArchiveBoxArrowDownIcon
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
@@ -18,6 +19,7 @@ import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transf
 import UserTable from "@/pages/dashboard_director/employees_table";
 import EvaluationsTable from "@/pages/dashboard_director/evaluations_table";
 import EquipmentDecommissionsTable from "@/pages/dashboard_director/decommissions_table";
+import TransferRequestsTable from "@/pages/dashboard_director/transfer_requests";
   
   const typeUser = 1;
   
@@ -70,6 +72,12 @@ export const routesDirector = [
           name: "Transfers",
           path: "/transfers",
           element: <EquipmentTransferTable/>
+        },
+        {
+          icon: <ArchiveBoxArrowDownIcon {...icon}/>,
+          name: "Transfers Requests",
+          path: "/transfer_requests",
+          element: <TransferRequestsTable/>
         },
         {
           icon: <DocumentCheckIcon {...icon}/>,
