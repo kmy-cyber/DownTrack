@@ -9,6 +9,7 @@ import { Pagination } from '@mui/material';
 import MessageAlert from '@/components/Alert_mssg/alert_mssg';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
+import DropdownMenu from '@/components/DropdownMenu';
 
 export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -38,14 +39,20 @@ export function EquipmentTransferTable() {
 
     const { user } = useAuth();
 
-    const [formData, setFormData] = useState({
-        "id": 0,
-        "requestId": 0,
-        "shippingSupervisorId": 0,
-        "shippingSupervisorName": "",
-        "equipmentReceptorId": 0,
-
-    });
+    const options =(transfer) => [
+        { 
+            label: 'Information',
+            className: 'text-blue-500 h-5 w-5', 
+            icon: InformationCircleIcon,
+            action: () => handleShowInfo(transfer)
+        },
+        { 
+            label: 'Register',
+            className: 'text-green-500 h-5 w-5', 
+            icon: CheckCircleIcon,
+            action: () => handleRegister(transfer)
+        },
+    ];
 
     useEffect(() => {
         setIsLoading(true);
@@ -59,6 +66,7 @@ export function EquipmentTransferTable() {
     }, []);
     
     const handleShowInfo = (transfer) => {
+        console.log("selected tranfer", transfer);
         setSelectedTransfer(transfer);
         setOnInfo(true);
     };
@@ -114,7 +122,7 @@ export function EquipmentTransferTable() {
 
     const fetchTransfers = async (page) => {
         try {
-            const response = await api(`/TransferRequest/GetPaged?PageNumber=${page}&PageSize=10`, {
+            const response = await api(`/TransferRequest/GetByArrivalDepartment/${user.id}?PageNumber=${page}&PageSize=10`, {
                 method: 'GET',
             });
             
@@ -122,18 +130,7 @@ export function EquipmentTransferTable() {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-
-            const transfersWithEquipment = await Promise.all(
-                data.items.map(async (transfer) => {
-                    const equipment = await getEquipment(transfer.equipmentId);            
-                    return { 
-                        ...transfer, 
-                        equipment 
-                    };
-                }
-            ));
-            
-            setCurrentItems(transfersWithEquipment);
+            setCurrentItems(data.items);
             setTotalPages(Math.ceil(data.totalCount / data.pageSize));
 
             setIsLoading(false);
@@ -160,23 +157,6 @@ export function EquipmentTransferTable() {
         }
     };
 
-    const getEquipment= async (id) => {
-        try {
-            const response = await api(`/Equipment/Get?EquipmentId=${id}`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return await response.json();
-            
-        } catch (error) {
-            console.error("Error fetching equipment:", error);
-            return null;
-
-        }
-    };
-
     const handleSubmit = async () => {
         try {
             const response = await api('/Transfer/POST', {
@@ -189,6 +169,7 @@ export function EquipmentTransferTable() {
                 }),
             });
 
+            const data = await response.json();
             if (!response.ok) {
                 setAlertType('error');
                 setAlertMessage('Error saving transfer');
@@ -197,7 +178,7 @@ export function EquipmentTransferTable() {
             
             setAlertType('success');
             setAlertMessage('Transfer saved successfully')
-            const data = await response.json();
+            setShowRegistrationForm(false);
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
         } catch (error) {
@@ -231,7 +212,7 @@ return (
             />
         )}
 
-        <MessageAlert message={alertMessage} type="success" onClose={() => setAlertMessage('')} />
+        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
         
         { !onInfo &&
             (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
@@ -274,24 +255,24 @@ return (
                                                 <div className="flex items-center gap-4">
                                                     <div>
                                                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                            {transfer.equipment.sectionName}
+                                                            {transfer.requestSectionName}
                                                         </Typography>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.departmentName}
+                                                    {transfer.requestDepartmentName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.name}
+                                                    {transfer.equipmentName}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.equipment.status}
+                                                    {transfer.equipmentType}
                                                 </Typography>
                                             </td>
                                             <td className={className}>
@@ -301,33 +282,9 @@ return (
                                             </td>
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
-                                                    <div 
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => handleShowInfo(transfer)}
-                                                    >
-                                                        <Typography
-                                                            as="a"
-                                                            href="#"
-                                                            className="text-xs font-semibold text-blue-600"
-                                                        >
-                                                            Info
-                                                        </Typography>
-                                                        <InformationCircleIcon className="w-5 text-blue-600" />
-                                                    </div>
-                                                    <div 
-                                                        className="flex items-center gap-1"
-                                                        onClick={() => handleRegister(transfer)}
-                                                    >
-                                                        <Typography
-                                                            as="a"
-                                                            href="#"
-                                                            className="text-xs font-semibold text-green-600"
-                                                        >
-                                                            Register
-                                                        </Typography>
-                                                        <CheckCircleIcon className="w-5 text-green-600" />
-                                                    </div>
-
+                                                    <td className={className + "items-center text-center"}>
+                                                            <DropdownMenu options={options(transfer)} />
+                                                </td>
                                                 </div>
                                             </td>
                                         </tr>

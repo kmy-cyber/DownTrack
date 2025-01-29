@@ -10,6 +10,8 @@ import {equipmentData} from "@/data/equipment-data";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
+
+
 export const EquipmentRegisterForm = () => {
     const [formData, setFormData] = useState({
         id: "",
