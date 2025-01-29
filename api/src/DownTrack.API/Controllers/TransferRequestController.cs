@@ -34,7 +34,7 @@ public class TransferRequestController : ControllerBase
     [HttpPut]
     [Route("PUT")]
 
-    public async Task<IActionResult> UpdateTransferRequest(TransferRequestDto transferRequest)
+    public async Task<IActionResult> UpdateTransferRequest([FromBody] TransferRequestDto transferRequest)
     {
         var result = await _transferRequestCommandService.UpdateAsync(transferRequest);
 
