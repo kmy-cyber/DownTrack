@@ -140,6 +140,9 @@ public class EquipmentController : ControllerBase
     [HttpGet("SearchByNameAndBySectionManagerId/{sectionManagerId}")]
     public async Task<IActionResult> GetPagedAllEquipmentsByNameAndSectionManagerId([FromQuery] PagedRequestDto paged, string equipmentName, int sectionManagerId)
     {
+        Console.WriteLine($"EL EQUIPO TIENE NOMBRE :{equipmentName}");
+        Console.WriteLine($"Id {sectionManagerId}");
+        
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetPagedEquipmentsByNameAndSectionManagerAsync(paged, equipmentName,sectionManagerId);

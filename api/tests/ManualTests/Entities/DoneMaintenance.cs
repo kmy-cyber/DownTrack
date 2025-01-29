@@ -76,7 +76,7 @@ public static class Maintenance
                 Type = "Preventive", // O "Corrective" según sea necesario
                 EquipmentId = equip.id,
                 Date = DateTime.UtcNow.ToString("o"), // Fecha en formato ISO8601
-                Cost = _random.Next(100, 1000) // Costo aleatorio entre 100 y 1000
+                //Cost = _random.Next(100, 1000) // Costo aleatorio entre 100 y 1000
             };
 
             var content = new StringContent(

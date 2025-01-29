@@ -167,6 +167,12 @@ public class DownTrackContext : IdentityDbContext<User>
     {
       entity.HasKey(tr => tr.Id);
 
+      entity.Property(tr=> tr.Status)
+            .HasDefaultValue("Unregistered");  
+      
+      entity.Property(tr=> tr.Date)
+            .HasColumnType("date")
+            .IsRequired();
 
       entity.HasOne(tr => tr.SectionManager)
                 .WithMany(e => e.TransferRequests)
@@ -184,8 +190,7 @@ public class DownTrackContext : IdentityDbContext<User>
                 .HasForeignKey(tr => tr.ArrivalDepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-      entity.Property(tr=> tr.Status)
-            .HasDefaultValue("Unregistered");       
+           
 
     });
 
