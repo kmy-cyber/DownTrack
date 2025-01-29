@@ -6,7 +6,8 @@ import {
     MinusCircleIcon,
     WrenchScrewdriverIcon,
     ArrowsRightLeftIcon,
-    UserIcon
+    UserIcon,
+    DocumentCheckIcon
   } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
@@ -16,6 +17,7 @@ import EquipmentDisposalTable from "@/pages/dashboard_director/disposals_table";
 import MaintenanceHistory from "@/pages/dashboard_director/maintenances_table";
 import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
 import UserTable from "@/pages/dashboard_director/employees_table";
+import EvaluationsTable from "@/pages/dashboard_director/evaluations_table";
   
   const typeUser = 1;
   
@@ -68,6 +70,12 @@ export const routesDirector = [
           name: "Transfers",
           path: "/transfers",
           element: <EquipmentTransferTable/>
+        },
+        {
+          icon: <DocumentCheckIcon {...icon}/>,
+          name: "Evaluations",
+          path: "/evaluations",
+          element: <EvaluationsTable/>
         },
         {
           icon: <UserIcon {...icon}/>,
