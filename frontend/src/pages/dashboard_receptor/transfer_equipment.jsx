@@ -132,45 +132,68 @@ export function EquipmentTransferTable() {
                 }),
             });
 
+
+            const data = await response.json();
+            
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
             const data = await response.json();
             console.log("Transfer saved successfully:", data);
-            // Handle success (e.g., show a success message, update UI, etc.)
+            await handleChangeStatus();
         } catch (error) {
             console.error("Error saving transfer:", error);
-            // Handle error (e.g., show an error message, etc.)
         }
     };
 
-    const handleAcceptRegister = async (person) => {
-        console.log("handleAcceptRegister called with person:", person); 
-        if (selectedTransfer) {
-            console.log("selectedTransfer:", selectedTransfer); 
-            const updatedData = [...currentItems];
-            const index = updatedData.findIndex(item => item.id === selectedTransfer.id);
-            if (index !== -1) {
-                console.log("Updating transfer at index:", index); 
-                updatedData[index].registered = true;
-                updatedData[index].assignedPerson = person;
-                currentItems.splice(index, 1, ...updatedData.slice(index, index + 1));
+    const handleChangeStatus = async () => {
+        try {
+            const response = await api('/TransferRequest/PUT', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    "id": selectedTransfer.id,
+                    "date": selectedTransfer.date,
+                    "status": "Registered",
+                    "sectionManagerId": selectedTransfer.sectionManagerId,
+                    "equipmentId": selectedTransfer.equipmentId,
+                    "arrivalDepartmentId": selectedTransfer.arrivalDepartmentId,
+                    "arrivalSectionId": selectedTransfer.arrivalSectionId,
+                }),
+            });
 
-                await transferPostData(selectedTransfer);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            setAlertType('success');
+            setAlertMessage('Transfer saved successfully')
+            setShowRegistrationForm(false);
+            console.log("Transfer saved successfully:", data);
+            await fetchTransfers(currentPage);
+        } catch (error) {
+            console.error("Error saving transfer:", error);
+            
+        }
+    };
 
-                setIsRegistered(true);
-                setShowRegistrationForm(false);
-                setAssignedPerson("");
-                setRegisteredTransfers([...registeredTransfers, { id: selectedTransfer.id, assignedPerson: person }]);
-                setAlertMessage("Successful registration");
-            }
-            else {
-                console.log("Transfer not found in data"); 
-            }
-        } 
-        else {
-            console.log("No selected transfer or already registered");
+    
+
+    const handleSearch = (e) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        
+        if (query) {
+            setFilteredShippingS(
+                shippingSupervisors.filter(
+                    (receptor) => receptor.name.toLowerCase().includes(query.toLowerCase())
+                )
+            );
+        } else {
+            setFilteredShippingS(shippingSupervisors);
+
         }
     };
 
