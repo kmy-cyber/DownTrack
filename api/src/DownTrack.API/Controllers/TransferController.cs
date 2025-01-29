@@ -65,7 +65,7 @@ public class TransferController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _transferQueryService.GetPagedResultAsync(paged);
+        var result = await _transferQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         

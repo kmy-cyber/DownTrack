@@ -30,7 +30,7 @@ public class EquipmentController : ControllerBase
         return Ok("Equipment added successfully");
     }
 
-      [HttpPut]
+    [HttpPut]
     [Route("PUT")]
 
     public async Task<IActionResult> UpdateEquipment(EquipmentDto equipment)
@@ -70,42 +70,47 @@ public class EquipmentController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEquipment ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipment([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentQueryService.GetPagedResultAsync(paged);
-        
-        return Ok (result);
-        
+        var result = await _equipmentQueryService.GetAllPagedResultAsync(paged);
+
+        return Ok(result);
+
     }
 
     [HttpGet("equipments/section-manager/{sectionManagerId}")]
-    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId ([FromQuery] PagedRequestDto paged , int sectionManagerId)
+    public async Task<IActionResult> GetPagedEquipmentsBySectionManagerId([FromQuery] PagedRequestDto paged, int sectionManagerId)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetPagedEquipmentsBySectionManagerIdAsync(paged, sectionManagerId);
+
         
         return Ok (result);
     }
 
+
     [HttpGet("equipments/section/{sectionId}")]
-    public async Task<IActionResult> GetPagedEquipmentsBySectionId ([FromQuery] PagedRequestDto paged , int sectionId)
+    public async Task<IActionResult> GetPagedEquipmentsBySectionId([FromQuery] PagedRequestDto paged, int sectionId)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetPagedEquipmentsBySectionIdAsync(paged, sectionId);
+
         
         return Ok (result);
     }
 
+
     [HttpGet("equipments/department/{departmentId}")]
-    public async Task<IActionResult> GetPagedEquipmentsByDepartmentId ([FromQuery] PagedRequestDto paged , int departmentId)
+    public async Task<IActionResult> GetPagedEquipmentsByDepartmentId([FromQuery] PagedRequestDto paged, int departmentId)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetPagedEquipmentsByDepartmentIdAsync(paged, departmentId);
+
         
         return Ok (result);
     }
@@ -120,7 +125,30 @@ public class EquipmentController : ControllerBase
         return Ok (result);
     }
 
+
+
+    [HttpGet("SearchByName")]
+    public async Task<IActionResult> GetPagedAllEquipmentsByName([FromQuery] PagedRequestDto paged, string equipmentName)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsByNameAsync(paged, equipmentName);
+
+        return Ok(result);
+    }
+
+    [HttpGet("SearchByNameAndBySectionManagerId/{sectionManagerId}")]
+    public async Task<IActionResult> GetPagedAllEquipmentsByNameAndSectionManagerId([FromQuery] PagedRequestDto paged, string equipmentName, int sectionManagerId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsByNameAndSectionManagerAsync(paged, equipmentName,sectionManagerId);
+
+        return Ok(result);
+    }
+    
+
     #endregion
 
-  
+
 }

@@ -5,7 +5,6 @@ using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Roles;
-using DownTrack.Application.DTO.Paged;
 using System.Linq.Expressions;
 
 namespace DownTrack.Application.Services;
@@ -15,87 +14,61 @@ namespace DownTrack.Application.Services;
 /// to interact with the client , using the repository interface to access
 /// the database 
 /// </summary> 
-public class EmployeeQueryServices : IEmployeeQueryServices
+public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeDto>,
+                                     IEmployeeQueryServices
 {
 
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private static readonly Expression<Func<Employee, object>>[] includes =
+                            { e => e.User! };
 
     public EmployeeQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+        : base(unitOfWork, mapper)
     {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
-
-
-
-    /// <summary>
-    /// Retrieves a list of all employees.
-    /// </summary>
-    /// <returns>A Task representing the asynchronous operation, with a list of EmployeeDto as the result.</returns>
-    public async Task<IEnumerable<GetEmployeeDto>> ListAsync()
-    {
-        var employee = await _unitOfWork.GetRepository<Employee>()
-                                        .GetAll()
-                                        .Include(e=> e.User)
-                                        .ToListAsync();
-        
-        return employee.Select(_mapper.Map<GetEmployeeDto>);
-    }
-
-    public async Task<GetEmployeeDto> GetByIdAsync(int employeeDto)
-    {
-        
-        var result = await _unitOfWork.GetRepository<Employee>()
-                                      .GetByIdAsync(employeeDto,default, e => e.User!);
-
-        return _mapper.Map<GetEmployeeDto>(result);
 
     }
 
 
-    public async Task<PagedResultDto<GetEmployeeDto>> GetPagedResultAsync(PagedRequestDto paged)
-    {
-        //The queryable collection of entities to paginate
-        IQueryable<Employee> queryEmployee = _unitOfWork.GetRepository<Employee>()
-                                                        .GetAll()
-                                                        .Include(e=> e.User);
-
-        var totalCount = await queryEmployee.CountAsync();
-
-        var items = await queryEmployee // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
-
-        
-        return new PagedResultDto<GetEmployeeDto>
-        {
-            Items = items?.Select(_mapper.Map<GetEmployeeDto>) ?? Enumerable.Empty<GetEmployeeDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
-    }
-
+    public override Expression<Func<Employee, object>>[] GetIncludes() => includes;
 
     public async Task<IEnumerable<GetEmployeeDto>> ListAllByRole(UserRole role)
     {
 
-        var result = await _unitOfWork.GetRepository<Employee>()
-                                      .GetAllByItems(u=>u.UserRole == role.ToString())
-                                      .Include(e=> e.User)
-                                      .ToListAsync();
+        var rolesQuery = _unitOfWork.GetRepository<Employee>()
+                                      .GetAllByItems(u => u.UserRole == role.ToString());
+        var includes = GetIncludes();
 
-        return result.Select(_mapper.Map<GetEmployeeDto>);
+        if (includes != null)
+        {
+            foreach (var exp in includes) // Loop through each filter expression.
+            {
+                rolesQuery = rolesQuery.Include(exp); // Apply the filter expression to the query.
+            }
+        }
+        var rolesList = await rolesQuery.ToListAsync();
+
+        return rolesList.Select(_mapper.Map<GetEmployeeDto>);
+
+    }
+
+    public async Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName)
+    {
         
+        var expressions = new Expression<Func<Employee, bool>>[]
+        {
+            e=> e.User!.UserName == employeeUserName
+        };
+
+        var includes = GetIncludes();
+
+        var employee = await _unitOfWork.GetRepository<Employee>()
+                                 .GetByItems(expressions, includes);
+
+
+        if (employee == null)
+            throw new Exception($"No employee found with the username '{employeeUserName}'.");
+
+        return _mapper.Map<GetEmployeeDto>(employee);
+
     }
 
 
