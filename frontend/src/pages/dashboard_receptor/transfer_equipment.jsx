@@ -170,6 +170,7 @@ export function EquipmentTransferTable() {
             });
 
             const data = await response.json();
+            
             if (!response.ok) {
                 setAlertType('error');
                 setAlertMessage('Error saving transfer');
@@ -180,12 +181,44 @@ export function EquipmentTransferTable() {
             setAlertMessage('Transfer saved successfully')
             setShowRegistrationForm(false);
             console.log("Transfer saved successfully:", data);
-            // Handle success (e.g., show a success message, update UI, etc.)
+            await handleChangeStatus();
         } catch (error) {
             console.error("Error saving transfer:", error);
-            // Handle error (e.g., show an error message, etc.)
         }
     };
+
+    const handleChangeStatus = async () => {
+        try {
+            const response = await api('/TransferRequest/PUT', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    "id": selectedTransfer.id,
+                    "date": selectedTransfer.date,
+                    "status": "Registered",
+                    "sectionManagerId": selectedTransfer.sectionManagerId,
+                    "equipmentId": selectedTransfer.equipmentId,
+                    "arrivalDepartmentId": selectedTransfer.arrivalDepartmentId,
+                    "arrivalSectionId": selectedTransfer.arrivalSectionId,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            setAlertType('success');
+            setAlertMessage('Transfer saved successfully')
+            setShowRegistrationForm(false);
+            console.log("Transfer saved successfully:", data);
+            await fetchTransfers(currentPage);
+        } catch (error) {
+            console.error("Error saving transfer:", error);
+            
+        }
+    };
+
+    
 
     const handleSearch = (e) => {
         const query = e.target.value;
