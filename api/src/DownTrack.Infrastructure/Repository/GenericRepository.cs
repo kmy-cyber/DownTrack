@@ -43,21 +43,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 
     public virtual async Task<T> GetByIdAsync<TId>(TId elementId,
                                                     CancellationToken cancellationToken = default,
-                                                    params Expression<Func<T, object>>[]? includes)
+                                                    params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = _entity;
 
         if (includes != null)
         {
             foreach (var include in includes)
+            {
                 query = query.Include(include);
-
+            }
         }
-
-        if (elementId == null)
-            throw new ArgumentNullException(nameof(elementId), "The ID cannot be null.");
-
-
         var result = await query.FirstOrDefaultAsync(e => EF.Property<TId>(e, "Id")!.Equals(elementId), cancellationToken);
 
         if (result == null) // Check if the entity was not found.
@@ -65,6 +61,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 
         return result;
     }
+
     public virtual async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
         // Retrieve the entity by its ID.
@@ -80,7 +77,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
     }
 
 
-    public virtual IQueryable<T> GetAllByItems(params Expression<Func<T, bool>>[]? expressions)
+    public virtual IQueryable<T> GetAllByItems(params Expression<Func<T, bool>>[] expressions)
     {
         IQueryable<T> query = _entity; // Initialize the query with the DbSet.
 
@@ -94,6 +91,36 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 
         // Return the filtered query.
         return query;
+    }
+
+
+    public async Task<T?> GetByItems(Expression<Func<T, bool>>[] expressions,
+                                     Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _entity;
+
+
+
+        if (expressions != null)
+        {
+            foreach (var exp in expressions) // Loop through each filter expression.
+            {
+                query = query.Where(exp); // Apply the filter expression to the query.
+            }
+        }
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include); // Apply each include to the query.
+            }
+        }
+
+        var result = await query.FirstOrDefaultAsync();
+
+
+        return result;
     }
 
 

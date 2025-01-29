@@ -78,7 +78,7 @@ public class DepartmentController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _departmentQueryService.GetPagedResultAsync(paged);
+        var result = await _departmentQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);
         
