@@ -23,22 +23,10 @@ export const routesTechnic = [
         element: <Home />,
         },
         {
-        icon: <WrenchScrewdriverIcon {...icon} />,
-        name: "maintenance",
-        path: "/maintenance",
-        element: <MaintenanceCreationForm />,
-        },
-        {
-            icon: <AutoMode {...icon} />,
+            icon: <WrenchScrewdriverIcon {...icon} />,
             name: "equipment_maintenance",
             path: "/equipment_maintenance",
             element: <EquipmentMaintenance />,
-        },
-        {
-        icon: <ArrowDownCircleIcon {...icon} />,
-        name: "technical leave",
-        path: "/leave",
-        element: <LeaveCreationForm />,
         },
         {
         icon: <ClipboardDocumentListIcon{...icon} />,

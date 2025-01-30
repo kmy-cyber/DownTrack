@@ -38,7 +38,7 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
         return await GetPagedResultByQueryAsync(paged, querySection);
     }
 
-    
+   
     public async Task<GetSectionDto> GetSectionByNameAsync(string sectionName)
     {
         var expressions = new Expression<Func<Section, bool>>[]
@@ -56,6 +56,7 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
             throw new Exception($"No section found with the username '{sectionName}'.");
 
         return _mapper.Map<GetSectionDto>(section);
+
     }
 
 }

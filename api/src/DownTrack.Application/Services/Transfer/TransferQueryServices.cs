@@ -16,9 +16,10 @@ public class TransferQueryServices : GenericQueryServices<Transfer,GetTransferDt
     public TransferQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base (unitOfWork, mapper)
     {
-
     }
 
+
     public override Expression<Func<Transfer, object>>[] GetIncludes()=> includes;
+
 
 }

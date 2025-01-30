@@ -17,10 +17,11 @@ public class EvaluationQueryServices : GenericQueryServices<Evaluation,GetEvalua
     public EvaluationQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base (unitOfWork, mapper)
     {
-
     }
 
+
     public override Expression<Func<Evaluation, object>>[] GetIncludes()=> includes;
+
 
 
 }

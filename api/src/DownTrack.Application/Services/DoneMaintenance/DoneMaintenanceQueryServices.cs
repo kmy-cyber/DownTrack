@@ -37,5 +37,4 @@ public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance
         return await GetPagedResultByQueryAsync(paged,queryMaintenancesByTechnician);
 
     }
-
 }

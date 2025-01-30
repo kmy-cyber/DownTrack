@@ -4,6 +4,8 @@ import { ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon, MagnifyingGlassIcon }
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
+import SectionSelectionModal from "@/pages/dashboard_manager/section_selection";
+import { ArrowsRightLeftIcon } from "@heroicons/react/24/solid";
 
 const InventoryTable = () => {
   const location = useLocation();
@@ -18,6 +20,10 @@ const InventoryTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchType, setSearchType] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEquipmentId, setSelectedEquipmentId] = useState(null); // Estado para el equipo seleccionado
+  const isSectionManager = user.role.toLowerCase() === "sectionmanager";
+  console.log(`is section manager: ${isSectionManager}`);
   const pageSize = 12;
 
   useEffect(() => {
@@ -27,27 +33,28 @@ const InventoryTable = () => {
   const fetchEquipments = async (pageNumber = currentPage) => {
     setLoading(true);
     setError(null);
-  
+
     let url = `/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     console.log(`idSect:${sectionId} idDept ${departmentId}`);
-  
+
     if (sectionId) {
       url = `/Equipment/equipments/section/${sectionId}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     } else if (departmentId) {
       url = `/Equipment/equipments/department/${departmentId}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
-    } else if (user.role.toLowerCase() !== "director"){
-      url = `/Equipment/equipments/section-manager/${user.id}?PageNumber=${pageNumber}&PageSize=${pageSize}`
+    } else if (isSectionManager) {
+      url = `/Equipment/equipments/section-manager/${user.id}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     }
-  
+
     if (searchTerm) {
       url =
         searchType === "id"
           ? `/Equipment/equipments/${searchTerm}`
           : `/Equipment/equipments/search?name=${searchTerm}`;
     }
-  
+
     try {
       const response = await api(url);
+      console.log(url);
       if (!response.ok)
         throw new Error(
           response.status === 500 ? "Server Internal Error." : "Equipment not found."
@@ -153,7 +160,7 @@ const InventoryTable = () => {
         </Typography>
       </CardHeader>
       <CardBody className="px-0 py-4">
-        <div className="flex items-center gap-4 mb-4 px-5">
+        <div className="flex items-center gap-1 mb-4 px-5">
           <Select value={searchType} label="Search By" onChange={setSearchType}>
             <Option value="name">Search by Name</Option>
             <Option value="id">Search by ID</Option>
@@ -180,7 +187,7 @@ const InventoryTable = () => {
           <Typography color="red" className="text-center">{error}</Typography>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto text-sm text-gray-900 border-collapse">
+            <table className="min-w-full table-auto text-sm text-gray-900 border-collapse mt-0">
               <thead className="bg-gray-800 text-white">
                 <tr>
                   <th className="px-6 py-3 border-b text-center">Name</th>
@@ -189,6 +196,8 @@ const InventoryTable = () => {
                   <th className="px-6 py-3 border-b text-center">Acquisition Date</th>
                   <th className="px-6 py-3 border-b text-center">Section</th>
                   <th className="px-6 py-3 border-b text-center">Department</th>
+                  {isSectionManager &&(
+                  <th className="px-6 py-3 border-b text-center">Transfer</th>)}
                 </tr>
               </thead>
               <tbody className="bg-white">
@@ -199,13 +208,24 @@ const InventoryTable = () => {
                       <td className="px-6 py-3 border-b text-center">{equipment.type}</td>
                       <td className="px-6 py-3 border-b text-center">
                         <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full 
-                          ${getStatusColor(equipment.status)}`}>
+                          ${getStatusColor(equipment.status)}`} >
                           {equipment.status}
                         </span>
                       </td>
                       <td className="px-6 py-3 border-b text-center">{equipment.dateOfadquisition || "N/A"}</td>
                       <td className="px-6 py-3 border-b text-center">{equipment.sectionName || "N/A"}</td>
                       <td className="px-6 py-3 border-b text-center">{equipment.departmentName || "N/A"}</td>
+                      {isSectionManager && (<td className="px-6 py-3 border-b text-center">
+                        <IconButton 
+                          onClick={() => {
+                            setSelectedEquipmentId(equipment.id); // Guardar el ID del equipo seleccionado
+                            setIsModalOpen(true);
+                          }} 
+                          className="px-4 py-2 rounded-full"
+                        >
+                          <ArrowsRightLeftIcon className="h-5 w-5" />
+                        </IconButton>
+                      </td>)}
                     </tr>
                   ))
                 ) : (
@@ -244,6 +264,14 @@ const InventoryTable = () => {
           </div>
         )}
       </CardBody>
+
+      {isSectionManager && 
+      <SectionSelectionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        onSave={null} 
+        eqiD={selectedEquipmentId} // Pasar el ID del equipo seleccionado al modal
+      />}
     </Card>
   );
 };

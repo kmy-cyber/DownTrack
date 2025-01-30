@@ -9,22 +9,28 @@ const DisposalInfoForm = ({ disposal, onClose  }) => {
                 <div className="flex items-center justify-center">
                     <InformationCircleIcon className="h-20 w-120 text-blue-800" />
                 </div>
-                <Typography variant="h5" className="mb-4 flex items-center justify-center">
+                <Typography variant="h4" className="mb-4 flex items-center justify-center">
                     Low-Technical Suggestion Information
                 </Typography>
                 <div className="space-y-4">
                     <div className="p-4 border rounded-md shadow-sm">
-                        <Typography variant="h6" className="font-semibold">
-                            {disposal.equipment}
+                        <Typography variant="h5" className="font-semibold">
+                            {disposal.equipmentName}
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Technician: {disposal.technician}
+                            Type: {disposal.equipmentType}
+                        </Typography>
+                        <Typography variant="body2" className="text-gray-600">
+                            Status: {disposal.status}
+                        </Typography>
+                        <Typography variant="body2" className="text-gray-600">
+                            Technician: {disposal.technicianUserName}
                         <Typography variant="body2" className="text-gray-600">
                             Date: {disposal.date}
                         </Typography>
                         </Typography>
                         <Typography variant="body2" className="text-gray-600">
-                            Reason for Removal: {disposal.reasonForRemoval}
+                            Reason for Removal: {disposal.cause}
                         </Typography>
                     </div>
                 </div>

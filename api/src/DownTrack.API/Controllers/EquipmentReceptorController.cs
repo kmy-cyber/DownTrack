@@ -61,8 +61,5 @@ public class EquipmentReceptorController : ControllerBase
 
     
 
-
-    
-
 }
 

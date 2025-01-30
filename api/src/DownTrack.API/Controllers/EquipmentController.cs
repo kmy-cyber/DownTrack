@@ -87,10 +87,8 @@ public class EquipmentController : ControllerBase
 
         var result = await _equipmentQueryService.GetPagedEquipmentsBySectionManagerIdAsync(paged, sectionManagerId);
 
-        
-        return Ok (result);
+        return Ok(result);
     }
-
 
     [HttpGet("equipments/section/{sectionId}")]
     public async Task<IActionResult> GetPagedEquipmentsBySectionId([FromQuery] PagedRequestDto paged, int sectionId)
@@ -99,10 +97,8 @@ public class EquipmentController : ControllerBase
 
         var result = await _equipmentQueryService.GetPagedEquipmentsBySectionIdAsync(paged, sectionId);
 
-        
-        return Ok (result);
+        return Ok(result);
     }
-
 
     [HttpGet("equipments/department/{departmentId}")]
     public async Task<IActionResult> GetPagedEquipmentsByDepartmentId([FromQuery] PagedRequestDto paged, int departmentId)
@@ -111,8 +107,7 @@ public class EquipmentController : ControllerBase
 
         var result = await _equipmentQueryService.GetPagedEquipmentsByDepartmentIdAsync(paged, departmentId);
 
-        
-        return Ok (result);
+        return Ok(result);
     }
 
     [HttpGet("active equipment")]
@@ -124,8 +119,6 @@ public class EquipmentController : ControllerBase
         
         return Ok (result);
     }
-
-
 
     [HttpGet("SearchByName")]
     public async Task<IActionResult> GetPagedAllEquipmentsByName([FromQuery] PagedRequestDto paged, string equipmentName)
@@ -140,9 +133,6 @@ public class EquipmentController : ControllerBase
     [HttpGet("SearchByNameAndBySectionManagerId/{sectionManagerId}")]
     public async Task<IActionResult> GetPagedAllEquipmentsByNameAndSectionManagerId([FromQuery] PagedRequestDto paged, string equipmentName, int sectionManagerId)
     {
-        Console.WriteLine($"EL EQUIPO TIENE NOMBRE :{equipmentName}");
-        Console.WriteLine($"Id {sectionManagerId}");
-        
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetPagedEquipmentsByNameAndSectionManagerAsync(paged, equipmentName,sectionManagerId);

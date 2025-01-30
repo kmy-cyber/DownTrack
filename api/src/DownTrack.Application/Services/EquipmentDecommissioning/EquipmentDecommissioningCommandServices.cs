@@ -22,8 +22,6 @@ public class EquipmentDecommissioningCommandServices : IEquipmentDecommissioning
     {
         var equipmentDecommissioning = _mapper.Map<EquipmentDecommissioning>(dto);
 
-        Console.WriteLine($"EL id del equipo es {equipmentDecommissioning.EquipmentId}");
-
         var equipment = await _unitOfWork.GetRepository<Equipment>()
                                          .GetByIdAsync(equipmentDecommissioning.EquipmentId);
 
@@ -32,11 +30,9 @@ public class EquipmentDecommissioningCommandServices : IEquipmentDecommissioning
             throw new InvalidOperationException("The equipment is already inactive.");
         }
 
-        Console.WriteLine($"El ID del tecnico es {dto.TechnicianId}") ;
         var technician = await _unitOfWork.GetRepository<Technician>()
                                           .GetByIdAsync(equipmentDecommissioning.TechnicianId);
 
-        Console.WriteLine(dto.ReceptorId);
         var receptor = await _unitOfWork.GetRepository<EquipmentReceptor>()
                                         .GetByIdAsync(equipmentDecommissioning.ReceptorId);
 

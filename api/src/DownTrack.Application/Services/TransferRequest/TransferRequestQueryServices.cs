@@ -5,6 +5,7 @@ using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
@@ -15,17 +16,15 @@ public class TransferRequestQueryServices :GenericQueryServices<TransferRequest,
                             { tr => tr.SectionManager!.User!,
                               tr=> tr.ArrivalDepartment,
                               tr=> tr.Equipment,
-                              tr=> tr.ArrivalDepartment.Section,
-                              tr=> tr.Equipment.Department,
-                              tr=> tr.Equipment.Department.Section };
+                              tr=> tr.ArrivalDepartment.Section };
     public TransferRequestQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base (unitOfWork, mapper)
     {
-
     }
+
  
-    public override Expression<Func<TransferRequest, object>>[] GetIncludes()=> includes;
     
+
     public async Task<PagedResultDto<GetTransferRequestDto>> GetPagedRequestsofArrivalDepartmentAsync(int receptorId, PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
@@ -34,17 +33,43 @@ public class TransferRequestQueryServices :GenericQueryServices<TransferRequest,
 
 
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
-                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment,
-                                                                                     tr=> tr.Status == "Unregistered");
+                                                                      .GetAllByItems(tr=> tr.ArrivalDepartmentId == arrivalDepartment && tr.Status == "Unregistered")
+                                                                      .Include(tr => tr.SectionManager!.User)
+                                                                      .Include(tr=> tr.ArrivalDepartment)
+                                                                      .Include(tr=> tr.Equipment)                                                                  
+                                                                      .ThenInclude(e=> e.Department)
+                                                                      .ThenInclude(d=> d.Section);
 
-        
-        return await GetPagedResultByQueryAsync(paged,queryTransferRequest);
+        var totalCount = await queryTransferRequest.CountAsync();
 
+        var items = await queryTransferRequest // Apply pagination to the query.
+                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
+                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
+                        .ToListAsync(); // Convert the result to a list asynchronously.
+
+
+        return new PagedResultDto<GetTransferRequestDto>
+        {
+            Items = items?.Select(_mapper.Map<GetTransferRequestDto>) ?? Enumerable.Empty<GetTransferRequestDto>(),
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+
+        };
 
     }
 
+
+
     
 
+    public override Expression<Func<TransferRequest, object>>[] GetIncludes()=> includes;
 
 }
 

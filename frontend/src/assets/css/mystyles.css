@@ -3,3 +3,9 @@
     height: 110px;
     margin: auto;
 }
+
+.text-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}

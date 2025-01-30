@@ -115,7 +115,7 @@ export function Evaluation() {
             theme: "colored",
           });
           setIsEvaluationSuccess(true);
-          setEvaluationMessage("Evaluation saved successfully!");
+          setEvaluationMessage("Evaluation successfully!");
           setOpenModal(false);
         } else {
           toast.error("Failed to save evaluation", {
