@@ -167,12 +167,22 @@ public class DownTrackContext : IdentityDbContext<User>
     {
       entity.HasKey(tr => tr.Id);
 
+      entity.Property(tr=>tr.Status)
+            .IsRequired();
+      
+      entity.Property(tr=> tr.Date)
+            .HasColumnType("date")
+            .IsRequired();
 
       entity.HasOne(tr => tr.SectionManager)
                 .WithMany(e => e.TransferRequests)
                 .HasForeignKey(tr => tr.SectionManagerId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+      entity.HasOne(tr=> tr.SourceDepartment)
+            .WithMany(d=> d.IncomingTransferRequests)
+            .HasForeignKey(tr=> tr.SourceDepartmentId)
+            .OnDelete(DeleteBehavior.SetNull);
 
       entity.HasOne(tr => tr.Equipment)
                 .WithMany(e => e.TransferRequests)
@@ -180,12 +190,12 @@ public class DownTrackContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Cascade);
 
       entity.HasOne(tr => tr.ArrivalDepartment)
-                .WithMany(d => d.TransferRequests)
+                .WithMany(d => d.OutgoingTransferRequests)
                 .HasForeignKey(tr => tr.ArrivalDepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-      entity.Property(tr=> tr.Status)
-            .HasDefaultValue("Unregistered");       
+      // entity.Property(tr=> tr.Status)
+      //       .HasDefaultValue("Unregistered");       
 
     });
 
@@ -294,25 +304,25 @@ public class DownTrackContext : IdentityDbContext<User>
         entity.HasKey(t => t.Id);
 
         entity.Property(t => t.Date)
-                  .HasColumnType("date")
-                  .IsRequired();
+              .HasColumnType("date")
+              .IsRequired();
 
         entity.HasIndex(t => t.Date);
 
         entity.HasOne(t => t.TransferRequest)
-                  .WithOne(tr => tr.Transfer)
-                  .HasForeignKey<Transfer>(t => t.RequestId)
-                  .OnDelete(DeleteBehavior.Restrict);
+              .WithOne(tr => tr.Transfer)
+              .HasForeignKey<Transfer>(t => t.RequestId)
+              .OnDelete(DeleteBehavior.Restrict);
 
         entity.HasOne(t => t.ShippingSupervisor)
-                  .WithMany(sr => sr.Transfers)
-                  .HasForeignKey(t => t.ShippingSupervisorId)
-                  .OnDelete(DeleteBehavior.SetNull);
+              .WithMany(sr => sr.Transfers)
+              .HasForeignKey(t => t.ShippingSupervisorId)
+              .OnDelete(DeleteBehavior.SetNull);
 
         entity.HasOne(t => t.EquipmentReceptor)
-                  .WithMany(er => er.AcceptedTransfers)
-                  .HasForeignKey(t => t.EquipmentReceptorId)
-                  .OnDelete(DeleteBehavior.SetNull);
+              .WithMany(er => er.AcceptedTransfers)
+              .HasForeignKey(t => t.EquipmentReceptorId)
+              .OnDelete(DeleteBehavior.SetNull);
 
       });
 

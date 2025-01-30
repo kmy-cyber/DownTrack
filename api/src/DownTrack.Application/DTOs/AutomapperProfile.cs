@@ -81,10 +81,9 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.EquipmentName, opt=> opt.MapFrom(src=> src.Equipment.Name))
             .ForMember(dest => dest.EquipmentStatus, opt=> opt.MapFrom(src=> src.Equipment.Status))
             .ForMember(dest => dest.EquipmentType, opt=> opt.MapFrom(src=> src.Equipment.Type))
-            .ForMember(dest => dest.RequestDepartmentId, opt => opt.MapFrom(src => src.Equipment.DepartmentId))
-            .ForMember(dest => dest.RequestDepartmentName, opt => opt.MapFrom(src => src.Equipment.Department.Name))
-            .ForMember(dest=> dest.RequestSectionId, opt => opt.MapFrom(src => src.Equipment.Department.SectionId))
-            .ForMember(dest=> dest.RequestSectionName, opt => opt.MapFrom(src => src.Equipment.Department.Section.Name));
+            .ForMember(dest => dest.SourceDepartmentName, opt => opt.MapFrom(src => src.SourceDepartment!.Name))
+            .ForMember(dest=> dest.SourceSectionId, opt => opt.MapFrom(src => src.SourceDepartment!.SectionId))
+            .ForMember(dest=> dest.SourceSectionName, opt => opt.MapFrom(src => src.SourceDepartment!.Section.Name));
 
 
 

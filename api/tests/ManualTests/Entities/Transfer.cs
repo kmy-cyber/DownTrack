@@ -127,48 +127,13 @@ public static async Task RegisterTransferAsync()
             {
                 Console.WriteLine($"Successfully registered transfer with ID: {transfer.Id}");
 
-                // **Actualizar el estado de la TransferRequest**
-                TransferRequestDto updateStatus = new TransferRequestDto
-                {
-                    id = request.id,
-                    date = request.date,                    
-                    status = "Registered",
-                    sectionManagerId = request.sectionManagerId,
-                    equipmentId = request.equipmentId,
-                    arrivalDepartmentId = request.arrivalDepartmentId,
-                    arrivalSectionId = request.arrivalSectionId,
-                    arrivalDepartmentName = request.arrivalDepartmentName,
-                    arrivalSectionName = request.arrivalSectionName
-                };
-                /*
-                    public int id { get; set; }
-    public DateTime date { get; set; }
-    public int sectionManagerId { get; set; }
-    public string sectionManagerUserName { get; set; } = null!;
-    public int equipmentId { get; set; }
-    public int arrivalDepartmentId { get; set; }
-    public int arrivalSectionId { get; set; }
-    public string arrivalDepartmentName { get; set; } = null!;
-    public string arrivalSectionName { get; set; } = null!;
-
-                */
-
-                var statusContent = new StringContent(
-                    JsonSerializer.Serialize(updateStatus),
-                    Encoding.UTF8,
-                    "application/json"
-                );
                 
-                var statusResponse = await client.PutAsync("/api/TransferRequest/PUT", statusContent);
-
-                if (statusResponse.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"Updated TransferRequest ID {request.id} to 'Registered'");
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to update TransferRequest ID {request.id}: {statusResponse.StatusCode}");
-                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode} for section ID: {transfer.Id}");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                break;
             }
         }
         catch (Exception ex)

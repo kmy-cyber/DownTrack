@@ -3,6 +3,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.Services;
 
@@ -24,19 +25,28 @@ public class TransferRequestCommandServices : ITransferRequestCommandServices
         var equipment = await _unitOfWork.GetRepository<Equipment>()
                                          .GetByIdAsync(transferRequest.EquipmentId);
         
+        var departmentSourceId = equipment.DepartmentId;
+
         var sectionManager = await _unitOfWork.GetRepository<Employee>()
                                               .GetByIdAsync(transferRequest.SectionManagerId);
 
         if(sectionManager.UserRole != "SectionManager")
             throw new Exception("No es un jefe de seccion");
 
-        var department = await _unitOfWork.GetRepository<Department>()
+        var departmentArrival = await _unitOfWork.DepartmentRepository
                                           .GetByIdAsync(transferRequest.ArrivalDepartmentId);
         
+        var departmentSource = await _unitOfWork.DepartmentRepository
+                                                .GetByIdAsync(departmentSourceId);
+
         transferRequest.SectionManager = sectionManager;
         transferRequest.Equipment = equipment;
-        transferRequest.ArrivalDepartment = department;
+        transferRequest.ArrivalDepartment = departmentArrival;
+        transferRequest.SourceDepartmentId = departmentSourceId;
+        transferRequest.SourceDepartment = departmentSource;
 
+        transferRequest.Status = TransferRequestStatus.Pending.ToString();
+        
         await _unitOfWork.GetRepository<TransferRequest>().CreateAsync(transferRequest);
 
         await _unitOfWork.CompleteAsync();
