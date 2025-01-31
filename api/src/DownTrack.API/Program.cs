@@ -1,6 +1,7 @@
 
 
 using DownTrack.Api;
+using DownTrack.Api.Middleware;
 using DownTrack.Application;
 using DownTrack.Infrastructure;
 
@@ -29,6 +30,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 //app.UseCors("LocalhostPolicy");
         
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
