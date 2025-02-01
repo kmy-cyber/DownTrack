@@ -10,9 +10,11 @@ const data = [
 ];
 
 // Función para renderizar el sector activo
-const renderActiveShape = (props) => {
+const renderActiveShape = ({ cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value }) => {
     const RADIAN = Math.PI / 180;
-    const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    //const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    const {name, value:val } = payload;
+
     const sin = Math.sin(-RADIAN * midAngle);
     const cos = Math.cos(-RADIAN * midAngle);
     const sx = cx + (outerRadius + 10) * cos;
@@ -35,7 +37,7 @@ const renderActiveShape = (props) => {
             outerRadius={outerRadius}
             startAngle={startAngle}
             endAngle={endAngle}
-            fill={fill}
+            fill={payload.color || '#8884d8'}
         />
         <Sector
             cx={cx}
@@ -44,7 +46,7 @@ const renderActiveShape = (props) => {
             endAngle={endAngle}
             innerRadius={outerRadius + 6}
             outerRadius={outerRadius + 10}
-            fill={fill}
+            fill={payload.color || '#8884d8'}
         />
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
@@ -58,6 +60,10 @@ const renderActiveShape = (props) => {
 
 // Componente del gráfico de pie
 export class CustomPieChart extends PureComponent {
+    static defaultProps = {
+        data: [],
+        colors: []
+    };
     state = {
         activeIndex: 0,
     };
@@ -69,6 +75,7 @@ export class CustomPieChart extends PureComponent {
     };
 
     render() {
+        const { data, colors } = this.props;
         return (
         <ResponsiveContainer width="100%" height={400}>
             <PieChart>
@@ -80,9 +87,10 @@ export class CustomPieChart extends PureComponent {
                 cy="50%"
                 innerRadius={60}
                 outerRadius={80}
-                fill="#8884d8"
+                fill="#4A4A4A"
                 dataKey="value"
                 onMouseEnter={this.onPieEnter}
+                colors = {colors}
             />
             </PieChart>
         </ResponsiveContainer>
