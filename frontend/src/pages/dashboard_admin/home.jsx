@@ -20,17 +20,21 @@ import {
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
-import {
-    statisticsCardsData,
-    statisticsChartsData,
-    projectsTableData,
-    ordersOverviewData,
-} from "@/data";
+import { CustomPieChart } from "@/components/charts/CustomPieChart";
 import { chartsConfig } from "@/configs";
 import { CheckCircleIcon, ClockIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import { Business, HomeWorkRounded} from '@mui/icons-material';
 
 export function Home() {
+
+    const data = [
+        { name: 'Group A', value: 400 },
+        { name: 'Group B', value: 300 },
+        { name: 'Group C', value: 300 },
+        { name: 'Group D', value: 200 },
+    ];
+
+
     return (
         <div className="mt-12">
         <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -86,7 +90,6 @@ export function Home() {
 
         </div>
         <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-
             <StatisticsChart
                 key ="Added last month"
                 color ="white"
@@ -192,6 +195,12 @@ export function Home() {
             />
 
         </div>
+
+        <div className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Gráfico de Pie</h3>
+            <CustomPieChart data={data} width={500} height={500} />
+        </div>
+
         </div>
     );
 }
