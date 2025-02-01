@@ -10,16 +10,15 @@ import {
 } from "@material-tailwind/react";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
   const [sections, setSections] = useState([]); // Lista de secciones
   const [departments, setDepartments] = useState([]); // Lista de departamentos
   const [selectedSection, setSelectedSection] = useState(null); // Sección seleccionada
   const [selectedDepartment, setSelectedDepartment] = useState(null); // Departamento seleccionado
-  const [showStatusPopup, setShowStatusPopup] = useState(false); // Para mostrar el pop-up de estado
-  const [statusMessage, setStatusMessage] = useState(""); // Mensaje para el pop-up
   const { user } = useAuth();
-  console.log(eqiD);
 
   // Función para cargar las secciones
   useEffect(() => {
@@ -87,24 +86,50 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
               section: selectedSection,
               department: selectedDepartment,
             });
-          } else {
-            console.error("onSave is not a function");
           }
-          setStatusMessage("Transfer successful!"); // Mensaje de éxito
-          setShowStatusPopup(true); // Mostrar el pop-up de éxito
+          toast.success("Transfer successful!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            theme: "colored",
+          });
           onClose(); // Cerrar el modal después de guardar
         } else {
-          console.error("Failed to save data");
-          setStatusMessage("Transfer failed. Please try again."); // Mensaje de error
-          setShowStatusPopup(true); // Mostrar el pop-up de error
+          toast.error("Transfer failed. Please try again.", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            theme: "colored",
+          });
         }
       } catch (err) {
         console.error("Error saving data", err);
-        setStatusMessage("An error occurred. Please try again."); // Mensaje de error
-        setShowStatusPopup(true); // Mostrar el pop-up de error
+        toast.error("An error occurred. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          theme: "colored",
+        });
       }
     } else {
-      console.error("You must select both a section and a department.");
+      toast.warning("You must select both a section and a department.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "colored",
+      });
     }
   };
 
@@ -169,28 +194,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
         </DialogFooter>
       </Dialog>
 
-      {/* Pop-up de estado */}
-      <Dialog
-        open={showStatusPopup}
-        handler={() => setShowStatusPopup(false)}
-        size="sm"
-      >
-        <DialogHeader className="text-xl font-semibold text-gray-800">
-          Transfer Status
-        </DialogHeader>
-        <DialogBody className="p-5">
-          <p className="text-center">{statusMessage}</p>
-        </DialogBody>
-        <DialogFooter className="space-x-3">
-          <Button
-            color="indigo"
-            onClick={() => setShowStatusPopup(false)}
-            className="w-32 rounded-md bg-indigo-500 py-2 text-white hover:bg-indigo-600"
-          >
-            Close
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <ToastContainer />
     </>
   );
 };
