@@ -12,11 +12,13 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 export function Evaluation() {
   const { user } = useAuth();
@@ -152,32 +154,40 @@ export function Evaluation() {
   };
 
   return (
-    <div className="mb-8 mt-12 flex flex-col gap-12">
+    <div className="mb-8 mt-12 flex flex-col gap-8">
       <Card className="shadow-xl">
-        <CardHeader variant="gradient" color="gray" className="p-6">
+        <CardHeader
+          variant="gradient"
+          color="gray"
+          className="flex items-center justify-between p-6"
+        >
+          {isSearching && (
+            <IconButton
+              variant="text"
+              size="sm"
+              color="white"
+              onClick={resetSearch}
+              className="mr-4"
+            >
+              <ArrowLeftIcon className="h-5 w-5" />
+            </IconButton>
+          )}
           <div className="flex items-center justify-between">
             <Typography variant="h5" color="white" className="font-semibold">
               Evaluate Technicians
             </Typography>
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                color="white"
-                label="Search by Username"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="text-sm text-white"
-              />
-              {isSearching && (
-                <Button color="red" onClick={resetSearch} className="text-sm">
-                  Reset
-                </Button>
-              )}
-            </div>
           </div>
         </CardHeader>
-        <CardBody className="mt-5 overflow-x-scroll p-0">
+        <CardBody>
+          <div className="mb-4">
+            <Input
+              label="Search by Username"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full"
+            />
+          </div>
           <table className="w-full min-w-[640px] table-auto">
             <thead className="bg-gray-800 text-sm text-white">
               <tr>
@@ -216,27 +226,16 @@ export function Evaluation() {
         </CardBody>
       </Card>
 
-      {!isSearching && (
-        <div className="mt-4 flex justify-center space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
-          <Typography variant="small" className="self-center">
-            Page {currentPage} of {totalPages}
-          </Typography>
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
+      {/* Paginación */}
+      {!isSearching && totalPages > 1 && (
+        <div className="mt-4 flex justify-center">
+          <Stack spacing={2}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={(_, value) => setCurrentPage(value)}
+            />
+          </Stack>
         </div>
       )}
 

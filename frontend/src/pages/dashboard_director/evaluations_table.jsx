@@ -4,10 +4,9 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Button,
-  IconButton,
 } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import api from "@/middlewares/api";
 
 const EvaluationsTable = () => {
@@ -26,12 +25,9 @@ const EvaluationsTable = () => {
     setLoading(true);
     setError(null);
     try {
-      // http://localhost:5217/api/Evaluation/GetPaged?PageNumber=1&PageSize=5
       const response = await api(
         `/Evaluation/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`,
-        {
-          method: "GET",
-        },
+        { method: "GET" },
       );
 
       if (!response.ok) {
@@ -46,37 +42,6 @@ const EvaluationsTable = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  const renderPaginationButtons = () => {
-    const visibleButtons = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
-    let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
-
-    if (endPage - startPage + 1 < visibleButtons) {
-      startPage = Math.max(1, endPage - visibleButtons + 1);
-    }
-
-    return Array.from(
-      { length: endPage - startPage + 1 },
-      (_, i) => startPage + i,
-    ).map((page) => (
-      <Button
-        key={page}
-        variant={page === currentPage ? "filled" : "outlined"}
-        color="gray"
-        onClick={() => handlePageChange(page)}
-        className="px-4 py-2"
-      >
-        {page}
-      </Button>
-    ));
   };
 
   return (
@@ -103,7 +68,6 @@ const EvaluationsTable = () => {
           </Typography>
         ) : (
           <>
-            {/* Tabla de Evaluaciones */}
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
@@ -136,7 +100,7 @@ const EvaluationsTable = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" className="px-6 py-3 text-center">
+                      <td colSpan="3" className="px-6 py-3 text-center">
                         No evaluations found
                       </td>
                     </tr>
@@ -147,30 +111,17 @@ const EvaluationsTable = () => {
           </>
         )}
 
-        {/* Paginación */}
-        <div className="mt-4 flex justify-center space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2"
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
-
-          {renderPaginationButtons()}
-
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2"
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
-        </div>
+        {!loading && !error && totalPages > 1 && (
+          <div className="mt-4 flex justify-center">
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(_, value) => setCurrentPage(value)}
+              />
+            </Stack>
+          </div>
+        )}
       </CardBody>
     </Card>
   );

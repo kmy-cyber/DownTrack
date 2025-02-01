@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, Typography, Button, IconButton, Input, Select, Option } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon, ArrowLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
+  Button,
+  IconButton,
+  Input,
+  Select,
+  Option,
+} from "@material-tailwind/react";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 import SectionSelectionModal from "@/pages/dashboard_manager/section_selection";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/solid";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 const InventoryTable = () => {
   const location = useLocation();
@@ -23,19 +35,17 @@ const InventoryTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState(null); // Estado para el equipo seleccionado
   const isSectionManager = user.role.toLowerCase() === "sectionmanager";
-  console.log(`is section manager: ${isSectionManager}`);
   const pageSize = 12;
 
   useEffect(() => {
-    fetchEquipments();
+    fetchEquipments(currentPage);
   }, [currentPage]);
 
-  const fetchEquipments = async (pageNumber = currentPage) => {
+  const fetchEquipments = async (pageNumber) => {
     setLoading(true);
     setError(null);
 
     let url = `/Equipment/GetPaged/?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    console.log(`idSect:${sectionId} idDept ${departmentId}`);
 
     if (sectionId) {
       url = `/Equipment/equipments/section/${sectionId}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
@@ -45,19 +55,13 @@ const InventoryTable = () => {
       url = `/Equipment/equipments/section-manager/${user.id}?PageNumber=${pageNumber}&PageSize=${pageSize}`;
     }
 
-    if (searchTerm) {
-      url =
-        searchType === "id"
-          ? `/Equipment/equipments/${searchTerm}`
-          : `/Equipment/equipments/search?name=${searchTerm}`;
-    }
-
     try {
       const response = await api(url);
-      console.log(url);
       if (!response.ok)
         throw new Error(
-          response.status === 500 ? "Server Internal Error." : "Equipment not found."
+          response.status === 500
+            ? "Server Internal Error."
+            : "Equipment not found.",
         );
       const data = await response.json();
       setEquipmentData(data.items || []);
@@ -76,7 +80,9 @@ const InventoryTable = () => {
       const response = await api(`/Equipment/GET?equipmentId=${targetId}`);
       if (!response.ok)
         throw new Error(
-          response.status === 500 ? "Server Internal Error." : "Equipment not found."
+          response.status === 500
+            ? "Server Internal Error."
+            : "Equipment not found.",
         );
       const equipment = await response.json();
       setEquipmentData([equipment]);
@@ -92,10 +98,14 @@ const InventoryTable = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(`/Equipment/SearchByNameAndBySectionManagerId/${user.id}?PageNumber=${currentPage}&PageSize=${pageSize}&equipmentName=${targetName}`);
+      const response = await api(
+        `/Equipment/SearchByNameAndBySectionManagerId/${user.id}?PageNumber=${currentPage}&PageSize=${pageSize}&equipmentName=${targetName}`,
+      );
       if (!response.ok)
         throw new Error(
-          response.status === 500 ? "Server Internal Error." : "Equipment not found."
+          response.status === 500
+            ? "Server Internal Error."
+            : "Equipment not found.",
         );
       const data = await response.json();
       setEquipmentData(data.items);
@@ -107,9 +117,12 @@ const InventoryTable = () => {
     }
   };
 
-  // Función de cambio de página con validación de rango
   const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages && pageNumber !== currentPage) {
+    if (
+      pageNumber >= 1 &&
+      pageNumber <= totalPages &&
+      pageNumber !== currentPage
+    ) {
       setCurrentPage(pageNumber);
     }
   };
@@ -136,7 +149,10 @@ const InventoryTable = () => {
       startPage = Math.max(1, endPage - visibleButtons + 1);
     }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i,
+    ).map((page) => (
       <Button
         key={page}
         variant={page === currentPage ? "filled" : "outlined"}
@@ -150,87 +166,121 @@ const InventoryTable = () => {
   };
 
   return (
-    <Card className="mt-8 shadow-lg rounded-lg">
-      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
-        <IconButton variant="text" color="white" onClick={() => navigate(-1)} className="mr-4">
+    <Card className="mt-8 rounded-lg shadow-lg">
+      <CardHeader
+        variant="gradient"
+        color="gray"
+        className="flex items-center justify-between p-6"
+      >
+        <IconButton
+          variant="text"
+          color="white"
+          onClick={() => navigate(-1)}
+          className="mr-4"
+        >
           <ArrowLeftIcon className="h-6 w-6" />
         </IconButton>
-        <Typography variant="h6" color="white" className="text-xl font-semibold">
+        <Typography
+          variant="h6"
+          color="white"
+          className="text-xl font-semibold"
+        >
           Equipment Inventory
         </Typography>
       </CardHeader>
       <CardBody className="px-0 py-4">
-        <div className="flex items-center gap-1 mb-4 px-5">
+        <div className="mb-4 flex items-center gap-1 px-5">
           <Select value={searchType} label="Search By" onChange={setSearchType}>
             <Option value="name">Search by Name</Option>
             <Option value="id">Search by ID</Option>
           </Select>
-          <Input 
-            type="text" 
+          <Input
+            type="text"
             label="Search"
-            value={searchTerm} 
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => 
-              {if(e.key === "Enter" && searchTerm.trim()){
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && searchTerm.trim()) {
                 e.preventDefault();
-                searchType === "id" ? 
-                getEquipmentById(searchTerm):
-                getEquipmentByName(searchTerm)
-              }}
-            }
+                searchType === "id"
+                  ? getEquipmentById(searchTerm)
+                  : getEquipmentByName(searchTerm);
+              }
+            }}
           />
         </div>
 
         {loading ? (
           <Typography className="text-center">Loading...</Typography>
         ) : error ? (
-          <Typography color="red" className="text-center">{error}</Typography>
+          <Typography color="red" className="text-center">
+            {error}
+          </Typography>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto text-sm text-gray-900 border-collapse mt-0">
+            <table className="mt-0 min-w-full table-auto border-collapse text-sm text-gray-900">
               <thead className="bg-gray-800 text-white">
                 <tr>
-                  <th className="px-6 py-3 border-b text-center">Name</th>
-                  <th className="px-6 py-3 border-b text-center">Type</th>
-                  <th className="px-6 py-3 border-b text-center">Status</th>
-                  <th className="px-6 py-3 border-b text-center">Acquisition Date</th>
-                  <th className="px-6 py-3 border-b text-center">Section</th>
-                  <th className="px-6 py-3 border-b text-center">Department</th>
-                  {isSectionManager &&(
-                  <th className="px-6 py-3 border-b text-center">Transfer</th>)}
+                  <th className="border-b px-6 py-3 text-center">Name</th>
+                  <th className="border-b px-6 py-3 text-center">Type</th>
+                  <th className="border-b px-6 py-3 text-center">Status</th>
+                  <th className="border-b px-6 py-3 text-center">
+                    Acquisition Date
+                  </th>
+                  <th className="border-b px-6 py-3 text-center">Section</th>
+                  <th className="border-b px-6 py-3 text-center">Department</th>
+                  {isSectionManager && (
+                    <th className="border-b px-6 py-3 text-center">Transfer</th>
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-white">
                 {equipmentData.length > 0 ? (
                   equipmentData.map((equipment, index) => (
                     <tr key={index}>
-                      <td className="px-6 py-3 border-b text-center">{equipment.name}</td>
-                      <td className="px-6 py-3 border-b text-center">{equipment.type}</td>
-                      <td className="px-6 py-3 border-b text-center">
-                        <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full 
-                          ${getStatusColor(equipment.status)}`} >
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.name}
+                      </td>
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.type}
+                      </td>
+                      <td className="border-b px-6 py-3 text-center">
+                        <span
+                          className={`inline-block rounded-full px-2 py-1 text-xs font-semibold 
+                          ${getStatusColor(equipment.status)}`}
+                        >
                           {equipment.status}
                         </span>
                       </td>
-                      <td className="px-6 py-3 border-b text-center">{equipment.dateOfadquisition || "N/A"}</td>
-                      <td className="px-6 py-3 border-b text-center">{equipment.sectionName || "N/A"}</td>
-                      <td className="px-6 py-3 border-b text-center">{equipment.departmentName || "N/A"}</td>
-                      {isSectionManager && (<td className="px-6 py-3 border-b text-center">
-                        <IconButton 
-                          onClick={() => {
-                            setSelectedEquipmentId(equipment.id); // Guardar el ID del equipo seleccionado
-                            setIsModalOpen(true);
-                          }} 
-                          className="px-4 py-2 rounded-full"
-                        >
-                          <ArrowsRightLeftIcon className="h-5 w-5" />
-                        </IconButton>
-                      </td>)}
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.dateOfadquisition || "N/A"}
+                      </td>
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.sectionName || "N/A"}
+                      </td>
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.departmentName || "N/A"}
+                      </td>
+                      {isSectionManager && (
+                        <td className="border-b px-6 py-3 text-center">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedEquipmentId(equipment.id); // Guardar el ID del equipo seleccionado
+                              setIsModalOpen(true);
+                            }}
+                            className="rounded-full px-4 py-2"
+                          >
+                            <ArrowsRightLeftIcon className="h-5 w-5" />
+                          </IconButton>
+                        </td>
+                      )}
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-3 text-center">No equipment found</td>
+                    <td colSpan="6" className="px-6 py-3 text-center">
+                      No equipment found
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -238,40 +288,28 @@ const InventoryTable = () => {
           </div>
         )}
 
-        {searchType === "name" && totalPages > 1 && (
-          <div className="flex justify-center mt-4 space-x-2">
-            <IconButton
-              variant="outlined"
-              color="gray"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2"
-            >
-              <ChevronLeftIcon className="h-5 w-5" />
-            </IconButton>
-
-            {renderPaginationButtons()}
-
-            <IconButton
-              variant="outlined"
-              color="gray"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2"
-            >
-              <ChevronRightIcon className="h-5 w-5" />
-            </IconButton>
+        {/* Paginación */}
+        {!loading && !error && totalPages > 1 && (
+          <div className="mt-4 flex justify-center">
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(_, value) => setCurrentPage(value)}
+              />
+            </Stack>
           </div>
         )}
       </CardBody>
 
-      {isSectionManager && 
-      <SectionSelectionModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
-        onSave={null} 
-        eqiD={selectedEquipmentId} // Pasar el ID del equipo seleccionado al modal
-      />}
+      {isSectionManager && (
+        <SectionSelectionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={null}
+          eqiD={selectedEquipmentId} // Pasar el ID del equipo seleccionado al modal
+        />
+      )}
     </Card>
   );
 };

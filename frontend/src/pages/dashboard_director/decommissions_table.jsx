@@ -4,10 +4,8 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Button,
-  IconButton,
 } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { Pagination } from "@mui/material";
 import api from "@/middlewares/api";
 
 const EquipmentDecommissionsTable = () => {
@@ -47,35 +45,8 @@ const EquipmentDecommissionsTable = () => {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
-  const renderPaginationButtons = () => {
-    const visibleButtons = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(visibleButtons / 2));
-    let endPage = Math.min(totalPages, startPage + visibleButtons - 1);
-
-    if (endPage - startPage + 1 < visibleButtons) {
-      startPage = Math.max(1, endPage - visibleButtons + 1);
-    }
-
-    return Array.from(
-      { length: endPage - startPage + 1 },
-      (_, i) => startPage + i,
-    ).map((page) => (
-      <Button
-        key={page}
-        variant={page === currentPage ? "filled" : "outlined"}
-        color="gray"
-        onClick={() => handlePageChange(page)}
-        className="px-4 py-2"
-      >
-        {page}
-      </Button>
-    ));
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -102,7 +73,6 @@ const EquipmentDecommissionsTable = () => {
           </Typography>
         ) : (
           <>
-            {/* Tabla de Desincorporación de Equipos */}
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
@@ -155,28 +125,13 @@ const EquipmentDecommissionsTable = () => {
         )}
 
         {/* Paginación */}
-        <div className="mt-4 flex justify-center space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2"
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
-
-          {renderPaginationButtons()}
-
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2"
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
+        <div className="mt-4 flex justify-center">
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            className="self-center"
+          />
         </div>
       </CardBody>
     </Card>

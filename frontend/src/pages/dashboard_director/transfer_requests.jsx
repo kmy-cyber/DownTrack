@@ -8,7 +8,8 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import api from "@/middlewares/api";
+import Stack from "@mui/material/Stack";
+import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
 const TransferRequestsTable = () => {
   const [transferRequestsList, setTransferRequestsList] = useState([]);
@@ -42,7 +43,7 @@ const TransferRequestsTable = () => {
       setTransferRequestsList(data.items || []);
       setTotalPages(Math.ceil(data.totalCount / pageSize));
     } catch (err) {
-      setError("Failed to load transfer requests data");
+      setError("Failed to fetch transfer requests data");
     } finally {
       setLoading(false);
     }
@@ -154,29 +155,17 @@ const TransferRequestsTable = () => {
         )}
 
         {/* Paginación */}
-        <div className="mt-4 flex justify-center space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2"
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
-
-          {renderPaginationButtons()}
-
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2"
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
-        </div>
+        {!loading && !error && totalPages > 1 && (
+          <div className="mt-4 flex justify-center">
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(_, value) => setCurrentPage(value)}
+              />
+            </Stack>
+          </div>
+        )}
       </CardBody>
     </Card>
   );
