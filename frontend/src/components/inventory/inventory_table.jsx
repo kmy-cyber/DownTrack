@@ -98,9 +98,11 @@ const InventoryTable = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(
-        `/Equipment/SearchByNameAndBySectionManagerId/${user.id}?PageNumber=${currentPage}&PageSize=${pageSize}&equipmentName=${targetName}`,
-      );
+      let url = isSectionManager ? 
+      `/Equipment/SearchByNameAndBySectionManagerId/${user.id}?PageNumber=${currentPage}&PageSize=${pageSize}&equipmentName=${targetName}` :
+      // http://localhost:5217/api/Equipment/SearchByName?PageNumber=1&PageSize=5&equipmentName=equipment_6
+      `/Equipment/SearchByName?PageNumber=${1}&PageSize=${1}&equipmentName=${searchTerm}`
+      const response = await api(url);
       if (!response.ok)
         throw new Error(
           response.status === 500
@@ -190,21 +192,19 @@ const InventoryTable = () => {
       </CardHeader>
       <CardBody className="px-0 py-4">
         <div className="mb-4 flex items-center gap-1 px-5">
-          <Select value={searchType} label="Search By" onChange={setSearchType}>
+          {/* <Select value={searchType} label="Search By" onChange={setSearchType}>
             <Option value="name">Search by Name</Option>
             <Option value="id">Search by ID</Option>
-          </Select>
+          </Select> */}
           <Input
             type="text"
-            label="Search"
+            label="Search by Name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && searchTerm.trim()) {
                 e.preventDefault();
-                searchType === "id"
-                  ? getEquipmentById(searchTerm)
-                  : getEquipmentByName(searchTerm);
+                getEquipmentByName(searchTerm);
               }
             }}
           />
