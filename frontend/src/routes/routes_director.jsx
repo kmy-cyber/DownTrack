@@ -14,7 +14,7 @@ import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
 import { Reports } from "@/components/reports/reports"
 import InventoryTable from "@/components/inventory/inventory_table";
-import MaintenanceHistory from "@/pages/dashboard_director/maintenances_table";
+import MaintenancesHistory from "@/pages/dashboard_director/maintenances_table";
 import EquipmentTransferTable  from "@/pages/dashboard_director/equipment_transfers_table";
 import UserTable from "@/pages/dashboard_director/employees_table";
 import EvaluationsTable from "@/pages/dashboard_director/evaluations_table";
@@ -65,7 +65,7 @@ export const routesDirector = [
           icon: <WrenchScrewdriverIcon {...icon}/>,
           name: "Maintenances",
           path: "/maintenances",
-          element: <MaintenanceHistory/>
+          element: <MaintenancesHistory/>
         },
         {
           icon: <ArrowsRightLeftIcon {...icon}/>,

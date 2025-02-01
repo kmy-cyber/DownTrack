@@ -164,11 +164,11 @@ export function EquipmentDisposalTable() {
                                     {[ "Technic", "Equipment", "Date", "Cause", "Status",""].map((el) => (
                                         <th
                                             key={el}
-                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
                                         >
                                             <Typography
                                                 variant="small"
-                                                className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                                className="text-[11px] font-extrabold uppercase text-white"
                                             >
                                                 {el}
                                             </Typography>

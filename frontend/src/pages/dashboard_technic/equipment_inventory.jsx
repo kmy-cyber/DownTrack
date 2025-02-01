@@ -79,20 +79,19 @@ export function EquipmentInventory() {
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {["ID", "Equipment", "type"].map((el) => (
+                                    {["ID", "Equipment", "type",""].map((el) => (
                                         <th
                                             key={el}
-                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
                                         >
                                             <Typography
                                                 variant="small"
-                                                className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                                className="text-[11px] font-extrabold uppercase text-white"
                                             >
                                                 {el}
                                             </Typography>
                                         </th>
                                     ))}
-                                    <th key="sadf" className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"></th>
                                 </tr>
                             </thead>
                             <tbody >

@@ -27,7 +27,7 @@ import {
     ordersOverviewData,
 } from "@/data";
 import { chartsConfig } from "@/configs";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ClockIcon, WrenchIcon } from "@heroicons/react/24/solid";
 
 export function Home() {
     console.log("Home rendered");
@@ -53,16 +53,16 @@ export function Home() {
 
             <StatisticsCard
                 color= "gray" 
-                key= "Recently added"
-                title= "Recently added"
-                value = "COMMING SOON"
-                icon={React.createElement(PlusIcon, {
+                key= "Maintenance"
+                title= "Maintenance"
+                value = "VALUE"
+                icon={React.createElement(WrenchIcon, {
                 className: "w-6 h-6 text-white",
                 })}
                 footer={
                 <Typography className="font-normal text-green-gray-600">
-                    <strong className={"text-green-500"}>{"+5%"}</strong>
-                    &nbsp;{"than yesterday"}
+                    <strong className={"text-green-500"}>{""}</strong>
+                    &nbsp;{""}
                 </Typography>
                 }
             />

@@ -4,6 +4,12 @@ import {
     CardHeader,
     CardBody,
     Typography,
+    Button,
+    Dialog,
+    DialogHeader,
+    DialogFooter,
+    DialogBody,
+    Input,
 
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
@@ -16,6 +22,15 @@ export const UserCreationForm = () => {
 
     const [sectionList, setSectionList] = useState([]);
     const [departmentList, setDepartmentList] = useState([]);
+
+
+    const [showSections, setShowSections] = useState(false);
+    const [sections, setSections] = useState([]);
+    const [selectedSections, setSelectedSections] = useState(null);
+
+    const [showDepartments, setShowDepartments] = useState(false);
+    const [departments, setDepartments] = useState([]);
+    const [selectedDepartments, setSelectedDepartments] = useState(null);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -95,7 +110,7 @@ export const UserCreationForm = () => {
     };
     
 
-    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):298;
+    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):408;
 
     const handleSubmit = async (e) => {
             console.log("Register ");
@@ -107,7 +122,6 @@ export const UserCreationForm = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        //"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjFlMDYxMDVmLWNhYzQtNDU2ZC1iMTAxLTRjMzM1MTYyOTlhYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzQ2MDgsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.MSHvcGnczsqz1HuaHRqvlsSjE7-LyZQjRSCVWEe_kp4"
                     },
                     
                     body: JSON.stringify({
@@ -155,6 +169,7 @@ export const UserCreationForm = () => {
             }
         };
 
+    
     return (
     <>
         <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
@@ -184,56 +199,57 @@ export const UserCreationForm = () => {
                     />
                     </div>
 
+                    <div>
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            placeholder="Enter username to assign"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <input
+                            type="text"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Enter email"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                    </div>
+
 
                     {formData.role !== "ShippingSupervisor" ? (
                     <>
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                value={formData.username}
-                                onChange={handleChange}
-                                placeholder="Enter username to assign"
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                required
-                            />
-                            </div>
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <input
+                            type="text"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter password to assign"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                        </div>
 
-                            <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <input
-                                type="text"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="Enter password to assign"
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                required
-                            />
-                            </div>
-
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    Email
-                                </label>
-                                <input
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter email"
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    required
-                                />
-                            </div>
                     </>
                     ) : null}
                 
