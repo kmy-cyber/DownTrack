@@ -6,5 +6,5 @@ namespace DownTrack.Application.IServices;
 
 public interface ITechnicianQueryServices : IGenericQueryService<Technician,GetTechnicianDto>
 {
-
+    
 }
