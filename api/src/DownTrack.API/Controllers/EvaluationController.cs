@@ -68,10 +68,10 @@ public class EvaluationController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEvaluation ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEvaluation (PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

@@ -1,7 +1,7 @@
 
 using DownTrack.Application.DTO;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Roles;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.IServices;
 

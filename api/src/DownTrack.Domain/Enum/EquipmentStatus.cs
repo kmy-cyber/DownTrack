@@ -1,6 +1,6 @@
 
 
-namespace DownTrack.Domain.Status;
+namespace DownTrack.Domain.Enum;
 
 public enum EquipmentStatus
 {

@@ -67,10 +67,10 @@ public class EquipmentController : ControllerBase
 
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEquipment([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipment(PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -108,6 +108,16 @@ public class EquipmentController : ControllerBase
         var result = await _equipmentQueryService.GetPagedEquipmentsByDepartmentIdAsync(paged, departmentId);
 
         return Ok(result);
+    }
+
+    [HttpGet("active equipment")]
+    public async Task<IActionResult> GetActiveEquipment ([FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetActiveEquipment(paged);
+        
+        return Ok (result);
     }
 
     [HttpGet("SearchByName")]

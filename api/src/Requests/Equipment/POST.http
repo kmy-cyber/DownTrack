@@ -35,3 +35,16 @@ Content-Type:  application/json
 }
 
 
+###
+POST {{host}}/api/Equipment/GetPaged
+Content-Type: application/json
+
+{
+  "PageNumber": 1,
+  "PageSize": 3,
+  "SortColumn" : "Name",
+  "Sort"
+  "Filters": {
+    "sectionId": 21
+  }
+}

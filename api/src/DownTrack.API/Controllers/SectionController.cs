@@ -93,10 +93,10 @@ public class SectionController : ControllerBase
 
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<ActionResult> GetPagedSection([FromQuery] PagedRequestDto paged)
+    public async Task<ActionResult> GetPagedSection(PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -118,6 +118,8 @@ public class SectionController : ControllerBase
         return Ok(result);
 
     }
+
+  
 
 
     #endregion

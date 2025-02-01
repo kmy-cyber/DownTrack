@@ -4,8 +4,9 @@ using AutoMapper;
 using DownTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using DownTrack.Application.IUnitOfWorkPattern;
-using DownTrack.Domain.Roles;
+using DownTrack.Domain.Enum;
 using System.Linq.Expressions;
+using DownTrack.Application.Interfaces;
 
 namespace DownTrack.Application.Services;
 
@@ -21,8 +22,11 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
     private static readonly Expression<Func<Employee, object>>[] includes =
                             { e => e.User! };
 
-    public EmployeeQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork, mapper)
+    public EmployeeQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
+                                 IFilterService<Employee> filterService,
+                                 ISortService<Employee> sortService,
+                                 IPaginationService<Employee> paginationService)
+        : base(unitOfWork, filterService,sortService,paginationService,mapper)
     {
 
     }
@@ -52,7 +56,7 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
 
     public async Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName)
     {
-        
+
         var expressions = new Expression<Func<Employee, bool>>[]
         {
             e=> e.User!.UserName == employeeUserName

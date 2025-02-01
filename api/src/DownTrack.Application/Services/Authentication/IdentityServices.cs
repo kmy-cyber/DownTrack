@@ -6,7 +6,7 @@ using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Roles;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.Services.Authentication;
 

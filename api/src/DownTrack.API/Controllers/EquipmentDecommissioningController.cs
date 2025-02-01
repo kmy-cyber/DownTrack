@@ -18,9 +18,9 @@ public class EquipmentDecommissioningController : ControllerBase
         _equipmentDecommissioningQueryServices = equipmentDecommissioningQueryServices;
         _equipmentDecommissioningCommandServices = equipmentDecommissioningCommandServices;
     }
-    
+
     #region Command
-    
+
     [HttpPost]
     [Route("POST")]
 
@@ -32,7 +32,7 @@ public class EquipmentDecommissioningController : ControllerBase
     }
 
 
-    
+
     [HttpPut]
     [Route("update")]
     public async Task<IActionResult> UpdateEquipmentDecommissioning(EquipmentDecommissioningDto equipmentDecommissioning)
@@ -75,9 +75,9 @@ public class EquipmentDecommissioningController : ControllerBase
 
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("Get_Paged_All")]
-    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedAllDepartmentInSection (PagedRequestDto paged)
     {
          paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -95,6 +95,18 @@ public class EquipmentDecommissioningController : ControllerBase
 
         if (result == null)
             return NotFound($"Equipment Decommissioning with ID {equipmentDecommissioningId} not found");
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("Get_Paged_All_By_ReceptorId/{receptorId}")]
+    public async Task<IActionResult> GetEquipmentDecomissioningByReceptorId(int receptorId, [FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentDecommissioningQueryServices.GetEquipmentDecomissioningOfReceptorAsync(receptorId, paged);
 
         return Ok(result);
 

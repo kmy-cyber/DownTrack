@@ -1,5 +1,5 @@
 
-using DownTrack.Domain.Roles;
+using DownTrack.Domain.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

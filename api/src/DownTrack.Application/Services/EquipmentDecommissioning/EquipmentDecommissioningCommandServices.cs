@@ -4,7 +4,6 @@ using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
 using DownTrack.Domain.Enum;
-using DownTrack.Domain.Status;
 
 namespace DownTrack.Application.Services;
 

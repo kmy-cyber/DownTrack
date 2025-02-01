@@ -3,7 +3,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Status;
+using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.Services;
 

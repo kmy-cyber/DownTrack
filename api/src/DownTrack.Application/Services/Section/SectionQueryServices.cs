@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -14,8 +15,11 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
     private static readonly Expression<Func<Section, object>>[] includes =
                             { d => d.SectionManager.User! };
 
-    public SectionQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork, mapper)
+    public SectionQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
+                                 IFilterService<Section> filterService,
+                                 ISortService<Section> sortService,
+                                 IPaginationService<Section> paginationService)
+        : base(unitOfWork, filterService,sortService,paginationService,mapper)
     {
 
     }
@@ -38,7 +42,7 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
         return await GetPagedResultByQueryAsync(paged, querySection);
     }
 
-
+   
     public async Task<GetSectionDto> GetSectionByNameAsync(string sectionName)
     {
         var expressions = new Expression<Func<Section, bool>>[]
@@ -56,6 +60,7 @@ public class SectionQueryServices : GenericQueryServices<Section, GetSectionDto>
             throw new Exception($"No section found with the username '{sectionName}'.");
 
         return _mapper.Map<GetSectionDto>(section);
+
     }
 
 }

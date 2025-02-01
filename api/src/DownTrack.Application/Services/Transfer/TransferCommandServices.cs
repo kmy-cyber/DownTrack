@@ -1,8 +1,10 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Enum;
 
 
 namespace DownTrack.Application.Services;
@@ -46,6 +48,8 @@ public class TransferCommandServices : ITransferCommandServices
         transfer.TransferRequest.Equipment.DepartmentId = transfer.TransferRequest.ArrivalDepartmentId;
         transfer.TransferRequest.Equipment.Department = transfer.TransferRequest.ArrivalDepartment;
 
+        transfer.TransferRequest.Status = TransferRequestStatus.Accepted.ToString();
+
         await _unitOfWork.GetRepository<Transfer>().CreateAsync(transfer);
 
         await _unitOfWork.CompleteAsync();
@@ -62,61 +66,41 @@ public class TransferCommandServices : ITransferCommandServices
 
     public async Task<TransferDto> UpdateAsync(TransferDto dto)
     {
-        await DeleteAsync(dto.Id);
-        await CreateAsync(dto);
-        return dto;
-        // var transfer = await _unitOfWork.GetRepository<Transfer>().GetByIdAsync(dto.RequestId);
+        // solo puedo modificar el shipping supervisor
 
-        // var receptor2 = transfer.EquipmentReceptor;
-        // var transfer2 = transfer.TransferRequest;
+        var transfer = await _unitOfWork.GetRepository<Transfer>()
+                                        .GetByIdAsync(dto.Id);
 
-        // if (dto.ShippingSupervisorId != transfer.ShippingSupervisorId)
-        // {
-        //     var shippingSupervisor = await _unitOfWork.GetRepository<Employee>()
-        //                                           .GetByIdAsync(transfer.ShippingSupervisorId);
+        if (transfer.ShippingSupervisorId != dto.ShippingSupervisorId)
+        {
+            var expression = new Expression<Func<Employee, bool>>[2]
+            {
+                e=> e.Id == dto.Id,
+                e=> e.UserRole == UserRole.ShippingSupervisor.ToString()
+            };
 
-        //     if (shippingSupervisor.UserRole != "ShippingSupervisor")
-        //         throw new Exception("No es un responsable de envio");
+            var includes = new Expression<Func<Employee, object>>[0];
 
-        //     transfer.ShippingSupervisor = shippingSupervisor;
-        // }
+            var supervisor = await _unitOfWork.GetRepository<Employee>()
+                                              .GetByItems(expression, includes);
 
+            if (supervisor == null)
+                throw new Exception($"Shipping Supervisor with Id :{dto.ShippingSupervisorId} does not exist");
 
-        // if (dto.EquipmentReceptorId != transfer.EquipmentReceptorId)
-        // {
-        //     var receptor = await _unitOfWork.GetRepository<EquipmentReceptor>()
-        //                                      .GetByIdAsync(transfer.EquipmentReceptorId);
+            
+            _mapper.Map(dto, transfer);
+            transfer.ShippingSupervisor = supervisor;
+            
+            _unitOfWork.GetRepository<Transfer>().Update(transfer);
 
-        //     receptor2 = receptor;
-        //     transfer.EquipmentReceptor = receptor;
-        // }
+            await _unitOfWork.CompleteAsync();
 
-        // if (dto.RequestId != transfer.RequestId)
-        // {
+            return _mapper.Map<TransferDto>(transfer);
+        }
 
-        //     var transferRequest = await _unitOfWork.GetRepository<TransferRequest>()
-        //                                        .GetByIdAsync(transfer.RequestId, default,
-        //                                                     tr => tr.Equipment);
-
-        //     transfer2 = transferRequest;
-
-        //     transfer.TransferRequest = transferRequest;
-        //     transfer.TransferRequest.Equipment.DepartmentId = transfer.TransferRequest.ArrivalDepartmentId;
-        //     transfer.TransferRequest.Equipment.Department = transfer.TransferRequest.ArrivalDepartment;
-
-        // }
-
-        // if (receptor2!.DepartmentId != transfer2.ArrivalDepartmentId)
-        //     throw new Exception($"Equipment Receptor {dto.EquipmentReceptorId} not belong to Department: {transfer2.ArrivalDepartmentId}");
+        return dto; 
 
 
-        // _mapper.Map(dto, transfer);
-
-        // _unitOfWork.GetRepository<Transfer>().Update(transfer);
-
-        // await _unitOfWork.CompleteAsync();
-
-        // return _mapper.Map<TransferDto>(transfer);
     }
 
 }

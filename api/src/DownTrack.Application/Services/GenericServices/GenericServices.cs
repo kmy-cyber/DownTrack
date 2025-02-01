@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using AutoMapper;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -9,25 +11,36 @@ using Microsoft.EntityFrameworkCore;
 namespace DownTrack.Application.Services;
 
 
-public class GenericQueryServices<TEntity,TDto> : IGenericQueryService<TEntity,TDto>  where TEntity:  GenericEntity
+public class GenericQueryServices<TEntity, TDto> : IGenericQueryService<TEntity, TDto> where TEntity : GenericEntity
 {
     protected readonly IMapper _mapper;
     protected readonly IUnitOfWork _unitOfWork;
-    public GenericQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IFilterService<TEntity> _filterService;
+    private readonly ISortService<TEntity> _sortService;
+    private readonly IPaginationService<TEntity> _paginationService;
+
+    public GenericQueryServices(IUnitOfWork unitOfWork,
+                                IFilterService<TEntity> filterService,
+                                ISortService<TEntity> sortService, 
+                                IPaginationService<TEntity> paginationService,
+                                IMapper mapper)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _filterService = filterService;
+        _sortService = sortService;
+        _paginationService = paginationService;
+        _mapper = mapper;
     }
 
-    public virtual Expression<Func<TEntity,object>> [] GetIncludes()
+    public virtual Expression<Func<TEntity, object>>[] GetIncludes()
     {
         return Array.Empty<Expression<Func<TEntity, object>>>();
     }
-    
+
     public async Task<IEnumerable<TDto>> ListAsync()
     {
         var includes = GetIncludes();
-        var dtoQuery =  _unitOfWork.GetRepository<TEntity>().GetAll();
+        var dtoQuery = _unitOfWork.GetRepository<TEntity>().GetAll();
 
         if (includes != null)
         {
@@ -38,7 +51,7 @@ public class GenericQueryServices<TEntity,TDto> : IGenericQueryService<TEntity,T
         }
 
         var dtoList = await dtoQuery.ToListAsync();
-        
+
         return dtoList.Select(_mapper.Map<TDto>);
     }
 
@@ -48,15 +61,18 @@ public class GenericQueryServices<TEntity,TDto> : IGenericQueryService<TEntity,T
         var includes = GetIncludes();
 
         var result = await _unitOfWork.GetRepository<TEntity>()
-                                      .GetByIdAsync(dto,default,includes);
+                                      .GetByIdAsync(dto, default, includes);
 
         return _mapper.Map<TDto>(result);
 
     }
 
-  
+
     public async Task<PagedResultDto<TDto>> GetPagedResultByQueryAsync(PagedRequestDto paged, IQueryable<TEntity> query)
     {
+
+        query = _filterService.ApplyFilters(query, paged.Filters!);
+        
         var includes = GetIncludes();
 
         if (includes != null)
@@ -67,36 +83,18 @@ public class GenericQueryServices<TEntity,TDto> : IGenericQueryService<TEntity,T
             }
         }
 
-        var totalCount = await query.CountAsync();
+        query = _sortService.ApplySort(query, paged.SortColumn!, paged.SortDescending);
 
-        var items = await query // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
+        return await _paginationService.ApplyPaginationAsync<TDto>(query, paged);
 
-
-        return new PagedResultDto<TDto>
-        {
-            Items = items?.Select(_mapper.Map<TDto>) ?? Enumerable.Empty<TDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
     }
 
-    public async Task<PagedResultDto<TDto>> GetAllPagedResultAsync (PagedRequestDto paged)
+    public async Task<PagedResultDto<TDto>> GetAllPagedResultAsync(PagedRequestDto paged)
     {
         IQueryable<TEntity> query = _unitOfWork.GetRepository<TEntity>()
                                                 .GetAll();
 
-        return await GetPagedResultByQueryAsync(paged,query);
+        return await GetPagedResultByQueryAsync(paged, query);
     }
 
 }

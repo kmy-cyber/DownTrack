@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
+using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -19,8 +20,11 @@ public class DepartmentQueryServices : GenericQueryServices<Department,GetDepart
 {
     private static readonly Expression<Func<Department, object>>[] includes = 
                             { d => d.Section };
-    public DepartmentQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
-        : base(unitOfWork, mapper)
+    public DepartmentQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
+                                 IFilterService<Department> filterService,
+                                 ISortService<Department> sortService,
+                                 IPaginationService<Department> paginationService)
+        : base(unitOfWork, filterService,sortService,paginationService,mapper)
     {
 
     }

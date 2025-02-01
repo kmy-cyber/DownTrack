@@ -55,10 +55,10 @@ public class TransferRequestController : ControllerBase
 
     #region Query
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedUser ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedUser(PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -81,6 +81,20 @@ public class TransferRequestController : ControllerBase
         return Ok(result);
 
     }
+    
+    [HttpGet]
+    [Route("GetByArrivalDepartment/{receptorId}")]
+
+    public async Task<IActionResult> GetTransferRequestByDepartment(int receptorId, [FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _transferRequestQueryService.GetPagedRequestsofArrivalDepartmentAsync(receptorId, paged);
+
+        return Ok(result);
+
+    }
+
 
     #endregion
 

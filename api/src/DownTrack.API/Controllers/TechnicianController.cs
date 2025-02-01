@@ -35,10 +35,10 @@ public class TechnicianController : ControllerBase
 
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedTechnician ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedTechnician (PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

@@ -1,7 +1,7 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Roles;
+using DownTrack.Domain.Enum;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -59,10 +59,10 @@ public class EmployeeController : ControllerBase
         return Ok(result);
     }   
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEmployee ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEmployee (PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

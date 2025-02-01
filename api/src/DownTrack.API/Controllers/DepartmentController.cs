@@ -33,7 +33,7 @@ public class DepartmentController : ControllerBase
     }
 
 
-      [HttpPut]
+    [HttpPut]
     [Route("PUT")]
 
     public async Task<IActionResult> UpdateDepartment(DepartmentDto department)
@@ -71,13 +71,13 @@ public class DepartmentController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedDepartment ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedDepartment (PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-
+        Console.WriteLine(paged.BaseUrl);
         var result = await _departmentQueryService.GetAllPagedResultAsync(paged);
         
         return Ok (result);

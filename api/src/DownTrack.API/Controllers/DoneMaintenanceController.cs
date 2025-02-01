@@ -79,10 +79,10 @@ public class DoneMaintenanceController : ControllerBase
     }
 
 
-    [HttpGet]
+    [HttpPost]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedDoneMaintenance ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedDoneMaintenance (PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

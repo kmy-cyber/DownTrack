@@ -8,7 +8,9 @@ public class Department : GenericEntity
     // todo dpto tiene obligado una Seccion
     public Section Section { get; set; } = null!;
     public ICollection<EquipmentReceptor> EquipmentReceptors {get;set;} = new List<EquipmentReceptor>();
-    public ICollection<TransferRequest> TransferRequests { get; set; } = new List<TransferRequest>();
+    public ICollection<TransferRequest> OutgoingTransferRequests { get; set; } = new List<TransferRequest>();
+
+    public ICollection<TransferRequest> IncomingTransferRequests {get;set;} = new List<TransferRequest>();
     public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
 }
