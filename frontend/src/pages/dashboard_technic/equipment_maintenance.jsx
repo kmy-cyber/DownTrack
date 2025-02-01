@@ -174,14 +174,14 @@ export function EquipmentMaintenance() {
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {["Equipment ID", "Equipment", "type", "date", ""].map((el) => (
+                                    {["Equipment ID", "Equipment", "type", "date",""].map((el) => (
                                         <th
                                             key={el}
-                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
                                         >
                                             <Typography
                                                 variant="small"
-                                                className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                                className="text-[11px] font-extrabold uppercase text-white"
                                             >
                                                 {el}
                                             </Typography>
@@ -232,9 +232,9 @@ export function EquipmentMaintenance() {
                                                         </Typography>
                                                 </td>
                                                 <td className={className + "items-center text-center"}>
-                                                            <DropdownMenu options={options(equipment.id)} />
+                                                    <DropdownMenu options={options(equipment.id)} />
                                                 </td>
-                                        </tr>
+                                            </tr>
                                         );
                                     }
                                 )}
@@ -242,7 +242,7 @@ export function EquipmentMaintenance() {
                         </table>
                     </CardBody>
                     <Dialog open={showDialog} handler={() => handleShowROpen()}>
-                        <DialogHeader>Select Receptor</DialogHeader>
+                        <DialogHeader>Insert Cost</DialogHeader>
                             <DialogBody>
                                 <Input
                                     type="text"
