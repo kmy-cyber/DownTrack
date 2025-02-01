@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
+  Button,
+  IconButton,
+} from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
@@ -19,9 +26,12 @@ const EmployeesTable = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(`/Employee/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
-        method: "GET",
-      });
+      const response = await api(
+        `/Employee/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        {
+          method: "GET",
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch employees");
@@ -53,7 +63,10 @@ const EmployeesTable = () => {
       startPage = Math.max(1, endPage - visibleButtons + 1);
     }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i,
+    ).map((page) => (
       <Button
         key={page}
         variant={page === currentPage ? "filled" : "outlined"}
@@ -68,8 +81,16 @@ const EmployeesTable = () => {
 
   return (
     <Card className="mt-8 shadow-lg">
-      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
-        <Typography variant="h6" color="white" className="text-xl font-semibold">
+      <CardHeader
+        variant="gradient"
+        color="gray"
+        className="flex items-center justify-between p-6"
+      >
+        <Typography
+          variant="h6"
+          color="white"
+          className="text-xl font-semibold"
+        >
           Employees
         </Typography>
       </CardHeader>
@@ -87,21 +108,29 @@ const EmployeesTable = () => {
               <table className="min-w-full table-auto text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 border-b text-center">Username</th>
-                    <th className="px-6 py-3 border-b text-center">Role</th>
+                    <th className="border-b px-6 py-3 text-center">Username</th>
+                    <th className="border-b px-6 py-3 text-center">Role</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
                   {employeeList.length > 0 ? (
                     employeeList.map((user) => (
                       <tr key={user.id}>
-                        <td className="px-6 py-3 border-b text-center">{user.userRole.toLowerCase() == "shippingsupervisor" ? user.name : user.userName}</td>
-                        <td className="px-6 py-3 border-b text-center">{user.userRole || "N/A"}</td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {user.userRole.toLowerCase() == "shippingsupervisor"
+                            ? user.name
+                            : user.userName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {user.userRole || "N/A"}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="2" className="px-6 py-3 text-center">No employees found</td>
+                      <td colSpan="2" className="px-6 py-3 text-center">
+                        No employees found
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -112,7 +141,7 @@ const EmployeesTable = () => {
 
         {/* Paginación */}
         {!loading && !error && totalPages > 1 && (
-          <div className="flex justify-center mt-4 space-x-2">
+          <div className="mt-4 flex justify-center space-x-2">
             {/* Previous button */}
             {currentPage > 1 && (
               <IconButton

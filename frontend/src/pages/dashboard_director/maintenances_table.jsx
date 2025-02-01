@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody, Typography, Button, IconButton } from "@material-tailwind/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
+  Button,
+  IconButton,
+} from "@material-tailwind/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
@@ -19,9 +26,12 @@ const MaintenanceHistory = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api(`/DoneMaintenance/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`, {
-        method: "GET",
-      });
+      const response = await api(
+        `/DoneMaintenance/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        {
+          method: "GET",
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch maintenance data");
@@ -53,7 +63,10 @@ const MaintenanceHistory = () => {
       startPage = Math.max(1, endPage - visibleButtons + 1);
     }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i,
+    ).map((page) => (
       <Button
         key={page}
         variant={page === currentPage ? "filled" : "outlined"}
@@ -68,8 +81,16 @@ const MaintenanceHistory = () => {
 
   return (
     <Card className="mt-8 shadow-lg">
-      <CardHeader variant="gradient" color="gray" className="p-6 flex items-center justify-between">
-        <Typography variant="h6" color="white" className="text-xl font-semibold">
+      <CardHeader
+        variant="gradient"
+        color="gray"
+        className="flex items-center justify-between p-6"
+      >
+        <Typography
+          variant="h6"
+          color="white"
+          className="text-xl font-semibold"
+        >
           Equipment Maintenance History
         </Typography>
       </CardHeader>
@@ -87,29 +108,51 @@ const MaintenanceHistory = () => {
               <table className="min-w-full table-auto text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
                   <tr>
-                    <th className="px-6 py-3 border-b text-center">Technician</th>
-                    <th className="px-6 py-3 border-b text-center">Equipment Name</th>
-                    <th className="px-6 py-3 border-b text-center">Equipment ID</th>
-                    <th className="px-6 py-3 border-b text-center">Maintenance Type</th>
-                    <th className="px-6 py-3 border-b text-center">Date</th>
-                    <th className="px-6 py-3 border-b text-center">Cost</th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Technician
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Equipment Name
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Equipment ID
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Maintenance Type
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">Date</th>
+                    <th className="border-b px-6 py-3 text-center">Cost</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
                   {maintenanceList.length > 0 ? (
                     maintenanceList.map((maintenance) => (
                       <tr key={maintenance.id}>
-                        <td className="px-6 py-3 border-b text-center">{maintenance.technicianUserName}</td>
-                        <td className="px-6 py-3 border-b text-center">{maintenance.equipmentName}</td>
-                        <td className="px-6 py-3 border-b text-center">{maintenance.equipmentId}</td>
-                        <td className="px-6 py-3 border-b text-center">{maintenance.type}</td>
-                        <td className="px-6 py-3 border-b text-center">{new Date(maintenance.date).toLocaleDateString()}</td>
-                        <td className="px-6 py-3 border-b text-center">${maintenance.cost}</td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {maintenance.technicianUserName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {maintenance.equipmentName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {maintenance.equipmentId}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {maintenance.type}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {new Date(maintenance.date).toLocaleDateString()}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          ${maintenance.cost}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="px-6 py-3 text-center">No maintenance records found</td>
+                      <td colSpan="6" className="px-6 py-3 text-center">
+                        No maintenance records found
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -120,7 +163,7 @@ const MaintenanceHistory = () => {
 
         {/* Paginación */}
         {!loading && !error && totalPages > 1 && (
-          <div className="flex justify-center mt-4 space-x-2">
+          <div className="mt-4 flex justify-center space-x-2">
             {/* Previous button */}
             {currentPage > 1 && (
               <IconButton
