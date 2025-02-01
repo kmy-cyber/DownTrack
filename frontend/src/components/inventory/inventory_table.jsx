@@ -221,6 +221,7 @@ const InventoryTable = () => {
             <table className="mt-0 min-w-full table-auto border-collapse text-sm text-gray-900">
               <thead className="bg-gray-800 text-white">
                 <tr>
+                  <th className="border-b px-6 py-3 text-center">ID</th>
                   <th className="border-b px-6 py-3 text-center">Name</th>
                   <th className="border-b px-6 py-3 text-center">Type</th>
                   <th className="border-b px-6 py-3 text-center">Status</th>
@@ -238,6 +239,9 @@ const InventoryTable = () => {
                 {equipmentData.length > 0 ? (
                   equipmentData.map((equipment, index) => (
                     <tr key={index}>
+                      <td className="border-b px-6 py-3 text-center">
+                        {equipment.id}
+                      </td>
                       <td className="border-b px-6 py-3 text-center">
                         {equipment.name}
                       </td>
