@@ -13,10 +13,7 @@ import {
   Tooltip,
   Progress,
 } from "@material-tailwind/react";
-import {
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
 import {
@@ -30,7 +27,7 @@ import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 export function Home() {
   return (
     <div className="mt-12">
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-12 grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-4">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
             key={title}
@@ -48,7 +45,7 @@ export function Home() {
           />
         ))}
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
@@ -58,7 +55,10 @@ export function Home() {
                 variant="small"
                 className="flex items-center font-normal text-blue-gray-600"
               >
-                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                <ClockIcon
+                  strokeWidth={2}
+                  className="h-4 w-4 text-blue-gray-400"
+                />
                 &nbsp;{props.footer}
               </Typography>
             }
@@ -66,7 +66,7 @@ export function Home() {
         ))}
       </div>
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
+        <Card className="overflow-hidden border border-blue-gray-100 shadow-sm xl:col-span-2">
           <CardHeader
             floated={false}
             shadow={false}
@@ -81,7 +81,10 @@ export function Home() {
                 variant="small"
                 className="flex items-center gap-1 font-normal text-blue-gray-600"
               >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
+                <CheckCircleIcon
+                  strokeWidth={3}
+                  className="h-4 w-4 text-blue-gray-200"
+                />
                 <strong>30 done</strong> this month
               </Typography>
             </div>
@@ -102,7 +105,7 @@ export function Home() {
               </MenuList>
             </Menu>
           </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+          <CardBody className="overflow-x-scroll px-0 pb-2 pt-0">
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
@@ -110,7 +113,7 @@ export function Home() {
                     (el) => (
                       <th
                         key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                        className="border-b border-blue-gray-50 px-6 py-3 text-left"
                       >
                         <Typography
                           variant="small"
@@ -119,7 +122,7 @@ export function Home() {
                           {el}
                         </Typography>
                       </th>
-                    )
+                    ),
                   )}
                 </tr>
               </thead>
@@ -187,7 +190,7 @@ export function Home() {
                         </td>
                       </tr>
                     );
-                  }
+                  },
                 )}
               </tbody>
             </table>
@@ -246,7 +249,7 @@ export function Home() {
                     </Typography>
                   </div>
                 </div>
-              )
+              ),
             )}
           </CardBody>
         </Card>

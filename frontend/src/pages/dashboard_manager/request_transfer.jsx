@@ -22,7 +22,8 @@ export const TransferRequestForm = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredEquipment, setFilteredEquipment] = useState(equipmentData);
-  const [filteredDepartments, setFilteredDepartments] = useState(departmentData); // Nuevo estado para departamentos
+  const [filteredDepartments, setFilteredDepartments] =
+    useState(departmentData); // Nuevo estado para departamentos
   const [showEquipmentModal, setShowEquipmentModal] = useState(false);
   const [showDepartmentModal, setShowDepartmentModal] = useState(false); // Nuevo modal para departamentos
   const [errorMessage, setErrorMessage] = useState(""); // Estado para manejar errores de validación
@@ -50,8 +51,8 @@ export const TransferRequestForm = () => {
       if (query) {
         setFilteredEquipment(
           equipmentData.filter((equipment) =>
-            equipment.name.toLowerCase().includes(query.toLowerCase())
-          )
+            equipment.name.toLowerCase().includes(query.toLowerCase()),
+          ),
         );
       } else {
         setFilteredEquipment(equipmentData);
@@ -60,8 +61,8 @@ export const TransferRequestForm = () => {
       if (query) {
         setFilteredDepartments(
           departmentData.filter((department) =>
-            department.name.toLowerCase().includes(query.toLowerCase())
-          )
+            department.name.toLowerCase().includes(query.toLowerCase()),
+          ),
         );
       } else {
         setFilteredDepartments(departmentData);
@@ -100,7 +101,9 @@ export const TransferRequestForm = () => {
 
     // Validación: Asegurarse de que todos los campos estén llenos
     if (!formData.equipment || !formData.department || !formData.transferDate) {
-      setErrorMessage("Please select equipment, department, and transfer date.");
+      setErrorMessage(
+        "Please select equipment, department, and transfer date.",
+      );
       return; // Evitar el envío del formulario si hay campos vacíos
     }
 
@@ -110,7 +113,7 @@ export const TransferRequestForm = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
+    <div className="mx-auto mt-10 max-w-3xl rounded-md bg-white p-6 shadow-md">
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
         <Typography variant="h6" color="white">
           Request Transfer
@@ -120,7 +123,10 @@ export const TransferRequestForm = () => {
         <form onSubmit={handleSubmit}>
           {/* Equipo Selección */}
           <div className="mb-6">
-            <label htmlFor="equipment" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="equipment"
+              className="block text-sm font-medium text-gray-700"
+            >
               Select Equipment
             </label>
             <div className="relative">
@@ -130,7 +136,8 @@ export const TransferRequestForm = () => {
                 className="mt-1 w-full"
               >
                 {formData.equipment
-                  ? equipmentData.find((eq) => eq.id === formData.equipment)?.name
+                  ? equipmentData.find((eq) => eq.id === formData.equipment)
+                      ?.name
                   : "Select Equipment"}
               </Button>
             </div>
@@ -141,7 +148,10 @@ export const TransferRequestForm = () => {
 
           {/* Destino de Transferencia (Departamento) */}
           <div className="mb-6">
-            <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="department"
+              className="block text-sm font-medium text-gray-700"
+            >
               Select Destination Department
             </label>
             <div className="relative">
@@ -151,14 +161,19 @@ export const TransferRequestForm = () => {
                 className="mt-1 w-full"
               >
                 {formData.department
-                  ? departmentData.find((dept) => dept.id === formData.department)?.name
+                  ? departmentData.find(
+                      (dept) => dept.id === formData.department,
+                    )?.name
                   : "Select Department"}
               </Button>
             </div>
           </div>
 
           <div className="mb-6">
-            <label htmlFor="transferDate" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="transferDate"
+              className="block text-sm font-medium text-gray-700"
+            >
               Transfer Date
             </label>
             <Input
@@ -167,12 +182,14 @@ export const TransferRequestForm = () => {
               name="transferDate"
               value={formData.transferDate}
               readOnly // Deshabilitar la edición
-              className="mt-1 w-full bg-gray-100 cursor-not-allowed" // Estilo solo lectura
+              className="mt-1 w-full cursor-not-allowed bg-gray-100" // Estilo solo lectura
             />
           </div>
 
           {/* Mostrar mensaje de error si algún campo no se ha seleccionado */}
-          {errorMessage && <div className="text-red-500 text-sm mb-4">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="mb-4 text-sm text-red-500">{errorMessage}</div>
+          )}
 
           {/* Botón para enviar la solicitud */}
           <Button
@@ -187,7 +204,10 @@ export const TransferRequestForm = () => {
       </CardBody>
 
       {/* Modal de selección de equipo */}
-      <Dialog open={showEquipmentModal} handler={() => handleModalClose("equipment")}>
+      <Dialog
+        open={showEquipmentModal}
+        handler={() => handleModalClose("equipment")}
+      >
         <DialogHeader>Select Equipment</DialogHeader>
         <DialogBody>
           <Input
@@ -195,13 +215,13 @@ export const TransferRequestForm = () => {
             placeholder="Search Equipment"
             value={searchQuery}
             onChange={(e) => handleSearch(e, "equipment")}
-            className="mb-4 w-full"            
+            className="mb-4 w-full"
           />
-          <div className="max-h-72 overflow-y-auto mt-3">
+          <div className="mt-3 max-h-72 overflow-y-auto">
             {filteredEquipment.map((equipment) => (
               <div
                 key={equipment.id}
-                className="p-2 cursor-pointer hover:bg-gray-100"
+                className="cursor-pointer p-2 hover:bg-gray-100"
                 onClick={() => handleEquipmentSelect(equipment.id)}
               >
                 {equipment.name} - {equipment.type}
@@ -220,7 +240,10 @@ export const TransferRequestForm = () => {
       </Dialog>
 
       {/* Modal de selección de departamento */}
-      <Dialog open={showDepartmentModal} handler={() => handleModalClose("department")}>
+      <Dialog
+        open={showDepartmentModal}
+        handler={() => handleModalClose("department")}
+      >
         <DialogHeader>Select Department</DialogHeader>
         <DialogBody>
           <Input
@@ -228,13 +251,13 @@ export const TransferRequestForm = () => {
             placeholder="Search Department"
             value={searchQuery}
             onChange={(e) => handleSearch(e, "department")}
-            className="mb-4 w-full"            
+            className="mb-4 w-full"
           />
-          <div className="max-h-72 overflow-y-auto mt-3">
+          <div className="mt-3 max-h-72 overflow-y-auto">
             {filteredDepartments.map((department) => (
               <div
                 key={department.id}
-                className="p-2 cursor-pointer hover:bg-gray-100"
+                className="cursor-pointer p-2 hover:bg-gray-100"
                 onClick={() => handleDepartmentSelect(department.id)}
               >
                 {department.name}
