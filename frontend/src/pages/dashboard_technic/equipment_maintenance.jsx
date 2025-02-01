@@ -242,7 +242,7 @@ export function EquipmentMaintenance() {
                         </table>
                     </CardBody>
                     <Dialog open={showDialog} handler={() => handleShowROpen()}>
-                        <DialogHeader>Select Receptor</DialogHeader>
+                        <DialogHeader>Insert Cost</DialogHeader>
                             <DialogBody>
                                 <Input
                                     type="text"

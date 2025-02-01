@@ -4,6 +4,12 @@ import {
     CardHeader,
     CardBody,
     Typography,
+    Button,
+    Dialog,
+    DialogHeader,
+    DialogFooter,
+    DialogBody,
+    Input,
 
 } from "@material-tailwind/react";
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
@@ -16,6 +22,15 @@ export const UserCreationForm = () => {
 
     const [sectionList, setSectionList] = useState([]);
     const [departmentList, setDepartmentList] = useState([]);
+
+
+    const [showSections, setShowSections] = useState(false);
+    const [sections, setSections] = useState([]);
+    const [selectedSections, setSelectedSections] = useState(null);
+
+    const [showDepartments, setShowDepartments] = useState(false);
+    const [departments, setDepartments] = useState([]);
+    const [selectedDepartments, setSelectedDepartments] = useState(null);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -107,7 +122,6 @@ export const UserCreationForm = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        //"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjFlMDYxMDVmLWNhYzQtNDU2ZC1iMTAxLTRjMzM1MTYyOTlhYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzQ2MDgsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.MSHvcGnczsqz1HuaHRqvlsSjE7-LyZQjRSCVWEe_kp4"
                     },
                     
                     body: JSON.stringify({
@@ -155,6 +169,7 @@ export const UserCreationForm = () => {
             }
         };
 
+    
     return (
     <>
         <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
