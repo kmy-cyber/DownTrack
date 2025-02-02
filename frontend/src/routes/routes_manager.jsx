@@ -5,7 +5,7 @@ import {
   DocumentCheckIcon,
   CubeIcon,
 } from "@heroicons/react/24/solid";
-import { Home } from "@/pages/dashboard_manager/home";
+import { Home } from "@/pages/dashboard_manager/home_manager";
 import { SectionsTable } from "@/components/sections";
 import { Evaluation } from "@/pages/dashboard_manager/evaluation";
 import { Reports } from "@/components/reports/reports";

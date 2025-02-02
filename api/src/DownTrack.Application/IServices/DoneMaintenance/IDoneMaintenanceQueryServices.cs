@@ -8,4 +8,6 @@ public interface IDoneMaintenanceQueryServices : IGenericQueryService<DoneMainte
 {
     Task<PagedResultDto<GetDoneMaintenanceDto>> GetByTechnicianIdAsync (PagedRequestDto paged, int technicianId);
     Task<PagedResultDto<GetDoneMaintenanceDto>> GetMaintenanceByTechnicianStatusAsync(PagedRequestDto paged,int technicianId, bool isFinish);
+
+    Task<PagedResultDto<GetDoneMaintenanceDto>> GetMaintenanceByEquipmentIdAsync(PagedRequestDto paged,int equipmentId);
 }

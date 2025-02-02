@@ -2,12 +2,32 @@ import React from 'react';
 import { Typography, Button, Container, Box } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom'; // Para redireccionar al usuario
+import { useAuth } from '@/context/AuthContext';
 
 const Error403 = () => {
     const navigate = useNavigate();
-
+    const {user} = useAuth();
+    console.log(user.role);
     const handleGoHome = () => {
-    navigate('/'); // Redirige al usuario a la página de inicio
+        let url = '/dashboard/';
+        switch(user.role.toLowerCase()){
+            case "director":
+                url += 'director/home';
+                break;
+            case "sectionmanager":
+                url += 'manager/home';
+                break;
+            case "technician":
+                url += 'technic/home';
+                break;
+            case "administrator":
+                url += 'admin/home';
+                break;
+            case "equipmentreceptor":
+                url += 'receptor/home';
+                break;
+        }
+    navigate(url); // Redirige al usuario a la página de inicio
     };
 
     return (
@@ -41,7 +61,7 @@ const Error403 = () => {
             Error 403: Forbidden
         </Typography>
         <Typography variant="body1" sx={{ color: '#666', marginBottom: '30px' }}>
-            You have no acces to this page.
+            You have no access to this page.
         </Typography>
         <Button
             variant="contained"
@@ -57,7 +77,7 @@ const Error403 = () => {
             },
             }}
         >
-            Volver al Inicio
+            Back to Home
         </Button>
         </Box>
     </Container>

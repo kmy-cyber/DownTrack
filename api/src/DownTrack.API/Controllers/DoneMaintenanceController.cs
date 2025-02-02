@@ -115,6 +115,18 @@ public class DoneMaintenanceController : ControllerBase
 
         return Ok(maintenance);
     }
+
+    [HttpGet]
+    [Route("Get_Maintenances_By_EquipmentId")]
+    public async Task<IActionResult> GetMaintenancesByEquipmentId ([FromQuery]PagedRequestDto paged,int equipmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByEquipmentIdAsync(paged,equipmentId);
+
+        return Ok(maintenance);
+    }
+
     
     #endregion
 

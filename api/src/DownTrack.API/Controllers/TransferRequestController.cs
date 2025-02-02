@@ -95,6 +95,18 @@ public class TransferRequestController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("Get_TransferRequest_By_EquipmentId")]
+
+    public async Task<IActionResult> GetTransferRequestByEquipmentId ([FromQuery] PagedRequestDto paged, int equipmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var transfers = await _transferRequestQueryService.GetTransferRequestByEquipmentIdAsync (paged,equipmentId);
+
+        return Ok(transfers);
+    }
+
 
     #endregion
 
