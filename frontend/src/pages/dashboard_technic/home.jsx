@@ -20,6 +20,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
+import PieChartComponent from "@/components/charts/simplePieChart";
 import {
     statisticsCardsData,
     statisticsChartsData,
@@ -27,58 +28,65 @@ import {
     ordersOverviewData,
 } from "@/data";
 import { chartsConfig } from "@/configs";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { ArrowDownCircleIcon, CheckCircleIcon, ClockIcon, WrenchIcon } from "@heroicons/react/24/solid";
+import { ArrowDownwardSharp, HourglassBottomRounded } from '@mui/icons-material';
 
 export function Home() {
-    console.log("Home rendered");
+
+    const dataEquipment = [
+        { name: 'Active', value: 400 , color: '#34495E'},
+        { name: 'Under Maintenance', value: 500, color:'#5D8AA8'  },
+        { name: 'Inactive', value: 300 , color:'#4A6FA5' },
+    ];
+
     return (
         <div className="mt-12">
-        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
 
             <StatisticsCard
                 color= "gray" 
-                key= "Recently added"
-                title= "Recently added"
-                value = "COMMING SOON"
-                icon={React.createElement(PlusIcon, {
+                key= "Maintenance"
+                title= ""
+                value = "VALUE"
+                icon={React.createElement(WrenchIcon, {
                 className: "w-6 h-6 text-white",
                 })}
                 footer={
                 <Typography className="font-normal text-green-gray-600">
-                    <strong className={"text-green-500"}>{"+5%"}</strong>
-                    &nbsp;{"than yesterday"}
+                    <strong className={"text-green-500"}>{""}</strong>
+                    &nbsp;{" total of completed maintenance"}
                 </Typography>
                 }
             />
 
             <StatisticsCard
                 color= "gray" 
-                key= "Recently added"
-                title= "Recently added"
-                value = "COMMING SOON"
-                icon={React.createElement(PlusIcon, {
+                key= "MaintenanceProcess"
+                title= ""
+                value = "VALUE"
+                icon={React.createElement(HourglassBottomRounded, {
                 className: "w-6 h-6 text-white",
                 })}
                 footer={
                 <Typography className="font-normal text-green-gray-600">
-                    <strong className={"text-green-500"}>{"+5%"}</strong>
-                    &nbsp;{"than yesterday"}
+                    <strong className={"text-green-500"}>{""}</strong>
+                    &nbsp;{"Total of maintenance in progress"}
                 </Typography>
                 }
             />
 
             <StatisticsCard
                 color= "gray" 
-                key= "Recently added"
-                title= "Recently added"
-                value = "COMMING SOON"
-                icon={React.createElement(PlusIcon, {
+                key= "Decommissions"
+                title= ""
+                value = "VALUE"
+                icon={React.createElement(ArrowDownCircleIcon, {
                 className: "w-6 h-6 text-white",
                 })}
                 footer={
                 <Typography className="font-normal text-green-gray-600">
-                    <strong className={"text-green-500"}>{"+5%"}</strong>
-                    &nbsp;{"than yesterday"}
+                    <strong className={"text-green-500"}>{""}</strong>
+                    &nbsp;{"Total of proposed decommissions"}
                 </Typography>
                 }
             />
@@ -88,23 +96,23 @@ export function Home() {
         <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
 
             <StatisticsChart
-                key ="Added last month"
+                key ="MaintenanceMonth"
                 color ="white"
-                title = "Added last month"
-                description = "Info comming soon"
+                title = "Completed maintenance by month"
+                description = "This metric tracks the number of maintenance tasks completed each month."
                 chart = { 
                     {
                     type: "line",
-                    height: 220,
+                    height: 330,
                     series: [
                         {
                         name: "",
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500, 900, 90, 100],
                         },
                     ],
                     options: {
                         ...chartsConfig,
-                        colors: ["#0288d1"],
+                        colors: ["#5D8AA8"],
                         stroke: {
                         lineCap: "round",
                         },
@@ -114,6 +122,9 @@ export function Home() {
                         xaxis: {
                         ...chartsConfig.xaxis,
                         categories: [
+                            "Jan",
+                            "Feb",
+                            "Mar",
                             "Apr",
                             "May",
                             "Jun",
@@ -127,36 +138,27 @@ export function Home() {
                         },
                     },
                     }
-                }
-                footer={
-                <Typography
-                    variant="small"
-                    className="flex items-center font-normal text-blue-gray-600"
-                >
-                    <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-                    &nbsp;{"..."}
-                </Typography>
                 }
             />
 
             <StatisticsChart
-                key ="Erased last month"
+                key ="ProposedDecomissions"
                 color ="white"
-                title = "Erased last month"
-                description = "Info comming soon"
+                title = "Proposed decommissions by month"
+                description = "This metric reflects the number of decommissioning proposals made each month."
                 chart = { 
                     {
                     type: "line",
-                    height: 220,
+                    height: 330,
                     series: [
                         {
                         name: "",
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500, 90, 19, 80],
                         },
                     ],
                     options: {
                         ...chartsConfig,
-                        colors: ["#a52a2a",],
+                        colors: ["#2C3E50",],
                         stroke: {
                         lineCap: "round",
                         },
@@ -166,6 +168,9 @@ export function Home() {
                         xaxis: {
                         ...chartsConfig.xaxis,
                         categories: [
+                            "Jan",
+                            "Feb",
+                            "Mar",
                             "Apr",
                             "May",
                             "Jun",
@@ -180,203 +185,19 @@ export function Home() {
                     },
                     }
                 }
-                footer={
-                <Typography
-                    variant="small"
-                    className="flex items-center font-normal text-blue-gray-600"
-                >
-                    <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-                    &nbsp;{"..."}
-                </Typography>
-                }
+                
             />
-
-        </div>
-        <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
-            <CardHeader
-                floated={false}
-                shadow={false}
-                color="transparent"
-                className="m-0 flex items-center justify-between p-6"
-            >
-                <div>
-                <Typography variant="h6" color="blue-gray" className="mb-1">
-                    Projects
-                </Typography>
-                <Typography
-                    variant="small"
-                    className="flex items-center gap-1 font-normal text-blue-gray-600"
-                >
-                    <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                    <strong>30 done</strong> this month
-                </Typography>
-                </div>
-                <Menu placement="left-start">
-                <MenuHandler>
-                    <IconButton size="sm" variant="text" color="blue-gray">
-                    <EllipsisVerticalIcon
-                        strokeWidth={3}
-                        fill="currenColor"
-                        className="h-6 w-6"
-                    />
-                    </IconButton>
-                </MenuHandler>
-                <MenuList>
-                    <MenuItem>Action</MenuItem>
-                    <MenuItem>Another Action</MenuItem>
-                    <MenuItem>Something else here</MenuItem>
-                </MenuList>
-                </Menu>
-            </CardHeader>
-            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                <table className="w-full min-w-[640px] table-auto">
-                <thead>
-                    <tr>
-                    {["companies", "members", "budget", "completion"].map(
-                        (el) => (
-                        <th
-                            key={el}
-                            className="border-b border-blue-gray-50 py-3 px-6 text-left"
-                        >
-                            <Typography
-                            variant="small"
-                            className="text-[11px] font-medium uppercase text-blue-gray-400"
-                            >
-                            {el}
-                            </Typography>
-                        </th>
-                        )
-                    )}
-                    </tr>
-                </thead>
-                <tbody>
-                    {projectsTableData.map(
-                    ({ img, name, members, budget, completion }, key) => {
-                        const className = `py-3 px-5 ${
-                        key === projectsTableData.length - 1
-                            ? ""
-                            : "border-b border-blue-gray-50"
-                        }`;
-
-                        return (
-                        <tr key={name}>
-                            <td className={className}>
-                            <div className="flex items-center gap-4">
-                                <Avatar src={img} alt={name} size="sm" />
-                                <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-bold"
-                                >
-                                {name}
-                                </Typography>
-                            </div>
-                            </td>
-                            <td className={className}>
-                            {members.map(({ img, name }, key) => (
-                                <Tooltip key={name} content={name}>
-                                <Avatar
-                                    src={img}
-                                    alt={name}
-                                    size="xs"
-                                    variant="circular"
-                                    className={`cursor-pointer border-2 border-white ${
-                                    key === 0 ? "" : "-ml-2.5"
-                                    }`}
-                                />
-                                </Tooltip>
-                            ))}
-                            </td>
-                            <td className={className}>
-                            <Typography
-                                variant="small"
-                                className="text-xs font-medium text-blue-gray-600"
-                            >
-                                {budget}
-                            </Typography>
-                            </td>
-                            <td className={className}>
-                            <div className="w-10/12">
-                                <Typography
-                                variant="small"
-                                className="mb-1 block text-xs font-medium text-blue-gray-600"
-                                >
-                                {completion}%
-                                </Typography>
-                                <Progress
-                                value={completion}
-                                variant="gradient"
-                                color={completion === 100 ? "green" : "blue"}
-                                className="h-1"
-                                />
-                            </div>
-                            </td>
-                        </tr>
-                        );
-                    }
-                    )}
-                </tbody>
-                </table>
-            </CardBody>
-            </Card>
             <Card className="border border-blue-gray-100 shadow-sm">
-            <CardHeader
-                floated={false}
-                shadow={false}
-                color="transparent"
-                className="m-0 p-6"
-            >
-                <Typography variant="h6" color="blue-gray" className="mb-2">
-                Orders Overview
+                <CardHeader variant="h6" color="white" floated={false} shadow={false}>
+                        Equipments by state
+                </CardHeader>
+                <CardBody className="px-6 pt-0">
+                <Typography variant="h6" color="blue-gray">
+                    <PieChartComponent data={dataEquipment} width={5000} height={5000} />
                 </Typography>
-                <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-                >
-                <ArrowUpIcon
-                    strokeWidth={3}
-                    className="h-3.5 w-3.5 text-green-500"
-                />
-                <strong>24%</strong> this month
-                </Typography>
-            </CardHeader>
-            <CardBody className="pt-0">
-                {ordersOverviewData.map(
-                ({ icon, color, title, description }, key) => (
-                    <div key={title} className="flex items-start gap-4 py-3">
-                    <div
-                        className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                        key === ordersOverviewData.length - 1
-                            ? "after:h-0"
-                            : "after:h-4/6"
-                        }`}
-                    >
-                        {React.createElement(icon, {
-                        className: `!w-5 !h-5 ${color}`,
-                        })}
-                    </div>
-                    <div>
-                        <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-medium"
-                        >
-                        {title}
-                        </Typography>
-                        <Typography
-                        as="span"
-                        variant="small"
-                        className="text-xs font-medium text-blue-gray-500"
-                        >
-                        {description}
-                        </Typography>
-                    </div>
-                    </div>
-                )
-                )}
-            </CardBody>
+                </CardBody>
             </Card>
+
         </div>
         </div>
     );

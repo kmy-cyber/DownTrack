@@ -16,6 +16,8 @@ import { useState, useEffect } from "react";
 import { Pagination } from '@mui/material';
 import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
+import DropdownMenu from "@/components/DropdownMenu";
+import { DeleteForeverOutlined, EditNoteOutlined, PersonPinCircleOutlined } from "@mui/icons-material";
 
 
 export function Tables() {
@@ -36,12 +38,27 @@ export function Tables() {
         userName: "",
         userRole: "",
     });
+
+    const options =(user, key) => [
+        { 
+            label: 'Edit',
+            className: 'text-green-500 h-5 w-5', 
+            icon: EditNoteOutlined,
+            action: () => editUser(user, key)
+        },
+        { 
+            label: 'Delete',
+            className: 'text-red-500 h-5 w-5', 
+            icon: DeleteForeverOutlined,
+            action: () => deleteUser(user.id)
+        },
+    ];
     
     useEffect(() => {
         fetchEmployees(1);
     }, []);
     
-    // funcion que se llama cada vez que se cambia de pagina
+
     const handlePageChange = async (event, newPage) => {
         setCurrentPage(newPage);
         await fetchEmployees(newPage);
@@ -148,14 +165,14 @@ export function Tables() {
                     <table className="w-full min-w-[640px] table-auto">
                         <thead>
                         <tr>
-                            {[ "employee","username","role", "gmail"].map((el) => (
+                            {[ "employee","username","role", "gmail",""].map((el) => (
                             <th
                                 key={el}
-                                className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                className="border-b border-r border-blue-gray-50 py-3 px-5 text-center last:border-r-0 bg-gray-800 border-collapse"
                             >
                                 <Typography
-                                variant="small"
-                                className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                    variant="small"
+                                    className="text-[11px] font-extrabold uppercase text-white"
                                 >
                                 {el}
                                 </Typography>
@@ -169,11 +186,11 @@ export function Tables() {
                             const className = `py-3 px-5 ${
                                 key === currentItems.length - 1
                                 ? ""
-                                : "border-b border-blue-gray-50"
+                                : "border-b border-blue-gray-50 text-center"
                             }`;
 
                             return (
-                                <tr key={user.name}>
+                                <tr key={user.id}>
                                 <td className={className}>
                                     <div className="flex items-center gap-4">
                                     {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
@@ -182,7 +199,7 @@ export function Tables() {
                                         <Typography
                                         variant="small"
                                         color="blue-gray"
-                                        className="font-semibold"
+                                        className="font-semibold text-center"
                                         >
                                         {user.name}
                                         </Typography>
@@ -190,60 +207,23 @@ export function Tables() {
                                     </div>
                                 </td>
                                 <td className={className}>
-                                <div className="flex items-center gap-4">
-                                <div>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    <Typography className="text-xs font-semibold text-blue-gray-600 text-center">
                                     {user.userName}
                                     </Typography>
-                                </div>
-                                </div>
                                 </td>
-                                
                                 <td className={className}>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    <Typography className="text-xs font-semibold text-blue-gray-600 text-center">
                                     {user.userRole}
                                     </Typography>
                                 </td>
                                 <td className={className}>
-                                <div className="flex items-center gap-4">
-                                <div>
-                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                    <Typography className="text-xs font-semibold text-blue-gray-600 text-center">
                                     {user.email}
                                     </Typography>
-                                </div>
-                                </div>
                                 </td>
-                                <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                        <div 
-                                            className="flex items-center gap-1"
-                                            onClick={() => editUser(user, key)}
-                                        >
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                className="text-xs font-semibold text-green-600"
-                                                >
-                                                Edit
-                                            </Typography>
-                                            <PencilIcon className="w-3 text-green-600"/>
-                                        </div>
-                                    
-                                        <div 
-                                            className="flex items-center gap-1"
-                                            onClick={() => deleteUser(user.id)}
-                                        >
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                className="text-xs font-semibold text-red-600"
-                                                >
-                                                Delete
-                                            </Typography>
-                                            <TrashIcon className="w-3 text-red-600"/>
-                                        </div>
-                                    </div>
-                                </td>
+                                    <td className={className + "items-center text-right"}>
+                                            <DropdownMenu options={options(user, key)} />
+                                    </td>
                                 </tr>
                             );
                             }

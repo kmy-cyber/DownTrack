@@ -20,16 +20,14 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircleOutlineOutlined } from '@mui/icons-material';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '@/context/AuthContext';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import {convertDateFormat} from '@/utils/changeDateFormat';
+import { toast } from 'react-toastify';
 
 
 export function EquipmentMaintenance() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [currentItems, setCurrentItems] = useState([]);
-    
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('success');
     
     const [showDialog, setShowDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +38,10 @@ export function EquipmentMaintenance() {
     const navigate = useNavigate();
     const {user} = useAuth();
 
+
+    const handleDateDisplay = (dateString) => {
+        return convertDateFormat(dateString);
+    };
 
     useEffect(()=>{
         fetchTechMaintenance(1);
@@ -86,30 +88,18 @@ export function EquipmentMaintenance() {
                 }),
             });
 
-            if (!response.ok) { 
-                if (response.status === 400) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail, validation error please review the fields");
-                    setAlertMessage("Validation error. Please review the fields.");
-                    setShowDialog(false);
-                } else if (response.status === 500) {
-                    setAlertType('error');
-                    setShowDialog(false);
-                    setAlertMessage("Something fail,a server error occurred. Try again later",'error');
-                    setAlertMessage("A server error occurred. Try again later.");
-                }
-            }
-            else {
+            if (response.ok) { 
+                
                 await fetchTechMaintenance(currentPage);
-                setAlertType('success');
-                setAlertMessage("Maintenance completed");
+                toast.success("Maintenance completed");
                 setIsLoading(false);
                 setShowDialog(false);
             }
+            else {
+                toast.error("Maintenance incomplete")
+            }
         } catch (error) {
-            console.error("Error:", error);
-            setAlertType('error');
-            setAlertMessage("Maintenance incomplete");
+            toast.error("Maintenance incomplete");
             setIsLoading(false);
             setShowDialog(false);
         }
@@ -124,14 +114,12 @@ export function EquipmentMaintenance() {
                 },
             });
             if (!response.ok) {
-                setAlertType('error');
-                setAlertMessage("Failed maintenance cancellation");
+                toast.error("Failed maintenance cancellation");
                 throw new Error('Network response was not ok');
             }
 
             await fetchTechMaintenance(currentPage);
-            setAlertType('success');
-            setAlertMessage("Maintenance cancelled");
+            toast.success("Maintenance cancelled");
             setCurrentItems(currentItems.filter(item => item.id !== doneMaintenanceId));
         } catch (error) {
             console.error('Error:', error);
@@ -162,7 +150,6 @@ export function EquipmentMaintenance() {
 
     return (
         <>
-            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             {(<div className={`mt-12 mb-8 flex flex-col gap-12 `}>
                 <Card>
                     <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -174,14 +161,14 @@ export function EquipmentMaintenance() {
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {["Equipment ID", "Equipment", "type", "date", ""].map((el) => (
+                                    {["Equipment ID", "Equipment", "type", "date",""].map((el) => (
                                         <th
                                             key={el}
-                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                            className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
                                         >
                                             <Typography
                                                 variant="small"
-                                                className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                                className="text-[11px] font-extrabold uppercase text-white"
                                             >
                                                 {el}
                                             </Typography>
@@ -228,13 +215,13 @@ export function EquipmentMaintenance() {
 
                                                 <td className={className}>
                                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                            {equipment.date}
+                                                            {handleDateDisplay(equipment.date)}
                                                         </Typography>
                                                 </td>
                                                 <td className={className + "items-center text-center"}>
-                                                            <DropdownMenu options={options(equipment.id)} />
+                                                    <DropdownMenu options={options(equipment.id)} />
                                                 </td>
-                                        </tr>
+                                            </tr>
                                         );
                                     }
                                 )}
@@ -242,7 +229,7 @@ export function EquipmentMaintenance() {
                         </table>
                     </CardBody>
                     <Dialog open={showDialog} handler={() => handleShowROpen()}>
-                        <DialogHeader>Select Receptor</DialogHeader>
+                        <DialogHeader>Insert Cost</DialogHeader>
                             <DialogBody>
                                 <Input
                                     type="text"

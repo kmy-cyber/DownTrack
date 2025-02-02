@@ -1,15 +1,15 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Typography, Button, Dialog, DialogTitle, DialogHeader,DialogFooter, DialogBody, Input, DialogContent, DialogActions, TextField, Select, MenuItem
+import { Card, CardHeader, CardBody, Typography, Button, Dialog, DialogHeader,DialogFooter, DialogBody, Input,
 } from "@material-tailwind/react";
-import { PencilIcon, TrashIcon , InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
+import { InformationCircleIcon, CheckCircleIcon  } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import TransferInfoForm from "./info_transfer";
-import RegisterForm from "./register_shipping_resp";
 import { Pagination } from '@mui/material';
-import MessageAlert from '@/components/Alert_mssg/alert_mssg';
+import { toast } from 'react-toastify';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
 import DropdownMenu from '@/components/DropdownMenu';
+import { convertDateFormat } from '@/utils';
 
 export function EquipmentTransferTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -29,9 +29,6 @@ export function EquipmentTransferTable() {
     const [filteredShippingS, setFilteredShippingS] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
-
-    const[alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('success');
 
     const [totalPages, setTotalPages] = useState(0);
     const [currentItems, setCurrentItems] = useState([]);
@@ -65,6 +62,10 @@ export function EquipmentTransferTable() {
         setIsLoading(false);
     }, []);
     
+
+    const handleDateDisplay = (dateString) => {
+        return convertDateFormat(dateString);
+    };
     const handleShowInfo = (transfer) => {
         console.log("selected tranfer", transfer);
         setSelectedTransfer(transfer);
@@ -171,13 +172,11 @@ export function EquipmentTransferTable() {
 
             const data = await response.json();
             if (!response.ok) {
-                setAlertType('error');
-                setAlertMessage('Error saving transfer');
+                toast.error('Error saving transfer');
                 throw new Error('Network response was not ok');
             }
             
-            setAlertType('success');
-            setAlertMessage('Transfer saved successfully')
+            toast.success('Transfer saved successfully')
             setShowRegistrationForm(false);
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
@@ -211,8 +210,6 @@ return (
                 onClose={handleCloseInfo}
             />
         )}
-
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
         
         { !onInfo &&
             (<div className={`mt-12 mb-8 flex flex-col gap-12 ${showRegistrationForm ? 'blur-background' : ''}`}>
@@ -229,11 +226,11 @@ return (
                                 {[ "Source Section","Source Department", "Equipment","Type","Date", ""].map((el) => (
                                     <th
                                         key={el}
-                                        className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-300"
+                                        className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
                                     >
                                         <Typography
                                             variant="small"
-                                            className="text-[11px] font-extrabold uppercase text-blue-gray-800"
+                                            className="text-[11px] font-extrabold uppercase text-white"
                                         >
                                             {el}
                                         </Typography>
@@ -277,7 +274,7 @@ return (
                                             </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {transfer.date}
+                                                    {handleDateDisplay(transfer.date)}
                                                 </Typography>
                                             </td>
                                             <td className={className}>

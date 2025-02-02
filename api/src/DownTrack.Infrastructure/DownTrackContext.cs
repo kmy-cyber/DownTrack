@@ -96,6 +96,9 @@ public class DownTrackContext : IdentityDbContext<User>
                 .IsRequired();
       entity.HasIndex(s => s.Name)
                 .IsUnique();
+      entity.Property(s=>s.CreatedDate)
+            .IsRequired()
+            .HasColumnType("date");
 
       entity.HasOne(s => s.SectionManager)
                 .WithMany(sm => sm.Sections)
@@ -118,7 +121,11 @@ public class DownTrackContext : IdentityDbContext<User>
 
       entity.HasIndex(d => d.Name);
       entity.HasIndex(d => d.SectionId);
-
+      
+      entity.Property(d=>d.CreatedDate)
+            .IsRequired()
+            .HasColumnType("date");
+            
       entity.HasOne(d => d.Section)
               .WithMany(s => s.Departments)
               .HasForeignKey(d => d.SectionId)

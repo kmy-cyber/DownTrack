@@ -4,13 +4,11 @@ import {
     CardBody,
     Typography,
 } from "@material-tailwind/react";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
 
 export const DepartmentCreationForm = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const[alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('success');
 
     const [sectionList, setSectionList] = useState([]);
     const [formData, setFormData] = useState({
@@ -60,7 +58,6 @@ export const DepartmentCreationForm = () => {
         console.log("Department created:", formData);
 
         setIsLoading(true);
-        setAlertMessage(null);
         try {
 
             console.log(formData.name, formData.section);
@@ -76,31 +73,15 @@ export const DepartmentCreationForm = () => {
                 }),
             });
 
-            console.log(formData.name);
-            console.log(formData.section);
 
-            if (!response.ok) { 
-                if (response.status === 400) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail, validation error please review the fields");
-                    setAlertMessage("Validation error. Please review the fields.");
-                } else if (response.status === 500) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail,a server error occurred. Try again later",'error');
-                    setAlertMessage("A server error occurred. Try again later.");
-                }
-            }
-            else if (response.ok) {
-                setAlertType('success');
-                setAlertMessage("Successful registration");
+            if (response.ok) {
+                toast.success("Successful registration");
                 setFormData({ name: "", section: formData.section, sectionName: formData.sectionName });
             } else {
-                setAlertMessage("Failed to login");
+                toast.error("Failed to login");
             }
         } catch (error) {
-            setAlertType('error');
-            console.error("Error logging in:", error);
-            setAlertMessage('An error occurred during the login process');
+            toast.error('An error occurred during the login process');
         } finally {
             setIsLoading(false);
         }
@@ -117,7 +98,6 @@ export const DepartmentCreationForm = () => {
 
     return (
         <>
-            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                 <Typography variant="h6" color="white">
