@@ -4,10 +4,15 @@ import {
   CardHeader,
   CardBody,
   Typography,
+  Input,
+  IconButton,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
+import api from "@/middlewares/api";
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
 const MaintenanceHistory = () => {
   const [maintenanceList, setMaintenanceList] = useState([]);
@@ -15,11 +20,16 @@ const MaintenanceHistory = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 14;
+  const [searchValue, setSearchValue] = useState("");
+  const [searchCriteria, setSearchCriteria] = useState("equipmentId");
+  const [isSearching, setIsSearching] = useState(false);
+  const pageSize = 13;
 
   useEffect(() => {
-    fetchMaintenanceHistory(currentPage);
-  }, [currentPage]);
+    if (!isSearching) {
+      fetchMaintenanceHistory(currentPage);
+    }
+  }, [currentPage, isSearching]);
 
   const fetchMaintenanceHistory = async (pageNumber) => {
     setLoading(true);
@@ -27,9 +37,7 @@ const MaintenanceHistory = () => {
     try {
       const response = await api(
         `/DoneMaintenance/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`,
-        {
-          method: "GET",
-        },
+        { method: "GET" },
       );
 
       if (!response.ok) {
@@ -37,14 +45,51 @@ const MaintenanceHistory = () => {
       }
 
       const data = await response.json();
-      setMaintenanceList(data.items); // Ajusta la estructura si es necesario
-      setTotalPages(Math.ceil(data.totalCount / pageSize)); // Calcula el total de páginas
+      setMaintenanceList(data.items);
+      setTotalPages(Math.ceil(data.totalCount / pageSize));
     } catch (err) {
       console.error("Error fetching maintenance data:", err);
       setError("Failed to load maintenance data");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = async () => {
+    if (!searchValue) return;
+    setLoading(true);
+    setError(null);
+    setIsSearching(true);
+    try {
+      // http://localhost:5217/api/DoneMaintenance/Get_Maintenances_By_EquipmentId?PageNumber=1&PageSize=5&equipmentId=200
+      console.log(searchValue);
+      const query =
+        searchCriteria === "equipmentId"
+          ? `/DoneMaintenance/Get_Maintenances_By_EquipmentId?PageNumber=1&PageSize=999999&equipmentId=${searchValue}`
+          : `/DoneMaintenance/GetByTechnician?username=${searchValue}`;
+
+      const response = await api(query, { method: "GET" });
+      console.log(response);
+      if (!response.ok) {
+        throw new Error("Failed to fetch maintenance data");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setMaintenanceList(data.items);
+      setTotalPages(0);
+    } catch (err) {
+      console.error("Error fetching maintenance data:", err);
+      setError("Failed to load maintenance data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setSearchValue("");
+    setIsSearching(false);
+    setCurrentPage(1);
   };
 
   return (
@@ -54,6 +99,17 @@ const MaintenanceHistory = () => {
         color="gray"
         className="flex items-center justify-between p-6"
       >
+        {isSearching && (
+          <IconButton
+            variant="text"
+            size="sm"
+            color="white"
+            onClick={handleReset}
+            className="mr-4"
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+          </IconButton>
+        )}
         <Typography
           variant="h6"
           color="white"
@@ -63,6 +119,26 @@ const MaintenanceHistory = () => {
         </Typography>
       </CardHeader>
       <CardBody className="px-0 py-4">
+        <div className="flex flex-col gap-4 px-6 md:flex-row">
+          <Select
+            label="Search Criteria"
+            value={searchCriteria}
+            onChange={setSearchCriteria}
+          >
+            <Option value="equipmentId">Equipment ID</Option>
+            <Option value="technician">Technician</Option>
+          </Select>
+          <Input
+            label="Search Value"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+          />
+        </div>
         {loading ? (
           <Typography className="text-center">Loading...</Typography>
         ) : error ? (
@@ -71,8 +147,7 @@ const MaintenanceHistory = () => {
           </Typography>
         ) : (
           <>
-            {/* Maintenance History Table */}
-            <div className="overflow-x-auto">
+            <div className="mt-4 overflow-x-auto">
               <table className="min-w-full table-auto text-sm text-gray-900">
                 <thead className="bg-gray-800 text-white">
                   <tr>
@@ -128,9 +203,7 @@ const MaintenanceHistory = () => {
             </div>
           </>
         )}
-
-        {/* Paginación */}
-        {!loading && !error && totalPages > 1 && (
+        {!loading && !error && totalPages > 1 && !isSearching && (
           <div className="mt-4 flex justify-center">
             <Stack spacing={2}>
               <Pagination
