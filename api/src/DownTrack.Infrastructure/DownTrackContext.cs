@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 namespace DownTrack.Infrastructure;
-public class DownTrackContext : IdentityDbContext<User>
+public class DownTrackContext : IdentityDbContext<User,Role,int>
 {
 
   public DownTrackContext(DbContextOptions options) : base(options)
@@ -30,6 +30,16 @@ public class DownTrackContext : IdentityDbContext<User>
   {
     base.OnModelCreating(modelBuilder);
 
+    modelBuilder.Entity<User>(entity=>
+    {
+      entity.HasKey(e=> e.Id);
+    });
+
+    modelBuilder.Entity<Role>(entity=>
+    {
+      entity.HasKey(e=> e.Id);
+    });
+    
     // Employee Region
     modelBuilder.Entity<Employee>(entity =>
     {
