@@ -16,4 +16,6 @@ public interface IEmployeeQueryServices : IGenericQueryService<Employee,GetEmplo
     Task<TechnicianStatisticsDto> GetStatisticsByTechnician(int technicianId);
     Task<ReceptorStatisticsDto> GetStatisticsByReceptor(int receptorId);
 
+    Task<DirectorStatisticsDto> GetStatisticsByDirector();
+
 }

@@ -44,4 +44,13 @@ public class StatisticsController : ControllerBase
         return Ok(statistics);
     }
 
+    [HttpGet]
+    [Route("Director")]
+    public async Task<ActionResult<DirectorStatisticsDto>> GetStatisticsByDirector()
+    {
+        var statistics = await _employeeQueryService.GetStatisticsByDirector();
+
+        return Ok(statistics);
+    }
+
 }
