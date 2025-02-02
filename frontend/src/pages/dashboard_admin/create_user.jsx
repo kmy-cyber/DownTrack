@@ -108,7 +108,6 @@ export const UserCreationForm = () => {
     };
     
 
-    let globalId = localStorage.getItem("globalId")?parseInt(localStorage.getItem("globalId")):408;
 
     const handleSubmit = async (e) => {
             console.log("Register ");
@@ -122,7 +121,6 @@ export const UserCreationForm = () => {
                     },
                     
                     body: JSON.stringify({
-                        id: globalId,
                         name: formData.name,
                         userName: formData.username,
                         email: formData.email,
@@ -135,10 +133,7 @@ export const UserCreationForm = () => {
                         sectionId: parseInt(formData.sectionId)
                     }),
                 });
-                
-                console.log(globalId);
-                globalId++;
-                localStorage.setItem("globalId",globalId);
+
                 if (response.ok) {
                     toast.success("Successful registration")
                 } else {
