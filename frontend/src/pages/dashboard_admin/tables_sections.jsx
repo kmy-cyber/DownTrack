@@ -8,15 +8,13 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import EditSectionForm from "./edit_section";
 import { Pagination } from '@mui/material';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
 import DropdownMenu  from "@/components/DropdownMenu";
 import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
     
     export function TablesSection() {
         const [isLoading, setIsLoading] = useState(true);
-        const[alertMessage, setAlertMessage] = useState('');
-        const [alertType, setAlertType] = useState('success');
 
         const [totalPages, setTotalPages] = useState(0);
         const [currentItems, setCurrentItems] = useState([]);
@@ -115,27 +113,22 @@ import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
                 method: 'DELETE',
             });
             if (!response.ok) {
-                setAlertMessage('Failed to delete section');
-                setAlertType('error');
+                toast.error('Failed to delete section');
                 throw new Error('Failed to delete section');
             }
             else
             {
-                setAlertMessage('Delete completed successfully');
-                setAlertType('success');
+                toast.success('Delete completed successfully');
                 setCurrentItems(currentItems.filter(s => s.id !== id));
             }
             } catch (error) {
-                setAlertMessage('Error deleting section:');
-                setAlertType('error');
+                toast.error('Error deleting section:');
                 console.error("Error deleting section:", error);
             }
         };
     
         return (
             <>
-                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-
                 { onEdit &&
                     <EditSectionForm 
                         sectionData={sectData} 
