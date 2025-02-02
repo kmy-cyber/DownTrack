@@ -19,8 +19,8 @@ export function StatisticsCard({ color, icon, title, value, footer }) {
       >
         {icon}
       </CardHeader>
-      <CardBody className="p-4 text-right">
-        <Typography variant="small" className="font-normal text-blue-gray-600">
+      <CardBody className="p-4 text-right items-center">
+        <Typography variant="h5" className="font-bold text-blue-gray-600 mr-4">
           {title}
         </Typography>
         <Typography variant="h4" color="blue-gray">

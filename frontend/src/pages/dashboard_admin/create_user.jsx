@@ -114,7 +114,6 @@ export const UserCreationForm = () => {
             console.log("Register ");
             e.preventDefault(); // Previene la recarga de la página
             setIsLoading(true);
-            setAlertMessage(null);
             try {
                 const response = await api("/Authentication/register/", {
                     method: "POST",

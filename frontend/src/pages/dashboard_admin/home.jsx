@@ -1,23 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Typography,
     Card,
     CardHeader,
     CardBody,
-    IconButton,
-    Menu,
-    MenuHandler,
-    MenuList,
-    MenuItem,
-    Avatar,
-    Tooltip,
-    Progress,
 } from "@material-tailwind/react";
-import {
-    EllipsisVerticalIcon,
-    ArrowUpIcon,
-    PlusIcon,
-} from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
 import { CustomPieChart} from "@/components/charts/CustomPieChart";
@@ -25,34 +12,88 @@ import CustomBarChart from "@/components/charts/customBarChart";
 import { chartsConfig } from "@/configs";
 import { CheckCircleIcon, ClockIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import { Business, HomeWorkRounded} from '@mui/icons-material';
+import api from "@/middlewares/api";
 
 export function Home() {
 
-    const dataRole = [
-        { name: 'Administrators', value: 5 , color: '#34495E'},
-        { name: 'Section Managers', value: 50, color:'#34495E'  },
-        { name: 'Technicians', value: 300 , color:'#34495E' },
-        { name: 'Shipping Supervisors', value: 200, color:'#34495E' },
-        { name: 'Receptors', value: 100, color:'#34495E' },
-        { name: 'Directors', value: 1, color:'#34495E' },
-        
-    ];
+    const [currentItems, setCurrentItems] = useState([]);
+    const [dataRole, setDataRole] = useState([]);
+    const [dataDepartmentSections, setDataDepartmentSections] = useState([]);
 
-    const data = [
-        { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-        { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-        { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-        { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-        { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-        { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-        { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-    ];
+    useEffect(() => {
+        fetchStatistics();
+    }, []);
+
     
     const colors = {
         barFill: '#34495E',  
         barFillSecondary: '#000000', 
     };
 
+    const fetchStatistics = async () => {
+        try {
+            const response = await api(`/Statistics/Admin`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            
+            setCurrentItems(data);
+            initDataRole(data.rolesStatistics);
+            setDataDepartmentSections(transformData(data));
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            setCurrentItems([   ]);
+        }
+    };
+
+    const initDataRole = (rolesStatistics) => {
+        setDataRole([
+            { name: 'Administrators', value: rolesStatistics.Administrator , color: '#34495E'},
+            { name: 'Section Managers', value: rolesStatistics.SectionManager, color:'#34495E'  },
+            { name: 'Technicians', value: rolesStatistics.Technician , color:'#34495E' },
+            { name: 'Shipping Supervisors', value: rolesStatistics.ShippingSupervisor, color:'#34495E' },
+            { name: 'Receptors', value: rolesStatistics.EquipmentReceptor, color:'#34495E' },
+            { name: 'Directors', value: rolesStatistics.Director, color:'#34495E' },    
+        ]);
+    }
+
+    const transformData = (data) => {
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+    
+        const combinedData = {};
+    
+        for (const [key, value] of Object.entries(data.departmentsByMonth)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            if (!combinedData[name]) {
+                combinedData[name] = { name, departments: 0, sections: 0 };
+            }
+            combinedData[name].departments = value;
+        }
+    
+        for (const [key, value] of Object.entries(data.sectionsByMonth)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            if (!combinedData[name]) {
+                combinedData[name] = { name, departments: 0, sections: 0 };
+            }
+            combinedData[name].sections = value;
+        }
+
+        console.log(Object.values(combinedData));
+    
+        return Object.values(combinedData);
+    }
 
     return (
         <div className="mt-12">
@@ -61,8 +102,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Employees"
-                title= "Employees"
-                value = "VALUE"
+                title= "Employees   "
+                value = {currentItems.numberEmployee}
                 icon={React.createElement(UserGroupIcon, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -77,8 +118,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Sections"
-                title= "Sections"
-                value = "VALUE"
+                title= "Sections  "
+                value = {currentItems.numberSections}
                 icon={React.createElement(Business, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -93,8 +134,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Department"
-                title= "Department"
-                value = "Value"
+                title= "Department   "
+                value = {currentItems.numberDepartments}
                 icon={React.createElement(HomeWorkRounded, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -241,7 +282,7 @@ export function Home() {
                 </CardHeader>
                 <CardBody className="px-6 pt-0">
                 <Typography variant="h6" color="blue-gray">
-                    <CustomBarChart data={data} colors={colors} />
+                    <CustomBarChart data={dataDepartmentSections} colors={colors} dataKey1="departments" dataKey2="sections" />
                 </Typography>
                 {/* <Typography variant="small" className="font-normal text-blue-gray-600">
                     {description}

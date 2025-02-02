@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     Typography,
     Card,
@@ -21,33 +21,81 @@ import {
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
 import CustomBarChart from "@/components/charts/customBarChart";
-
+import api from "@/middlewares/api";
 import { chartsConfig } from "@/configs";
 import { CheckCircleIcon, ClockIcon, ArrowsRightLeftIcon } from "@heroicons/react/24/solid";
 import { AdfScanner, ArrowCircleDown, Business, HomeWorkRounded, TransferWithinAStationOutlined} from '@mui/icons-material';
 import SimpleBarChart from "@/components/charts/simpleBarChart";
+import { useAuth } from "@/context/AuthContext";
 
 export function Home() {
 
-    const data = [
-        { name: 'Jan', pv: 100 },
-        { name: 'Feb', pv: 500 },
-        { name: 'Mar', pv: 200 },
-        { name: 'Apr', pv: 400 },
-        { name: 'May', pv: 30 },
-        { name: 'Jun', pv: 550 },
-        { name: 'Jul', pv: 200 },
-        { name: 'Aug', pv: 390 },
-        { name: 'Sep', pv: 300 },
-        { name: 'Oct', pv: 690 },
-        { name: 'Nov', pv: 190 },
-        { name: 'Dec', pv: 360 },
-    ];
+    const [currentItems, setCurrentItems] = useState({})
+    const [acceptedDecommissions, setAcceptedDecommissions] = useState([])
+    const [processedTransfers, setProcessedTransfers] = useState([])
+
+{/*"pendingTransfers": 4,
+  "pendingDecommissions": 1,
+  "totalEquipments": 4,
+  "acceptedDecommissionsPerMonth": {
+    "2-2025": 1
+  },
+  "processedTransfersPerMonth": {}
+}*/}
+
+    const {user} = useAuth();
     
     const colors = {
         barFill: '#34495E',       
         background: '#eee',      
     };
+
+    useEffect(()=>{
+        fetchStatistics();
+    },[])
+
+    const fetchStatistics = async () => {
+        try {
+            const response = await api(`/Statistics/Receptor?receptorId=${user.id}`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            
+            setCurrentItems(data);
+            setAcceptedDecommissions(transformData(data.acceptedDecommissionsPerMonth));
+            setProcessedTransfers(transformData(data.processedTransfersPerMonth));
+
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            setCurrentItems({});
+        }
+    };
+
+    const transformData = (data) => {
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+    
+        const combinedData = {
+            months: [],
+            values: []
+        };
+    
+        for (const [key, value] of Object.entries(data)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            combinedData.months.push(name);
+            combinedData.values.push(value);
+        }
+    
+        return combinedData;
+    }
 
     return (
 
@@ -57,8 +105,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Pending transfers"
-                title= ""
-                value = "VALUE"
+                title= "Pending transfers"
+                value = {currentItems.pendingTransfers}
                 icon={React.createElement(ArrowsRightLeftIcon, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -73,8 +121,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Pending decommission proposals"
-                title= ""
-                value = "VALUE"
+                title= "Pending decommission"
+                value = {currentItems.pendingDecommissions}
                 icon={React.createElement(ArrowCircleDown, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -89,8 +137,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Total of inserted equipment"
-                title= ""
-                value = "VALUE"
+                title= "Equipments"
+                value = {currentItems.totalEquipments}
                 icon={React.createElement(AdfScanner, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -119,7 +167,7 @@ export function Home() {
                     series: [
                         {
                         name: "",
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500,100,400,280],
+                        data: acceptedDecommissions.values
                         },
                     ],
                     options: {
@@ -133,20 +181,7 @@ export function Home() {
                         },
                         xaxis: {
                         ...chartsConfig.xaxis,
-                        categories: [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ],
+                        categories: acceptedDecommissions.months,
                         },
                     },
                     }
@@ -159,7 +194,7 @@ export function Home() {
                 </CardHeader>
                 <CardBody className="px-6 pt-0">
                 <Typography variant="h6" color="blue-gray">
-                    <SimpleBarChart data={data} colors={colors} />
+                    <SimpleBarChart data={processedTransfers} colors={colors} />
                 </Typography>
                 <Typography variant="small" className="font-normal text-blue-gray-600">
                     {"The number of equipment transfers recorded each month"}

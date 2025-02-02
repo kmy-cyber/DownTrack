@@ -1,43 +1,93 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Typography,
     Card,
     CardHeader,
     CardBody,
-    IconButton,
-    Menu,
-    MenuHandler,
-    MenuList,
-    MenuItem,
-    Avatar,
-    Tooltip,
-    Progress,
 } from "@material-tailwind/react";
-import {
-    EllipsisVerticalIcon,
-    ArrowUpIcon,
-    PlusIcon,
-} from "@heroicons/react/24/outline";
+
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
 import PieChartComponent from "@/components/charts/simplePieChart";
-import {
-    statisticsCardsData,
-    statisticsChartsData,
-    projectsTableData,
-    ordersOverviewData,
-} from "@/data";
 import { chartsConfig } from "@/configs";
 import { ArrowDownCircleIcon, CheckCircleIcon, ClockIcon, WrenchIcon } from "@heroicons/react/24/solid";
 import { ArrowDownwardSharp, HourglassBottomRounded } from '@mui/icons-material';
+import { useAuth } from "@/context/AuthContext";
+import api from "@/middlewares/api";
+
 
 export function Home() {
+
+    const [currentItems, setCurrentItems] = useState({});
+    const [dataMaintenance, setDataMaintenance] = useState({months: [], values: []});
+    const [dataDecommissions, setDataDecommissions] = useState({months: [], values: []});
+    const [dataEquipments, setDataEquipments] = useState([]);
+
+    useEffect(()=>{
+        fetchStatistics();
+    },[])
 
     const dataEquipment = [
         { name: 'Active', value: 400 , color: '#34495E'},
         { name: 'Under Maintenance', value: 500, color:'#5D8AA8'  },
         { name: 'Inactive', value: 300 , color:'#4A6FA5' },
     ];
+
+    const {user} = useAuth();
+
+    const fetchStatistics = async () => {
+        try {
+            const response = await api(`/Statistics/Technician?technicianId=${user.id}`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            
+            setCurrentItems(data);
+            initDataE(data.equipmentByStatus);
+            setDataMaintenance(transformData(data.maintenanceByMonth));
+            setDataDecommissions(transformData(data.decomissionsByMonth));
+
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            setCurrentItems({});
+        }
+    };
+
+    const transformData = (data) => {
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+    
+        const combinedData = {
+            months: [],
+            values: []
+        };
+    
+        for (const [key, value] of Object.entries(data)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            combinedData.months.push(name);
+            combinedData.values.push(value);
+        }
+    
+        return combinedData;
+    }
+
+    const initDataE = (equipmentByStatus) => {
+        setDataEquipments([
+            { name: 'Active', value: equipmentByStatus.Active , color: '#34495E'},
+            { name: 'Inactive', value: equipmentByStatus.Inactive, color:'#5D8AA8'  },
+            { name: 'Under Maintenance', value: equipmentByStatus.UnderMaintenance ,color:'#4A6FA5' },  
+        ]);
+    }
+
+    
 
     return (
         <div className="mt-12">
@@ -46,8 +96,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Maintenance"
-                title= ""
-                value = "VALUE"
+                title= "Maintenance"
+                value = {currentItems.maintenances ?? 0}
                 icon={React.createElement(WrenchIcon, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -61,9 +111,9 @@ export function Home() {
 
             <StatisticsCard
                 color= "gray" 
-                key= "MaintenanceProcess"
-                title= ""
-                value = "VALUE"
+                key= "MaintenanceProgress"
+                title= "Maintenances in progress"
+                value = {currentItems.maintenancesInProgress ?? 0}
                 icon={React.createElement(HourglassBottomRounded, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -78,8 +128,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Decommissions"
-                title= ""
-                value = "VALUE"
+                title= "Decommissions"
+                value = {currentItems.decomissions ?? 0}
                 icon={React.createElement(ArrowDownCircleIcon, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -107,7 +157,7 @@ export function Home() {
                     series: [
                         {
                         name: "",
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500, 900, 90, 100],
+                        data: dataMaintenance.values,
                         },
                     ],
                     options: {
@@ -121,20 +171,7 @@ export function Home() {
                         },
                         xaxis: {
                         ...chartsConfig.xaxis,
-                        categories: [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ],
+                        categories: dataMaintenance.months,
                         },
                     },
                     }
@@ -153,7 +190,7 @@ export function Home() {
                     series: [
                         {
                         name: "",
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500, 90, 19, 80],
+                        data: dataDecommissions.values,
                         },
                     ],
                     options: {
@@ -167,20 +204,7 @@ export function Home() {
                         },
                         xaxis: {
                         ...chartsConfig.xaxis,
-                        categories: [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ],
+                        categories: dataDecommissions.months,
                         },
                     },
                     }
@@ -193,7 +217,7 @@ export function Home() {
                 </CardHeader>
                 <CardBody className="px-6 pt-0">
                 <Typography variant="h6" color="blue-gray">
-                    <PieChartComponent data={dataEquipment} width={5000} height={5000} />
+                    <PieChartComponent data={dataEquipments} width={5000} height={5000} />
                 </Typography>
                 </CardBody>
             </Card>
