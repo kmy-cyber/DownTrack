@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 const api = async (url, options = {}) => {
     // Obtener el token de autenticación desde el almacenamiento local (o cualquier otra fuente)
     const token = localStorage.getItem('token');
-    console.log(token);
+    // console.log(token);
 
     // Configurar encabezados
     const headers = {
