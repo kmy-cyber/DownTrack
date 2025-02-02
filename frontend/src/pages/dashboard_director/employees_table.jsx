@@ -4,7 +4,10 @@ import {
   CardHeader,
   CardBody,
   Typography,
+  IconButton,
+  Input
 } from "@material-tailwind/react";
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { Pagination } from "@mui/material";
 import api from "@/middlewares/api";
 
@@ -14,6 +17,8 @@ const EmployeesTable = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const pageSize = 14;
 
   useEffect(() => {
@@ -51,6 +56,38 @@ const EmployeesTable = () => {
     await fetchEmployees(newPage);
   };
 
+  const searchUserName = async (userName) => {
+    if (!userName.trim()) return;
+    try {
+      //api/Employee/GetByUsername?employeeUsername=username_6'
+      const response = await api(`/Employee/GetByUsername?employeeUsername=${userName}`);
+      console.log(`RESPONSE: ${response}`);
+      if (response.ok) {
+        const usr = await response.json();
+        console.log(`USER: ${usr}`);
+        setEmployeeList([usr]);
+        setIsSearching(true);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      console.error("Error fetching technician by username:", error);
+    }
+  };
+
+  const resetSearch = () => {
+    setSearchTerm("");
+    setIsSearching(false);
+    fetchEmployees(1);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchUserName(searchTerm)
+    }
+  };
+
   return (
     <Card className="mt-8 shadow-lg">
       <CardHeader
@@ -58,6 +95,17 @@ const EmployeesTable = () => {
         color="gray"
         className="flex items-center justify-between p-6"
       >
+        {isSearching && (
+          <IconButton
+            variant="text"
+            size="sm"
+            color="white"
+            onClick={resetSearch}
+            className="mr-4"
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+          </IconButton>
+        )}
         <Typography
           variant="h6"
           color="white"
@@ -66,7 +114,16 @@ const EmployeesTable = () => {
           Employees
         </Typography>
       </CardHeader>
-      <CardBody className="px-0 py-4">
+      <CardBody>
+        <div className="mb-4">
+          <Input
+            label="Search by Username"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="w-full"
+          />
+        </div>
         {loading ? (
           <Typography className="text-center">Loading...</Typography>
         ) : error ? (
@@ -74,7 +131,7 @@ const EmployeesTable = () => {
             {error}
           </Typography>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto px-0">
             <table className="min-w-full table-auto text-sm text-gray-900">
               <thead className="bg-gray-800 text-white">
                 <tr>
@@ -110,7 +167,7 @@ const EmployeesTable = () => {
           </div>
         )}
 
-        {!loading && !error && totalPages > 1 && (
+        {!loading && !isSearching && !error && totalPages > 1 && (
           <div className="mt-4 flex justify-center">
             <Pagination
               count={totalPages}
