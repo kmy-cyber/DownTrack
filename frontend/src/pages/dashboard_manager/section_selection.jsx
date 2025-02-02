@@ -71,9 +71,11 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
           status: "Pending",
           sectionManagerId: user.id,
           equipmentId: eqiD,
-          arrivalDepartmentId: selectedDepartment.id,
+          arrivalDepartmentId: selectedDepartment,
           arrivalSectionId: selectedSection.id,
         };
+
+        console.log(requestBody);
 
         const response = await api("/TransferRequest/POST", {
           method: "POST",
