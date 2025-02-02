@@ -77,7 +77,7 @@ export const routesDirector = [
         icon: <ArchiveBoxArrowDownIcon {...icon} />,
         name: "Transfers Requests",
         path: "/transfer_requests",
-        element: <TransferRequestsTable />,
+        element: <TransferRequestsTable/>,
       },
       {
         icon: <DocumentCheckIcon {...icon} />,
