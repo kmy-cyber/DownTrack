@@ -9,7 +9,7 @@ import {
 import { useParams } from 'react-router-dom';
 import { useAuth } from "@/context/AuthContext";
 import api from "@/middlewares/api";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import { useNavigate} from "react-router-dom";
 
 
@@ -28,9 +28,7 @@ export const MaintenanceCreationForm = () => {
     });
 
     const [startDate, setStartDate] = useState("");
-    const [alertMessage, setAlertMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [alertType, setAlertType] = useState('success');
     const [dateFormat, setDateFormat] = useState("");
 
     const {navigate} = useNavigate();
@@ -44,7 +42,6 @@ export const MaintenanceCreationForm = () => {
         const currentDate = new Date().toISOString().split('T')[0];
         date: currentDate
         setIsLoading(true);
-        setAlertMessage(null);
         await submitMaintenance();
     };
 
@@ -100,24 +97,12 @@ export const MaintenanceCreationForm = () => {
                 }),
             });
             
-            if (!response.ok) { 
-            if (response.status === 400) {
-                setAlertType('error');
-                setAlertMessage("Something fail, validation error please review the fields");
-                setAlertMessage("Validation error. Please review the fields.");
-            } else if (response.status === 500) {
-                setAlertType('error');
-                setAlertMessage("Something fail,a server error occurred. Try again later",'error');
-                setAlertMessage("A server error occurred. Try again later.");
-            }
-            }
-            else if (response.ok) {
-                setAlertType('success');
-                setAlertMessage("Successful registration");
+            if (response.ok) {
+                toast.success("Successful registration");
                 window.location.href = '/dashboard/technic/equipment_inventory';
                 
             } else {
-                setAlertMessage("Failed to login");
+                toast.error("Failed to login");
             }
             
 
@@ -133,7 +118,6 @@ export const MaintenanceCreationForm = () => {
 
     return (
     <>    
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                 <Typography variant="h6" color="white">

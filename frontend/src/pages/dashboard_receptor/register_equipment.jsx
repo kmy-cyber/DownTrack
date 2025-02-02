@@ -7,7 +7,7 @@ import {
 
 } from "@material-tailwind/react";
 import {equipmentData} from "@/data/equipment-data";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -23,9 +23,7 @@ export const EquipmentRegisterForm = () => {
         department: ""
     });
     const [startDate, setStartDate] = useState("");
-    const [alertMessage, setAlertMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [alertType, setAlertType] = useState('success');
     const [dateFormat, setDateFormat] = useState("");
 
     const {user} = useAuth();
@@ -96,13 +94,11 @@ export const EquipmentRegisterForm = () => {
             const currentDate = new Date().toISOString().split('T')[0];
             date: currentDate
             setIsLoading(true);
-            setAlertMessage(null);
             try {
                 const response = await api("/Equipment/POST/", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        //"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxODkiLCJnaXZlbl9uYW1lIjoicGVkcm9fc2FuY2hlcyIsImp0aSI6IjFlMDYxMDVmLWNhYzQtNDU2ZC1iMTAxLTRjMzM1MTYyOTlhYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJleHAiOjE3Mzc0NzQ2MDgsImlzcyI6IkRvd25UcmFjayIsImF1ZCI6IkRvd25UcmFjayJ9.MSHvcGnczsqz1HuaHRqvlsSjE7-LyZQjRSCVWEe_kp4"
                     },
                     
                     body: JSON.stringify({
@@ -115,30 +111,17 @@ export const EquipmentRegisterForm = () => {
                     }),
                 });
                 
-                if (!response.ok) { 
-                if (response.status === 400) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail, validation error please review the fields");
-                    setAlertMessage("Validation error. Please review the fields.");
-                } else if (response.status === 500) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail,a server error occurred. Try again later",'error');
-                    setAlertMessage("A server error occurred. Try again later.");
-                }
-                }
-                else if (response.ok) {
-                    setAlertType('success');
-                    setAlertMessage("Successful registration");
+                if (response.ok) {
+                    toast.success("Successful registration");
                 } else {
-                    setAlertMessage("Failed to login");
+                    toast.error("Failed to login");
                 }
                 
 
                 
             } catch (error) {
-                setAlertType('error');
                 console.error("Error logging in:", error);
-                setAlertMessage('An error occurred during the login process');
+                toast.error('An error occurred during the login process');
             } finally {
                 setIsLoading(false);
             }
@@ -147,7 +130,6 @@ export const EquipmentRegisterForm = () => {
 
     return (
     <>
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                 <Typography variant="h6" color="white">
