@@ -38,6 +38,7 @@ const EquipmentDecommissionsTable = () => {
       const data = await response.json();
       setDisposalsList(data.items || []);
       setTotalPages(Math.ceil(data.totalCount / pageSize));
+      console.log(data.items)
     } catch (err) {
       setError("Failed to load decommissionings data");
     } finally {
@@ -81,7 +82,10 @@ const EquipmentDecommissionsTable = () => {
                       Technician
                     </th>
                     <th className="border-b px-6 py-3 text-center">
-                      Equipment
+                      Equipment ID
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Equipment Name
                     </th>
                     <th className="border-b px-6 py-3 text-center">Receptor</th>
                     <th className="border-b px-6 py-3 text-center">
@@ -99,6 +103,9 @@ const EquipmentDecommissionsTable = () => {
                         </td>
                         <td className="border-b px-6 py-3 text-center">
                           {disposal.equipmentId}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {disposal.equipmentName}
                         </td>
                         <td className="border-b px-6 py-3 text-center">
                           {disposal.receptorUserName}

@@ -37,7 +37,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntit
 
     public virtual void Update(T element)
     {
+        Console.WriteLine(element);
         _entity.Update(element); // Update the provided entity in the DbSet.
+        _context.SaveChanges();
+        Console.WriteLine(element);
     }
 
 

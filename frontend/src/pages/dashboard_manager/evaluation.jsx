@@ -59,7 +59,7 @@ export function Evaluation() {
     if (!userName.trim()) return;
     try {
       const response = await api(
-        `/Employee/GetByUsername?employeeUsername=${userName}`,
+        `/Technician/Search_By_UserName?username=${userName}`,
       );
       if (response.ok) {
         const usr = await response.json();
@@ -192,6 +192,7 @@ export function Evaluation() {
             <thead className="bg-gray-800 text-sm text-white">
               <tr>
                 <th className="border-b px-6 py-3 text-center">Technician</th>
+                <th className="border-b px-6 py-3 text-center">User Name</th>
                 <th className="border-b px-6 py-3 text-center">Specialty</th>
                 <th className="border-b px-6 py-3 text-center">
                   Years of Experience
@@ -205,6 +206,9 @@ export function Evaluation() {
                   onClick={() => openEvaluationModal(technician)}
                   className="cursor-pointer hover:bg-gray-100"
                 >
+                  <td className="border-b px-6 py-3 text-center">
+                    {technician.name}
+                  </td>
                   <td className="border-b px-6 py-3 text-center">
                     {technician.userName}
                   </td>

@@ -148,7 +148,7 @@ public class IdentityService : IIdentityService
     {
         try
         {
-            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Password, updateDto.Email);
+            
 
             if (updateDto.UserRole == UserRole.Technician.ToString())
             {
@@ -156,6 +156,9 @@ public class IdentityService : IIdentityService
 
                 _unitOfWork.GetRepository<Technician>().Update(technician);
 
+                await _unitOfWork.CompleteAsync();
+                
+                
             }
 
             else if (updateDto.UserRole == UserRole.EquipmentReceptor.ToString())
@@ -172,8 +175,10 @@ public class IdentityService : IIdentityService
                 _unitOfWork.GetRepository<Employee>().Update(employee);
             }
 
+            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Email);
+            
             await _unitOfWork.CompleteAsync();
-
+            
         }
         catch (Exception ex)
         {

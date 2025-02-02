@@ -81,6 +81,16 @@ public class EvaluationController : ControllerBase
         
     }
 
+
+    [HttpGet]
+    [Route("Get_Evaluation_By_Technician")]
+    public async Task<IActionResult> GetEvaluationByTechnician ([FromQuery] PagedRequestDto paged,int technicianId)
+    {
+        var evaluations = await _evaluationQueryService.GetEvaluationByTechnicianAsync(paged,technicianId);
+
+        return Ok(evaluations);
+    }
+
     #endregion
    
 }
