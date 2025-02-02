@@ -47,8 +47,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
           );
           if (response.ok) {
             const data = await response.json();
-            setDepartments((data)); // Lista de departamentos para la sección seleccionada
-            setSelectedDepartment(null); // Resetear el departamento seleccionado
+            setDepartments(data);
           }
         } catch (err) {
           console.error("Error fetching departments", err);
@@ -57,16 +56,15 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
       fetchDepartments();
     } else {
       setDepartments([]); // Si no hay sección seleccionada, limpiamos los departamentos
-      setSelectedDepartment(null); // También resetear el departamento
     }
-  }, [selectedSection]);
+  }, []);
 
   // Función para manejar la aceptación de la selección
   const handleAccept = async () => {
     if (selectedSection && selectedDepartment) {
       try {
         const requestBody = {
-          date: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString().split("T")[0],
           status: "Pending",
           sectionManagerId: user.id,
           equipmentId: eqiD,
@@ -88,7 +86,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
               department: selectedDepartment,
             });
           }
-          toast.success("Transfer successful!", {
+          toast.success("Transfer Successfully Requested!", {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: true,
@@ -99,7 +97,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
           });
           onClose(); // Cerrar el modal después de guardar
         } else {
-          toast.error("Transfer failed. Please try again.", {
+          toast.error("Transfer Request Failed. Please try again.", {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: true,
@@ -160,7 +158,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
           {/* Select de Departamento */}
           <Select
             label="Department"
-            value={selectedDepartment || ""}
+            value={selectedDepartment}
             onChange={(value) => setSelectedDepartment(value)}
             disabled={!selectedSection || departments.length === 0}
           >
