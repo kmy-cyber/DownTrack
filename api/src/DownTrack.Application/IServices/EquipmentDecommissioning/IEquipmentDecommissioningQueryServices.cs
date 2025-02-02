@@ -9,4 +9,5 @@ public interface IEquipmentDecommissioningQueryServices :
 {
      Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetEquipmentDecomissioningOfReceptorAsync(int receptorId, PagedRequestDto paged);
 
+     Task<GetEquipmentDecommissioningDto> GetDecomissionByEquipmentIdAsync(int equipmentId);
 }

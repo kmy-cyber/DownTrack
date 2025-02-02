@@ -23,12 +23,22 @@ public class EvaluationQueryServices : GenericQueryServices<Evaluation,GetEvalua
 
     public override Expression<Func<Evaluation, object>>[] GetIncludes()=> includes;
 
-    public async Task<PagedResultDto<GetEvaluationDto>>  GetEvaluationByTechnicianAsync(PagedRequestDto paged,int technicianId)
+    public async Task<PagedResultDto<GetEvaluationDto>>  GetEvaluationByTechnicianIdAsync(PagedRequestDto paged,int technicianId)
     {
         var evaluationsQuery = _unitOfWork.GetRepository<Evaluation>()
                                      .GetAllByItems(ev=> ev.TechnicianId == technicianId);
         
         return await GetPagedResultByQueryAsync(paged,evaluationsQuery);
+    }
+
+    
+    public async Task<PagedResultDto<GetEvaluationDto>>  GetEvaluationByTechnicianUsernameAsync(PagedRequestDto paged,string username)
+    {
+        var evaluationsQuery = _unitOfWork.GetRepository<Evaluation>()
+                                     .GetAllByItems(ev=> ev.Technician.UserName == username);
+                                     
+        return await GetPagedResultByQueryAsync(paged,evaluationsQuery);
+        
     }
 
 }

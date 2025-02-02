@@ -1,10 +1,12 @@
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
@@ -15,7 +17,9 @@ public class EquipmentDecommissioningQueryServices :GenericQueryServices<Equipme
     private static readonly Expression<Func<EquipmentDecommissioning, object>>[] includes = 
                             { ed=> ed.Technician!.User!,
                               ed=> ed.Equipment!,
-                              ed=> ed.Receptor!.User! };
+                              ed=> ed.Receptor!.User!,
+                              ed=> ed.Equipment!.Department,
+                              ed=> ed.Equipment!.Department.Section };
 
     public EquipmentDecommissioningQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         :base (unitOfWork, mapper)
@@ -24,6 +28,8 @@ public class EquipmentDecommissioningQueryServices :GenericQueryServices<Equipme
     }
 
    
+    public override Expression<Func<EquipmentDecommissioning, object>>[] GetIncludes()=> includes;
+
 
     public async Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetEquipmentDecomissioningOfReceptorAsync(int receptorId, PagedRequestDto paged)
     {
@@ -63,7 +69,24 @@ public class EquipmentDecommissioningQueryServices :GenericQueryServices<Equipme
 
 
 
-    public override Expression<Func<EquipmentDecommissioning, object>>[] GetIncludes()=> includes;
+    public async Task<GetEquipmentDecommissioningDto> GetDecomissionByEquipmentIdAsync(int equipmentId)
+    {   
+        var equipment = await _unitOfWork.GetRepository<Equipment>().GetByIdAsync(equipmentId);
 
+        var includes= GetIncludes();
+
+        var decommission = await _unitOfWork.GetRepository<EquipmentDecommissioning>()
+                                    .GetByItems(new Expression<Func<EquipmentDecommissioning, bool>>[]
+                                    {   
+                                        ed=> ed.EquipmentId == equipmentId,
+                                        ed=> ed.Status == DecommissioningStatus.Accepted.ToString()
+
+                                    }, includes);
+        
+        if(decommission == null)
+            throw new Exception("The equipment has not been decommissioned yet.");
+        
+        return _mapper.Map<GetEquipmentDecommissioningDto>(decommission);
+    }
  
 }
