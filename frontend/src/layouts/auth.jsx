@@ -9,7 +9,7 @@ import { UserCircleIcon } from "@heroicons/react/24/solid";
 import "@/assets/css/mystyles.css";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
-
+import { toast } from "react-toastify";
 
 const getDashboardPath = (role) => {
   switch (role) {
@@ -52,8 +52,8 @@ export function SignIn() {
       const token = await response.text(); // Obtenemos el token como texto
       
       if (response.ok && token) {
+        toast.success("Login completed: Welcome");
         login(token);
-        console.log(token);
         const userData = getUserData(token);
         
         // Redirige al dashboard si el login es correcto
