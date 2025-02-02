@@ -41,7 +41,7 @@ const Error403 = () => {
             Error 403: Forbidden
         </Typography>
         <Typography variant="body1" sx={{ color: '#666', marginBottom: '30px' }}>
-            You have no acces to this page.
+            You have no access to this page.
         </Typography>
         <Button
             variant="contained"
