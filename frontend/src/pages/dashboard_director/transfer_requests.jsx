@@ -7,8 +7,8 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { Pagination } from "@mui/material";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { Pagination } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
 
@@ -43,6 +43,7 @@ const TransferRequestsTable = () => {
       const data = await response.json();
       setTransferRequestsList(data.items || []);
       setTotalPages(Math.ceil(data.totalCount / pageSize));
+      console.log(data.items);
     } catch (err) {
       setError("Failed to fetch transfer requests data");
     } finally {
@@ -114,13 +115,25 @@ const TransferRequestsTable = () => {
                       Requester
                     </th>
                     <th className="border-b px-6 py-3 text-center">
-                      Request ID
+                      Equipment ID
                     </th>
                     <th className="border-b px-6 py-3 text-center">
-                      Equipment
+                      Equipment Name
                     </th>
                     <th className="border-b px-6 py-3 text-center">
-                      Transfer Date
+                      Source Section
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Source Department
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Arrival Section
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Arrival Department
+                    </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Request Date
                     </th>
                   </tr>
                 </thead>
@@ -130,6 +143,18 @@ const TransferRequestsTable = () => {
                       <tr key={request.id}>
                         <td className="border-b px-6 py-3 text-center">
                           {request.sectionManagerUserName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {request.equipmentId}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {request.equipmentName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {request.sourceSectionName}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {request.sourceDepartmentName}
                         </td>
                         <td className="border-b px-6 py-3 text-center">
                           {request.arrivalSectionName}
