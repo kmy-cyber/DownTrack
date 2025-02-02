@@ -19,4 +19,19 @@ public class TechnicianQueryServices : GenericQueryServices<Technician,GetTechni
     
     public override Expression<Func<Technician, object>>[] GetIncludes()=> includes;
 
+    public async Task<GetTechnicianDto> GetByUserNameAsync(string username)
+    {
+        var includes = GetIncludes();
+
+        var technician = await _unitOfWork.GetRepository<Technician>()
+                                          .GetByItems(new Expression<Func<Technician, bool>>[]
+                                          {
+                                            e=> e.UserName == username
+                                          },includes);
+        if (technician == null)
+            throw new Exception($"Technician with UserName: {username} not found");
+
+        return _mapper.Map<GetTechnicianDto>(technician);
+        
+    }
 }

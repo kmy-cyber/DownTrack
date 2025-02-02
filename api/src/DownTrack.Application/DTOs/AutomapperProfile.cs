@@ -17,8 +17,8 @@ public class AutomapperProfile : Profile
         CreateMap<EmployeeDto, Employee>();
         CreateMap<Employee, EmployeeDto>();
         CreateMap<Employee, GetEmployeeDto>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.UserName))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User!.Email));
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
         CreateMap<EquipmentReceptorDto, EquipmentReceptor>();
         CreateMap<EquipmentReceptor, EquipmentReceptorDto>()

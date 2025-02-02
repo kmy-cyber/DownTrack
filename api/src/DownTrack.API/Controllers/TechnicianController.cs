@@ -48,6 +48,15 @@ public class TechnicianController : ControllerBase
         
     }
 
+    [HttpGet]
+    [Route("Search_By_UserName")]
+    public async Task<ActionResult<TechnicianDto>> GetTechnicianByUserName(string username)
+    {
+        var technician = await _technicianQueryService.GetByUserNameAsync(username);
+
+        return Ok(technician);
+    }
+
     
 
 

@@ -51,7 +51,8 @@ public static class Section
             {
                 Id = i,
                 Name = $"Section_{i}",
-                SectionManagerId = manager.id
+                SectionManagerId = manager.id,
+                CreatedDate = DateTime.UtcNow.ToString("o")
             };
 
             var content = new StringContent(

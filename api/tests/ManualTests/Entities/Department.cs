@@ -39,16 +39,23 @@ public static class Department
 
          var _section = await GetSectionAsync(client);
 
-        for (int i = 1; i <= 100; i++) // Aseguramos una sección por cada SectionManager
+
+        List<string> _dates = new List<string> (){
+            "2025-02-01","2025-01-01","2024-12-01","2024-11-01","2024-10-01","2024-09-01","2024-08-01","2024-07-01"
+        };
+
+        for (int i = 111; i <= 190; i++) // Aseguramos una sección por cada SectionManager
         {
             var section = _section[_random.Next(_section.Count)]; 
+            var date = _dates[_random.Next(_dates.Count)]; 
 
             var department = new
             {
                 Id = i,
                 Name = $"Department_{i}",
                 SectionId = section.id,
-                SectionName = section.name
+                SectionName = section.name,
+                CreatedDate = date
             };
 
             // Serializa el objeto a JSON

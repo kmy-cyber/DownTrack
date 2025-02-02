@@ -5,6 +5,7 @@ using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
@@ -36,5 +37,14 @@ public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance
 
         return await GetPagedResultByQueryAsync(paged,queryMaintenancesByTechnician);
 
+    }
+
+    public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetMaintenanceByTechnicianStatusAsync(PagedRequestDto paged,int technicianId, bool status)
+    {
+        var maintenance =  _unitOfWork.GetRepository<DoneMaintenance>()
+                                           .GetAllByItems(dm=> dm.TechnicianId == technicianId,
+                                                          dm=> dm.Finish == status);
+        
+        return await GetPagedResultByQueryAsync(paged,maintenance);
     }
 }
