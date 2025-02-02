@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
+import { Pagination } from "@mui/material";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Stack from "@mui/material/Stack";
 import api from "@/middlewares/api"; // Asegúrate de que api esté configurado correctamente
