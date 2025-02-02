@@ -3,7 +3,7 @@ using DownTrack.Application.DTO;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Status;
 
 namespace DownTrack.Application.Services;
 
@@ -29,6 +29,7 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
                                         .GetByIdAsync(doneMaintenance.EquipmentId!.Value);
 
         doneMaintenance.Equipment.Status = EquipmentStatus.UnderMaintenance.ToString();
+        doneMaintenance.Finish = false;
 
         await _unitOfWork.GetRepository<DoneMaintenance>().CreateAsync(doneMaintenance);
         await _unitOfWork.CompleteAsync();
@@ -82,6 +83,8 @@ public class DoneMaintenanceCommandServices : IDoneMaintenanceCommandServices
         maintenance.Cost = requestFinalize.Cost;
 
         maintenance.Equipment!.Status = EquipmentStatus.Active.ToString();
+        
+        maintenance.Finish = true;
 
         _unitOfWork.GetRepository<DoneMaintenance>().Update(maintenance);
 

@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -9,23 +8,19 @@ using DownTrack.Domain.Entities;
 
 namespace DownTrack.Application.Services;
 
-public class EvaluationQueryServices : GenericQueryServices<Evaluation, GetEvaluationDto>,
+public class EvaluationQueryServices : GenericQueryServices<Evaluation,GetEvaluationDto>,
                                        IEvaluationQueryServices
 {
-    private static readonly Expression<Func<Evaluation, object>>[] includes =
+    private static readonly Expression<Func<Evaluation, object>>[] includes = 
                             { ev => ev.SectionManager!.User!,
                               ev => ev.Technician.User!};
-    public EvaluationQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
-                                  IFilterService<Evaluation> filterService,
-                                  ISortService<Evaluation> sortService,
-                                  IPaginationService<Evaluation> paginationService)
-         : base(unitOfWork, filterService, sortService, paginationService, mapper)
+    public EvaluationQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+        : base (unitOfWork, mapper)
     {
-
     }
 
 
-    public override Expression<Func<Evaluation, object>>[] GetIncludes() => includes;
+    public override Expression<Func<Evaluation, object>>[] GetIncludes()=> includes;
 
 
 

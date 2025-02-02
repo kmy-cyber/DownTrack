@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -22,11 +21,8 @@ public class TransferRequestQueryServices :GenericQueryServices<TransferRequest,
                               tr=> tr.ArrivalDepartment.Section ,
                               tr=> tr.SourceDepartment!.Section};
                               
-    public TransferRequestQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
-                                 IFilterService<TransferRequest> filterService,
-                                 ISortService<TransferRequest> sortService,
-                                 IPaginationService<TransferRequest> paginationService)
-        : base(unitOfWork, filterService,sortService,paginationService,mapper)
+    public TransferRequestQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+        : base (unitOfWork, mapper)
     {
 
     }

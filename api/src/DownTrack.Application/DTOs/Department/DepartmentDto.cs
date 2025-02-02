@@ -8,5 +8,6 @@ public class DepartmentDto
     public string Name { get; set; } = null!;
     public int SectionId { get; set; }
     public string SectionName {get;set;}= null!;
+    public DateTime CreatedDate {get;set;}
 }
 

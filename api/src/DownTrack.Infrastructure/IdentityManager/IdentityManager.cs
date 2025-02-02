@@ -8,9 +8,9 @@ namespace DownTrack.Infrastructure;
 public class IdentityManager : IIdentityManager
 {
     private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<Role> _roleManager;
 
-    public IdentityManager(UserManager<User> userManage, RoleManager<IdentityRole> roleManager)
+    public IdentityManager(UserManager<User> userManage, RoleManager<Role> roleManager)
     {
         _userManager = userManage;
         _roleManager = roleManager;
@@ -35,15 +35,17 @@ public class IdentityManager : IIdentityManager
     {
         
         var existingRole = await _roleManager.FindByNameAsync(role);
-        if (existingRole == null)
-        {
-            var newRole = new IdentityRole(role);
-            var roleResult = await _roleManager.CreateAsync(newRole);
-            if (!roleResult.Succeeded)
-            {
-                throw new Exception($"Error creating role  {role}: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
-            }
-        }
+        // if (existingRole == null)
+        // {
+        //     var newRole = new IdentityRole<int>(role);
+
+        //     var roleResult = await _roleManager.CreateAsync(newRole);
+            
+        //     if (!roleResult.Succeeded)
+        //     {
+        //         throw new Exception($"Error creating role  {role}: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+        //     }
+        // }
 
         
         var user = await _userManager.FindByIdAsync(userId);
@@ -78,7 +80,7 @@ public class IdentityManager : IIdentityManager
 
     public async Task<bool> IsInRoleAsync(string userId, string role)
     {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+        var user = _userManager.Users.SingleOrDefault(u => u.Id.ToString() == userId);
 
         return user != null && await _userManager.IsInRoleAsync(user, role);
     }

@@ -6,7 +6,7 @@ using DownTrack.Application.DTO.Authentication;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Roles;
 
 namespace DownTrack.Application.Services.Authentication;
 
@@ -128,7 +128,7 @@ public class IdentityService : IIdentityService
 
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
 
-            await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
+            await _identityManager.AddRoles(savedUser.Id.ToString(), userDto.UserRole);
 
             await _unitOfWork.CompleteAsync();
 

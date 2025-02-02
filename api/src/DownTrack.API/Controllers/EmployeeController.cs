@@ -1,7 +1,7 @@
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -49,6 +49,7 @@ public class EmployeeController : ControllerBase
         return Ok(result);
 
     }
+
     [HttpGet]
     [Route("GET_ALL")]
 
@@ -59,10 +60,10 @@ public class EmployeeController : ControllerBase
         return Ok(result);
     }   
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEmployee (PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEmployee ([FromQuery]PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -92,6 +93,8 @@ public class EmployeeController : ControllerBase
         return Ok(supervisor);
     }
 
+    
+
     #endregion
 
     #region Command
@@ -104,6 +107,7 @@ public class EmployeeController : ControllerBase
 
         return Ok("Employee deleted successfully");
     }
+
     
     #endregion
 

@@ -1,5 +1,5 @@
 
-namespace DownTrack.Domain.Enum;
+namespace DownTrack.Domain.Roles;
 
 public enum UserRole
 {

@@ -3,7 +3,7 @@ using DownTrack.Application.IServices;
 using AutoMapper;
 using DownTrack.Domain.Entities;
 using DownTrack.Application.IUnitOfWorkPattern;
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Roles;
 
 namespace DownTrack.Application.Services;
 

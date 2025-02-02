@@ -15,17 +15,3 @@ Content-Type:  application/json
 ###
 
 GET {{host}}/api/Department/GET_ALL
-
-###
-
-POST {{host}}/api/Department/GetPaged
-Content-Type: application/json
-
-{
-  "PageNumber": 1,
-  "PageSize": 20
-}
-
-
-###
-GET {{host}}/api/Department/GetPaged?pageNumber=1&pageSize=2&sortColumn=Name&filters[sectionId]=21

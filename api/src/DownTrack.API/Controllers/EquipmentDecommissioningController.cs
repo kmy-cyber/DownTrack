@@ -75,9 +75,9 @@ public class EquipmentDecommissioningController : ControllerBase
 
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("Get_Paged_All")]
-    public async Task<IActionResult> GetPagedAllDepartmentInSection (PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged)
     {
          paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

@@ -35,10 +35,10 @@ public class TechnicianController : ControllerBase
 
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedTechnician (PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedTechnician ([FromQuery]PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -46,6 +46,15 @@ public class TechnicianController : ControllerBase
         
         return Ok (result);
         
+    }
+
+    [HttpGet]
+    [Route("Search_By_UserName")]
+    public async Task<ActionResult<TechnicianDto>> GetTechnicianByUserName(string username)
+    {
+        var technician = await _technicianQueryService.GetByUserNameAsync(username);
+
+        return Ok(technician);
     }
 
     

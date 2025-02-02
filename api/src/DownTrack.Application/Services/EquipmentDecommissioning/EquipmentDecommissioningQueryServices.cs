@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -18,14 +17,12 @@ public class EquipmentDecommissioningQueryServices :GenericQueryServices<Equipme
                               ed=> ed.Equipment!,
                               ed=> ed.Receptor!.User! };
 
-    public EquipmentDecommissioningQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
-                                 IFilterService<EquipmentDecommissioning> filterService,
-                                 ISortService<EquipmentDecommissioning> sortService,
-                                 IPaginationService<EquipmentDecommissioning> paginationService)
-        : base(unitOfWork, filterService,sortService,paginationService,mapper)
+    public EquipmentDecommissioningQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+        :base (unitOfWork, mapper)
     {
 
     }
+
    
 
     public async Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetEquipmentDecomissioningOfReceptorAsync(int receptorId, PagedRequestDto paged)

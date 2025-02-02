@@ -1,5 +1,6 @@
 
-using DownTrack.Domain.Enum;
+using DownTrack.Domain.Entities;
+using DownTrack.Domain.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,13 +43,13 @@ public class RoleInitializer : IHostedService
         using (var scope = _serviceProvider.CreateScope())
         {
             //get RoleManager<IdentityRole> service from the dependency container
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
             foreach (var role in UserRoleHelper.AllRoles())
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    var result = await roleManager.CreateAsync(new IdentityRole(role));
+                    var result = await roleManager.CreateAsync(new Role{Name = role});
                     if (!result.Succeeded)
                     {
                         throw new Exception($"Error create the role: {role}: {string.Join(", ", result.Errors.Select(e => e.Description))}");

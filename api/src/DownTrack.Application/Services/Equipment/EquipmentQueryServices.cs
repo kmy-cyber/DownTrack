@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -16,11 +15,8 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
     private static readonly Expression<Func<Equipment, object>>[] includes =
                             { d => d.Department,
                               d => d.Department.Section };
-    public EquipmentQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
-                                 IFilterService<Equipment> filterService,
-                                 ISortService<Equipment> sortService,
-                                 IPaginationService<Equipment> paginationService)
-        : base(unitOfWork, filterService,sortService,paginationService,mapper)
+    public EquipmentQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+        : base(unitOfWork, mapper)
     {
 
     }

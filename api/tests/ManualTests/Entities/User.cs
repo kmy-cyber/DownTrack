@@ -20,7 +20,7 @@ public static class User
         using var client = new HttpClient();
         client.BaseAddress = new Uri("http://localhost:5217/api/Authentication/register");
 
-        for (int i = 1; i <= 300; i++)
+        for (int i = 341; i <= 500; i++)
         {
             var userRole = _roles[_random.Next(_roles.Length)]; 
 

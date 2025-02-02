@@ -55,10 +55,10 @@ public class TransferRequestController : ControllerBase
 
     #region Query
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedUser(PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedUser([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

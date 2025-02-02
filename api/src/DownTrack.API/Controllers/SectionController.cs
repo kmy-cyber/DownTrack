@@ -93,10 +93,10 @@ public class SectionController : ControllerBase
 
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<ActionResult> GetPagedSection(PagedRequestDto paged)
+    public async Task<ActionResult> GetPagedSection([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

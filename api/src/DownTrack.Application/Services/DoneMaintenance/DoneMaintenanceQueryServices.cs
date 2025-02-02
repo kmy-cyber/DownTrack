@@ -2,10 +2,10 @@ using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
 using DownTrack.Application.DTO.Paged;
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
@@ -16,11 +16,8 @@ public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance
                             { dm=> dm.Technician!.User!,
                               dm=> dm.Equipment! };
 
-    public DoneMaintenanceQueryServices(IUnitOfWork unitOfWork, IMapper mapper,
-                                 IFilterService<DoneMaintenance> filterService,
-                                 ISortService<DoneMaintenance> sortService,
-                                 IPaginationService<DoneMaintenance> paginationService)
-        : base(unitOfWork, filterService,sortService,paginationService,mapper)
+    public DoneMaintenanceQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
     {
 
     }
@@ -40,5 +37,14 @@ public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance
 
         return await GetPagedResultByQueryAsync(paged,queryMaintenancesByTechnician);
 
+    }
+
+    public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetMaintenanceByTechnicianStatusAsync(PagedRequestDto paged,int technicianId, bool status)
+    {
+        var maintenance =  _unitOfWork.GetRepository<DoneMaintenance>()
+                                           .GetAllByItems(dm=> dm.TechnicianId == technicianId,
+                                                          dm=> dm.Finish == status);
+        
+        return await GetPagedResultByQueryAsync(paged,maintenance);
     }
 }

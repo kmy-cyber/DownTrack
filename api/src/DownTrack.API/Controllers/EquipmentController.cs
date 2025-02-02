@@ -67,10 +67,10 @@ public class EquipmentController : ControllerBase
 
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEquipment(PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEquipment([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 

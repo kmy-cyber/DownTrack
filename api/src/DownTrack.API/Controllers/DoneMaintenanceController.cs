@@ -79,10 +79,10 @@ public class DoneMaintenanceController : ControllerBase
     }
 
 
-    [HttpPost]
+    [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedDoneMaintenance (PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedDoneMaintenance ([FromQuery]PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
@@ -105,6 +105,17 @@ public class DoneMaintenanceController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("Get_Maintenances_By_Technician_Status")]
+    public async Task<IActionResult> GetMaintenancesByTechnicianStatus ([FromQuery]PagedRequestDto paged,int technicianId, bool IsFinish)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByTechnicianStatusAsync(paged,technicianId,IsFinish);
+
+        return Ok(maintenance);
+    }
+    
     #endregion
 
    

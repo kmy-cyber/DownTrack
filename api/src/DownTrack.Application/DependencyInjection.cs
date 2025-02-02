@@ -1,11 +1,9 @@
 
 
-using DownTrack.Application.Interfaces;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
 using DownTrack.Application.Services;
 using DownTrack.Application.Services.Authentication;
-using DownTrack.Application.Services.Specials;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -53,9 +51,6 @@ public static class DependencyInjection
         services.AddScoped<ITransferCommandServices, TransferCommandServices>();
         services.AddScoped<ITransferQueryServices, TransferQueryServices>();
 
-        services.AddScoped(typeof(IFilterService<>), typeof(FilterService<>));
-        services.AddScoped(typeof(ISortService<>), typeof(SortService<>));
-        services.AddScoped(typeof(IPaginationService<>), typeof(PaginationService<>));
         return services;
 
 
