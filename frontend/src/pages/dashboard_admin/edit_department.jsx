@@ -5,9 +5,8 @@ import {
     CardBody,
     Typography,
 } from "@material-tailwind/react";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
-import { ConnectingAirportsOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 
 export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
@@ -53,27 +52,21 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
                 })
             });
         if (!response.ok) {
-            setAlertMessage('Failed to edit department');
-            setAlertType('error');
+            toast.error('Failed to edit department');
             throw new Error('Failed to edit department');
         }
         else
         {
-            setAlertMessage('Edit completed successfully');
-            setAlertType('success');
+            toast.success('Edit completed successfully');
             onSave(formData);
         }
         } catch (error) {
-            setAlertMessage('Error editing department:');
-            setAlertType('error');
-            console.log(error);
+            toast.error('Error editing department:');
         }
     };
 
     return (
         <>
-        <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
             <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <Typography variant="h6" color="white">
@@ -111,6 +104,7 @@ export const EditDepartmentForm = ({ departmentData, onSave, onCancel }) => {
                     value={formData.sectionName}
                     onChange={handleChange}
                     placeholder="Enter section"
+                    disabled
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                 </div>

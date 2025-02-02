@@ -8,16 +8,16 @@ import {
 import api from "@/middlewares/api";
 
 const defaultFormData = {
-    id: "",
-    name: "",
-    userRole: "",
+    id: " ",
+    name: " ",
+    userRole: " ",
     email:"",
-    password: "",
     salary: 0,
-    specialty: "",
+    specialty: " ",
     expYears: 0,
     departamentId: 0,
     sectionId: 0,
+    userName:"",
 };
 
 export const EditUserForm = ({ userData, onSave, onCancel }) => {
@@ -61,6 +61,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 salary: data.salary,
                 specialty: data.specialty,
                 expYears: data.expYears,
+                userName: userData.userName,
             });
             setIsLoading(false);
         } catch (error) {
@@ -89,6 +90,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 email: userData.email,
                 departamentId: data.departmentId,
                 sectionId: data.sectionId,
+                userName: userData.userName,
 
             });
             setIsLoading(false);
@@ -121,7 +123,8 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
             'specialty': formData.specialty,
             'salary': formData.salary,
             'expYears': formData.expYears,
-            'departamentId': formData.departamentId
+            'departamentId': formData.departamentId,
+            'userName': formData.userName,
         })
         });
         if (!response.ok) {
@@ -185,6 +188,23 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     />
                 </div>
 
+                <div>
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Username
+                    </label>
+                    <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.userName}
+                    onChange={handleChange}
+                    placeholder="Enter full name"
+                    disabled
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    required
+                    />
+                </div>
+
                 {userData.userRole !== "ShippingSupervisor" ? (
                 <>
                     <div>
@@ -218,6 +238,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                         value={formData.departamentId}
                         onChange={handleChange}
                         placeholder="Enter department"
+                        disabled
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         required
                     />
