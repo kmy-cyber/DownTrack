@@ -13,7 +13,7 @@ import { UserIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";   
 import { Pagination } from '@mui/material';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
 import DropdownMenu from "@/components/DropdownMenu";
 import { DeleteForeverOutlined, EditAttributes, EditNoteOutlined, ModeEditOutline } from "@mui/icons-material";
@@ -22,8 +22,6 @@ import { DeleteForeverOutlined, EditAttributes, EditNoteOutlined, ModeEditOutlin
 
 export function TablesDepartment() {
         const [isLoading, setIsLoading] = useState(true);
-        const[alertMessage, setAlertMessage] = useState('');
-        const [alertType, setAlertType] = useState('success');
 
         const [totalPages, setTotalPages] = useState(0);
         const [currentItems, setCurrentItems] = useState([]);
@@ -128,21 +126,17 @@ export function TablesDepartment() {
             }
             else
             {
-                setAlertMessage('Delete completed successfully');
-                setAlertType('success');
+                toast.success('Delete completed successfully');
                 setCurrentItems(currentItems.filter(d => d.id !== id));
             }
             } catch (error) {
-                setAlertMessage('Error deleting department:');
-                setAlertType('error');
+                toast.error('Error deleting department:');
                 console.error("Error deleting department:", error);
             }
         };
     
         return (
             <>
-                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-
                 { onEdit &&
                     <EditDepartmentForm 
                         departmentData={dptData} 

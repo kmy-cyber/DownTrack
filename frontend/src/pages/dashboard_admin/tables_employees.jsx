@@ -14,7 +14,7 @@ import { UserIcon, KeyIcon} from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import { Pagination } from '@mui/material';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
 import DropdownMenu from "@/components/DropdownMenu";
 import { DeleteForeverOutlined, EditNoteOutlined, PersonPinCircleOutlined } from "@mui/icons-material";
@@ -29,8 +29,6 @@ export function Tables() {
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const[alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('success');
     const [userData, setUserData] = useState({
         id:0,
         name: "",
@@ -131,20 +129,18 @@ export function Tables() {
         }
         else
         {
-            setAlertMessage('Delete completed successfully');
-            setAlertType('success');
+            toast.success('Delete completed successfully');
             setCurrentItems(currentItems.filter(user => user.id !== id));
+            await fetchEmployees(currentPage);
         }
         } catch (error) {
-            setAlertMessage('Error deleting employee:');
-            setAlertType('error');
+            toast.error('Error deleting employee:');
             console.error("Error deleting employee:", error);
         }
     };
 
     return (
         <>
-            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             { onEdit &&
                 <EditUserForm 
                     userData={userData} 
