@@ -3,10 +3,8 @@ import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { IconButton } from "@material-tailwind/react";
 import { Sidenav, DashboardNavbar, Configurator, UserInfoSidebar } from "@/components/layout";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
-import { useEffect } from "react";
 import routesManager from "@/routes/routes_manager";
 import { jwtDecode } from 'jwt-decode';
-import { SectionsTable } from "@/components/sections";
 import DepartmentsTable from "@/components/departments/departments_table"; // Asegúrate de que el componente esté importado
 import InventoryTable from "@/components/inventory/inventory_table";
 

@@ -47,7 +47,7 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
           );
           if (response.ok) {
             const data = await response.json();
-            setDepartments(data); // Lista de departamentos para la sección seleccionada
+            setDepartments((data)); // Lista de departamentos para la sección seleccionada
             setSelectedDepartment(null); // Resetear el departamento seleccionado
           }
         } catch (err) {
