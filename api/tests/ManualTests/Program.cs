@@ -2,17 +2,17 @@
 
 var apiClient = new ApiClient();
 
-// await User.RegisterUserAsync();
-// await Section.RegisterSectionAsync();
+await User.RegisterUserAsync();
+await Section.RegisterSectionAsync();
 await Department.RegisterDepartmentAsync();
-// await Equipment.RegisterEquipmentAsync();
-// await EquipmentReceptor.RegisterEquipmentReceptorAsync();
+await Equipment.RegisterEquipmentAsync();
+await EquipmentReceptor.RegisterEquipmentReceptorAsync();
 
-// await Evaluation.RegisterEvaluationAsync();
-// await Maintenance. RegisterMaintenanceAsync();
-// await EquipmentDecommissioning.RegisterEquipmentDecomissioningAsync();
-// await TransferRequest.RegisterTransferRequestAsync();
-// await Transfer.RegisterTransferAsync();
+await Evaluation.RegisterEvaluationAsync();
+await Maintenance. RegisterMaintenanceAsync();
+await EquipmentDecommissioning.RegisterEquipmentDecomissioningAsync();
+await TransferRequest.RegisterTransferRequestAsync();
+await Transfer.RegisterTransferAsync();
 
 
 
