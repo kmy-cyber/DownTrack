@@ -66,7 +66,8 @@ const SectionSelectionModal = ({ isOpen, onClose, onSave, eqiD }) => {
     if (selectedSection && selectedDepartment) {
       try {
         const requestBody = {
-          date: new Date().toISOString(),
+          date: new Date().toISOString().split('T')[0],
+          status: "Pending",
           sectionManagerId: user.id,
           equipmentId: eqiD,
           arrivalDepartmentId: selectedDepartment,
