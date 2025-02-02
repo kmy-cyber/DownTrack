@@ -78,6 +78,7 @@ const EmployeesTable = () => {
             <table className="min-w-full table-auto text-sm text-gray-900">
               <thead className="bg-gray-800 text-white">
                 <tr>
+                  <th className="border-b px-6 py-3 text-center">Name</th>
                   <th className="border-b px-6 py-3 text-center">Username</th>
                   <th className="border-b px-6 py-3 text-center">Role</th>
                 </tr>
@@ -87,9 +88,10 @@ const EmployeesTable = () => {
                   employeeList.map((user) => (
                     <tr key={user.id}>
                       <td className="border-b px-6 py-3 text-center">
-                        {user.userRole.toLowerCase() === "shippingsupervisor"
-                          ? user.name
-                          : user.userName}
+                        {user.name}
+                      </td>
+                      <td className="border-b px-6 py-3 text-center">
+                        {user.userName}
                       </td>
                       <td className="border-b px-6 py-3 text-center">
                         {user.userRole || "N/A"}
