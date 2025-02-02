@@ -49,10 +49,15 @@ public class DownTrackContext : IdentityDbContext<User,Role,int>
                 .IsRequired();
       entity.Property(e => e.UserRole)
                 .IsRequired();
-
+      entity.Property(e=> e.Email)
+                  .IsRequired();
+      entity.Property(e => e.UserName)
+                .IsRequired();
+      entity.HasIndex(e => e.UserName)
+                .IsUnique();
       entity.HasIndex(e => e.Name);
       entity.HasIndex(e => e.UserRole);
-
+      
     });
 
 
