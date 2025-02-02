@@ -1,8 +1,6 @@
-using DownTrack.Application.DTO;
-using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IRepository;
 using DownTrack.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace DownTrack.Infrastructure.Repository;
 

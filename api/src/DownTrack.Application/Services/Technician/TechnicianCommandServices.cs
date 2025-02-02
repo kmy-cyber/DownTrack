@@ -38,14 +38,15 @@ public class TechnicianCommandServices : ITechnicianCommandServices
 
     public async Task<TechnicianDto> UpdateAsync(TechnicianDto dto)
     {
+        Console.WriteLine(dto.Id);
         var technician = await _unitOfWork.GetRepository<Technician>().GetByIdAsync(dto.Id);
-
+        Console.WriteLine(dto.Id);
         _mapper.Map(dto, technician);
 
         _unitOfWork.GetRepository<Technician>().Update(technician);
-
+        Console.WriteLine(dto.Id);
         await _unitOfWork.CompleteAsync();
-        
+        Console.WriteLine(dto.Id);
         return _mapper.Map<TechnicianDto>(technician);
     }
 

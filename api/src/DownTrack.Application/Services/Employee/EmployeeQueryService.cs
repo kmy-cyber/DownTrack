@@ -8,6 +8,7 @@ using DownTrack.Domain.Roles;
 using System.Linq.Expressions;
 using DownTrack.Application.DTO.Statistics;
 using DownTrack.Domain.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace DownTrack.Application.Services;
 
@@ -190,12 +191,14 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
 
         // numero de solicitudes de transferencias que han llegado a su departamento
         var pendingTransfers = await _unitOfWork.GetRepository<TransferRequest>()
-                                                .GetAllByItems(tr => tr.ArrivalDepartmentId == receptor.DepartmentId)
+                                                .GetAllByItems(tr => tr.ArrivalDepartmentId == receptor.DepartmentId,
+                                                              tr=> tr.Status == "Pending")
                                                 .CountAsync();
 
         // numero de bajas asignadas
         var pendingDecommissions = await _unitOfWork.GetRepository<EquipmentDecommissioning>()
-                                                    .GetAllByItems(ed => ed.ReceptorId == receptorId)
+                                                    .GetAllByItems(ed => ed.ReceptorId == receptorId,
+                                                                   ed=> ed.Status == "Pending" )
                                                     .CountAsync();
 
         //total de equipos en su departamento
