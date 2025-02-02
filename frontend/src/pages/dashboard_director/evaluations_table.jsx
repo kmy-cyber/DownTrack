@@ -53,12 +53,14 @@ const EvaluationsTable = () => {
     if (!userName.trim()) return;
     try {
       // Fix this
+      // http://localhost:5217/api/Evaluation/Get_Evaluation_By_Technician_UserName?PageNumber=1&PageSize=5&username=username_346
       const response = await api(
-        `/Technician/Search_By_UserName?username=${userName}`,
+        `/Evaluation/Get_Evaluation_By_Technician_UserName?PageNumber=1&PageSize=99999999&username=${userName}`,
       );
       if (response.ok) {
-        const usr = await response.json();
-        setEvaluationsList([usr]);
+        const userEvaluations = await response.json();
+        console.log(userEvaluations.items);
+        setEvaluationsList(userEvaluations.items);
         setIsSearching(true);
       }
     } catch (error) {
@@ -166,7 +168,7 @@ const EvaluationsTable = () => {
           </>
         )}
 
-        {!loading && !error && totalPages > 1 && (
+        {!loading && !error && !isSearching && totalPages > 1 && (
           <div className="mt-4 flex justify-center">
             <Stack spacing={2}>
               <Pagination
