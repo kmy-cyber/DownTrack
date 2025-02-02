@@ -38,10 +38,10 @@ const Error403 = () => {
             }}
         />
         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#333', marginBottom: '10px' }}>
-            Error 403: Acceso Prohibido
+            Error 403: Forbidden
         </Typography>
         <Typography variant="body1" sx={{ color: '#666', marginBottom: '30px' }}>
-            No tienes permiso para acceder a esta página.
+            You have no acces to this page.
         </Typography>
         <Button
             variant="contained"
