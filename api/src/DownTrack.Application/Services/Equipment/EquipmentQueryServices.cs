@@ -87,14 +87,14 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
-    
+
     public async Task<PagedResultDto<GetEquipmentDto>> GetActiveEquipment(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
         IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>()
-                                                          .GetAllByItems(e=> e.Status == "Active")
-                                                          .Include(e=> e.Department)
-                                                          .Include(e=> e.Department.Section);
+                                                          .GetAllByItems(e => e.Status == "Active")
+                                                          .Include(e => e.Department)
+                                                          .Include(e => e.Department.Section);
 
         var totalCount = await queryEquipment.CountAsync();
 
@@ -119,15 +119,33 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         };
     }
-                                                                                        
 
-    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName,int sectionManagerId)
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName, int sectionManagerId)
     {
-        var includes= GetIncludes();
+        var includes = GetIncludes();
         var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
-                                        .GetAllByItems(e=>e.Name==equipmentName,
-                                                        e=> e.Department.Section.SectionManagerId == sectionManagerId);
-        
-        return await GetPagedResultByQueryAsync(paged,equipmentQuery);
+                                        .GetAllByItems(e => e.Name == equipmentName,
+                                                        e => e.Department.Section.SectionManagerId == sectionManagerId);
+
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged)
+    {
+        var oneYearAgo = DateTime.UtcNow.AddYears(-1);
+        var includes = GetIncludes();
+        var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
+                                        .GetAllByItems()
+                                        .Where(e => e.DoneMaintenances
+                                            .Count(m => m.Date >= oneYearAgo) > 3);
+
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
+    }
+
+
+
+    // todos los equipos a los que se le dio mas de 3 bajas en el último año
+
+
 }
