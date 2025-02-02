@@ -39,7 +39,7 @@ public class TransferRequestQueryServices : GenericQueryServices<TransferRequest
 
         IQueryable<TransferRequest> queryTransferRequest = _unitOfWork.GetRepository<TransferRequest>()
                                                                       .GetAllByItems(tr => tr.ArrivalDepartmentId == receptor.DepartmentId,
-                                                                                     tr => tr.Equipment.Status == TransferRequestStatus.Pending.ToString());
+                                                                                     tr => tr.Status == TransferRequestStatus.Pending.ToString());
 
         return await GetPagedResultByQueryAsync(paged, queryTransferRequest);
     }
