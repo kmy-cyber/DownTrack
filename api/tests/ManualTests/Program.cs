@@ -2,7 +2,7 @@
 
 var apiClient = new ApiClient();
 
-// await User.RegisterUserAsync();
+await User.RegisterUserAsync();
 // await Section.RegisterSectionAsync();
 await Department.RegisterDepartmentAsync();
 // await Equipment.RegisterEquipmentAsync();
