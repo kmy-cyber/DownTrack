@@ -6,10 +6,11 @@ import {InformationCircleIcon,CheckCircleIcon,TrashIcon} from "@heroicons/react/
 import { useState, useEffect } from "react";
 import { Pagination } from '@mui/material';
 import DisposalInfoForm from "./info_disposal";
-import MessageAlert from '@/components/Alert_mssg/alert_mssg';
+import { toast } from 'react-toastify';
 import api from "@/middlewares/api";
 import { useAuth } from '@/context/AuthContext';
 import DropdownMenu from '@/components/DropdownMenu';
+import { convertDateFormat } from '@/utils';
 
 export function EquipmentDisposalTable() {
     const [onInfo, setOnInfo] = useState(false);
@@ -18,9 +19,6 @@ export function EquipmentDisposalTable() {
 
     const [isLoading, setIsLoading] = useState(true);
     
-    const[alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('success');
-
     const [totalPages, setTotalPages] = useState(0);
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -52,6 +50,10 @@ export function EquipmentDisposalTable() {
         }
 
     ];
+
+    const handleDateDisplay = (dateString) => {
+        return convertDateFormat(dateString);
+    };
 
     const handleShowInfo = (disposal) => {
         setSelectedDisposal(disposal);
@@ -98,15 +100,13 @@ export function EquipmentDisposalTable() {
             });
             if (response.ok) {
             
-                setAlertType('success');
-                setAlertMessage("Decommision accepted successfully");
+                toast.success("Decommision accepted successfully");
                 await fetchDecommissions(currentPage);
                 setIsLoading(false);
                 setShowDialog(false);
 
             } else {
-                setAlertType('error');
-                setAlertMessage('Failed to register item');
+                toast.error('Failed to register item');
             }
         } catch (error) {
             console.error('Error registering item:', error);
@@ -123,15 +123,14 @@ export function EquipmentDisposalTable() {
                 },
             });
             if (response.ok) {
-                setAlertType('success');
-                setAlertMessage("Successful deletion");
+                toast.success("Successful deletion");
                 const updatedData = currentItems.filter(item => item.id !== equipmentId);
                 setCurrentItems(updatedData);
                 await fetchDecommissions(currentPage);
 
             } else {
-                setAlertType('error');
-                setAlertMessage("Failed to delete")
+                
+                toast.error("Failed to delete")
 
             }
         } catch (error) {
@@ -148,7 +147,6 @@ export function EquipmentDisposalTable() {
                     onClose={handleCloseInfo}
                 />
             )}
-            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
             { !onInfo &&
                 (<div className="mt-12 mb-8 flex flex-col gap-12 ">
                 <Card>
@@ -211,7 +209,7 @@ export function EquipmentDisposalTable() {
                                                 </td>
                                                 <td className={className}>
                                                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                        {disposal.date}
+                                                        {handleDateDisplay(disposal.date)}
                                                     </Typography>
                                                 </td>
                                                 <td className={className}>

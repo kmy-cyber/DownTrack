@@ -6,14 +6,12 @@ import {
     Typography,
 
 } from "@material-tailwind/react";
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
 import api from "@/middlewares/api";
 import { Refresh } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 export const SectionCreationForm = () => {
-    const [alertMessage, setAlertMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [alertType, setAlertType] = useState('success');
 
     const [userManagerList, setUserManagerList] = useState([]);
     const [formData, setFormData] = useState({
@@ -61,7 +59,6 @@ export const SectionCreationForm = () => {
         console.log("Section created:", formData);
 
         setIsLoading(true);
-        setAlertMessage(null);
         try {
             const response = await api("/Section/POST", {
                 method: "POST",
@@ -76,28 +73,15 @@ export const SectionCreationForm = () => {
             console.log(formData.name);
             console.log(formData.usernameSectionM);
             
-            if (!response.ok) { 
-                if (response.status === 400) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail, validation error please review the fields");
-                    setAlertMessage("Validation error. Please review the fields.");
-                } else if (response.status === 500) {
-                    setAlertType('error');
-                    setAlertMessage("Something fail,a server error occurred. Try again later",'error');
-                    setAlertMessage("A server error occurred. Try again later.");
-                }
-            }
-            else if (response.ok) {
-                setAlertType('success');
-                setAlertMessage("Successful registration");
+            if (response.ok) {
+                toast.success("Successful registration")
+                //setAlertMessage("Successful registration");
                 setFormData({ id: "", name: "", usernameSectionM: formData.usernameSectionM });
             } else {
-                setAlertMessage("Failed to login");
+                toast.error("Failed to login");
             }
         } catch (error) {
-            setAlertType('error');
-            console.error("Error logging in:", error);
-            setAlertMessage('An error occurred during the login process');
+            toast.error('An error occurred during the login process');
         } finally {
             setIsLoading(false);
         }
@@ -105,8 +89,6 @@ export const SectionCreationForm = () => {
 
     return (
         <>
-            <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-            
             <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
                 <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                     <Typography variant="h6" color="white">
