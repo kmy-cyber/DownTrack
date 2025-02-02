@@ -67,7 +67,7 @@ public class EquipmentDecommissioningController : ControllerBase
     [HttpGet]
     [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<EquipmentDecommissioningDto>>> GetAllEquipmentDecommissioning()
+    public async Task<ActionResult<IEnumerable<GetEquipmentDecommissioningDto>>> GetAllEquipmentDecommissioning()
     {
         var results = await _equipmentDecommissioningQueryServices.ListAsync();
 
@@ -89,7 +89,7 @@ public class EquipmentDecommissioningController : ControllerBase
     
     [HttpGet]
     [Route("{equipmentDecommissioningId}/GET_BY_ID")]
-    public async Task<ActionResult<EquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
+    public async Task<ActionResult<GetEquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
     {
         var result = await _equipmentDecommissioningQueryServices.GetByIdAsync(equipmentDecommissioningId);
 
@@ -110,6 +110,15 @@ public class EquipmentDecommissioningController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("Get_Decomissions_By_Equipment_Id/{equipmentId}")]
+    public async Task<ActionResult<GetEquipmentDecommissioningDto>>GetDecomissionsByEquipmentId (  int equipmentId)
+    {
+        var decomissions= await _equipmentDecommissioningQueryServices. GetDecomissionByEquipmentIdAsync(equipmentId);
+
+        return Ok(decomissions);
     }
 
     #endregion

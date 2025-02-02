@@ -7,4 +7,6 @@ public interface ITransferRequestQueryServices : IGenericQueryService<TransferRe
 {
 Task<PagedResultDto<GetTransferRequestDto>> GetPagedRequestsofArrivalDepartmentAsync(int receptorId, PagedRequestDto paged);
 
+Task<PagedResultDto<GetTransferRequestDto>>GetTransferRequestByEquipmentIdAsync (PagedRequestDto paged, int equipmentId);
+
 }
