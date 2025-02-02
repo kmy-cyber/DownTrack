@@ -4,8 +4,9 @@ import {
     WrenchScrewdriverIcon,
     ClipboardDocumentListIcon,
 } from "@heroicons/react/24/solid";
-import { Home, EquipmentInventory, MaintenanceCreationForm, LeaveCreationForm,EquipmentMaintenance } from "@/pages/dashboard_technic";
-import {AutoMode} from '@mui/icons-material';
+import { Home, EquipmentInventory, MaintenanceCreationForm, LeaveCreationForm,EquipmentMaintenance, MaintenanceHistory} from "@/pages/dashboard_technic";
+import {AssignmentOutlined, AutoMode} from '@mui/icons-material';
+
 
 const typeUser = 1;
 const icon = {
@@ -47,6 +48,12 @@ export const routesTechnic = [
             path: "/insert_technical_leave/:id/:name/:type",
             element: <LeaveCreationForm />,
             hidden: true,
+        },
+        {
+            icon: <AssignmentOutlined {...icon} />,
+            name: "maintenance history",
+            path: "/maintenance_history",
+            element: <MaintenanceHistory />,
         },
     ],
 },];

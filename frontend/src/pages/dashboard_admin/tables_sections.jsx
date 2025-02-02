@@ -6,7 +6,7 @@ import {
 } from "@material-tailwind/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
-import EditSectionForm from "./edit_section";
+import SectionCreationForm from "./create_section";
 import { Pagination } from '@mui/material';
 import { toast } from "react-toastify";
 import api from "@/middlewares/api";
@@ -130,10 +130,11 @@ import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
         return (
             <>
                 { onEdit &&
-                    <EditSectionForm 
+                    <SectionCreationForm 
                         sectionData={sectData} 
                         onSave={handleSave} 
                         onCancel={cancelEditSection} 
+                        formType="edit"
                     />
                 }
     

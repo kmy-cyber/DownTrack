@@ -17,14 +17,14 @@ import { useState, useEffect } from "react";
 import api from '@/middlewares/api';
 import DropdownMenu from '@/components/DropdownMenu';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircleOutlineOutlined } from '@mui/icons-material';
+import { CheckCircleOutlineOutlined, EditNoteOutlined } from '@mui/icons-material';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '@/context/AuthContext';
 import {convertDateFormat} from '@/utils/changeDateFormat';
 import { toast } from 'react-toastify';
 
 
-export function EquipmentMaintenance() {
+export function MaintenanceHistory() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [currentItems, setCurrentItems] = useState([]);
@@ -49,16 +49,16 @@ export function EquipmentMaintenance() {
 
     const options =(id) => [
         { 
-            label: 'Finish maintenance', 
-            className: 'text-gray-500 h-5 w-5', 
-            icon: CheckCircleOutlineOutlined,
+            label: 'Edit maintenance', 
+            className: 'text-gray-700 h-5 w-5', 
+            icon: EditNoteOutlined,
             action: () => handleOpenDialog (id)
         },
         { 
-            label: 'Cancel maintenance', 
+            label: 'Delete maintenance', 
             className: 'text-red-500 h-5 w-5', 
             icon: TrashIcon,
-            action: () => handleCancelMaintenance (id)
+            action: () => handleDeleteMaintenance (id)
         },
     ];
 
@@ -91,21 +91,21 @@ export function EquipmentMaintenance() {
             if (response.ok) { 
                 
                 await fetchTechMaintenance(currentPage);
-                toast.success("Maintenance completed");
+                toast.success("Maintenance edited successfully");
                 setIsLoading(false);
                 setShowDialog(false);
             }
             else {
-                toast.error("Maintenance incomplete")
+                toast.error("Maintenance edit failed")
             }
         } catch (error) {
-            toast.error("Maintenance incomplete");
+            toast.error("Maintenance edit failed");
             setIsLoading(false);
             setShowDialog(false);
         }
     }
 
-    const handleCancelMaintenance = async (doneMaintenanceId) => {
+    const handleDeleteMaintenance = async (doneMaintenanceId) => {
         try {
             const response = await api(`/DoneMaintenance/${doneMaintenanceId}`, {
                 method: 'DELETE',
@@ -114,12 +114,12 @@ export function EquipmentMaintenance() {
                 },
             });
             if (!response.ok) {
-                toast.error("Failed maintenance cancellation");
+                toast.error("Failed maintenance delete request");
                 throw new Error('Network response was not ok');
             }
 
             await fetchTechMaintenance(currentPage);
-            toast.success("Maintenance cancelled");
+            toast.success("Maintenance deleted successfully");
             setCurrentItems(currentItems.filter(item => item.id !== doneMaintenanceId));
         } catch (error) {
             console.error('Error:', error);
@@ -128,8 +128,8 @@ export function EquipmentMaintenance() {
 
     const fetchTechMaintenance = async (page) => {
         try {
-            const response = await api(`/DoneMaintenance/Get_Maintenances_By_Technician_Status?PageNumber=${page}&PageSize=10&technicianId=${user.id}&IsFinish=false`, {
-            method: 'GET',
+            const response = await api(`/DoneMaintenance/Get_Maintenances_By_Technician_Status?PageNumber=${page}&PageSize=10&technicianId=${user.id}&IsFinish=true`, {
+                method: 'GET',
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -154,14 +154,14 @@ export function EquipmentMaintenance() {
                 <Card>
                     <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
                         <Typography variant="h6" color="white">
-                            Equipment Maintenance
+                            Equipment Maintenance History
                         </Typography>
                     </CardHeader>
                     <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                                 <tr>
-                                    {["Equipment ID", "Equipment", "type", "date",""].map((el) => (
+                                    {["Equipment ID", "Equipment", "type", "date","cost",""].map((el) => (
                                         <th
                                             key={el}
                                             className="border-b border-r border-blue-gray-50 py-3 px-5 text-left last:border-r-0 bg-gray-800"
@@ -218,6 +218,11 @@ export function EquipmentMaintenance() {
                                                             {handleDateDisplay(equipment.date)}
                                                         </Typography>
                                                 </td>
+                                                <td className={className}>
+                                                    <Typography className="text-xs font-semibold text-blue-gray-600">
+                                                        $ {equipment.cost}
+                                                    </Typography>
+                                                </td>
                                                 <td className={className + "items-center text-center"}>
                                                     <DropdownMenu options={options(equipment.id)} />
                                                 </td>
@@ -233,7 +238,7 @@ export function EquipmentMaintenance() {
                             <DialogBody>
                                 <Input
                                     type="text"
-                                    placeholder="Insert Cost"
+                                    placeholder="Edit Maintenance Cost"
                                     value={cost}
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -271,4 +276,4 @@ export function EquipmentMaintenance() {
     );
 }
 
-export default EquipmentMaintenance;
+export default MaintenanceHistory;
