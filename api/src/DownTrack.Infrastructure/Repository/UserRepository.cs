@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
     public async Task<User> GetByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.Users.
-                        FirstOrDefaultAsync(u => u.Id == elementId.ToString());
+                        FirstOrDefaultAsync(u => u.Id == elementId);
         if (user is null)
             throw new Exception($"Error searching user: {elementId}");
 
@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
     public async Task DeleteByIdAsync(int elementId, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.Users.
-                        FirstOrDefaultAsync(u => u.Id == elementId.ToString());
+                        FirstOrDefaultAsync(u => u.Id == elementId);
 
         if (user is null)
             throw new Exception($"Error deleting user: {elementId}");

@@ -128,7 +128,7 @@ public class IdentityService : IIdentityService
 
             var savedUser = await _identityManager.CreateUserAsync(user, userDto.Password);
 
-            await _identityManager.AddRoles(savedUser.Id, userDto.UserRole);
+            await _identityManager.AddRoles(savedUser.Id.ToString(), userDto.UserRole);
 
             await _unitOfWork.CompleteAsync();
 

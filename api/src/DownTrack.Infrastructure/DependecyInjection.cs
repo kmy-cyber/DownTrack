@@ -42,8 +42,8 @@ public static class DependencyInjection
         services.AddAuth(configuration);
 
         // Identity configuration
-        services.AddIdentityCore<User>()
-               .AddRoles<IdentityRole>() // Adds support for roles
+        services.AddIdentity<User,Role>()
+               //.AddRoles<IdentityRole>() // Adds support for roles
                .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
                .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
 
