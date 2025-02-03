@@ -5,4 +5,5 @@ namespace DownTrack.Application.IServices.Statistics;
 public interface ITechnicianStatisticsService
 {
     Task<TechnicianStatisticsDto> GetStatisticsByTechnician(int technicianId);
+    Task<PerformanceTechnicianDto> GetPerformanceByTechnician(int technicianId);
 }

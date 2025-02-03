@@ -32,6 +32,14 @@ public class StatisticsController : ControllerBase
     }
 
     [HttpGet]
+    [Route("Performance_Technician")]
+    public async Task<ActionResult<PerformanceTechnicianDto>> GetPerformanceByTechnician(int technicianId)
+    {
+        var statistics = await _statisticsServices.TechnicianStatisticsService. GetPerformanceByTechnician(technicianId);
+        return Ok(statistics);
+    }
+
+    [HttpGet]
     [Route("Receptor")]
     public async Task<ActionResult<ReceptorStatisticsDto>> GetStatisticsByReceptor(int receptorId)
     {
