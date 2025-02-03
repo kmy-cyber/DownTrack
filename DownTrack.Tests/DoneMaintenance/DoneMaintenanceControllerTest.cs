@@ -160,7 +160,7 @@ public class DoneMaintenanceControllerTests
         int maintenanceId = 999;
 
         A.CallTo(() => _fakeQueryService.GetByIdAsync(maintenanceId))
-            .Returns(Task.FromResult<GetDoneMaintenanceDto>(null));
+            .Returns(Task.FromResult<GetDoneMaintenanceDto>(null!));
 
         // Act
         var result = await _controller.GetDoneMaintenanceById(maintenanceId);

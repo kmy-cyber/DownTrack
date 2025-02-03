@@ -100,7 +100,7 @@ public class AuthenticationControllerTests
         };
 
         A.CallTo(() => _fakeIdentityService.LoginUserAsync(loginDto))
-            .Returns(Task.FromResult<string>(null));
+            .Returns(Task.FromResult<string>(null!));
 
         // Act
         var result = await _controller.LoginUser(loginDto);

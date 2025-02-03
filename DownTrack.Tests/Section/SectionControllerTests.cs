@@ -104,7 +104,7 @@ public class SectionControllerTests
         int sectionId = 1;
         GetSectionDto? nullSection = null;
         A.CallTo(() => _fakeQueryService.GetByIdAsync(sectionId))
-            .Returns(Task.FromResult(nullSection));
+            .Returns(Task.FromResult(nullSection!));
 
         // Act
         var result = await _controller.GetUserById(sectionId);
@@ -137,7 +137,7 @@ public class SectionControllerTests
         // Arrange
         string sectionName = "TestSection";
         GetSectionDto? nullSection = null;
-        A.CallTo(() => _fakeQueryService.GetSectionByNameAsync(sectionName)).Returns(Task.FromResult(nullSection));
+        A.CallTo(() => _fakeQueryService.GetSectionByNameAsync(sectionName)).Returns(Task.FromResult(nullSection!));
 
         // Act
         var result = await _controller.GetSectionByName(sectionName);

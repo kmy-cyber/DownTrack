@@ -108,7 +108,7 @@ public class DepartmentControllerTests
         int departmentId = 1;
         GetDepartmentDto? nullDepartment = null;
         A.CallTo(() => _fakeQueryService.GetByIdAsync(departmentId))
-            .Returns(Task.FromResult(nullDepartment));
+            .Returns(Task.FromResult(nullDepartment!));
 
         // Act
         var result = await _controller.GetDepartmentById(departmentId);
