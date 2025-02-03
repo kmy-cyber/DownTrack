@@ -505,7 +505,7 @@ export function Reports() {
         currentY = logoY - 30;
 
         // Título del reporte
-        page.drawText("Reporte Oficial: DownTrack", {
+        page.drawText("Official Report: DownTrack", {
             x: margin,
             y: currentY,
             size: titleFontSize,
@@ -516,15 +516,15 @@ export function Reports() {
         currentY -= titleFontSize + 15;
 
         // Línea de fecha y emisor
-        const reportDate = new Date().toLocaleDateString();
-        page.drawText(`Fecha: ${reportDate}`, {
+        const reportDate = new Date().toLocaleDateString('en-US');
+        page.drawText(`Date: ${reportDate}`, {
             x: margin,
             y: currentY,
             size: fontSize,
             font_bold,
             color: textColor,
         });
-        page.drawText(`Emitido por: ${user.name}`, {
+        page.drawText(`Issued by: ${user.name}`, {
             x: width - margin - 150,
             y: currentY,
             size: fontSize,
@@ -535,7 +535,7 @@ export function Reports() {
         currentY -= fontSize + 50;
 
         // Nombre de la tabla
-        page.drawText(`Datos de ${reportType}`, {
+        page.drawText(`Data from ${reportType}`, {
             x: margin,
             y: currentY,
             size: headerFontSize,
@@ -907,7 +907,7 @@ export function Reports() {
                                 </tbody>
                             </table>
                             <Button
-                                color="blue"
+                                color="gray"
                                 onClick={handleExportPDF}
                                 className="mt-4"
                             >
