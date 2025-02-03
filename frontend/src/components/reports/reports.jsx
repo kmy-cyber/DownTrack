@@ -323,7 +323,7 @@ export function Reports() {
     const generateInventoryStatusReport = async () => {
         try {
             const response = await api(
-                `/Equipment/GetPaged?PageNumber=1&PageSize=10`,
+                `/Equipment/GetPaged?PageNumber=1&PageSize=1000`,
             );
             const dataResponse = await response.json();
             console.log(dataResponse.items)
