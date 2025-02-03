@@ -44,10 +44,6 @@ export function Reports() {
             ? [
                   { value: "inventory-status", label: "Inventory Status" },
                   {
-                      value: "staff-effectiveness",
-                      label: "Staff Effectiveness",
-                  },
-                  {
                       value: "last-year-decommissions",
                       label: "Last Year Decommissions",
                   },
