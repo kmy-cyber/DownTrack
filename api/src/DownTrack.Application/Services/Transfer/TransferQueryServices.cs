@@ -45,4 +45,12 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
                                         
     }
 
+    public async Task<PagedResultDto<GetTransferDto>> GetTransferByReceptorId(PagedRequestDto paged,int receptorId)
+    {
+        var queryTransfer = _unitOfWork.GetRepository<Transfer>()
+                                             .GetAllByItems(t=> t.EquipmentReceptorId== receptorId);
+        
+        return await GetPagedResultByQueryAsync(paged,queryTransfer);
+    }
+
 }
