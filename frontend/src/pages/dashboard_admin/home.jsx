@@ -1,45 +1,109 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Typography,
     Card,
     CardHeader,
     CardBody,
-    IconButton,
-    Menu,
-    MenuHandler,
-    MenuList,
-    MenuItem,
-    Avatar,
-    Tooltip,
-    Progress,
 } from "@material-tailwind/react";
-import {
-    EllipsisVerticalIcon,
-    ArrowUpIcon,
-    PlusIcon,
-} from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/components/cards";
 import { StatisticsChart } from "@/components/charts";
-import {
-    statisticsCardsData,
-    statisticsChartsData,
-    projectsTableData,
-    ordersOverviewData,
-} from "@/data";
+import { CustomPieChart} from "@/components/charts/CustomPieChart";
+import CustomBarChart from "@/components/charts/customBarChart";
 import { chartsConfig } from "@/configs";
 import { CheckCircleIcon, ClockIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import { Business, HomeWorkRounded} from '@mui/icons-material';
+import api from "@/middlewares/api";
 
 export function Home() {
+
+    const [currentItems, setCurrentItems] = useState([]);
+    const [dataRole, setDataRole] = useState([]);
+    const [dataDepartmentSections, setDataDepartmentSections] = useState([]);
+
+    useEffect(() => {
+        fetchStatistics();
+    }, []);
+
+    
+    const colors = {
+        barFill: '#34495E',  
+        barFillSecondary: '#000000', 
+    };
+
+    const fetchStatistics = async () => {
+        try {
+            const response = await api(`/Statistics/Admin`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            
+            setCurrentItems(data);
+            initDataRole(data.rolesStatistics);
+            setDataDepartmentSections(transformData(data));
+        } catch (error) {
+            console.error("Error fetching departments:", error);
+            setCurrentItems([   ]);
+        }
+    };
+
+    const initDataRole = (rolesStatistics) => {
+        setDataRole([
+            { name: 'Administrators', value: rolesStatistics.Administrator , color: '#34495E'},
+            { name: 'Section Managers', value: rolesStatistics.SectionManager, color:'#34495E'  },
+            { name: 'Technicians', value: rolesStatistics.Technician , color:'#34495E' },
+            { name: 'Shipping Supervisors', value: rolesStatistics.ShippingSupervisor, color:'#34495E' },
+            { name: 'Receptors', value: rolesStatistics.EquipmentReceptor, color:'#34495E' },
+            { name: 'Directors', value: rolesStatistics.Director, color:'#34495E' },    
+        ]);
+    }
+
+    const transformData = (data) => {
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+    
+        const combinedData = {};
+    
+        for (const [key, value] of Object.entries(data.departmentsByMonth)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            if (!combinedData[name]) {
+                combinedData[name] = { name, departments: 0, sections: 0 };
+            }
+            combinedData[name].departments = value;
+        }
+    
+        for (const [key, value] of Object.entries(data.sectionsByMonth)) {
+            const [month, year] = key.split('-');
+            const monthName = months[parseInt(month) - 1];
+            const name = `${monthName}-${year.substring(2)}`;
+        
+            if (!combinedData[name]) {
+                combinedData[name] = { name, departments: 0, sections: 0 };
+            }
+            combinedData[name].sections = value;
+        }
+
+        console.log(Object.values(combinedData));
+    
+        return Object.values(combinedData);
+    }
+
     return (
         <div className="mt-12">
-        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
 
             <StatisticsCard
                 color= "gray" 
                 key= "Employees"
-                title= "Employees"
-                value = "VALUE"
+                title= "Employees   "
+                value = {currentItems.numberEmployee}
                 icon={React.createElement(UserGroupIcon, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -54,8 +118,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Sections"
-                title= "Sections"
-                value = "VALUE"
+                title= "Sections  "
+                value = {currentItems.numberSections}
                 icon={React.createElement(Business, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -70,8 +134,8 @@ export function Home() {
             <StatisticsCard
                 color= "gray" 
                 key= "Department"
-                title= "Department"
-                value = "Value"
+                title= "Department   "
+                value = {currentItems.numberDepartments}
                 icon={React.createElement(HomeWorkRounded, {
                 className: "w-6 h-6 text-white",
                 })}
@@ -85,8 +149,7 @@ export function Home() {
 
 
         </div>
-        <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-
+        {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
             <StatisticsChart
                 key ="Added last month"
                 color ="white"
@@ -191,7 +254,50 @@ export function Home() {
                 }
             />
 
+        </div> */}
+
+        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-2 p-4">
+            <Card className="border border-blue-gray-100 shadow-sm">
+                <CardHeader variant="gradient" color="white" floated={false} shadow={false}>
+                    Employees by role
+                </CardHeader>
+                <CardBody className="px-6 pt-0">
+                <Typography variant="h6" color="blue-gray">
+                    <CustomPieChart data={dataRole} width={5000} height={5000} />
+                </Typography>
+                {/* <Typography variant="small" className="font-normal text-blue-gray-600">
+                    {description}
+                </Typography> */}
+                </CardBody>
+                {/* {footer && (
+                <CardFooter className="border-t border-blue-gray-50 px-6 py-5">
+                    {footer}
+                </CardFooter>
+                )} */}
+            </Card>
+            
+            <Card className="border border-blue-gray-100 shadow-sm">
+                <CardHeader variant="gradient" color="white" floated={false} shadow={false}>
+                    Departments and Sections per Month
+                </CardHeader>
+                <CardBody className="px-6 pt-0">
+                <Typography variant="h6" color="blue-gray">
+                    <CustomBarChart data={dataDepartmentSections} colors={colors} dataKey1="departments" dataKey2="sections" />
+                </Typography>
+                {/* <Typography variant="small" className="font-normal text-blue-gray-600">
+                    {description}
+                </Typography> */}
+                </CardBody>
+                {/* {footer && (
+                <CardFooter className="border-t border-blue-gray-50 px-6 py-5">
+                    {footer}
+                </CardFooter>
+                )} */}
+            </Card>
         </div>
+
+
+
         </div>
     );
 }

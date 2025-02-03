@@ -111,13 +111,13 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet("active equipment")]
-    public async Task<IActionResult> GetActiveEquipment ([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetActiveEquipment([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentQueryService.GetActiveEquipment(paged);
-        
-        return Ok (result);
+
+        return Ok(result);
     }
 
     [HttpGet("SearchByName")]
@@ -135,11 +135,34 @@ public class EquipmentController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _equipmentQueryService.GetPagedEquipmentsByNameAndSectionManagerAsync(paged, equipmentName,sectionManagerId);
+        var result = await _equipmentQueryService.GetPagedEquipmentsByNameAndSectionManagerAsync(paged, equipmentName, sectionManagerId);
 
         return Ok(result);
     }
-    
+
+    [HttpGet("Equipment_With_More_Than_Three_Maintenances_In_Last_Year")]
+    public async Task<IActionResult> GetPagedEquipmentWithMoreThan3Maintenances([FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetPagedEquipmentsWith3MaintenancesAsync(paged);
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("Get_Transferred_Equipments_By_DepartmentId")]
+
+    public async Task<IActionResult> GetTransferredEquipmentsByDepartment([FromQuery] PagedRequestDto paged, int departmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetTransferredEquipmentsByDepartmentAsync(paged, departmentId);
+
+        return Ok(result);
+
+    }
 
     #endregion
 

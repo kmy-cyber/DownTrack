@@ -13,13 +13,15 @@ import { UserIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";   
 import { Pagination } from '@mui/material';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
+import DropdownMenu from "@/components/DropdownMenu";
+import { DeleteForeverOutlined, EditAttributes, EditNoteOutlined, ModeEditOutline } from "@mui/icons-material";
 
-    export function TablesDepartment() {
+
+
+export function TablesDepartment() {
         const [isLoading, setIsLoading] = useState(true);
-        const[alertMessage, setAlertMessage] = useState('');
-        const [alertType, setAlertType] = useState('success');
 
         const [totalPages, setTotalPages] = useState(0);
         const [currentItems, setCurrentItems] = useState([]);
@@ -34,7 +36,20 @@ import api from "@/middlewares/api";
             sectionName: "",
         });
     
-        // TODO: Connect with backend and replace static values
+        const options =(dpt, key) => [
+            { 
+                label: 'Edit',
+                className: 'text-green-500 h-5 w-5', 
+                icon: EditNoteOutlined,
+                action: () => editDepartment(dpt, key)
+            },
+            { 
+                label: 'Delete',
+                className: 'text-red-500 h-5 w-5', 
+                icon: DeleteForeverOutlined,
+                action: () => deleteDepartment(dpt.id, dpt.sectionId)
+            },
+        ];
 
         useEffect(() => {
             fetchDepartments(1);
@@ -42,7 +57,7 @@ import api from "@/middlewares/api";
 
         const handlePageChange = async (event, newPage) => {
             setCurrentPage(newPage);
-            await fetchEmployees(newPage);
+            await fetchDepartments(newPage);
         };
     
         const fetchDepartments = async (page) => {
@@ -111,21 +126,17 @@ import api from "@/middlewares/api";
             }
             else
             {
-                setAlertMessage('Delete completed successfully');
-                setAlertType('success');
+                toast.success('Delete completed successfully');
                 setCurrentItems(currentItems.filter(d => d.id !== id));
             }
             } catch (error) {
-                setAlertMessage('Error deleting department:');
-                setAlertType('error');
+                toast.error('Error deleting department:');
                 console.error("Error deleting department:", error);
             }
         };
     
         return (
             <>
-                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-
                 { onEdit &&
                     <EditDepartmentForm 
                         departmentData={dptData} 
@@ -146,14 +157,14 @@ import api from "@/middlewares/api";
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                             <tr>
-                                {[ "name","section"].map((el) => (
+                                {[ "name","section", ""].map((el) => (
                                 <th
                                     key={el}
-                                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                    className="border-b border-r border-blue-gray-50 py-3 px-5 text-center last:border-r-0 bg-gray-800 border-collapse"
                                 >
                                     <Typography
-                                    variant="small"
-                                    className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                        variant="small"
+                                        className="text-[11px] font-extrabold uppercase text-white"
                                     >
                                     {el}
                                     </Typography>
@@ -167,65 +178,28 @@ import api from "@/middlewares/api";
                                 const className = `py-3 px-5 ${
                                     key === currentItems.length - 1
                                     ? ""
-                                    : "border-b border-blue-gray-50"
+                                    : "border-blue-gray-50 border-b text-center"
                                 }`;
     
                                 return (
                                     <tr key={dept.name}>
                                     <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                    <div>
-                                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                                        <Typography className="text-xs font-semibold text-center text-blue-gray-600">
                                         {dept.name}
                                         </Typography>
-                                    </div>
-                                    </div>
                                     </td>
                                     <td className={className}>
-                                        <div className="flex items-center gap-4">
-                                        <div>
-                                            <Typography
-                                            variant="small"
-                                            color="blue-gray"
-                                            className="font-semibold"
-                                            >
-                                            {dept.sectionName}
-                                            </Typography>
-                                        </div>
-                                        </div>
+                                        <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-semibold text-center"
+                                        >
+                                        {dept.sectionName}
+                                        </Typography>
                                     </td>
-                                    
-                                    <td className={className}>
-                                        <div className="flex items-center gap-4">
-                                            <div 
-                                                className="flex items-center gap-1"
-                                                onClick={() => editDepartment(dept, key)}
-                                            >
-                                                <Typography
-                                                    as="a"
-                                                    href="#"
-                                                    className="text-xs font-semibold text-green-600"
-                                                    >
-                                                    Edit
-                                                </Typography>
-                                                <PencilIcon className="w-3 text-green-600"/>
-                                            </div>
-                                        
-                                            <div 
-                                                className="flex items-center gap-1"
-                                                onClick={() => deleteDepartment(dept.id, dept.sectionId)}
-                                            >
-                                                <Typography
-                                                    as="a"
-                                                    href="#"
-                                                    className="text-xs font-semibold text-red-600"
-                                                    >
-                                                    Delete
-                                                </Typography>
-                                                <TrashIcon className="w-3 text-red-600"/>
-                                            </div>
-                                        </div>
-                                    </td>
+                                        <td className={className + "items-center text-center"}>
+                                                <DropdownMenu options={options(dept,key)} />
+                                        </td>
                                     </tr>
                                 );
                                 }
@@ -239,6 +213,7 @@ import api from "@/middlewares/api";
                         page={currentPage}
                         onChange={handlePageChange}
                         className="self-center"
+                        size= "large"
                     />
                     </div>
                 }

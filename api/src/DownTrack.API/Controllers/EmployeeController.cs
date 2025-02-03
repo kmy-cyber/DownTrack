@@ -49,6 +49,7 @@ public class EmployeeController : ControllerBase
         return Ok(result);
 
     }
+
     [HttpGet]
     [Route("GET_ALL")]
 
@@ -92,6 +93,8 @@ public class EmployeeController : ControllerBase
         return Ok(supervisor);
     }
 
+    
+
     #endregion
 
     #region Command
@@ -104,6 +107,7 @@ public class EmployeeController : ControllerBase
 
         return Ok("Employee deleted successfully");
     }
+
     
     #endregion
 

@@ -3,47 +3,56 @@ import {
     CardHeader,
     CardBody,
     Typography,
-    Avatar,
-    Chip,
-    Tooltip,
-    Progress,
 } from "@material-tailwind/react";
-import {EditUserForm} from "@/pages/dashboard_admin/edit_user";
-import { UserIcon } from "@heroicons/react/24/outline";
-import { sectionData } from "@/data/sections-data";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
-import EditSectionForm from "./edit_section";
+import SectionCreationForm from "./create_section";
 import { Pagination } from '@mui/material';
-import MessageAlert from "@/components/Alert_mssg/alert_mssg";
+import { toast } from "react-toastify";
 import api from "@/middlewares/api";
+import DropdownMenu  from "@/components/DropdownMenu";
+import { DeleteForeverOutlined, EditNoteOutlined } from "@mui/icons-material";
     
     export function TablesSection() {
         const [isLoading, setIsLoading] = useState(true);
-        const[alertMessage, setAlertMessage] = useState('');
-        const [alertType, setAlertType] = useState('success');
 
         const [totalPages, setTotalPages] = useState(0);
+        const [currentItems, setCurrentItems] = useState([]);
         const [currentPage, setCurrentPage] = useState(1);
 
         const [onEdit, setOnEdit] = useState(false);
         const [keyEdit, setKeyEdit] = useState(0);
-        const [currentItems, setCurrentItems] = useState([]);
         const [sectData, setSectData] = useState({
             id: "",
             name: "",
+            sectionManagerUserName: "",
         });
-    
-        // funcion que se llama cada vez que se cambia de pagina
-        const handlePageChange = async (event, newPage) => {
-            setCurrentPage(newPage);
-            await fetchEmployees(newPage);
-        };
 
+        const options =(sect, key) => [
+            { 
+                label: 'Edit',
+                className: 'text-green-500 h-5 w-5', 
+                icon: EditNoteOutlined,
+                action: () => editSection(sect, key)
+            },
+            { 
+                label: 'Delete',
+                className: 'text-red-500 h-5 w-5', 
+                icon: DeleteForeverOutlined,
+                action: () => deleteSection(sect.id)
+            },
+        ];
+    
+        
         useEffect(() => {
             fetchSections(1);
         }, []);
         
+        const handlePageChange = async (event, newPage) => {
+            setCurrentPage(newPage);
+            await fetchSections(newPage);
+        };
+
         const fetchSections = async (page) => {
             try {
                 const response = await api(`/Section/GetPaged?PageNumber=${page}&PageSize=10`, {
@@ -74,6 +83,7 @@ import api from "@/middlewares/api";
             setSectData({
                 id: "",
                 name: "",
+                sectionManagerUserName: "",
             });
 
             setOnEdit(false);
@@ -90,9 +100,7 @@ import api from "@/middlewares/api";
             setSectData({
                 name: "",
                 id: "",
-                description: "",
-                status: "",
-                priority: ""
+                sectionManagerUserName : "",
             });
             setOnEdit(false);
             setKeyEdit(0);
@@ -105,32 +113,28 @@ import api from "@/middlewares/api";
                 method: 'DELETE',
             });
             if (!response.ok) {
-                setAlertMessage('Failed to delete section');
-                setAlertType('error');
+                toast.error('Failed to delete section');
                 throw new Error('Failed to delete section');
             }
             else
             {
-                setAlertMessage('Delete completed successfully');
-                setAlertType('success');
+                toast.success('Delete completed successfully');
                 setCurrentItems(currentItems.filter(s => s.id !== id));
             }
             } catch (error) {
-                setAlertMessage('Error deleting section:');
-                setAlertType('error');
+                toast.error('Error deleting section:');
                 console.error("Error deleting section:", error);
             }
         };
     
         return (
             <>
-                <MessageAlert message={alertMessage} type={alertType} onClose={() => setAlertMessage('')} />
-
                 { onEdit &&
-                    <EditSectionForm 
+                    <SectionCreationForm 
                         sectionData={sectData} 
                         onSave={handleSave} 
                         onCancel={cancelEditSection} 
+                        formType="edit"
                     />
                 }
     
@@ -146,14 +150,14 @@ import api from "@/middlewares/api";
                         <table className="w-full min-w-[640px] table-auto">
                             <thead>
                             <tr>
-                                {[ "Name"].map((el) => (
+                                {[ "Name", "Section Manager", ""].map((el) => (
                                 <th
                                     key={el}
-                                    className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                                    className="border-b border-r border-blue-gray-50 py-3 px-5 text-center last:border-r-0 bg-gray-800 border-collapse"
                                 >
                                     <Typography
                                     variant="small"
-                                    className="text-[11px] font-bold uppercase text-blue-gray-400"
+                                    className="text-[11px] font-extrabold uppercase text-white"
                                     >
                                     {el}
                                     </Typography>
@@ -167,51 +171,24 @@ import api from "@/middlewares/api";
                                 const className = `py-3 px-5 ${
                                     key === currentItems.length - 1
                                     ? ""
-                                    : "border-b border-blue-gray-50"
+                                    : "border-b border-blue-gray-50 text-center"
                                 }`;
     
                                 return (
                                     <tr key={sect.name}>
                                     <td className={className}>
-                                    <div className="flex items-center gap-4">
-                                    <div>
-                                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                                        <Typography className="text-xs font-semibold text-center text-blue-gray-600">
                                         {sect.name}
-                                        </Typography>
-                                    </div>
-                                    </div>
+                                        </Typography>                        
                                     </td>
                                     <td className={className}>
-                                        <div className="flex items-center gap-4">
-                                            <div 
-                                                className="flex items-center gap-1"
-                                                onClick={() => editSection(sect, key)}
-                                            >
-                                                <Typography
-                                                    as="a"
-                                                    href="#"
-                                                    className="text-xs font-semibold text-green-600"
-                                                    >
-                                                    Edit
-                                                </Typography>
-                                                <PencilIcon className="w-3 text-green-600"/>
-                                            </div>
-                                        
-                                            <div 
-                                                className="flex items-center gap-1"
-                                                onClick={() => deleteSection(sect.id)}
-                                            >
-                                                <Typography
-                                                    as="a"
-                                                    href="#"
-                                                    className="text-xs font-semibold text-red-600"
-                                                    >
-                                                    Delete
-                                                </Typography>
-                                                <TrashIcon className="w-3 text-red-600"/>
-                                            </div>
-                                        </div>
+                                        <Typography className="text-xs font-semibold text-center text-blue-gray-600">
+                                        {sect.sectionManagerUserName}
+                                        </Typography>
                                     </td>
+                                        <td className={className + "items-center text-center"}>
+                                            <DropdownMenu options={options(sect,key)} />
+                                        </td>
                                     </tr>
                                 );
                                 }

@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
@@ -22,6 +23,22 @@ public class EvaluationQueryServices : GenericQueryServices<Evaluation,GetEvalua
 
     public override Expression<Func<Evaluation, object>>[] GetIncludes()=> includes;
 
+    public async Task<PagedResultDto<GetEvaluationDto>>  GetEvaluationByTechnicianIdAsync(PagedRequestDto paged,int technicianId)
+    {
+        var evaluationsQuery = _unitOfWork.GetRepository<Evaluation>()
+                                     .GetAllByItems(ev=> ev.TechnicianId == technicianId);
+        
+        return await GetPagedResultByQueryAsync(paged,evaluationsQuery);
+    }
 
+    
+    public async Task<PagedResultDto<GetEvaluationDto>>  GetEvaluationByTechnicianUsernameAsync(PagedRequestDto paged,string username)
+    {
+        var evaluationsQuery = _unitOfWork.GetRepository<Evaluation>()
+                                     .GetAllByItems(ev=> ev.Technician.UserName == username);
+                                     
+        return await GetPagedResultByQueryAsync(paged,evaluationsQuery);
+        
+    }
 
 }

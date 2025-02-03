@@ -67,7 +67,7 @@ public class EquipmentDecommissioningController : ControllerBase
     [HttpGet]
     [Route("GET_ALL")]
 
-    public async Task<ActionResult<IEnumerable<EquipmentDecommissioningDto>>> GetAllEquipmentDecommissioning()
+    public async Task<ActionResult<IEnumerable<GetEquipmentDecommissioningDto>>> GetAllEquipmentDecommissioning()
     {
         var results = await _equipmentDecommissioningQueryServices.ListAsync();
 
@@ -77,19 +77,32 @@ public class EquipmentDecommissioningController : ControllerBase
 
     [HttpGet]
     [Route("Get_Paged_All")]
-    public async Task<IActionResult> GetPagedAllDepartmentInSection ([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedAllDepartmentInSection([FromQuery] PagedRequestDto paged)
     {
-         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _equipmentDecommissioningQueryServices.GetAllPagedResultAsync(paged);
-        
-        return Ok (result);
+
+        return Ok(result);
 
     }
-    
+
+    [HttpGet]
+    [Route("Get_Paged_Accepted")]
+    public async Task<IActionResult> GetPagedAcceptedDecommissioning([FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentDecommissioningQueryServices.GetAcceptedDecommissioning(paged);
+
+        return Ok(result);
+
+    }
+
+
     [HttpGet]
     [Route("{equipmentDecommissioningId}/GET_BY_ID")]
-    public async Task<ActionResult<EquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
+    public async Task<ActionResult<GetEquipmentDecommissioningDto>> GetEquipmentDecommissioningById(int equipmentDecommissioningId)
     {
         var result = await _equipmentDecommissioningQueryServices.GetByIdAsync(equipmentDecommissioningId);
 
@@ -110,6 +123,38 @@ public class EquipmentDecommissioningController : ControllerBase
 
         return Ok(result);
 
+    }
+
+    [HttpGet]
+    [Route("Get_Decomissions_By_Equipment_Id/{equipmentId}")]
+    public async Task<ActionResult<GetEquipmentDecommissioningDto>> GetDecomissionsByEquipmentId(int equipmentId)
+    {
+        var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionByEquipmentIdAsync(equipmentId);
+
+        return Ok(decomissions);
+    }
+
+    [HttpGet]
+    [Route("Get_Decomissions_Last_Year")]
+
+    public async Task<IActionResult> GetDecomissionsLastYear([FromQuery] PagedRequestDto paged)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionLastYear(paged);
+
+        return Ok(decomissions);
+    }
+
+    [HttpGet]
+    [Route("Get_Decomissions_Accepted_By_Receptor")]
+    public async Task<IActionResult> GetDecomissionsByReceptor([FromQuery] PagedRequestDto paged, int receptorId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        
+        var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionByReceptorAsync(paged, receptorId);
+
+        return Ok(decomissions);
     }
 
     #endregion

@@ -10,13 +10,15 @@ import {
   DialogBody,
   DialogFooter,
   Button,
-  IconButton
+  IconButton,
 } from "@material-tailwind/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import api from "@/middlewares/api";
 import { useAuth } from "@/context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 export function Evaluation() {
   const { user } = useAuth();
@@ -40,7 +42,9 @@ export function Evaluation() {
 
   const fetchTechnicians = async (pageNumber) => {
     try {
-      const response = await api(`/Technician/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`);
+      const response = await api(
+        `/Technician/GetPaged?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+      );
       if (response.ok) {
         const data = await response.json();
         setTechnicians(data.items);
@@ -54,7 +58,9 @@ export function Evaluation() {
   const searchUserName = async (userName) => {
     if (!userName.trim()) return;
     try {
-      const response = await api(`/Employee/GetByUsername?employeeUsername=${userName}`);
+      const response = await api(
+        `/Technician/Search_By_UserName?username=${userName}`,
+      );
       if (response.ok) {
         const usr = await response.json();
         setTechnicians([usr]);
@@ -92,16 +98,16 @@ export function Evaluation() {
       const evaluationData = {
         technicianId: selectedTechnician.id,
         sectionManagerId: user.id,
-        description: evaluation // Usa el valor de evaluación seleccionado
+        description: evaluation, // Usa el valor de evaluación seleccionado
       };
 
       try {
         const response = await api("/Evaluation/POST", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(evaluationData)
+          body: JSON.stringify(evaluationData),
         });
 
         if (response.ok) {
@@ -148,38 +154,49 @@ export function Evaluation() {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
+    <div className="mb-8 mt-12 flex flex-col gap-8">
       <Card className="shadow-xl">
-        <CardHeader variant="gradient" color="gray" className="p-6">
-          <div className="flex justify-between items-center">
+        <CardHeader
+          variant="gradient"
+          color="gray"
+          className="flex items-center justify-between p-6"
+        >
+          {isSearching && (
+            <IconButton
+              variant="text"
+              size="sm"
+              color="white"
+              onClick={resetSearch}
+              className="mr-4"
+            >
+              <ArrowLeftIcon className="h-5 w-5" />
+            </IconButton>
+          )}
+          <div className="flex items-center justify-between">
             <Typography variant="h5" color="white" className="font-semibold">
               Evaluate Technicians
             </Typography>
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                color="white"
-                label="Search by Username"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="text-white text-sm"
-              />
-              {isSearching && (
-                <Button color="red" onClick={resetSearch} className="text-sm">
-                  Reset
-                </Button>
-              )}
-            </div>
           </div>
         </CardHeader>
-        <CardBody className="overflow-x-scroll p-0 mt-5">
+        <CardBody>
+          <div className="mb-4">
+            <Input
+              label="Search by Username"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full"
+            />
+          </div>
           <table className="w-full min-w-[640px] table-auto">
             <thead className="bg-gray-800 text-sm text-white">
               <tr>
-                <th className="px-6 py-3 border-b text-center">Technician</th>
-                <th className="px-6 py-3 border-b text-center">Specialty</th>
-                <th className="px-6 py-3 border-b text-center">Years of Experience</th>
+                <th className="border-b px-6 py-3 text-center">Technician</th>
+                <th className="border-b px-6 py-3 text-center">User Name</th>
+                <th className="border-b px-6 py-3 text-center">Specialty</th>
+                <th className="border-b px-6 py-3 text-center">
+                  Years of Experience
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -187,44 +204,42 @@ export function Evaluation() {
                 <tr
                   key={technician.id}
                   onClick={() => openEvaluationModal(technician)}
-                  className="hover:bg-gray-100 cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-100"
                 >
-                  <td className="px-6 py-3 border-b text-center">{technician.userName}</td>
-                  <td className="px-6 py-3 border-b text-center">{technician.specialty}</td>
-                  <td className="px-6 py-3 border-b text-center">{technician.expYears}</td>
+                  <td className="border-b px-6 py-3 text-center">
+                    {technician.name}
+                  </td>
+                  <td className="border-b px-6 py-3 text-center">
+                    {technician.userName}
+                  </td>
+                  <td className="border-b px-6 py-3 text-center">
+                    {technician.specialty}
+                  </td>
+                  <td className="border-b px-6 py-3 text-center">
+                    {technician.expYears}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           {technicians.length === 0 && (
-            <Typography className="text-center text-sm font-medium text-blue-gray-600 mt-4">
+            <Typography className="mt-4 text-center text-sm font-medium text-blue-gray-600">
               No technicians found.
             </Typography>
           )}
         </CardBody>
       </Card>
 
-      {!isSearching && (
-        <div className="flex justify-center mt-4 space-x-2">
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </IconButton>
-          <Typography variant="small" className="self-center">
-            Page {currentPage} of {totalPages}
-          </Typography>
-          <IconButton
-            variant="outlined"
-            color="gray"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </IconButton>
+      {/* Paginación */}
+      {!isSearching && totalPages > 1 && (
+        <div className="mt-4 flex justify-center">
+          <Stack spacing={2}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={(_, value) => setCurrentPage(value)}
+            />
+          </Stack>
         </div>
       )}
 
@@ -233,14 +248,14 @@ export function Evaluation() {
         open={openModal}
         handler={() => setOpenModal(false)}
         size="sm"
-        className="p-6 shadow-lg rounded-xl bg-white transition-transform transform scale-95 duration-300 ease-out"
+        className="scale-95 transform rounded-xl bg-white p-6 shadow-lg transition-transform duration-300 ease-out"
       >
-        <DialogHeader className="text-lg font-semibold text-gray-800 border-b-2 border-gray-300 pb-4">
+        <DialogHeader className="border-b-2 border-gray-300 pb-4 text-lg font-semibold text-gray-800">
           Evaluate Technician
         </DialogHeader>
         <DialogBody>
-          <div className="text-center mb-6">
-            <Typography variant="h6" className="text-gray-700 font-medium">
+          <div className="mb-6 text-center">
+            <Typography variant="h6" className="font-medium text-gray-700">
               {selectedTechnician?.userName}
             </Typography>
           </div>
@@ -259,11 +274,24 @@ export function Evaluation() {
               />
               <label
                 htmlFor="good"
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer transform transition-all duration-300 ${evaluation === "Good" ? "bg-green-500 border-green-700 scale-110" : "bg-white border-gray-500"}`}
+                className={`flex h-8 w-8 transform cursor-pointer items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  evaluation === "Good"
+                    ? "scale-110 border-green-700 bg-green-500"
+                    : "border-gray-500 bg-white"
+                }`}
               >
-                <span className={`w-5 h-5 rounded-full ${evaluation === "Good" ? "bg-white" : "bg-transparent"}`}></span>
+                <span
+                  className={`h-5 w-5 rounded-full ${
+                    evaluation === "Good" ? "bg-white" : "bg-transparent"
+                  }`}
+                ></span>
               </label>
-              <Typography variant="small" className="text-center mt-2 text-gray-600">Good</Typography>
+              <Typography
+                variant="small"
+                className="mt-2 text-center text-gray-600"
+              >
+                Good
+              </Typography>
             </div>
 
             <div className="flex flex-col items-center">
@@ -278,11 +306,24 @@ export function Evaluation() {
               />
               <label
                 htmlFor="regular"
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer transform transition-all duration-300 ${evaluation === "Regular" ? "bg-yellow-500 border-yellow-700 scale-110" : "bg-white border-gray-500"}`}
+                className={`flex h-8 w-8 transform cursor-pointer items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  evaluation === "Regular"
+                    ? "scale-110 border-yellow-700 bg-yellow-500"
+                    : "border-gray-500 bg-white"
+                }`}
               >
-                <span className={`w-5 h-5 rounded-full ${evaluation === "Regular" ? "bg-white" : "bg-transparent"}`}></span>
+                <span
+                  className={`h-5 w-5 rounded-full ${
+                    evaluation === "Regular" ? "bg-white" : "bg-transparent"
+                  }`}
+                ></span>
               </label>
-              <Typography variant="small" className="text-center mt-2 text-gray-600">Regular</Typography>
+              <Typography
+                variant="small"
+                className="mt-2 text-center text-gray-600"
+              >
+                Regular
+              </Typography>
             </div>
 
             <div className="flex flex-col items-center">
@@ -297,20 +338,41 @@ export function Evaluation() {
               />
               <label
                 htmlFor="bad"
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer transform transition-all duration-300 ${evaluation === "Bad" ? "bg-red-500 border-red-700 scale-110" : "bg-white border-gray-500"}`}
+                className={`flex h-8 w-8 transform cursor-pointer items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  evaluation === "Bad"
+                    ? "scale-110 border-red-700 bg-red-500"
+                    : "border-gray-500 bg-white"
+                }`}
               >
-                <span className={`w-5 h-5 rounded-full ${evaluation === "Bad" ? "bg-white" : "bg-transparent"}`}></span>
+                <span
+                  className={`h-5 w-5 rounded-full ${
+                    evaluation === "Bad" ? "bg-white" : "bg-transparent"
+                  }`}
+                ></span>
               </label>
-              <Typography variant="small" className="text-center mt-2 text-gray-600">Bad</Typography>
+              <Typography
+                variant="small"
+                className="mt-2 text-center text-gray-600"
+              >
+                Bad
+              </Typography>
             </div>
           </div>
         </DialogBody>
 
         <DialogFooter className="flex justify-between">
-          <Button color="indigo" onClick={saveEvaluation} className="hover:bg-indigo-600 px-20">
+          <Button
+            color="indigo"
+            onClick={saveEvaluation}
+            className="px-20 hover:bg-indigo-600"
+          >
             Accept
           </Button>
-          <Button color="red" onClick={() => setOpenModal(false)} className="hover:bg-red-600 px-20">
+          <Button
+            color="red"
+            onClick={() => setOpenModal(false)}
+            className="px-20 hover:bg-red-600"
+          >
             Cancel
           </Button>
         </DialogFooter>

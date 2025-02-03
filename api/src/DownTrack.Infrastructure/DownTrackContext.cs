@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 namespace DownTrack.Infrastructure;
-public class DownTrackContext : IdentityDbContext<User>
+public class DownTrackContext : IdentityDbContext<User,Role,int>
 {
 
   public DownTrackContext(DbContextOptions options) : base(options)
@@ -30,6 +30,16 @@ public class DownTrackContext : IdentityDbContext<User>
   {
     base.OnModelCreating(modelBuilder);
 
+    modelBuilder.Entity<User>(entity=>
+    {
+      entity.HasKey(e=> e.Id);
+    });
+
+    modelBuilder.Entity<Role>(entity=>
+    {
+      entity.HasKey(e=> e.Id);
+    });
+    
     // Employee Region
     modelBuilder.Entity<Employee>(entity =>
     {
@@ -39,10 +49,15 @@ public class DownTrackContext : IdentityDbContext<User>
                 .IsRequired();
       entity.Property(e => e.UserRole)
                 .IsRequired();
-
+      entity.Property(e=> e.Email)
+                  .IsRequired();
+      entity.Property(e => e.UserName)
+                .IsRequired();
+      entity.HasIndex(e => e.UserName)
+                .IsUnique();
       entity.HasIndex(e => e.Name);
       entity.HasIndex(e => e.UserRole);
-
+      
     });
 
 
@@ -96,6 +111,9 @@ public class DownTrackContext : IdentityDbContext<User>
                 .IsRequired();
       entity.HasIndex(s => s.Name)
                 .IsUnique();
+      entity.Property(s=>s.CreatedDate)
+            .IsRequired()
+            .HasColumnType("date");
 
       entity.HasOne(s => s.SectionManager)
                 .WithMany(sm => sm.Sections)
@@ -118,7 +136,11 @@ public class DownTrackContext : IdentityDbContext<User>
 
       entity.HasIndex(d => d.Name);
       entity.HasIndex(d => d.SectionId);
-
+      
+      entity.Property(d=>d.CreatedDate)
+            .IsRequired()
+            .HasColumnType("date");
+            
       entity.HasOne(d => d.Section)
               .WithMany(s => s.Departments)
               .HasForeignKey(d => d.SectionId)

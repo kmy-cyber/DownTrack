@@ -10,7 +10,7 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-node_modules
+node_modules/
 dist
 dist-ssr
 *.local

@@ -9,26 +9,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DownTrack.Application.Services;
 
+/// <summary>
+/// Handles queries related to equipment management, including paged queries and specific equipment retrieval.
+/// </summary>
 public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipmentDto>,
                                       IEquipmentQueryServices
 {
     private static readonly Expression<Func<Equipment, object>>[] includes =
                             { d => d.Department,
                               d => d.Department.Section };
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EquipmentQueryServices"/> class.
+    /// </summary>
+    /// <param name="unitOfWork">The unit of work.</param>
+    /// <param name="mapper">The AutoMapper mapper.</param>
     public EquipmentQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base(unitOfWork, mapper)
     {
 
     }
 
+    /// <summary>
+    /// Gets the includes expressions used for lazy loading.
+    /// </summary>
+    /// <returns>An array of Expression<Func<Equipment, object>> representing the includes.</returns>
     public override Expression<Func<Equipment, object>>[] GetIncludes() => includes;
 
 
+    /// <summary>
+    /// Retrieves paged equipment records by section manager ID asynchronously.
+    /// </summary>
+    /// <param name="paged">The paged request DTO.</param>
+    /// <param name="sectionManagerId">The ID of the section manager.</param>
+    /// <returns>A paged result DTO containing the queried equipment details.</returns>
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsBySectionManagerIdAsync(PagedRequestDto paged,
                                                                                                 int sectionManagerId)
     {
-        //check sectionManagerId es valid
 
+        // Validate section manager ID
         var checkSectionManager = await _unitOfWork.GetRepository<Employee>()
                                              .GetByIdAsync(sectionManagerId);
 
@@ -36,6 +55,7 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
             throw new Exception($"SectionManager with Id : {sectionManagerId} not exists");
 
 
+        // Query equipment related to the section manager
         var queryEquipment = _unitOfWork.GetRepository<Equipment>()
                                          .GetAllByItems(e => e.Department.Section.SectionManagerId == sectionManagerId);
 
@@ -43,11 +63,16 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
     }
 
+    /// <summary>
+    /// Retrieves paged equipment records by section ID asynchronously.
+    /// </summary>
+    /// <param name="paged">The paged request DTO.</param>
+    /// <returns>A paged result DTO containing the details of the equipment that belongs to a section.</returns>
+
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsBySectionIdAsync(PagedRequestDto paged
                                                                                             , int sectionId)
     {
         //check section exist
-
         var checkSection = await _unitOfWork.GetRepository<Section>()
                                              .GetByIdAsync(sectionId);
 
@@ -58,6 +83,12 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, queryEquipment);
     }
 
+    /// <summary>
+    /// Retrieves paged equipment records by department ID asynchronously.
+    /// </summary>
+    /// <param name="paged">The paged request DTO.</param>
+    /// <param name="departmentId">The ID of the department.</param>
+    /// <returns>A paged result DTO containing the queried equipment details.</returns>
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByDepartmentIdAsync(PagedRequestDto paged,
                                                                                             int departmentId)
     {
@@ -71,6 +102,13 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, queryEquipment);
     }
 
+
+    /// <summary>
+    /// Retrieves paged equipment records by sequipment name  asynchronously.
+    /// </summary>
+    /// <param name="paged">The paged request DTO.</param>
+    /// <param name="equipmentName">The name of the equipment.</param>
+    /// <returns>A paged result DTO containing the queried equipment details.</returns>
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAsync(PagedRequestDto paged,
                                                                                      string equipmentName)
     {
@@ -87,26 +125,85 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
-    
+    /// <summary>
+    /// Retrieves paged active equipment asynchronously.
+    /// </summary>
+    /// <param name="paged">The paged request DTO.</param>
+    /// <returns>A paged result DTO containing the queried equipment details.</returns>
+
     public async Task<PagedResultDto<GetEquipmentDto>> GetActiveEquipment(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
         IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>()
-                                                          .GetAllByItems(e=> e.Status == "Active")
-                                                          .Include(e=> e.Department)
-                                                          .Include(e=> e.Department.Section);
+                                                          .GetAllByItems(e => e.Status == "Active")
+                                                          .Include(e => e.Department)
+                                                          .Include(e => e.Department.Section);
 
-        var totalCount = await queryEquipment.CountAsync();
+        return await GetPagedResultByQueryAsync(paged, queryEquipment);
+    }
 
-        var items = await queryEquipment // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
+    /// <summary>
+    /// Retrieves paged equipment records by name and section manager ID asynchronously.
+    /// </summary>
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName, int sectionManagerId)
+    {
+        var includes = GetIncludes();
+        var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
+                                        .GetAllByItems(e => e.Name == equipmentName,
+                                                        e => e.Department.Section.SectionManagerId == sectionManagerId);
 
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
+    }
+
+    /// <summary>
+    /// Retrieves paged equipment records with more than 3 maintenances in the past year asynchronously.
+    /// </summary>
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged)
+    {
+        var oneYearAgo = DateTime.UtcNow.AddYears(-1);
+        var includes = GetIncludes();
+        var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
+                                        .GetAllByItems()
+                                        .Where(e => e.DoneMaintenances
+                                            .Count(m => m.Date >= oneYearAgo) > 3);
+
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
+    }
+
+    /// <summary>
+    /// Retrieves paged transferred equipment records by department ID asynchronously.
+    /// </summary>
+    public async Task<PagedResultDto<GetEquipmentDto>> GetTransferredEquipmentsByDepartmentAsync(PagedRequestDto paged, int departmentId)
+    {
+        var query = _unitOfWork.GetRepository<Transfer>()
+                                .GetAllByItems(t => t.TransferRequest.ArrivalDepartmentId == departmentId)
+                                .Include(t => t.TransferRequest)
+                                    .ThenInclude(tr => tr.Equipment)
+                                        .ThenInclude(e => e.Department)
+                                            .ThenInclude(d => d.Section);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+                            .Skip((paged.PageNumber - 1) * paged.PageSize)
+                            .Take(paged.PageSize)
+                            .Select(t => new GetEquipmentDto
+                            {
+                                Id = t.TransferRequest.Equipment.Id,
+                                Name = t.TransferRequest.Equipment.Name,
+                                Type = t.TransferRequest.Equipment.Type,
+                                Status = t.TransferRequest.Equipment.Status,
+                                DateOfadquisition = t.TransferRequest.Equipment.DateOfadquisition,
+                                DepartmentId = t.TransferRequest.Equipment.DepartmentId,
+                                SectionId = t.TransferRequest.Equipment.Department.SectionId, // Evitar null
+                                DepartmentName = t.TransferRequest.Equipment.Department.Name,
+                                SectionName = t.TransferRequest.Equipment.Department.Section.Name
+                            })
+                            .ToListAsync();
 
         return new PagedResultDto<GetEquipmentDto>
         {
-            Items = items?.Select(_mapper.Map<GetEquipmentDto>) ?? Enumerable.Empty<GetEquipmentDto>(),
+            Items = items,
             TotalCount = totalCount,
             PageNumber = paged.PageNumber,
             PageSize = paged.PageSize,
@@ -116,18 +213,7 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
             PreviousPageUrl = paged.PageNumber > 1
                         ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
                         : null
-
         };
     }
-                                                                                        
 
-    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName,int sectionManagerId)
-    {
-        var includes= GetIncludes();
-        var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
-                                        .GetAllByItems(e=>e.Name==equipmentName,
-                                                        e=> e.Department.Section.SectionManagerId == sectionManagerId);
-        
-        return await GetPagedResultByQueryAsync(paged,equipmentQuery);
-    }
 }

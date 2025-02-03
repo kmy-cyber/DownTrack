@@ -105,6 +105,40 @@ public class DoneMaintenanceController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("Get_Maintenances_By_Technician_Status")]
+    public async Task<IActionResult> GetMaintenancesByTechnicianStatus ([FromQuery]PagedRequestDto paged,int technicianId, bool IsFinish)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByTechnicianStatusAsync(paged,technicianId,IsFinish);
+
+        return Ok(maintenance);
+    }
+
+    
+    [HttpGet]
+    [Route("Get_Maintenances_By_Technician_UserName")]
+    public async Task<IActionResult> GetMaintenancesByTechnicianUserName([FromQuery] PagedRequestDto paged, string technicianUserName){
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByTechnicianUserNameAsync(paged, technicianUserName);
+
+        return Ok(maintenance);
+    }
+
+    [HttpGet]
+    [Route("Get_Maintenances_By_EquipmentId")]
+    public async Task<IActionResult> GetMaintenancesByEquipmentId ([FromQuery]PagedRequestDto paged,int equipmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByEquipmentIdAsync(paged,equipmentId);
+
+        return Ok(maintenance);
+    }
+
+    
     #endregion
 
    

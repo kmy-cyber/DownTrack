@@ -11,4 +11,6 @@ public interface IEmployeeQueryServices : IGenericQueryService<Employee,GetEmplo
 
     Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName);
 
+
+
 }

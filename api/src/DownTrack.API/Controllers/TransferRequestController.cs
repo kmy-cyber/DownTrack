@@ -36,9 +36,9 @@ public class TransferRequestController : ControllerBase
 
     public async Task<IActionResult> UpdateTransferRequest(TransferRequestDto transferRequest)
     {
-        var result = await _transferRequestCommandService.UpdateAsync(transferRequest);
+        var transfer = await _transferRequestCommandService.UpdateAsync(transferRequest);
 
-        return Ok(result);
+        return Ok(transfer);
     }
 
     [HttpDelete]
@@ -58,13 +58,13 @@ public class TransferRequestController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedUser([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedTransfer([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _transferRequestQueryService.GetAllPagedResultAsync(paged);
+        var transfer = await _transferRequestQueryService.GetAllPagedResultAsync(paged);
         
-        return Ok (result);
+        return Ok (transfer);
         
     }
 
@@ -73,12 +73,12 @@ public class TransferRequestController : ControllerBase
 
     public async Task<ActionResult<GetTransferRequestDto>> GetTransferRequestById(int transferRequestId)
     {
-        var result = await _transferRequestQueryService.GetByIdAsync(transferRequestId);
+        var transfer = await _transferRequestQueryService.GetByIdAsync(transferRequestId);
 
-        if (result == null)
+        if (transfer == null)
             return NotFound($"TransferRequest with ID {transferRequestId} not found");
 
-        return Ok(result);
+        return Ok(transfer);
 
     }
     
@@ -89,10 +89,22 @@ public class TransferRequestController : ControllerBase
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var result = await _transferRequestQueryService.GetPagedRequestsofArrivalDepartmentAsync(receptorId, paged);
+        var transfer = await _transferRequestQueryService.GetPagedRequestsofArrivalDepartmentAsync(receptorId, paged);
 
-        return Ok(result);
+        return Ok(transfer);
 
+    }
+
+    [HttpGet]
+    [Route("Get_TransferRequest_By_EquipmentId")]
+
+    public async Task<IActionResult> GetTransferRequestByEquipmentId ([FromQuery] PagedRequestDto paged, int equipmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var transfers = await _transferRequestQueryService.GetTransferRequestByEquipmentIdAsync (paged,equipmentId);
+
+        return Ok(transfers);
     }
 
 

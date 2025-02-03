@@ -31,7 +31,7 @@ public class EvaluationController : ControllerBase
         return Ok("Evaluation added successfully");
     }
 
-     [HttpPut]
+    [HttpPut]
     [Route("PUT")]
 
     public async Task<IActionResult> UpdateEvaluation(EvaluationDto evaluation)
@@ -71,16 +71,39 @@ public class EvaluationController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedEvaluation ([FromQuery]PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedEvaluation([FromQuery] PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _evaluationQueryService.GetAllPagedResultAsync(paged);
+
+        return Ok(result);
+
+    }
+
+
+    [HttpGet]
+    [Route("Get_Evaluation_By_TechnicianId")]
+    public async Task<IActionResult> GetEvaluationByTechnicianId([FromQuery] PagedRequestDto paged, int technicianId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var evaluations = await _evaluationQueryService.GetEvaluationByTechnicianIdAsync(paged, technicianId);
+
+        return Ok(evaluations);
+    }
+
+    [HttpGet]
+    [Route("Get_Evaluation_By_Technician_UserName")]
+    public async Task<IActionResult> GetEvaluationByTechnicianUsername([FromQuery] PagedRequestDto paged, string username)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
         
-        return Ok (result);
-        
+        var evaluations = await _evaluationQueryService.GetEvaluationByTechnicianUsernameAsync(paged,username);
+
+        return Ok(evaluations);
     }
 
     #endregion
-   
+
 }
