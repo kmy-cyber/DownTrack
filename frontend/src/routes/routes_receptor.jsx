@@ -1,20 +1,13 @@
 import {
     HomeIcon,
-    UserCircleIcon,
-    TableCellsIcon,
-    InformationCircleIcon,
-    ServerStackIcon,
-    RectangleStackIcon,
-    FireIcon,
-    ArrowPathIcon,
-    UserGroupIcon,
-    ArrowDownCircleIcon,
     InboxArrowDownIcon,
-    ArrowDownRightIcon,
     ArrowRightCircleIcon,
     TrashIcon,
+    NewspaperIcon,
 } from "@heroicons/react/24/solid";
 import { Home, EquipmentRegisterForm, EquipmentTransferTable, EquipmentDisposalTable} from "@/pages/dashboard_receptor";
+import Reports from "@/components/reports/reports";
+import { NewspaperOutlined } from "@mui/icons-material";
 
 const typeUser = 1;
 const icon = {
@@ -48,6 +41,12 @@ export const routesReceptor = [
         name: "Equipment Disposal",
         path: "/equipment_disposal",
         element: <EquipmentDisposalTable />,
+        },
+        {
+            icon: <NewspaperIcon {...icon} />,
+            name: "Reports",
+            path: "/reports",
+            element: <Reports />,
         },
     ],
 },];
