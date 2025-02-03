@@ -91,7 +91,10 @@ public class AutomapperProfile : Profile
         CreateMap<Transfer, TransferDto>();
         CreateMap<Transfer, GetTransferDto>()
             .ForMember(dest => dest.ShippingSupervisorName, opt => opt.MapFrom(src=> src.ShippingSupervisor!.Name))
-            .ForMember(dest => dest.EquipmentReceptorUserName, opt => opt.MapFrom(src=> src.EquipmentReceptor!.User!.UserName));
+            .ForMember(dest => dest.EquipmentReceptorUserName, opt => opt.MapFrom(src=> src.EquipmentReceptor!.User!.UserName))
+            .ForMember(dest => dest.EquipmentId, opt => opt.MapFrom(src=> src.TransferRequest.EquipmentId))
+            .ForMember(dest => dest.EquipmentName, opt => opt.MapFrom(src=> src.TransferRequest.Equipment.Name));
+        
         
         CreateMap<DepartmentDto, Department>();
         CreateMap<Department, DepartmentDto>()

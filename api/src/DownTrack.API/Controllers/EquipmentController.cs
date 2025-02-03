@@ -151,6 +151,19 @@ public class EquipmentController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("Get_Transferred_Equipments_By_DepartmentId")]
+
+    public async Task<IActionResult> GetTransferredEquipmentsByDepartment([FromQuery] PagedRequestDto paged, int departmentId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentQueryService.GetTransferredEquipmentsByDepartmentAsync(paged, departmentId);
+
+        return Ok(result);
+
+    }
+
     #endregion
 
 

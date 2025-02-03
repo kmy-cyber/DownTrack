@@ -91,7 +91,7 @@ export function Home() {
       <div className="mb-12 grid gap-x-3 gap-y-10 xl:grid-cols-3">
         <StatisticsCard
           color="gray"
-          title="Equipment:"
+          title="Inventory:"
           value={numberOfEquipments - acceptedDecommissions}
           icon={<CubeIcon className="h-6 w-6" />}
           footer={<Typography>Active Equipment</Typography>}
@@ -142,9 +142,9 @@ export function Home() {
               { name: "Decommissioned", data: decommissionData.values },
             ],
             options: {
-              colors: ["#2C3E50"],
+              colors: ["#E94E77"],
               stroke: { lineCap: "round" },
-              markers: { size: 5, colors: ["#FF0000"] },
+              markers: { size: 5, colors: ["#E94E77"] },
               xaxis: { categories: decommissionData.months },
             },
           }}
@@ -162,7 +162,7 @@ export function Home() {
               { name: "Transfers", data: transfersData.values },
             ],
             options: {
-              colors: ["#27AE60"],
+              colors: ["#FF9800"],
               stroke: { lineCap: "round" },
               markers: { size: 5, colors: ["#FF9800"] },
               xaxis: { categories: transfersData.months },

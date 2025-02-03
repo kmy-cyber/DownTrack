@@ -17,7 +17,7 @@ public class DoneMaintenanceController : ControllerBase
     {
         _doneMaintenanceQueryService = doneMaintenanceQueryServices;
         _doneMaintenanceCommandService = doneMaintenanceCommandServices;
-
+        
     }
 
     #region Command
@@ -82,24 +82,24 @@ public class DoneMaintenanceController : ControllerBase
     [HttpGet]
     [Route("GetPaged")]
 
-    public async Task<IActionResult> GetPagedDoneMaintenance([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetPagedDoneMaintenance ([FromQuery]PagedRequestDto paged)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
         var result = await _doneMaintenanceQueryService.GetAllPagedResultAsync(paged);
-
-        return Ok(result);
-
+        
+        return Ok (result);
+        
     }
 
     [HttpGet]
     [Route("GetAllMaintenanceByTechnicianId")]
 
-
+    
     public async Task<ActionResult<GetDoneMaintenanceDto>> GetDoneMaintenanceByTechnicianId(
-                                                            [FromQuery] PagedRequestDto paged, int technicianId)
+                                                            [FromQuery]PagedRequestDto paged,int technicianId)
     {
-        var result = await _doneMaintenanceQueryService.GetByTechnicianIdAsync(paged, technicianId);
+        var result = await _doneMaintenanceQueryService.GetByTechnicianIdAsync(paged,technicianId);
 
         return Ok(result);
 
@@ -107,15 +107,16 @@ public class DoneMaintenanceController : ControllerBase
 
     [HttpGet]
     [Route("Get_Maintenances_By_Technician_Status")]
-    public async Task<IActionResult> GetMaintenancesByTechnicianStatus([FromQuery] PagedRequestDto paged, int technicianId, bool IsFinish)
+    public async Task<IActionResult> GetMaintenancesByTechnicianStatus ([FromQuery]PagedRequestDto paged,int technicianId, bool IsFinish)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByTechnicianStatusAsync(paged, technicianId, IsFinish);
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByTechnicianStatusAsync(paged,technicianId,IsFinish);
 
         return Ok(maintenance);
     }
 
+    
     [HttpGet]
     [Route("Get_Maintenances_By_Technician_UserName")]
     public async Task<IActionResult> GetMaintenancesByTechnicianUserName([FromQuery] PagedRequestDto paged, string technicianUserName){
@@ -128,17 +129,17 @@ public class DoneMaintenanceController : ControllerBase
 
     [HttpGet]
     [Route("Get_Maintenances_By_EquipmentId")]
-    public async Task<IActionResult> GetMaintenancesByEquipmentId([FromQuery] PagedRequestDto paged, int equipmentId)
+    public async Task<IActionResult> GetMaintenancesByEquipmentId ([FromQuery]PagedRequestDto paged,int equipmentId)
     {
         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByEquipmentIdAsync(paged, equipmentId);
+        var maintenance = await _doneMaintenanceQueryService.GetMaintenanceByEquipmentIdAsync(paged,equipmentId);
 
         return Ok(maintenance);
     }
 
-
+    
     #endregion
 
-
+   
 }

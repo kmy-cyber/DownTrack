@@ -9,10 +9,12 @@ import {
     Select,
     Option,
     Input,
+    IconButton,
 } from "@material-tailwind/react";
 import api from "@/middlewares/api";
 import { convertDateFormat } from "@/utils/changeDateFormat";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { DocumentIcon } from "@heroicons/react/24/solid";
 
 export function Reports() {
     const [reportType, setReportType] = useState("");
@@ -26,9 +28,11 @@ export function Reports() {
     const [equipments, setEquipments] = useState([]);
     const [selectedSection1, setSelectedSection1] = useState("");
     const [selectedSection2, setSelectedSection2] = useState("");
+    const [selectedTechnician, setSelectedTechnician] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [columnWidths, setColumnWidths] = useState([]);
     const { user } = useAuth();
+    console.log(selectedSection1);
 
     const userRole = user?.role?.toLowerCase() || "";
     const isDirector = userRole === "director";
@@ -39,7 +43,7 @@ export function Reports() {
     const reportOptions = [
         ...(isDirector
             ? [
-                  { value: "inventory", label: "Inventory Status" },
+                  { value: "inventory-status", label: "Inventory Status" },
                   {
                       value: "staff-effectiveness",
                       label: "Staff Effectiveness",
@@ -49,6 +53,10 @@ export function Reports() {
                       label: "Last Year Decommissions",
                   },
                   {
+                      value: "equipment-to-be-replaced",
+                      label: "Equipment to be Replaced",
+                  },
+                  {
                       value: "transfers-between-sections",
                       label: "Transfer Between Sections",
                   },
@@ -56,7 +64,7 @@ export function Reports() {
                       value: "technician-evaluations",
                       label: "Technician Evaluations",
                   },
-                  { value: "equipments-sent-to", label: "Equipments Sent To" },
+                  { value: "equipment-sent-to", label: "Equipments Sent To" },
               ]
             : []),
         ...(isDirector || isManager
@@ -102,7 +110,7 @@ export function Reports() {
             reportType === "technician-interventions"
         ) {
             fetchTechnicians();
-        } else if (reportType === "equipments-sent-to") {
+        } else if (reportType === "equipment-sent-to") {
             fetchSections();
         } else if (reportType === "maintenances-performed") {
             fetchEquipmentsHistory();
@@ -148,9 +156,17 @@ export function Reports() {
 
     const fetchTechnicians = async () => {
         try {
-            const response = await fetch("/api/technicians");
+            const response = await api(
+                `/Technician/GetPaged?PageNumber=1&PageSize=99999`,
+            );
             const data = await response.json();
-            setTechnicians(data);
+            setTechnicians((prevTechnician) => {
+                if (!data.items.some((t) => t.id === selectedTechnician)) {
+                    setSelectedTechnician("");
+                }
+                console.log(`TECHNICIAN: ${selectedTechnician}`);
+                return data.items;
+            });
         } catch (error) {
             console.error("Error fetching technicians:", error);
         }
@@ -195,8 +211,8 @@ export function Reports() {
                 Date: handleDateDisplay(item.date),
                 Cost: item.cost,
             }));
-            
-            setColumnWidths([100, 100, 100, 100, 100])
+
+            setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching maintenances performed:", error);
@@ -207,9 +223,18 @@ export function Reports() {
     const generateTransfersBetweenSectionsReport = async () => {
         try {
             const response = await api(
-                `/Transfer/Get_Transfers_Between_Sections?section1Id=${selectedSection1}&section2Id=${selectedSection2}`,
+                `/Transfer/Get_Transfer_Between_Sections?PageNumber=1&PageSize=10000&sectionId1=${selectedSection1}&sectionId2=${selectedSection2}`,
             );
-            const data = await response.json();
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EId: item.equipmentId,
+                EName: item.equipmentName,
+                Receptor: item.equipmentReceptorUserName,
+                Supervisor: item.shippingSupervisorName,
+                Date: item.date.split("T")[0],
+            }));
+            setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching transfers between sections:", error);
@@ -220,22 +245,150 @@ export function Reports() {
     const generateTechnicianEvaluationsReport = async () => {
         try {
             const response = await api(
-                `/Evaluation/Get_Evaluations_By_Technician?technicianId=${extraField}`,
+                `/Evaluation/Get_Evaluation_By_TechnicianId?PageNumber=1&PageSize=9999&technicianId=${selectedTechnician}`,
             );
-            const data = await response.json();
+            const dataResponse = await response.json();
+            const data = dataResponse.items.map((item) => ({
+                Username: item.technicianUserName,
+                Evaluator: item.sectionManagerUserName,
+                Evaluation: item.description,
+            }));
+            setColumnWidths([100, 100, 100]);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching technician evaluations:", error);
         }
     };
 
+    // Función para generar el reporte de equipos a ser reemplazados
+    const generateToBeReplacedEquipmentReport = async () => {
+        try {
+            const response = await api(
+                `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                Id: item.id,
+                Name: item.name,
+                Type: item.type,
+                AcqDate: item.dateOfadquisition.split("T")[0],
+                Department: item.departmentName,
+                Section: item.sectionName,
+            }));
+            setColumnWidths([30, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de bajas de los equipos en el ultimo año
+    const generateLastYearDecommissionsReport = async () => {
+        try {
+            const response = await api(
+                `/EquipmentDecommissioning/Get_Decomissions_Last_Year?PageNumber=1&PageSize=100000`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EId: item.equipmentId,
+                EName: item.equipmentName,
+                EType: item.equipmentType,
+                Technician: item.technicianUserName,
+                Receptor: item.receptorUserName,
+                Cause: item.cause,
+                Date: item.date.split("T")[0],
+            }));
+            setColumnWidths([30, 80, 70, 100, 80, 75, 100]);
+            setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de intervenciones de un técnico
+    const generateTechnicianInterventionsReport = async () => {
+        try {
+            const response = await api(
+                `/DoneMaintenance/Get_Maintenances_By_Technician_Status?PageNumber=1&PageSize=99999&technicianId=${selectedTechnician}&IsFinish=true`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EquipmentId: item.equipmentId,
+                EquipmentName: item.equipmentName,
+                UserName: item.technicianUserName,
+                Cost: item.cost,
+                Date: item.date.split("T")[0],
+            }));
+            setColumnWidths([100, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte del estado del inventario
+    const generateInventoryStatusReport = async () => {
+        try {
+            const response = await api(
+                `/Equipment/GetPaged?PageNumber=1&PageSize=1000`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EId: item.id,
+                EquipmentName: item.name,
+                SectionName: item.sectionName,
+                Status: item.status,
+                Department: item.departmentName,
+                Date: item.dateOfadquisition.split("T")[0],
+            }));
+            setColumnWidths([50, 100, 100, 70, 100]);
+            setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de las bajas tecnicas
+    const generateDecommissionsReport = async () => {
+        try {
+            const response = await api(
+                `/EquipmentDecommissioning/Get_Paged_Accepted?PageNumber=1&PageSize=100000`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EId: item.equipmentId,
+                EName: item.equipmentName,
+                Type: item.equipmentType,
+                Technician: item.technicianUserName,
+                Receptor: item.receptorUserName,
+                Cause: item.cause,
+                Date: item.date.split("T")[0],
+            }));
+            setColumnWidths([30, 100, 60, 100, 80, 60, 100]);
+            setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
     // Función para generar el reporte de equipos enviados a un departamento
-    const generateEquipmentsSentToReport = async () => {
+    const generateEquipmentSentToReport = async () => {
         try {
             const response = await api(
                 `/Equipment/Get_Equipments_Sent_To?departmentId=${selectedDepartment}`,
             );
             const data = await response.json();
+            console.log(data);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching equipments sent to:", error);
@@ -261,17 +414,32 @@ export function Reports() {
     // Función principal para generar el reporte según el tipo seleccionado
     const generateReport = async () => {
         switch (reportType) {
+            case "inventory-status":
+                await generateInventoryStatusReport();
+                break;
+            case "last-year-decommissions":
+                await generateLastYearDecommissionsReport();
+                break;
+            case "decommissions":
+                await generateDecommissionsReport();
+                break;
             case "maintenances-performed":
                 await generateMaintenancesPerformedReport();
                 break;
             case "transfers-between-sections":
                 await generateTransfersBetweenSectionsReport();
                 break;
+            case "equipment-to-be-replaced":
+                await generateToBeReplacedEquipmentReport();
+                break;
             case "technician-evaluations":
                 await generateTechnicianEvaluationsReport();
                 break;
-            case "equipments-sent-to":
-                await generateEquipmentsSentToReport();
+            case "technician-interventions":
+                await generateTechnicianInterventionsReport();
+                break;
+            case "equipment-sent-to":
+                await generateEquipmentSentToReport();
                 break;
             case "maintenances-performed-on-equipment":
                 await generateMaintenancesPerformedOnEquipmentReport();
@@ -341,7 +509,7 @@ export function Reports() {
         currentY = logoY - 30;
 
         // Título del reporte
-        page.drawText("Reporte Oficial: DownTrack", {
+        page.drawText("Official Report: DownTrack", {
             x: margin,
             y: currentY,
             size: titleFontSize,
@@ -352,15 +520,15 @@ export function Reports() {
         currentY -= titleFontSize + 15;
 
         // Línea de fecha y emisor
-        const reportDate = new Date().toLocaleDateString();
-        page.drawText(`Fecha: ${reportDate}`, {
+        const reportDate = new Date().toLocaleDateString("en-US");
+        page.drawText(`Date: ${reportDate}`, {
             x: margin,
             y: currentY,
             size: fontSize,
             font_bold,
             color: textColor,
         });
-        page.drawText(`Emitido por: ${user.name}`, {
+        page.drawText(`Issued by: ${user.name}`, {
             x: width - margin - 150,
             y: currentY,
             size: fontSize,
@@ -371,7 +539,7 @@ export function Reports() {
         currentY -= fontSize + 50;
 
         // Nombre de la tabla
-        page.drawText(`Datos de ${reportType}`, {
+        page.drawText(`Data from ${reportType}`, {
             x: margin,
             y: currentY,
             size: headerFontSize,
@@ -506,7 +674,7 @@ export function Reports() {
             y: margin - 20,
             size: fontSize,
             font,
-            color: rgb(0.90, 0.90, 0.90),
+            color: rgb(0.9, 0.9, 0.9),
         });
 
         // Guardar el PDF
@@ -547,8 +715,20 @@ export function Reports() {
                 <CardHeader
                     variant="gradient"
                     color="gray"
-                    className="mb-4 p-6"
-                >
+                    className="flex items-center justify-between p-6"
+                    >
+                    {Array.isArray(reportData) && reportData.length > 0 && (
+                        <IconButton
+                            variant="text"
+                            size="sm"
+                            color="white"
+                            onClick={handleExportPDF}
+                            className="mr-4"
+                        >
+                            <DocumentIcon className="h-5 w-5"/>
+                            PDF
+                        </IconButton>
+                    )}
                     <Typography variant="h6" color="white">
                         Report Generator
                     </Typography>
@@ -628,7 +808,9 @@ export function Reports() {
                             <Select
                                 label="Select Technician"
                                 value={extraField}
-                                onChange={(value) => setExtraField(value)}
+                                onChange={(value) =>
+                                    setSelectedTechnician(value)
+                                }
                             >
                                 {technicians.map((technician) => (
                                     <Option
@@ -641,7 +823,7 @@ export function Reports() {
                             </Select>
                         ) : null}
 
-                        {reportType === "equipments-sent-to" && (
+                        {reportType === "equipment-sent-to" && (
                             <>
                                 <Select
                                     label="Select Section"
@@ -742,13 +924,6 @@ export function Reports() {
                                     ))}
                                 </tbody>
                             </table>
-                            <Button
-                                color="blue"
-                                onClick={handleExportPDF}
-                                className="mt-4"
-                            >
-                                Export to PDF
-                            </Button>
                         </div>
                     )}
                 </CardBody>

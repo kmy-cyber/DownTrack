@@ -99,7 +99,27 @@ public class TransferController : ControllerBase
         
     }
 
+    [HttpGet]
+    [Route("Get_Transfer_Between_Sections")]
 
+    public async Task<ActionResult<GetTransferDto>> GetTransferBetweenSections([FromQuery]PagedRequestDto paged,int sectionId1, int sectionId2)
+    {
+        var result = await _transferQueryService.GetTransferBetweenSections(paged,sectionId1,sectionId2);
+
+        return Ok(result);
+
+    }
+
+    [HttpGet]
+    [Route("Get_Transfer_By_ReceptorId")]
+
+    public async Task<ActionResult<GetTransferDto>> GetTransferByReceptorId([FromQuery]PagedRequestDto paged,int receptorId)
+    {
+        var result = await _transferQueryService.GetTransferByReceptorId(paged,receptorId);
+
+        return Ok(result);
+
+    }
     #endregion
 
 
