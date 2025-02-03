@@ -254,14 +254,16 @@ const TechnicianComparison = () => {
                     <Typography variant="h6" className="mb-4">
                         Select Technicians
                     </Typography>
-                    <div className="overflow-x-auto max-h-96">
+                    <div className="overflow-x-auto max-h-72">
+                        {" "}
+                        {/* Añadir desplazamiento horizontal y altura limitada */}
                         <table className="min-w-full table-auto border-collapse text-sm text-gray-900">
-                            <thead className="bg-gray-800 text-white">
+                            <thead className="bg-gray-200 text-gray-700">
                                 <tr>
-                                    <th className="border-b px-6 py-3 text-center">
+                                    <th className="border-b px-4 py-2 text-left">
                                         Technician
                                     </th>
-                                    <th className="border-b px-6 py-3 text-center">
+                                    <th className="border-b px-4 py-2 text-center">
                                         Select
                                     </th>
                                 </tr>
@@ -269,11 +271,14 @@ const TechnicianComparison = () => {
                             <tbody className="bg-white">
                                 {technicians.length > 0 ? (
                                     technicians.map((technician) => (
-                                        <tr key={technician.id}>
-                                            <td className="border-b px-6 py-3 text-center">
+                                        <tr
+                                            key={technician.id}
+                                            className="hover:bg-gray-100"
+                                        >
+                                            <td className="border-b px-4 py-2 text-left">
                                                 {technician.userName}
                                             </td>
-                                            <td className="border-b px-6 py-3 text-center">
+                                            <td className="border-b px-4 py-2 text-center">
                                                 <Checkbox
                                                     checked={selectedTechnicians.includes(
                                                         technician.id,
@@ -291,7 +296,7 @@ const TechnicianComparison = () => {
                                     <tr>
                                         <td
                                             colSpan="2"
-                                            className="px-6 py-3 text-center"
+                                            className="px-4 py-2 text-center text-gray-500"
                                         >
                                             No technicians found
                                         </td>
