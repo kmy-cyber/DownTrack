@@ -88,7 +88,7 @@ public class DepartmentCommandServices : IDepartmentCommandServices
             bool existDepartment = await _unitOfWork.DepartmentRepository
                                     .ExistsByIdAndSectionAsync(dto.Id,dto.SectionId);
             if(existDepartment)
-                throw new ConflictException($"Department '{dto.Id}' does not exist in Section '{dto.SectionId}' ");
+                throw new Exception($"Department '{dto.Id}' does not exist in Section '{dto.SectionId}' ");
 
         }
             
