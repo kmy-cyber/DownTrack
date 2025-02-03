@@ -22,7 +22,7 @@ export function Home() {
   const fetchInventoryData = async () => {
     try {
       const response = await api(
-        "/Equipment/GetPaged?PageNumber=1&PageSize=99999"
+        "/Equipment/GetPaged?PageNumber=1&PageSize=99999",
       );
       if (!response.ok) throw new Error("Failed to fetch inventory");
       const data = await response.json();
@@ -37,12 +37,16 @@ export function Home() {
 
   const fetchDecommissionedData = async () => {
     try {
-      const response = await api("/EquipmentDecommissioning/GET_ALL");
+      // http://localhost:5217/api/EquipmentDecommissioning/Get_Paged_Accepted?PageNumber=1&PageSize=99999
+      const response = await api(
+        "/EquipmentDecommissioning/Get_Paged_Accepted?PageNumber=1&PageSize=99999",
+      );
       if (!response.ok) throw new Error("Failed to fetch decommissioned data");
       const data = await response.json();
-      const processedData = processDecommissionedData(data);
+      console.log(data.items);
+      const processedData = processDecommissionedData(data.items);
       setDecommissionedData(processedData);
-      setTotalDecommissions(data.length);
+      setTotalDecommissions(data.totalCount);
     } catch (err) {
       console.error("Error fetching decommissioned data:", err);
     }
@@ -66,13 +70,16 @@ export function Home() {
   };
 
   const processDecommissionedData = (data) => {
-    if (!Array.isArray(data) || data.length === 0) return { months: [], values: [] };
+    if (!Array.isArray(data) || data.length === 0)
+      return { months: [], values: [] };
 
     const decommissionedCount = {};
 
     data.forEach((item) => {
       const date = new Date(item.date);
-      const monthYear = `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`;
+      const monthYear = `${date.toLocaleString("default", {
+        month: "short",
+      })} ${date.getFullYear()}`;
 
       if (!decommissionedCount[monthYear]) {
         decommissionedCount[monthYear] = 0;
@@ -81,7 +88,7 @@ export function Home() {
     });
 
     const sortedData = Object.entries(decommissionedCount).sort(
-      ([a], [b]) => new Date(a) - new Date(b)
+      ([a], [b]) => new Date(a) - new Date(b),
     );
 
     // Devolvemos los datos formateados para el gráfico
@@ -115,10 +122,10 @@ export function Home() {
         />
         <StatisticsCard
           color="gray"
-          title="Proposed Decommissions"
+          title="Accepted Decommissions"
           value={totalDecommissions}
           icon={<MinusCircleIcon className="h-6 w-6"></MinusCircleIcon>}
-          footer={<Typography>Proposed Decommissions overall</Typography>}
+          footer={<Typography>Accepted Decommissions overall</Typography>}
         />
       </div>
 
@@ -131,14 +138,20 @@ export function Home() {
             data={inventoryData}
             colors={["#4A90E2", "#FFBB28", "#E94E77"]}
           />
+          <Typography variant="body2" color="blue-gray" className="mb-4">
+            This chart represents the distribution of the equipment. The
+            categories are: Active, Maintenance, and Inactive. Each segment of
+            the pie chart shows the percentage of equipment in each of these
+            states.
+          </Typography>
         </Card>
 
         {/* Nuevo gráfico de descomisiones */}
         <StatisticsChart
-          key="ProposedDecomissions"
+          key="AcceptedDecomissions"
           color="white"
-          title="Proposed Decommissions by Month"
-          description="This metric reflects the number of decommissioning proposals made each month."
+          title="Accepted Decommissions by Month"
+          description="This metric reflects the number of decommissioning proposals accepted each month. It helps track the decommissioning trend over time, providing insights into the equipment lifecycle."
           chart={{
             type: "line",
             height: 330,
