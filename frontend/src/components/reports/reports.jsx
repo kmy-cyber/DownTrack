@@ -32,13 +32,12 @@ export function Reports() {
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [columnWidths, setColumnWidths] = useState([]);
     const { user } = useAuth();
-    console.log(selectedSection1);
 
     const userRole = user?.role?.toLowerCase() || "";
     const isDirector = userRole === "director";
     const isManager = userRole === "sectionmanager";
     const isTechnician = userRole === "technician";
-    const isReceptor = userRole === "receptor";
+    const isReceptor = userRole === "equipmentreceptor";
 
     const reportOptions = [
         ...(isDirector
@@ -81,6 +80,18 @@ export function Reports() {
                   {
                       value: "maintenances-performed",
                       label: "Maintenances Performed",
+                  },
+              ]
+            : []),
+        ...(isReceptor
+            ? [
+                  {
+                      value: "decomissions-accepted-by-receptor",
+                      label: "Decomissions Accepted by Receptor",
+                  },
+                  {
+                      value: "transfers-by-receptor",
+                      label: "Transfers by Receptor",
                   },
               ]
             : []),
@@ -326,7 +337,6 @@ export function Reports() {
             }));
             setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -411,6 +421,59 @@ export function Reports() {
         }
     };
 
+    const generateDecomissionsAcceptedByReceptor = async () => {
+        try {
+            const response = await api(
+                `/EquipmentDecommissioning/Get_Decomissions_Accepted_By_Receptor?PageNumber=1&PageSize=1000&receptorId=${user.id}`,
+            );
+
+            const dataResponse = await response.json();
+
+            const data = dataResponse.items.map((item) => ({
+                EmitedBy: item.receptorUserName,
+                ID_Equipment: item.equipmentId,
+                Equipment: item.equipmentName,
+                Type: item.equipmentType,
+                Technician: item.technicianUserName,
+                Cause: item.cause,
+                Date: item.date.split("T")[0],
+            }));
+
+            setColumnWidths([100, 100, 100, 100, 100, 100, 100]);
+            setReportData(data);
+        } catch (error) {
+            console.error(
+                "Error fetching maintenances performed on equipment:",
+                error,
+            );
+        }
+    };
+
+    const generateTransfersByReceptor = async () => {
+        try {
+            const response = await api(
+                `/Transfer/Get_Transfer_By_ReceptorId?PageNumber=1&PageSize=1000&receptorId=${user.id}`,
+            );
+            const dataResponse = await response.json();
+
+            const data = dataResponse.items.map((item) => ({
+                Supervisor: item.shippingSupervisorName,
+                Receptor: item.equipmentReceptorUserName,
+                UserName: item.equipmentReceptorUserName,
+                Equipment: item.equipmentName,
+                Date: item.date.split("T")[0],
+            }));
+
+            setColumnWidths([100, 100, 100, 100, 100]);
+            setReportData(data);
+        } catch (error) {
+            console.error(
+                "Error fetching maintenances performed on equipment:",
+                error,
+            );
+        }
+    };
+
     // Función principal para generar el reporte según el tipo seleccionado
     const generateReport = async () => {
         switch (reportType) {
@@ -443,6 +506,12 @@ export function Reports() {
                 break;
             case "maintenances-performed-on-equipment":
                 await generateMaintenancesPerformedOnEquipmentReport();
+                break;
+            case "decomissions-accepted-by-receptor":
+                await generateDecomissionsAcceptedByReceptor();
+                break;
+            case "transfers-by-receptor":
+                await generateTransfersByReceptor();
                 break;
             default:
                 alert("Tipo de reporte no válido.");
@@ -716,7 +785,7 @@ export function Reports() {
                     variant="gradient"
                     color="gray"
                     className="flex items-center justify-between p-6"
-                    >
+                >
                     {Array.isArray(reportData) && reportData.length > 0 && (
                         <IconButton
                             variant="text"
@@ -725,7 +794,7 @@ export function Reports() {
                             onClick={handleExportPDF}
                             className="mr-4"
                         >
-                            <DocumentIcon className="h-5 w-5"/>
+                            <DocumentIcon className="h-5 w-5" />
                             PDF
                         </IconButton>
                     )}
@@ -765,7 +834,6 @@ export function Reports() {
                                 placeholder="Start Date"
                             />
                         </div>
-
                         {reportType === "transfers-between-sections" && (
                             <>
                                 <Select
@@ -802,7 +870,6 @@ export function Reports() {
                                 </Select>
                             </>
                         )}
-
                         {reportType === "technician-evaluations" ||
                         reportType === "technician-interventions" ? (
                             <Select
@@ -822,7 +889,6 @@ export function Reports() {
                                 ))}
                             </Select>
                         ) : null}
-
                         {reportType === "equipment-sent-to" && (
                             <>
                                 <Select
@@ -860,7 +926,6 @@ export function Reports() {
                                 </Select>
                             </>
                         )}
-
                         {reportType ===
                             "maintenances-performed-on-equipment" && (
                             <Select

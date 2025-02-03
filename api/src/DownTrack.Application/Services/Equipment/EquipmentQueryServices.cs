@@ -142,7 +142,9 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, queryEquipment);
     }
 
-
+    /// <summary>
+    /// Retrieves paged equipment records by name and section manager ID asynchronously.
+    /// </summary>
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName, int sectionManagerId)
     {
         var includes = GetIncludes();
@@ -153,7 +155,9 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
 
-
+    /// <summary>
+    /// Retrieves paged equipment records with more than 3 maintenances in the past year asynchronously.
+    /// </summary>
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged)
     {
         var oneYearAgo = DateTime.UtcNow.AddYears(-1);
@@ -166,6 +170,9 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
 
+    /// <summary>
+    /// Retrieves paged transferred equipment records by department ID asynchronously.
+    /// </summary>
     public async Task<PagedResultDto<GetEquipmentDto>> GetTransferredEquipmentsByDepartmentAsync(PagedRequestDto paged, int departmentId)
     {
         var query = _unitOfWork.GetRepository<Transfer>()
@@ -188,7 +195,7 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
                                 Status = t.TransferRequest.Equipment.Status,
                                 DateOfadquisition = t.TransferRequest.Equipment.DateOfadquisition,
                                 DepartmentId = t.TransferRequest.Equipment.DepartmentId,
-                                SectionId = t.TransferRequest.Equipment.Department.SectionId , // Evitar null
+                                SectionId = t.TransferRequest.Equipment.Department.SectionId, // Evitar null
                                 DepartmentName = t.TransferRequest.Equipment.Department.Name,
                                 SectionName = t.TransferRequest.Equipment.Department.Section.Name
                             })
