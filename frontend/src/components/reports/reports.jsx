@@ -49,6 +49,10 @@ export function Reports() {
                       label: "Last Year Decommissions",
                   },
                   {
+                    value: "equipment-to-be-replaced",
+                    label: "Equipment to be Replaced"
+                  },
+                  {
                       value: "transfers-between-sections",
                       label: "Transfer Between Sections",
                   },
@@ -195,8 +199,8 @@ export function Reports() {
                 Date: handleDateDisplay(item.date),
                 Cost: item.cost,
             }));
-            
-            setColumnWidths([100, 100, 100, 100, 100])
+
+            setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching maintenances performed:", error);
@@ -224,6 +228,22 @@ export function Reports() {
             );
             const data = await response.json();
             setReportData(data);
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching technician evaluations:", error);
+        }
+    };
+
+     // Función para generar el reporte de evaluaciones de técnicos
+     const generateToBeReplacedEquipmentReport = async () => {
+        try {
+            const response = await api(
+                `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
+            );
+            const data = await response.json();
+            setColumnWidths([50, 100, 100, 100, 100,100,100,100,100]);
+            setReportData(data.items);
+            console.log(data.items)
         } catch (error) {
             console.error("Error fetching technician evaluations:", error);
         }
@@ -266,6 +286,9 @@ export function Reports() {
                 break;
             case "transfers-between-sections":
                 await generateTransfersBetweenSectionsReport();
+                break;
+            case "equipment-to-be-replaced":
+                await generateToBeReplacedEquipmentReport();
                 break;
             case "technician-evaluations":
                 await generateTechnicianEvaluationsReport();
@@ -506,7 +529,7 @@ export function Reports() {
             y: margin - 20,
             size: fontSize,
             font,
-            color: rgb(0.90, 0.90, 0.90),
+            color: rgb(0.9, 0.9, 0.9),
         });
 
         // Guardar el PDF
