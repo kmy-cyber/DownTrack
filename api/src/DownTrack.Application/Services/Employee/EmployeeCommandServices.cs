@@ -8,7 +8,7 @@ using DownTrack.Domain.Roles;
 namespace DownTrack.Application.Services;
 
 /// <summary>
-/// Handle the business logic related to employee and work with DTOs 
+/// Handles the business logic related to employee and work with DTOs 
 /// to interact with the client , using the repository interface to access
 /// the database 
 /// </summary> 

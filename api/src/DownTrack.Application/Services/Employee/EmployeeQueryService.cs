@@ -12,10 +12,10 @@ using DownTrack.Domain.Enum;
 namespace DownTrack.Application.Services;
 
 /// <summary>
-/// Handle the business logic related to employee and work with DTOs 
-/// to interact with the client , using the repository interface to access
-/// the database 
-/// </summary> 
+/// Handles the business logic related to employee and works with DTOs to interact with clients,
+/// using the repository interface to access the database.
+/// </summary>
+
 public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeDto>,
                                      IEmployeeQueryServices
 {
@@ -23,6 +23,11 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
     private static readonly Expression<Func<Employee, object>>[] includes =
                             { e => e.User! };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EmployeeQueryService"/> class.
+    /// </summary>
+    /// <param name="unitOfWork">The unit of work.</param>
+    /// <param name="mapper">The AutoMapper mapper.</param>
     public EmployeeQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base(unitOfWork, mapper)
     {
@@ -30,13 +35,25 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
     }
 
 
+    /// <summary>
+    /// Gets the includes expressions used for lazy loading.
+    /// </summary>
+    /// <returns>An array of Expression<Func<Employee, object>> representing the includes.</returns>
     public override Expression<Func<Employee, object>>[] GetIncludes() => includes;
 
+
+    /// <summary>
+    /// Lists all employees by role asynchronously.
+    /// </summary>
+    /// <param name="role">The user role to filter by.</param>
+    /// <returns>A collection of GetEmployeeDto objects representing the filtered employees.</returns>
     public async Task<IEnumerable<GetEmployeeDto>> ListAllByRole(UserRole role)
     {
 
         var rolesQuery = _unitOfWork.GetRepository<Employee>()
                                       .GetAllByItems(u => u.UserRole == role.ToString());
+
+        // Apply includes if any
         var includes = GetIncludes();
 
         if (includes != null)
@@ -52,6 +69,11 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
 
     }
 
+    /// <summary>
+    /// Gets an employee by username asynchronously.
+    /// </summary>
+    /// <param name="employeeUserName">The username of the employee to retrieve.</param>
+    /// <returns>A GetEmployeeDto object representing the employee, or null if not found.</returns>
     public async Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName)
     {
 
@@ -60,6 +82,7 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
             e=> e.UserName == employeeUserName
         };
 
+        // Apply includes if any
         var includes = GetIncludes();
 
         var employee = await _unitOfWork.GetRepository<Employee>()
@@ -74,5 +97,5 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
     }
 
 
-    
+
 }
