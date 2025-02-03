@@ -157,6 +157,9 @@ const EquipmentDecommissionsTable = () => {
                     <th className="border-b px-6 py-3 text-center">
                       Reason for Removal
                     </th>
+                    <th className="border-b px-6 py-3 text-center">
+                      Status
+                    </th>
                     <th className="border-b px-6 py-3 text-center">Date</th>
                   </tr>
                 </thead>
@@ -180,7 +183,10 @@ const EquipmentDecommissionsTable = () => {
                           {disposal.cause}
                         </td>
                         <td className="border-b px-6 py-3 text-center">
-                          {disposal.date}
+                          {disposal.status}
+                        </td>
+                        <td className="border-b px-6 py-3 text-center">
+                          {disposal.date.split('T')[0]}
                         </td>
                       </tr>
                     ))
