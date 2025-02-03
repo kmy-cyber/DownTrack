@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DownTrack.Application;
 
-
 public static class DependencyInjection
 {
     /// <summary>
@@ -50,8 +49,15 @@ public static class DependencyInjection
         services.AddScoped<ITransferRequestQueryServices, TransferRequestQueryServices>();
         services.AddScoped<ITransferCommandServices, TransferCommandServices>();
         services.AddScoped<ITransferQueryServices, TransferQueryServices>();
-        services.AddScoped<IEmployeeStatisticsService,EmployeeStatisticsServices>();
+        
+        services.AddScoped<IAdminStatisticsService, AdminStatisticsService>();
+        services.AddScoped<ITechnicianStatisticsService, TechnicianStatisticsService>();
+        services.AddScoped<IReceptorStatisticsService, ReceptorStatisticsService>();
+        services.AddScoped<IDirectorStatisticsService, DirectorStatisticsService>();
+        services.AddScoped<ISectionManagerStatisticsService, SectionManagerStatisticsService>();
 
+        services.AddScoped<StatisticsServicesContainer>();
+        
         return services;
 
 

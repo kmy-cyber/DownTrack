@@ -1,5 +1,4 @@
 using DownTrack.Application.DTO.Statistics;
-using DownTrack.Application.IServices.Statistics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DownTrack.Api.Controllers;
@@ -9,20 +8,18 @@ namespace DownTrack.Api.Controllers;
 
 public class StatisticsController : ControllerBase
 {
-    private readonly IEmployeeStatisticsService _employeeStatisticsService;
+    private readonly StatisticsServicesContainer _statisticsServices;
 
-    public StatisticsController(IEmployeeStatisticsService employeeStatisticsService)
-
+    public StatisticsController(StatisticsServicesContainer statisticsServices)
     {
-        _employeeStatisticsService = employeeStatisticsService;
+        _statisticsServices = statisticsServices;
     }
 
     [HttpGet]
     [Route("Admin")]
     public async Task<ActionResult<AdminStatisticsDto>> GetStatisticsForAdmin()
     {
-        var statistics = await _employeeStatisticsService.GetStatisticsForAdmins();
-
+        var statistics = await _statisticsServices.AdminStatisticsService.GetStatisticsForAdmins();
         return Ok(statistics);
     }
 
@@ -30,8 +27,7 @@ public class StatisticsController : ControllerBase
     [Route("Technician")]
     public async Task<ActionResult<TechnicianStatisticsDto>> GetStatisticsByTechnician(int technicianId)
     {
-        var statistics = await _employeeStatisticsService.GetStatisticsByTechnician(technicianId);
-
+        var statistics = await _statisticsServices.TechnicianStatisticsService.GetStatisticsByTechnician(technicianId);
         return Ok(statistics);
     }
 
@@ -39,8 +35,7 @@ public class StatisticsController : ControllerBase
     [Route("Receptor")]
     public async Task<ActionResult<ReceptorStatisticsDto>> GetStatisticsByReceptor(int receptorId)
     {
-        var statistics = await _employeeStatisticsService.GetStatisticsByReceptor(receptorId);
-
+        var statistics = await _statisticsServices.ReceptorStatisticsService.GetStatisticsByReceptor(receptorId);
         return Ok(statistics);
     }
 
@@ -48,17 +43,16 @@ public class StatisticsController : ControllerBase
     [Route("Director")]
     public async Task<ActionResult<DirectorStatisticsDto>> GetStatisticsByDirector()
     {
-        var statistics = await _employeeStatisticsService.GetStatisticsByDirector();
-
+        var statistics = await _statisticsServices.DirectorStatisticsService.GetStatisticsByDirector();
         return Ok(statistics);
     }
 
     [HttpGet]
     [Route("SectionManager")]
-    public async Task<ActionResult<DirectorStatisticsDto>> GetStatisticsByManager(int sectionManager)
+    public async Task<ActionResult<ManagerStatisticsDto>> GetStatisticsByManager(int sectionManager)
     {
-        var statistics = await _employeeStatisticsService.GetStatisticsBySectionManager(sectionManager);
-
+        var statistics = await _statisticsServices.SectionManagerStatisticsService
+                                    .GetStatisticsBySectionManager(sectionManager);
         return Ok(statistics);
     }
 
