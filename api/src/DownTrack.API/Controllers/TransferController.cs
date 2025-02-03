@@ -86,6 +86,20 @@ public class TransferController : ControllerBase
 
     }
 
+    [HttpGet]
+    [Route("Get_Transfers_Requested_By_Manager")]
+
+        public async Task<IActionResult> GetPagedTransferByManager ([FromQuery]PagedRequestDto paged, int managerId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _transferQueryService.GetPagedTransferRequestedbyManager(managerId, paged);
+        
+        return Ok (result);
+        
+    }
+
+
     #endregion
 
 
