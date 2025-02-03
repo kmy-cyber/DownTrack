@@ -112,8 +112,8 @@ export function Home() {
                   name: "Evaluations",
                   data: [
                     stats.evaluationsByType?.Good || 0,
-                    stats.evaluationsByType?.Bad || 0,
                     stats.evaluationsByType?.Regular || 0,
+                    stats.evaluationsByType?.Bad || 0,
                   ],
                 },
               ],
