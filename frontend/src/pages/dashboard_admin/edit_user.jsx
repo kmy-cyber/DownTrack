@@ -6,6 +6,7 @@ import {
     Typography,
 } from "@material-tailwind/react";
 import api from "@/middlewares/api";
+import { toast } from "react-toastify";
 
 const defaultFormData = {
     id: " ",
@@ -13,7 +14,7 @@ const defaultFormData = {
     userRole: " ",
     email:"",
     salary: 0,
-    specialty: " ",
+    specialty: "specialty",
     expYears: 0,
     departamentId: 0,
     sectionId: 0,
@@ -91,6 +92,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 departamentId: data.departmentId,
                 sectionId: data.sectionId,
                 userName: userData.userName,
+                specialty: formData.specialty
 
             });
             setIsLoading(false);
@@ -112,6 +114,8 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
     try {
         console.log("HERE",)
         console.log(formData)
+        console.log(formData.specialty)
+        console.log("def:",defaultFormData.specialty)
         const response = await api(`/Authentication/PUT`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -128,19 +132,15 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
         })
         });
         if (!response.ok) {
-            setAlertMessage('Failed to edit user');
-            setAlertType('error');
             throw new Error('Failed to edit user');
         }
         else
         {
-            setAlertMessage('Edit completed successfully');
-            setAlertType('success');
+            toast.success('Edit completed successfully');
             onSave(formData);
         }
     } catch (error) {
-        setAlertMessage('Error editing user:');
-        setAlertType('error');
+        toast.error('Error editing user:');
         console.log(error);
     }
     };
@@ -205,8 +205,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     />
                 </div>
 
-                {userData.userRole !== "ShippingSupervisor" ? (
-                <>
+                
                     <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email
@@ -222,8 +221,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     required
                     />
                 </div>
-                </>
-                ) : null}
+
 
                 {userData.userRole === "EquipmentReceptor" ? (
                 <>
