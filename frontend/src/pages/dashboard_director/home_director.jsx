@@ -115,7 +115,7 @@ export function Home() {
       <div className="mb-12 grid gap-x-3 gap-y-10 xl:grid-cols-2">
         <StatisticsCard
           color="gray"
-          title="Equipment:"
+          title="Equipments:"
           value={totalEquipment - totalDecommissions}
           icon={<CubeIcon className="h-6 w-6" />}
           footer={<Typography>Total Active/Under Maintenance Equipment</Typography>}
