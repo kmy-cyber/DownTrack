@@ -35,4 +35,14 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
 
     }
 
+    public async Task<PagedResultDto<GetTransferDto>> GetTransferBetweenSections(PagedRequestDto paged,int sectionSource,int sectionArrival)
+    {
+        var transfers= _unitOfWork.GetRepository<Transfer>()
+                                        .GetAllByItems(t=> t.TransferRequest.SourceDepartment!.SectionId == sectionSource,
+                                                       t=> t.TransferRequest.ArrivalDepartment.SectionId == sectionArrival);
+
+        return await GetPagedResultByQueryAsync(paged,transfers);
+                                        
+    }
+
 }
