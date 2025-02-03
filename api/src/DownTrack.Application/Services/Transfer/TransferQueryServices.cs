@@ -1,11 +1,10 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using DownTrack.Application.DTO;
+using DownTrack.Application.DTO.Paged;
 using DownTrack.Application.IServices;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
-using DownTrack.Application.DTO.Paged;
-using DownTrack.Domain.Enum;
 
 namespace DownTrack.Application.Services;
 
@@ -22,16 +21,28 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
 
 
     public override Expression<Func<Transfer, object>>[] GetIncludes() => includes;
+
     public async Task<PagedResultDto<GetTransferDto>> GetPagedTransferRequestedbyManager(int managerId, PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
 
         IQueryable<Transfer> queryTransferRequest = _unitOfWork.GetRepository<Transfer>()
                                                                       .GetAllByItems(t => t.TransferRequest.SectionManagerId == managerId);
-                                                                                     
+
 
         return await GetPagedResultByQueryAsync(paged, queryTransferRequest);
 
 
     }
+
+    public async Task<PagedResultDto<GetTransferDto>> GetTransferBetweenSections(PagedRequestDto paged,int sectionSource,int sectionArrival)
+    {
+        var transfers= _unitOfWork.GetRepository<Transfer>()
+                                        .GetAllByItems(t=> t.TransferRequest.SourceDepartment!.SectionId == sectionSource,
+                                                       t=> t.TransferRequest.ArrivalDepartment.SectionId == sectionArrival);
+
+        return await GetPagedResultByQueryAsync(paged,transfers);
+                                        
+    }
+
 }

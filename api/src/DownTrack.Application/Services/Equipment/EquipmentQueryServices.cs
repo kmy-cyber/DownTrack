@@ -96,7 +96,7 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
                                                           .Include(e => e.Department)
                                                           .Include(e => e.Department.Section);
 
-        return await GetPagedResultByQueryAsync(paged,queryEquipment);
+        return await GetPagedResultByQueryAsync(paged, queryEquipment);
     }
 
 
@@ -110,6 +110,7 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
 
+
     public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged)
     {
         var oneYearAgo = DateTime.UtcNow.AddYears(-1);
@@ -121,10 +122,4 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
-
-
-
-    // todos los equipos a los que se le dio mas de 3 bajas en el último año
-
-
 }
