@@ -169,6 +169,7 @@ export function Home() {
               },
               markers: {
                 size: 5,
+                colors: ["#FF0000"],
               },
               xaxis: {
                 ...chartsConfig.xaxis,
