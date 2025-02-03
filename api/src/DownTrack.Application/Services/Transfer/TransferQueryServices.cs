@@ -13,7 +13,8 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
 {
     private static readonly Expression<Func<Transfer, object>>[] includes =
                             { t=> t.ShippingSupervisor!.User!,
-                              t=> t.EquipmentReceptor!.User! };
+                              t=> t.EquipmentReceptor!.User!,
+                              t=> t.TransferRequest.Equipment };
     public TransferQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base(unitOfWork, mapper)
     {
