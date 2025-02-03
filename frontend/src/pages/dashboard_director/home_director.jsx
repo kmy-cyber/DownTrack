@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Card } from "@material-tailwind/react";
 import { StatisticsCard } from "@/components/cards";
-import { ClockIcon, CubeIcon } from "@heroicons/react/24/solid";
-import { StatisticsChart } from "@/components/charts";
+import { CubeIcon, MinusCircleIcon } from "@heroicons/react/24/solid";
 import api from "@/middlewares/api";
 import { CustomPieChart } from "@/components/charts";
+import { StatisticsChart } from "@/components/charts/statistics-chart"; // Importamos el nuevo componente
 
 export function Home() {
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [total, setTotal] = useState(0);
+  const [totalEquipment, setTotalEquipment] = useState(0);
+  const [totalDecommissions, setTotalDecommissions] = useState(0);
+  const [decommissionedData, setDecommissionedData] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    fetchInventoryData();
+    fetchDecommissionedData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchInventoryData = async () => {
     try {
       const response = await api(
-        "/Equipment/GetPaged?PageNumber=1&PageSize=99999",
+        "/Equipment/GetPaged?PageNumber=1&PageSize=99999"
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch inventory");
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch inventory");
       const data = await response.json();
-      const processedData = processInventoryData(data.items || []);
-      setInventoryData(processedData);
-      setTotal(data.totalCount);
+      setInventoryData(processInventoryData(data.items || []));
+      setTotalEquipment(data.totalCount);
     } catch (err) {
       setError("Failed to load inventory data");
     } finally {
@@ -37,31 +35,73 @@ export function Home() {
     }
   };
 
+  const fetchDecommissionedData = async () => {
+    try {
+      const response = await api("/EquipmentDecommissioning/GET_ALL");
+      if (!response.ok) throw new Error("Failed to fetch decommissioned data");
+      const data = await response.json();
+      const processedData = processDecommissionedData(data);
+      setDecommissionedData(processedData);
+      setTotalDecommissions(data.length);
+    } catch (err) {
+      console.error("Error fetching decommissioned data:", err);
+    }
+  };
+
   const processInventoryData = (data) => {
     if (!Array.isArray(data) || data.length === 0) return [];
-
     const statusCount = data.reduce((acc, item) => {
-      if (item.status) {
-        acc[item.status] = (acc[item.status] || 0) + 1;
-      }
+      if (item.status) acc[item.status] = (acc[item.status] || 0) + 1;
       return acc;
     }, {});
-
-    // Agregando el nuevo estado 'Inactive'
     return [
       { name: "Active", value: statusCount.Active || 0, color: "#4A90E2" },
-      { name: "Maintenance", value: statusCount.UnderMaintenance || 0, color: "#FFBB28" },
-      { name: "Inactive", value: statusCount.Inactive || 0, color: "#E94E77" }, // Nuevo estado
+      {
+        name: "Maintenance",
+        value: statusCount.UnderMaintenance || 0,
+        color: "#FFBB28",
+      },
+      { name: "Inactive", value: statusCount.Inactive || 0, color: "#E94E77" },
     ];
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const processDecommissionedData = (data) => {
+    if (!Array.isArray(data) || data.length === 0) return { months: [], values: [] };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+    const decommissionedCount = {};
+
+    data.forEach((item) => {
+      const date = new Date(item.date);
+      const monthYear = `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`;
+
+      if (!decommissionedCount[monthYear]) {
+        decommissionedCount[monthYear] = 0;
+      }
+      decommissionedCount[monthYear]++;
+    });
+
+    const sortedData = Object.entries(decommissionedCount).sort(
+      ([a], [b]) => new Date(a) - new Date(b)
+    );
+
+    // Devolvemos los datos formateados para el gráfico
+    return {
+      months: sortedData.map(([monthYear]) => monthYear),
+      values: sortedData.map(([, count]) => count),
+    };
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  // Configuración de charts
+  const chartsConfig = {
+    xaxis: {
+      labels: {
+        rotate: -45,
+      },
+    },
+  };
 
   return (
     <div className="mt-12">
@@ -69,30 +109,61 @@ export function Home() {
         <StatisticsCard
           color="gray"
           title="Equipment:"
-          value={total}
-          icon={<CubeIcon className="h-6 w-6"/>}
+          value={totalEquipment}
+          icon={<CubeIcon className="h-6 w-6" />}
           footer={<Typography>Total Equipment</Typography>}
         />
         <StatisticsCard
           color="gray"
-          title="Recently added"
-          value="COMING SOON"
+          title="Proposed Decommissions"
+          value={totalDecommissions}
+          icon={<MinusCircleIcon className="h-6 w-6"></MinusCircleIcon>}
+          footer={<Typography>Proposed Decommissions overall</Typography>}
         />
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-3">
-        {/* Pie Chart Component */}
-        <div>
-          <Card className="p-4">
-            <Typography variant="h6" color="blue-gray" className="mb-4">
-              Inventory Status Pie Chart
-            </Typography>
-            <CustomPieChart
-              data={inventoryData}
-              colors={["#4A90E2", "#FFBB28", "#E94E77"]} // Añadiendo el nuevo color
-            />
-          </Card>
-        </div>
+      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-2">
+        <Card className="p-4">
+          <Typography variant="h6" color="blue-gray" className="mb-4">
+            Inventory Status Pie Chart
+          </Typography>
+          <CustomPieChart
+            data={inventoryData}
+            colors={["#4A90E2", "#FFBB28", "#E94E77"]}
+          />
+        </Card>
+
+        {/* Nuevo gráfico de descomisiones */}
+        <StatisticsChart
+          key="ProposedDecomissions"
+          color="white"
+          title="Proposed Decommissions by Month"
+          description="This metric reflects the number of decommissioning proposals made each month."
+          chart={{
+            type: "line",
+            height: 330,
+            series: [
+              {
+                name: "Decommissioned",
+                data: decommissionedData.values,
+              },
+            ],
+            options: {
+              ...chartsConfig,
+              colors: ["#2C3E50"],
+              stroke: {
+                lineCap: "round",
+              },
+              markers: {
+                size: 5,
+              },
+              xaxis: {
+                ...chartsConfig.xaxis,
+                categories: decommissionedData.months,
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );
