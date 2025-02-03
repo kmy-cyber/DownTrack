@@ -26,9 +26,11 @@ export function Reports() {
     const [equipments, setEquipments] = useState([]);
     const [selectedSection1, setSelectedSection1] = useState("");
     const [selectedSection2, setSelectedSection2] = useState("");
+    const [selectedTechnician, setSelectedTechnician] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [columnWidths, setColumnWidths] = useState([]);
     const { user } = useAuth();
+    console.log(selectedSection1);
 
     const userRole = user?.role?.toLowerCase() || "";
     const isDirector = userRole === "director";
@@ -39,7 +41,7 @@ export function Reports() {
     const reportOptions = [
         ...(isDirector
             ? [
-                  { value: "inventory", label: "Inventory Status" },
+                  { value: "inventory-status", label: "Inventory Status" },
                   {
                       value: "staff-effectiveness",
                       label: "Staff Effectiveness",
@@ -152,9 +154,15 @@ export function Reports() {
 
     const fetchTechnicians = async () => {
         try {
-            const response = await fetch("/api/technicians");
+            const response = await api(`/Technician/GetPaged?PageNumber=1&PageSize=99999`);
             const data = await response.json();
-            setTechnicians(data);
+            setTechnicians((prevTechnician) =>{
+                if(!data.items.some((t) => t.id === selectedTechnician)){
+                    setSelectedTechnician("");
+                }
+                console.log(`TECHNICIAN: ${selectedTechnician}`);
+                return data.items;
+            });
         } catch (error) {
             console.error("Error fetching technicians:", error);
         }
@@ -224,17 +232,23 @@ export function Reports() {
     const generateTechnicianEvaluationsReport = async () => {
         try {
             const response = await api(
-                `/Evaluation/Get_Evaluations_By_Technician?technicianId=${extraField}`,
+                `/Evaluation/Get_Evaluation_By_TechnicianId?PageNumber=1&PageSize=9999&technicianId=${selectedTechnician}`,
             );
-            const data = await response.json();
+            const dataResponse = await response.json();
+            const data = dataResponse.items.map((item) => ({
+                Username: item.technicianUserName,
+                Evaluator: item.sectionManagerUserName,
+                Evaluation: item.description
+            }));
+            setColumnWidths([100, 100, 100]);
             setReportData(data);
-            console.log(data);
+            
         } catch (error) {
             console.error("Error fetching technician evaluations:", error);
         }
     };
 
-     // Función para generar el reporte de evaluaciones de técnicos
+     // Función para generar el reporte de equipos a ser reemplazados
      const generateToBeReplacedEquipmentReport = async () => {
         try {
             const response = await api(
@@ -251,6 +265,102 @@ export function Reports() {
                 Section: item.sectionName,
             }));
             setColumnWidths([30, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de bajas de los equipos en el ultimo año
+    const generateLastYearDecommissionsReport = async () => {
+        try {
+            const response = await api(
+                `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items)
+            const data = dataResponse.items.map((item) => ({
+                Id: item.id,
+                Name: item.name,
+                Type: item.type,
+                AcqDate: item.dateOfadquisition.split('T')[0],
+                Department: item.departmentName,
+                Section: item.sectionName,
+            }));
+            setColumnWidths([30, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de intervenciones de un técnico
+    const generateTechnicianInterventionsReport = async () => {
+        try {
+            const response = await api(
+                `/DoneMaintenance/Get_Maintenances_By_Technician_Status?PageNumber=1&PageSize=99999&technicianId=${selectedTechnician}&IsFinish=true`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items)
+            const data = dataResponse.items.map((item) => ({
+                EquipmentId: item.equipmentId,
+                EquipmentName: item.equipmentName,
+                UserName: item.technicianUserName,
+                Cost: item.cost,
+                Date: item.date.split('T')[0],
+            }));
+            setColumnWidths([100, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte del estado del inventario
+    const generateInventoryStatusReport = async () => {
+        try {
+            const response = await api(
+                `/Equipment/GetPaged?PageNumber=1&PageSize=10`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items)
+            const data = dataResponse.items.map((item) => ({
+                EId: item.id,
+                EquipmentName: item.name,
+                SectionName: item.sectionName,
+                Status: item.status,
+                Department: item.departmentName,
+                Date: item.dateOfadquisition.split('T')[0],
+            }));
+            setColumnWidths([50, 100, 100, 70, 100]);
+            setReportData(data);
+            console.log(data)
+        } catch (error) {
+            console.error("Error fetching equipment to be replaced:", error);
+        }
+    };
+
+    // Función para generar reporte de las bajas tecnicas
+    const generateDecommissionsReport = async () => {
+        try {
+            const response = await api(
+                `/EquipmentDecommissioning/Get_Paged_Accepted?PageNumber=1&PageSize=100000`,
+            );
+            const dataResponse = await response.json();
+            console.log(dataResponse.items);
+            const data = dataResponse.items.map((item) => ({
+                EId: item.equipmentId,
+                EName: item.equipmentName,
+                Type: item.equipmentType,
+                Technician: item.technicianUserName,
+                Receptor: item.receptorUserName,
+                Cause: item.cause,
+                Date: item.date.split('T')[0]
+            }));
+            setColumnWidths([30, 100, 60, 100, 80,60,100]);
             setReportData(data);
             console.log(data)
         } catch (error) {
@@ -290,6 +400,12 @@ export function Reports() {
     // Función principal para generar el reporte según el tipo seleccionado
     const generateReport = async () => {
         switch (reportType) {
+            case "inventory-status":
+                await generateInventoryStatusReport();
+                break;
+            case "decommissions":
+                await generateDecommissionsReport();
+                break;
             case "maintenances-performed":
                 await generateMaintenancesPerformedReport();
                 break;
@@ -301,6 +417,9 @@ export function Reports() {
                 break;
             case "technician-evaluations":
                 await generateTechnicianEvaluationsReport();
+                break;
+            case "technician-interventions":
+                await generateTechnicianInterventionsReport();
                 break;
             case "equipments-sent-to":
                 await generateEquipmentsSentToReport();
@@ -660,7 +779,7 @@ export function Reports() {
                             <Select
                                 label="Select Technician"
                                 value={extraField}
-                                onChange={(value) => setExtraField(value)}
+                                onChange={(value) => setSelectedTechnician(value)}
                             >
                                 {technicians.map((technician) => (
                                     <Option
