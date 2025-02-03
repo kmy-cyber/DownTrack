@@ -110,7 +110,7 @@ export function Reports() {
             reportType === "technician-interventions"
         ) {
             fetchTechnicians();
-        } else if (reportType === "equipments-sent-to") {
+        } else if (reportType === "equipment-sent-to") {
             fetchSections();
         } else if (reportType === "maintenances-performed") {
             fetchEquipmentsHistory();
@@ -388,6 +388,7 @@ export function Reports() {
                 `/Equipment/Get_Equipments_Sent_To?departmentId=${selectedDepartment}`,
             );
             const data = await response.json();
+            console.log(data);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching equipments sent to:", error);
