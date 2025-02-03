@@ -1,6 +1,5 @@
 
 using DownTrack.Application.DTO;
-using DownTrack.Application.DTO.Statistics;
 using DownTrack.Domain.Entities;
 using DownTrack.Domain.Roles;
 
@@ -12,12 +11,6 @@ public interface IEmployeeQueryServices : IGenericQueryService<Employee,GetEmplo
 
     Task<GetEmployeeDto> GetByUserNameAsync(string employeeUserName);
 
-    Task<AdminStatisticsDto> GetStatisticsForAdmins();
-    Task<TechnicianStatisticsDto> GetStatisticsByTechnician(int technicianId);
-    Task<ReceptorStatisticsDto> GetStatisticsByReceptor(int receptorId);
 
-    Task<DirectorStatisticsDto> GetStatisticsByDirector();
-
-    Task<ManagerStatisticsDto> GetStatisticsBySectionManager(int managerId);
 
 }

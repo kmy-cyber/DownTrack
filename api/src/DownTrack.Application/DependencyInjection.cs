@@ -1,9 +1,9 @@
-
-
 using DownTrack.Application.IServices;
 using DownTrack.Application.IServices.Authentication;
+using DownTrack.Application.IServices.Statistics;
 using DownTrack.Application.Services;
 using DownTrack.Application.Services.Authentication;
+using DownTrack.Application.Services.Statistics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<ITransferRequestQueryServices, TransferRequestQueryServices>();
         services.AddScoped<ITransferCommandServices, TransferCommandServices>();
         services.AddScoped<ITransferQueryServices, TransferQueryServices>();
+        services.AddScoped<IEmployeeStatisticsService,EmployeeStatisticsServices>();
 
         return services;
 
