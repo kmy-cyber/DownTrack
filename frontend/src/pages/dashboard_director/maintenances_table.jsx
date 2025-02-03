@@ -148,7 +148,7 @@ const MaintenanceHistory = () => {
                         <td className="border-b px-6 py-3 text-center">{maintenance.equipmentName}</td>
                         <td className="border-b px-6 py-3 text-center">{maintenance.equipmentId}</td>
                         <td className="border-b px-6 py-3 text-center">{maintenance.type}</td>
-                        <td className="border-b px-6 py-3 text-center">{new Date(maintenance.date).toLocaleDateString()}</td>
+                        <td className="border-b px-6 py-3 text-center">{maintenance.date.split('T')[0]}</td>
                         <td className="border-b px-6 py-3 text-center">${maintenance.cost}</td>
                       </tr>
                     ))
