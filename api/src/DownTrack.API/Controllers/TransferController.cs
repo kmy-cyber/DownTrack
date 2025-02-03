@@ -113,9 +113,9 @@ public class TransferController : ControllerBase
     [HttpGet]
     [Route("Get_Transfer_By_ReceptorId")]
 
-    public async Task<ActionResult<GetTransferDto>> GetTransferByReceptorId([FromQuery]PagedRequestDto paged)
+    public async Task<ActionResult<GetTransferDto>> GetTransferByReceptorId([FromQuery]PagedRequestDto paged,int receptorId)
     {
-        var result = await _transferQueryService.GetTransferBetweenSections(paged,sectionId1,sectionId2);
+        var result = await _transferQueryService.GetTransferByReceptorId(paged,receptorId);
 
         return Ok(result);
 
