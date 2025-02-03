@@ -20,7 +20,7 @@ const EvaluationsTable = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const pageSize = 14;
+  const pageSize = 13;
 
   useEffect(() => {
     fetchEvaluations(currentPage);
