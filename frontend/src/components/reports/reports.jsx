@@ -62,7 +62,7 @@ export function Reports() {
                       value: "technician-evaluations",
                       label: "Technician Evaluations",
                   },
-                  { value: "equipments-sent-to", label: "Equipments Sent To" },
+                  { value: "equipment-sent-to", label: "Equipments Sent To" },
               ]
             : []),
         ...(isDirector || isManager
@@ -219,9 +219,15 @@ export function Reports() {
     const generateTransfersBetweenSectionsReport = async () => {
         try {
             const response = await api(
-                `/Transfer/Get_Transfers_Between_Sections?section1Id=${selectedSection1}&section2Id=${selectedSection2}`,
+                `/Transfer/Get_Transfer_Between_Sections?PageNumber=1&PageSize=10000&sectionId1=${selectedSection1}&sectionId2=${selectedSection2}`,
             );
-            const data = await response.json();
+            const dataResponse = await response.json();
+            const data = dataResponse.items.map((item) => ({
+                Receptor: item.equipmentReceptorUserName,
+                Supervisor: item.shippingSupervisorName,
+                Date: item.date.split('T')[0]
+            }));
+            setColumnWidths([100,100,100])
             setReportData(data);
         } catch (error) {
             console.error("Error fetching transfers between sections:", error);
@@ -276,19 +282,20 @@ export function Reports() {
     const generateLastYearDecommissionsReport = async () => {
         try {
             const response = await api(
-                `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
+                `/EquipmentDecommissioning/Get_Decomissions_Last_Year?PageNumber=1&PageSize=100000`,
             );
             const dataResponse = await response.json();
             console.log(dataResponse.items)
             const data = dataResponse.items.map((item) => ({
-                Id: item.id,
-                Name: item.name,
-                Type: item.type,
-                AcqDate: item.dateOfadquisition.split('T')[0],
-                Department: item.departmentName,
-                Section: item.sectionName,
+                EId: item.equipmentId,
+                EName: item.equipmentName,
+                EType: item.equipmentType,
+                Technician: item.technicianUserName,
+                Receptor: item.receptorUserName,
+                Cause: item.cause,
+                Date: item.date.split('T')[0],
             }));
-            setColumnWidths([30, 100, 100, 100, 100]);
+            setColumnWidths([30, 80, 70, 100, 80, 75, 100]);
             setReportData(data);
             console.log(data)
         } catch (error) {
@@ -369,7 +376,7 @@ export function Reports() {
     };
 
     // Función para generar el reporte de equipos enviados a un departamento
-    const generateEquipmentsSentToReport = async () => {
+    const generateEquipmentSentToReport = async () => {
         try {
             const response = await api(
                 `/Equipment/Get_Equipments_Sent_To?departmentId=${selectedDepartment}`,
@@ -403,6 +410,9 @@ export function Reports() {
             case "inventory-status":
                 await generateInventoryStatusReport();
                 break;
+            case "last-year-decommissions":
+                await generateLastYearDecommissionsReport();
+                break;
             case "decommissions":
                 await generateDecommissionsReport();
                 break;
@@ -421,8 +431,8 @@ export function Reports() {
             case "technician-interventions":
                 await generateTechnicianInterventionsReport();
                 break;
-            case "equipments-sent-to":
-                await generateEquipmentsSentToReport();
+            case "equipment-sent-to":
+                await generateEquipmentSentToReport();
                 break;
             case "maintenances-performed-on-equipment":
                 await generateMaintenancesPerformedOnEquipmentReport();
@@ -792,7 +802,7 @@ export function Reports() {
                             </Select>
                         ) : null}
 
-                        {reportType === "equipments-sent-to" && (
+                        {reportType === "equipment-sent-to" && (
                             <>
                                 <Select
                                     label="Select Section"
