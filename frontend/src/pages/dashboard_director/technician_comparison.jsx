@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography } from "@material-tailwind/react";
-import Select from "react-select";
-import StatisticsChart from "@/components/charts/StatisticsChart";
+import { Select } from "@mui/material";
+import StatisticsChart from "@/components/charts/statistics-chart";
 import api from "@/middlewares/api";
 
 const TechnicianComparison = () => {
@@ -17,7 +17,7 @@ const TechnicianComparison = () => {
 
   const fetchTechnicians = async () => {
     try {
-      const response = await api("/Technicians");
+      const response = await api("/Technician/GetPaged?PageNumber=1&PageSize=99999");
       if (!response.ok) throw new Error("Failed to fetch technicians");
       const data = await response.json();
       setTechnicians(data);

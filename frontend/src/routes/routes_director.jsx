@@ -9,6 +9,7 @@ import {
   UserIcon,
   DocumentCheckIcon,
   ArchiveBoxArrowDownIcon,
+  UsersIcon,
 } from "@heroicons/react/24/solid";
 import { Home } from "@/pages/dashboard_director";
 import { SectionsTable } from "@/components/sections";
@@ -20,6 +21,7 @@ import UserTable from "@/pages/dashboard_director/employees_table";
 import EvaluationsTable from "@/pages/dashboard_director/evaluations_table";
 import EquipmentDecommissionsTable from "@/pages/dashboard_director/decommissions_table";
 import TransferRequestsTable from "@/pages/dashboard_director/transfer_requests";
+import TechnicianComparison from "@/pages/dashboard_director/technician_comparison";
 
 const typeUser = 1;
 
@@ -91,6 +93,13 @@ export const routesDirector = [
         path: "/employees",
         element: <UserTable />,
       },
+      {
+        icon: <UsersIcon {...icon} />,
+        name: "Compare Technicians",
+        path: "/comparer",
+        element: <TechnicianComparison />,
+      },
+      
     ],
   },
 ];
