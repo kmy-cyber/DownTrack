@@ -211,7 +211,7 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
         var acceptedDecommissions = await _unitOfWork.GetRepository<EquipmentDecommissioning>()
                                           .GetAllByItems(ed => ed.ReceptorId == receptorId,
                                                          ed => ed.Status == DecommissioningStatus.Accepted.ToString(),
-                                                         ed=> ed.Date >= DateTime.Now.AddYears(-1))
+                                                         ed => ed.Date >= DateTime.Now.AddYears(-1))
                                           .GroupBy(s => new { s.Date.Month, s.Date.Year })
                                           .Select(g => new { g.Key.Month, g.Key.Year, Count = g.Count() })
                                           .OrderBy(g => g.Year).ThenBy(g => g.Month)
@@ -221,7 +221,7 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
 
         var proccessedTransfer = await _unitOfWork.GetRepository<Transfer>()
                                                   .GetAllByItems(t => t.EquipmentReceptorId == receptorId,
-                                                                 t=> t.Date >= DateTime.Now.AddYears(-1))
+                                                                 t => t.Date >= DateTime.Now.AddYears(-1))
                                                   .GroupBy(s => new { s.Date.Month, s.Date.Year })
                                                   .Select(g => new { g.Key.Month, g.Key.Year, Count = g.Count() })
                                                   .OrderBy(g => g.Year).ThenBy(g => g.Month)
@@ -247,35 +247,35 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
         var numberOfTotalMaintenances = await _unitOfWork.GetRepository<DoneMaintenance>()
                                                          .GetAll()
                                                          .CountAsync();
-        
+
         var numberOfCompletedMaintenances = await _unitOfWork.GetRepository<DoneMaintenance>()
-                                                             .GetAllByItems(dm=> dm.Finish)
+                                                             .GetAllByItems(dm => dm.Finish)
                                                              .CountAsync();
-        
+
         var acceptedDecommissions = await _unitOfWork.GetRepository<EquipmentDecommissioning>()
                                           .GetAllByItems(ed => ed.Status == DecommissioningStatus.Accepted.ToString(),
-                                                         ed=> ed.Date >= DateTime.Now.AddYears(-1))
+                                                         ed => ed.Date >= DateTime.Now.AddYears(-1))
                                           .GroupBy(s => new { s.Date.Month, s.Date.Year })
                                           .Select(g => new { g.Key.Month, g.Key.Year, Count = g.Count() })
                                           .OrderBy(g => g.Year).ThenBy(g => g.Month)
                                           .ToListAsync();
 
         var transferByMonth = await _unitOfWork.GetRepository<Transfer>()
-                                          .GetAllByItems(t=> t.Date >= DateTime.Now.AddYears(-1))
+                                          .GetAllByItems(t => t.Date >= DateTime.Now.AddYears(-1))
                                           .GroupBy(s => new { s.Date.Month, s.Date.Year })
                                           .Select(g => new { g.Key.Month, g.Key.Year, Count = g.Count() })
                                           .OrderBy(g => g.Year).ThenBy(g => g.Month)
                                           .ToListAsync();
-        
-        
+
+
         var maintenanceCostByMonth = await _unitOfWork.GetRepository<DoneMaintenance>()
-                                                      .GetAllByItems(dm=> dm.Finish)
-                                                      .GroupBy(dm=> new {dm.Date.Month,dm.Date.Year})
-                                                      .Select(g => new 
+                                                      .GetAllByItems(dm => dm.Finish)
+                                                      .GroupBy(dm => new { dm.Date.Month, dm.Date.Year })
+                                                      .Select(g => new
                                                       {
-                                                        g.Key.Month,
-                                                        g.Key.Year,
-                                                        TotalCost = g.Sum(dm=> dm.Cost)
+                                                          g.Key.Month,
+                                                          g.Key.Year,
+                                                          TotalCost = g.Sum(dm => dm.Cost)
                                                       })
                                                       .ToListAsync();
         return new DirectorStatisticsDto
@@ -285,8 +285,52 @@ public class EmployeeQueryServices : GenericQueryServices<Employee, GetEmployeeD
             NumberOfCompletedMaintenances = numberOfCompletedMaintenances,
             TransfersByMonth = transferByMonth.ToDictionary(g => $"{g.Month}-{g.Year}", g => g.Count),
             AcceptedDecommissionsByMonth = acceptedDecommissions.ToDictionary(g => $"{g.Month}-{g.Year}", g => g.Count),
-            MaintenanceCostByMonth = maintenanceCostByMonth.ToDictionary(g=> $"{g.Month}-{g.Year}", g=> g.TotalCost)
+            MaintenanceCostByMonth = maintenanceCostByMonth.ToDictionary(g => $"{g.Month}-{g.Year}", g => g.TotalCost)
         };
     }
 
+
+    public async Task<ManagerStatisticsDto> GetStatisticsBySectionManager(int managerId)
+    {
+        var manager = await _unitOfWork.GetRepository<Employee>()
+                                       .GetByIdAsync(managerId);
+
+        if(manager.UserRole != UserRole.SectionManager.ToString())
+            throw new Exception($"User {managerId} is not a SectionManager");
+            
+        var transferRequestsMade = await _unitOfWork.GetRepository<TransferRequest>()
+                                                    .GetAllByItems(tr => tr.SectionManagerId == managerId)
+                                                    .CountAsync();
+
+        var transferRequestsCompleted = await _unitOfWork.GetRepository<TransferRequest>()
+                                                         .GetAllByItems(tr => tr.SectionManagerId == managerId,
+                                                                        tr => tr.Status == TransferRequestStatus.Accepted.ToString())
+                                                        .CountAsync();
+
+
+        var numberOfDepartmentsInSection = await _unitOfWork.DepartmentRepository
+                                                            .GetAllByItems(d => d.Section.SectionManagerId == managerId)
+                                                            .CountAsync();
+
+        var evaluationByType = await _unitOfWork.GetRepository<Evaluation>()
+                                                .GetAllByItems(ev => ev.SectionManagerId == managerId)
+                                                .GroupBy(ev => ev.Description)
+                                                .Select(g => new { Description = g.Key, Count = g.Count() })
+                                                .ToListAsync();
+
+        var equipmentByStatus = await _unitOfWork.GetRepository<Equipment>()
+                                                 .GetAllByItems(e=> e.Department.Section.SectionManagerId == managerId)
+                                                 .GroupBy(e=> e.Status)
+                                                 .Select(g=> new {Status = g.Key, Count = g.Count()})
+                                                 .ToListAsync();
+
+        return new ManagerStatisticsDto
+        {
+            TransferRequestsMade = transferRequestsMade,
+            TransferRequestsCompleted = transferRequestsCompleted,
+            NumberOfDepartmentsInSection = numberOfDepartmentsInSection,
+            EvaluationsByType = evaluationByType.ToDictionary(ev=> ev.Description,ev=> ev.Count),
+            EquipmentsByStatus = equipmentByStatus.ToDictionary(e => e.Status, e => e.Count)
+        };
+    }
 }

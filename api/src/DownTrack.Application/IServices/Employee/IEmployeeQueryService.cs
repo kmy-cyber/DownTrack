@@ -18,4 +18,6 @@ public interface IEmployeeQueryServices : IGenericQueryService<Employee,GetEmplo
 
     Task<DirectorStatisticsDto> GetStatisticsByDirector();
 
+    Task<ManagerStatisticsDto> GetStatisticsBySectionManager(int managerId);
+
 }
