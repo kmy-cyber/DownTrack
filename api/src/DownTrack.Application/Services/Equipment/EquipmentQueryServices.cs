@@ -122,4 +122,14 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetTransferredEquipmentsByDepartmentAsync(PagedRequestDto paged, int departmentId)
+    {
+        var queryEquipmentsTransferred = _unitOfWork.GetRepository<Transfer>()
+                            .GetAllByItems(t => t.TransferRequest.ArrivalDepartmentId == departmentId)
+                            .Include(t => t.TransferRequest.Equipment)  // Incluir los datos del equipo
+                            .Select(t => t.TransferRequest.Equipment);
+
+        return await GetPagedResultByQueryAsync(paged,queryEquipmentsTransferred);
+    }
 }
