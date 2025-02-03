@@ -71,12 +71,12 @@ public class SectionController : ControllerBase
 
     [HttpGet]
     [Route("GetBySectionName")]
-    public async Task<ActionResult<GetEmployeeDto>> GetSectionByName(string sectionName)
+    public async Task<ActionResult<GetSectionDto>> GetSectionByName(string sectionName)
     {
         var result = await _sectionQueryService.GetSectionByNameAsync(sectionName);
 
         if (result == null)
-            return NotFound($"Employee with ID {sectionName} not found");
+            return NotFound($"Section with Name {sectionName} not found");
 
         return Ok(result);
 

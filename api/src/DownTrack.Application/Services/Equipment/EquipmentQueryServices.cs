@@ -87,47 +87,44 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
-    
+
     public async Task<PagedResultDto<GetEquipmentDto>> GetActiveEquipment(PagedRequestDto paged)
     {
         //The queryable collection of entities to paginate
         IQueryable<Equipment> queryEquipment = _unitOfWork.GetRepository<Equipment>()
-                                                          .GetAllByItems(e=> e.Status == "Active")
-                                                          .Include(e=> e.Department)
-                                                          .Include(e=> e.Department.Section);
+                                                          .GetAllByItems(e => e.Status == "Active")
+                                                          .Include(e => e.Department)
+                                                          .Include(e => e.Department.Section);
 
-        var totalCount = await queryEquipment.CountAsync();
-
-        var items = await queryEquipment // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
-
-
-        return new PagedResultDto<GetEquipmentDto>
-        {
-            Items = items?.Select(_mapper.Map<GetEquipmentDto>) ?? Enumerable.Empty<GetEquipmentDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
+        return await GetPagedResultByQueryAsync(paged,queryEquipment);
     }
-                                                                                        
 
-    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName,int sectionManagerId)
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName, int sectionManagerId)
     {
-        var includes= GetIncludes();
+        var includes = GetIncludes();
         var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
-                                        .GetAllByItems(e=>e.Name==equipmentName,
-                                                        e=> e.Department.Section.SectionManagerId == sectionManagerId);
-        
-        return await GetPagedResultByQueryAsync(paged,equipmentQuery);
+                                        .GetAllByItems(e => e.Name == equipmentName,
+                                                        e => e.Department.Section.SectionManagerId == sectionManagerId);
+
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged)
+    {
+        var oneYearAgo = DateTime.UtcNow.AddYears(-1);
+        var includes = GetIncludes();
+        var equipmentQuery = _unitOfWork.GetRepository<Equipment>()
+                                        .GetAllByItems()
+                                        .Where(e => e.DoneMaintenances
+                                            .Count(m => m.Date >= oneYearAgo) > 3);
+
+        return await GetPagedResultByQueryAsync(paged, equipmentQuery);
+    }
+
+
+
+    // todos los equipos a los que se le dio mas de 3 bajas en el último año
+
+
 }
