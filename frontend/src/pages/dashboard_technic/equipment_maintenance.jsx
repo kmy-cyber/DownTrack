@@ -50,16 +50,16 @@ export function EquipmentMaintenance() {
     const options =(id) => [
         { 
             label: 'Finish maintenance', 
-            className: 'text-gray-500 h-5 w-5', 
+            className: 'text-green-500 h-5 w-5', 
             icon: CheckCircleOutlineOutlined,
             action: () => handleOpenDialog (id)
         },
-        { 
+        /*{ 
             label: 'Cancel maintenance', 
             className: 'text-red-500 h-5 w-5', 
             icon: TrashIcon,
             action: () => handleCancelMaintenance (id)
-        },
+        },*/
     ];
 
     const handlePageChange = async (event, newPage) => {
