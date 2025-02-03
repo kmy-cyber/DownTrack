@@ -79,9 +79,10 @@ public class EquipmentDecommissioningQueryServices : GenericQueryServices<Equipm
     public async Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetDecomissionLastYear(PagedRequestDto paged)
     {
         var decomissions = _unitOfWork.GetRepository<EquipmentDecommissioning>()
-                                            .GetAllByItems(ed=> ed.Date >= DateTime.Now.AddYears(-1));
+                                            .GetAllByItems(ed=> ed.Date >= DateTime.Now.AddYears(-1),
+                                                        ed=> ed.Status == DecommissioningStatus.Accepted.ToString());
         
         return await GetPagedResultByQueryAsync(paged,decomissions);
     }
-    
+
 }
