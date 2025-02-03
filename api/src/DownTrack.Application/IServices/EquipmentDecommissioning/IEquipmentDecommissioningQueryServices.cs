@@ -11,4 +11,5 @@ public interface IEquipmentDecommissioningQueryServices :
 
      Task<GetEquipmentDecommissioningDto> GetDecomissionByEquipmentIdAsync(int equipmentId);
      Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetAcceptedDecommissioning(PagedRequestDto paged);
+     Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetDecomissionLastYear(PagedRequestDto paged);
 }
