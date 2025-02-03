@@ -41,29 +41,7 @@ public class EquipmentDecommissioningQueryServices : GenericQueryServices<Equipm
                                                                                         .Include(ed => ed.Equipment!.Department!.Section!)
                                                                                         .Include(ed => ed.Receptor!.User!);
 
-        var totalCount = await queryEquipmentDecommissioning.CountAsync();
-
-
-        var items = await queryEquipmentDecommissioning // Apply pagination to the query.
-                        .Skip((paged.PageNumber - 1) * paged.PageSize) // Skip the appropriate number of items based on the current page
-                        .Take(paged.PageSize) // Take only the number of items specified by the page size.
-                        .ToListAsync(); // Convert the result to a list asynchronously.
-
-
-        return new PagedResultDto<GetEquipmentDecommissioningDto>
-        {
-            Items = items?.Select(_mapper.Map<GetEquipmentDecommissioningDto>) ?? Enumerable.Empty<GetEquipmentDecommissioningDto>(),
-            TotalCount = totalCount,
-            PageNumber = paged.PageNumber,
-            PageSize = paged.PageSize,
-            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
-                        : null,
-            PreviousPageUrl = paged.PageNumber > 1
-                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
-                        : null
-
-        };
+        return await GetPagedResultByQueryAsync(paged, queryEquipmentDecommissioning);
     }
 
 
@@ -88,6 +66,7 @@ public class EquipmentDecommissioningQueryServices : GenericQueryServices<Equipm
 
         return _mapper.Map<GetEquipmentDecommissioningDto>(decommission);
     }
+
 
     public async Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetAcceptedDecommissioning(PagedRequestDto paged)
     {

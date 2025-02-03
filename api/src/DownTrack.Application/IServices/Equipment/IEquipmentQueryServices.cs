@@ -14,4 +14,5 @@ public interface IEquipmentQueryServices : IGenericQueryService<Equipment, GetEq
     Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsByNameAndSectionManagerAsync(PagedRequestDto paged, string equipmentName, int sectionManagerId);
     Task<PagedResultDto<GetEquipmentDto>> GetActiveEquipment(PagedRequestDto paged);
     Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged);
+
 }

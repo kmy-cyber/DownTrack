@@ -8,7 +8,7 @@ public interface IEquipmentDecommissioningQueryServices :
                                         IGenericQueryService<EquipmentDecommissioning, GetEquipmentDecommissioningDto>
 {
      Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetEquipmentDecomissioningOfReceptorAsync(int receptorId, PagedRequestDto paged);
+
      Task<GetEquipmentDecommissioningDto> GetDecomissionByEquipmentIdAsync(int equipmentId);
      Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetAcceptedDecommissioning(PagedRequestDto paged);
-
 }

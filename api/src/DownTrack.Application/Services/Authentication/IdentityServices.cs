@@ -175,7 +175,8 @@ public class IdentityService : IIdentityService
                 _unitOfWork.GetRepository<Employee>().Update(employee);
             }
 
-            await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Email);
+            if(updateDto.UserRole != "ShippingSupervisor")
+                    await _unitOfWork.UserRepository.UpdateByIdAsync(updateDto.Id, updateDto.Email);
             
             await _unitOfWork.CompleteAsync();
             
