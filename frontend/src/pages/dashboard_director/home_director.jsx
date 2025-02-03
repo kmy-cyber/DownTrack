@@ -94,7 +94,7 @@ export function Home() {
           title="Equipment:"
           value={numberOfEquipments - acceptedDecommissions}
           icon={<CubeIcon className="h-6 w-6" />}
-          footer={<Typography>Total Equipments</Typography>}
+          footer={<Typography>Active Equipment</Typography>}
         />
         <StatisticsCard
           color="gray"
