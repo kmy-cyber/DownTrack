@@ -148,18 +148,37 @@ const TechnicianComparison = () => {
             return {
                 name: technician
                     ? technician.userName
-                    : `Technician ${technicianId}`, // Mostramos el userName
+                    : `Technician ${technicianId}`,
                 data: [good, regular, bad], // Datos de las evaluaciones por categoría
             };
         }),
         options: {
+            chart: {
+                background: "#ffffff",
+                stacked: true, // Esto permite apilar las barras
+            },
             xaxis: {
                 categories: ["Good", "Regular", "Bad"], // Categorías de las evaluaciones
                 title: { text: "Evaluation Criteria" },
             },
+            yaxis: {
+                title: { text: "Number of Evaluations" },
+            },
             colors: ["#4CAF50", "#FFC107", "#F44336"], // Colores para las categorías
             legend: { position: "top" },
-            chart: { background: "#ffffff" },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: "60%", // Ajusta el ancho de las barras
+                },
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: (val) => `${val} evaluations`, // Muestra la cantidad de evaluaciones en el tooltip
+                },
+            },
         },
     };
 
