@@ -178,6 +178,8 @@ export function EquipmentTransferTable() {
             
             toast.success('Transfer saved successfully')
             setShowRegistrationForm(false);
+            await fetchTransfers(1);
+
             console.log("Transfer saved successfully:", data);
             // Handle success (e.g., show a success message, update UI, etc.)
         } catch (error) {
