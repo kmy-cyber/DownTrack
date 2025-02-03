@@ -134,6 +134,16 @@ public class EquipmentDecommissioningController : ControllerBase
         return Ok(decomissions);
     }
 
+    [HttpGet]
+    [Route("Get_Decomissions_Last_Year")]
+
+    public async Task<ActionResult<GetEquipmentDecommissioningDto>> GetDecomissionsLastYear([FromQuery] PagedRequestDto paged)
+    {
+        var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionLastYear(paged);
+
+        return Ok(decomissions);
+    }
+
     #endregion
 
 
