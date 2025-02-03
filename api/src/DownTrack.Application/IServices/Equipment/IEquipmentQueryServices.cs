@@ -65,5 +65,6 @@ public interface IEquipmentQueryServices : IGenericQueryService<Equipment, GetEq
         /// <param name="paged">The paged request DTO containing pagination parameters.</param>
         /// <returns>A PagedResultDto containing the equipment that have recieved more than three maintenances in the last year.</returns>
     Task<PagedResultDto<GetEquipmentDto>> GetPagedEquipmentsWith3MaintenancesAsync(PagedRequestDto paged);
+    Task<PagedResultDto<GetEquipmentDto>> GetTransferredEquipmentsByDepartmentAsync(PagedRequestDto paged,int departmentId);
 
 }

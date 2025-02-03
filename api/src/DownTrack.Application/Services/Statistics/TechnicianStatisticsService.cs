@@ -1,7 +1,9 @@
+using System.Data.Common;
 using DownTrack.Application.DTO.Statistics;
 using DownTrack.Application.IServices.Statistics;
 using DownTrack.Application.IUnitOfWorkPattern;
 using DownTrack.Domain.Entities;
+using DownTrack.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -80,6 +82,32 @@ public class TechnicianStatisticsService : ITechnicianStatisticsService
             DecomissionsByMonth = decomissions.ToDictionary(g => $"{g.Month}-{g.Year}", g => g.Count),
             EquipmentByStatus = equipments.ToDictionary(e => e.Status, e => e.Count)
 
+        };
+    }
+
+
+    public async Task<PerformanceTechnicianDto> GetPerformanceByTechnician(int technicianId)
+    {
+        var completedMaintenaces = await _unitOfWork.GetRepository<DoneMaintenance>()
+                                                    .GetAllByItems(dm=> dm.Finish,
+                                                                dm=> dm.TechnicianId == technicianId)
+                                                    .CountAsync();
+        
+        var proposedDecommissions = await _unitOfWork.GetRepository<EquipmentDecommissioning>()
+                                                     .GetAllByItems(ed=> ed.Status == DecommissioningStatus.Accepted.ToString(),
+                                                                    ed=> ed.TechnicianId == technicianId)
+                                                      .CountAsync();
+        
+        var evaluationsByType = await _unitOfWork.GetRepository<Evaluation>()
+                                                 .GetAllByItems(ev=> ev.TechnicianId == technicianId)
+                                                 .GroupBy(g=>g.Description)
+                                                 .Select(g => new {Description = g.Key, Count = g.Count() })
+                                                 .ToListAsync();
+        return new PerformanceTechnicianDto
+        {
+            EvaluationsByType=evaluationsByType.ToDictionary(ev=>ev.Description,ev=>ev.Count),
+            CompletedMaintenances= completedMaintenaces,
+            ProposedDecommissions =  proposedDecommissions
         };
     }
 }

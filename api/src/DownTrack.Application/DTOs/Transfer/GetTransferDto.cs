@@ -10,6 +10,8 @@ public class GetTransferDto
     public int? EquipmentReceptorId { get; set; }
     public string? EquipmentReceptorUserName {get;set;}
     public DateTime Date { get; set; }
+    public int EquipmentId {get;set;}
+    public string EquipmentName {get;set;}= null!;
 
 }
 

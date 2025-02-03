@@ -13,7 +13,8 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
 {
     private static readonly Expression<Func<Transfer, object>>[] includes =
                             { t=> t.ShippingSupervisor!.User!,
-                              t=> t.EquipmentReceptor!.User! };
+                              t=> t.EquipmentReceptor!.User!,
+                              t=> t.TransferRequest.Equipment };
     public TransferQueryServices(IUnitOfWork unitOfWork, IMapper mapper)
         : base(unitOfWork, mapper)
     {
@@ -43,6 +44,14 @@ public class TransferQueryServices : GenericQueryServices<Transfer, GetTransferD
 
         return await GetPagedResultByQueryAsync(paged,transfers);
                                         
+    }
+
+    public async Task<PagedResultDto<GetTransferDto>> GetTransferByReceptorId(PagedRequestDto paged,int receptorId)
+    {
+        var queryTransfer = _unitOfWork.GetRepository<Transfer>()
+                                             .GetAllByItems(t=> t.EquipmentReceptorId== receptorId);
+        
+        return await GetPagedResultByQueryAsync(paged,queryTransfer);
     }
 
 }

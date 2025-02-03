@@ -9,4 +9,6 @@ public interface ITransferQueryServices : IGenericQueryService<Transfer,GetTrans
     Task<PagedResultDto<GetTransferDto>> GetPagedTransferRequestedbyManager(int managerId, PagedRequestDto paged);
 
     Task<PagedResultDto<GetTransferDto>> GetTransferBetweenSections(PagedRequestDto paged, int sectionId1,int sectionId2);
+
+    Task<PagedResultDto<GetTransferDto>> GetTransferByReceptorId(PagedRequestDto paged,int receptorId);
 }

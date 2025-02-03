@@ -165,4 +165,48 @@ public class EquipmentQueryServices : GenericQueryServices<Equipment, GetEquipme
 
         return await GetPagedResultByQueryAsync(paged, equipmentQuery);
     }
+
+    public async Task<PagedResultDto<GetEquipmentDto>> GetTransferredEquipmentsByDepartmentAsync(PagedRequestDto paged, int departmentId)
+    {
+        var query = _unitOfWork.GetRepository<Transfer>()
+                                .GetAllByItems(t => t.TransferRequest.ArrivalDepartmentId == departmentId)
+                                .Include(t => t.TransferRequest)
+                                    .ThenInclude(tr => tr.Equipment)
+                                        .ThenInclude(e => e.Department)
+                                            .ThenInclude(d => d.Section);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+                            .Skip((paged.PageNumber - 1) * paged.PageSize)
+                            .Take(paged.PageSize)
+                            .Select(t => new GetEquipmentDto
+                            {
+                                Id = t.TransferRequest.Equipment.Id,
+                                Name = t.TransferRequest.Equipment.Name,
+                                Type = t.TransferRequest.Equipment.Type,
+                                Status = t.TransferRequest.Equipment.Status,
+                                DateOfadquisition = t.TransferRequest.Equipment.DateOfadquisition,
+                                DepartmentId = t.TransferRequest.Equipment.DepartmentId,
+                                SectionId = t.TransferRequest.Equipment.Department.SectionId , // Evitar null
+                                DepartmentName = t.TransferRequest.Equipment.Department.Name,
+                                SectionName = t.TransferRequest.Equipment.Department.Section.Name
+                            })
+                            .ToListAsync();
+
+        return new PagedResultDto<GetEquipmentDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            NextPageUrl = paged.PageNumber * paged.PageSize < totalCount
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber + 1}&pageSize={paged.PageSize}"
+                        : null,
+            PreviousPageUrl = paged.PageNumber > 1
+                        ? $"{paged.BaseUrl}?pageNumber={paged.PageNumber - 1}&pageSize={paged.PageSize}"
+                        : null
+        };
+    }
+
 }

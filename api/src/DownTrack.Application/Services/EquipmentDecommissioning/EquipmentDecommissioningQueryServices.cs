@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
@@ -85,4 +86,12 @@ public class EquipmentDecommissioningQueryServices : GenericQueryServices<Equipm
         return await GetPagedResultByQueryAsync(paged,decomissions);
     }
 
+    public async Task<PagedResultDto<GetEquipmentDecommissioningDto>> GetDecomissionByReceptorAsync(PagedRequestDto paged, int receptorId)
+    {
+        var decomissions = _unitOfWork.GetRepository<EquipmentDecommissioning>()
+                                      .GetAllByItems(ed=> ed.ReceptorId == receptorId,
+                                                     ed=> ed.Status == DecommissioningStatus.Accepted.ToString());
+        
+        return await GetPagedResultByQueryAsync(paged,decomissions);
+    }
 }

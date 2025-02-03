@@ -137,9 +137,22 @@ public class EquipmentDecommissioningController : ControllerBase
     [HttpGet]
     [Route("Get_Decomissions_Last_Year")]
 
-    public async Task<ActionResult<GetEquipmentDecommissioningDto>> GetDecomissionsLastYear([FromQuery] PagedRequestDto paged)
+    public async Task<IActionResult> GetDecomissionsLastYear([FromQuery] PagedRequestDto paged)
     {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
         var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionLastYear(paged);
+
+        return Ok(decomissions);
+    }
+
+    [HttpGet]
+    [Route("Get_Decomissions_Accepted_By_Receptor")]
+    public async Task<IActionResult> GetDecomissionsByReceptor([FromQuery] PagedRequestDto paged, int receptorId)
+    {
+        paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        
+        var decomissions = await _equipmentDecommissioningQueryServices.GetDecomissionByReceptorAsync(paged, receptorId);
 
         return Ok(decomissions);
     }
