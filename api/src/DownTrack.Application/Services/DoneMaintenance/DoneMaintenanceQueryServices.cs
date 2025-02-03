@@ -62,7 +62,7 @@ public class DoneMaintenanceQueryServices : GenericQueryServices<DoneMaintenance
     public async Task<PagedResultDto<GetDoneMaintenanceDto>> GetMaintenanceByTechnicianUserNameAsync(PagedRequestDto paged,string technicianUserName)
     {
         var maintenance =  _unitOfWork.GetRepository<DoneMaintenance>()
-                                           .GetAllByItems(dm=> dm.Technician.UserName == technicianUserName);                               
+                                           .GetAllByItems(dm=> dm.Technician!.UserName == technicianUserName);                               
         return await GetPagedResultByQueryAsync(paged,maintenance);
     }
 

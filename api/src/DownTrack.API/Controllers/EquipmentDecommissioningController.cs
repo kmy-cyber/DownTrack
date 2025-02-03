@@ -86,6 +86,18 @@ public class EquipmentDecommissioningController : ControllerBase
         return Ok (result);
 
     }
+        [HttpGet]
+    [Route("Get_Paged_Accepted")]
+    public async Task<IActionResult> GetPagedAcceptedDecommissioning ([FromQuery] PagedRequestDto paged)
+    {
+         paged.BaseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        var result = await _equipmentDecommissioningQueryServices.GetAcceptedDecommissioning(paged);
+        
+        return Ok (result);
+
+    }
+
     
     [HttpGet]
     [Route("{equipmentDecommissioningId}/GET_BY_ID")]
