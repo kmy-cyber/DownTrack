@@ -9,10 +9,12 @@ import {
     Select,
     Option,
     Input,
+    IconButton,
 } from "@material-tailwind/react";
 import api from "@/middlewares/api";
 import { convertDateFormat } from "@/utils/changeDateFormat";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { DocumentIcon } from "@heroicons/react/24/solid";
 
 export function Reports() {
     const [reportType, setReportType] = useState("");
@@ -51,8 +53,8 @@ export function Reports() {
                       label: "Last Year Decommissions",
                   },
                   {
-                    value: "equipment-to-be-replaced",
-                    label: "Equipment to be Replaced"
+                      value: "equipment-to-be-replaced",
+                      label: "Equipment to be Replaced",
                   },
                   {
                       value: "transfers-between-sections",
@@ -154,10 +156,12 @@ export function Reports() {
 
     const fetchTechnicians = async () => {
         try {
-            const response = await api(`/Technician/GetPaged?PageNumber=1&PageSize=99999`);
+            const response = await api(
+                `/Technician/GetPaged?PageNumber=1&PageSize=99999`,
+            );
             const data = await response.json();
-            setTechnicians((prevTechnician) =>{
-                if(!data.items.some((t) => t.id === selectedTechnician)){
+            setTechnicians((prevTechnician) => {
+                if (!data.items.some((t) => t.id === selectedTechnician)) {
                     setSelectedTechnician("");
                 }
                 console.log(`TECHNICIAN: ${selectedTechnician}`);
@@ -228,9 +232,9 @@ export function Reports() {
                 EName: item.equipmentName,
                 Receptor: item.equipmentReceptorUserName,
                 Supervisor: item.shippingSupervisorName,
-                Date: item.date.split('T')[0]
+                Date: item.date.split("T")[0],
             }));
-            setColumnWidths([100,100,100,100,100])
+            setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
         } catch (error) {
             console.error("Error fetching transfers between sections:", error);
@@ -247,35 +251,34 @@ export function Reports() {
             const data = dataResponse.items.map((item) => ({
                 Username: item.technicianUserName,
                 Evaluator: item.sectionManagerUserName,
-                Evaluation: item.description
+                Evaluation: item.description,
             }));
             setColumnWidths([100, 100, 100]);
             setReportData(data);
-            
         } catch (error) {
             console.error("Error fetching technician evaluations:", error);
         }
     };
 
-     // Función para generar el reporte de equipos a ser reemplazados
-     const generateToBeReplacedEquipmentReport = async () => {
+    // Función para generar el reporte de equipos a ser reemplazados
+    const generateToBeReplacedEquipmentReport = async () => {
         try {
             const response = await api(
                 `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
             );
             const dataResponse = await response.json();
-            console.log(dataResponse.items)
+            console.log(dataResponse.items);
             const data = dataResponse.items.map((item) => ({
                 Id: item.id,
                 Name: item.name,
                 Type: item.type,
-                AcqDate: item.dateOfadquisition.split('T')[0],
+                AcqDate: item.dateOfadquisition.split("T")[0],
                 Department: item.departmentName,
                 Section: item.sectionName,
             }));
             setColumnWidths([30, 100, 100, 100, 100]);
             setReportData(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -288,7 +291,7 @@ export function Reports() {
                 `/EquipmentDecommissioning/Get_Decomissions_Last_Year?PageNumber=1&PageSize=100000`,
             );
             const dataResponse = await response.json();
-            console.log(dataResponse.items)
+            console.log(dataResponse.items);
             const data = dataResponse.items.map((item) => ({
                 EId: item.equipmentId,
                 EName: item.equipmentName,
@@ -296,11 +299,11 @@ export function Reports() {
                 Technician: item.technicianUserName,
                 Receptor: item.receptorUserName,
                 Cause: item.cause,
-                Date: item.date.split('T')[0],
+                Date: item.date.split("T")[0],
             }));
             setColumnWidths([30, 80, 70, 100, 80, 75, 100]);
             setReportData(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -313,17 +316,17 @@ export function Reports() {
                 `/DoneMaintenance/Get_Maintenances_By_Technician_Status?PageNumber=1&PageSize=99999&technicianId=${selectedTechnician}&IsFinish=true`,
             );
             const dataResponse = await response.json();
-            console.log(dataResponse.items)
+            console.log(dataResponse.items);
             const data = dataResponse.items.map((item) => ({
                 EquipmentId: item.equipmentId,
                 EquipmentName: item.equipmentName,
                 UserName: item.technicianUserName,
                 Cost: item.cost,
-                Date: item.date.split('T')[0],
+                Date: item.date.split("T")[0],
             }));
             setColumnWidths([100, 100, 100, 100, 100]);
             setReportData(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -336,18 +339,18 @@ export function Reports() {
                 `/Equipment/GetPaged?PageNumber=1&PageSize=1000`,
             );
             const dataResponse = await response.json();
-            console.log(dataResponse.items)
+            console.log(dataResponse.items);
             const data = dataResponse.items.map((item) => ({
                 EId: item.id,
                 EquipmentName: item.name,
                 SectionName: item.sectionName,
                 Status: item.status,
                 Department: item.departmentName,
-                Date: item.dateOfadquisition.split('T')[0],
+                Date: item.dateOfadquisition.split("T")[0],
             }));
             setColumnWidths([50, 100, 100, 70, 100]);
             setReportData(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -368,11 +371,11 @@ export function Reports() {
                 Technician: item.technicianUserName,
                 Receptor: item.receptorUserName,
                 Cause: item.cause,
-                Date: item.date.split('T')[0]
+                Date: item.date.split("T")[0],
             }));
-            setColumnWidths([30, 100, 60, 100, 80,60,100]);
+            setColumnWidths([30, 100, 60, 100, 80, 60, 100]);
             setReportData(data);
-            console.log(data)
+            console.log(data);
         } catch (error) {
             console.error("Error fetching equipment to be replaced:", error);
         }
@@ -516,7 +519,7 @@ export function Reports() {
         currentY -= titleFontSize + 15;
 
         // Línea de fecha y emisor
-        const reportDate = new Date().toLocaleDateString('en-US');
+        const reportDate = new Date().toLocaleDateString("en-US");
         page.drawText(`Date: ${reportDate}`, {
             x: margin,
             y: currentY,
@@ -711,8 +714,20 @@ export function Reports() {
                 <CardHeader
                     variant="gradient"
                     color="gray"
-                    className="mb-4 p-6"
-                >
+                    className="flex items-center justify-between p-6"
+                    >
+                    {Array.isArray(reportData) && reportData.length > 0 && (
+                        <IconButton
+                            variant="text"
+                            size="sm"
+                            color="white"
+                            onClick={handleExportPDF}
+                            className="mr-4"
+                        >
+                            <DocumentIcon className="h-5 w-5"/>
+                            PDF
+                        </IconButton>
+                    )}
                     <Typography variant="h6" color="white">
                         Report Generator
                     </Typography>
@@ -792,7 +807,9 @@ export function Reports() {
                             <Select
                                 label="Select Technician"
                                 value={extraField}
-                                onChange={(value) => setSelectedTechnician(value)}
+                                onChange={(value) =>
+                                    setSelectedTechnician(value)
+                                }
                             >
                                 {technicians.map((technician) => (
                                     <Option
@@ -906,13 +923,6 @@ export function Reports() {
                                     ))}
                                 </tbody>
                             </table>
-                            <Button
-                                color="gray"
-                                onClick={handleExportPDF}
-                                className="mt-4"
-                            >
-                                Export to PDF
-                            </Button>
                         </div>
                     )}
                 </CardBody>
