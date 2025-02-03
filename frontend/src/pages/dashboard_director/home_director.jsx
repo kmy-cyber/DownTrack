@@ -116,16 +116,16 @@ export function Home() {
         <StatisticsCard
           color="gray"
           title="Equipment:"
-          value={totalEquipment}
+          value={totalEquipment - totalDecommissions}
           icon={<CubeIcon className="h-6 w-6" />}
-          footer={<Typography>Total Equipment</Typography>}
+          footer={<Typography>Total Active/Under Maintenance Equipment</Typography>}
         />
         <StatisticsCard
           color="gray"
-          title="Accepted Decommissions"
+          title=" Decommissions"
           value={totalDecommissions}
           icon={<MinusCircleIcon className="h-6 w-6"></MinusCircleIcon>}
-          footer={<Typography>Accepted Decommissions overall</Typography>}
+          footer={<Typography> Decommissions overall</Typography>}
         />
       </div>
 
@@ -148,9 +148,9 @@ export function Home() {
 
         {/* Nuevo gráfico de descomisiones */}
         <StatisticsChart
-          key="AcceptedDecomissions"
+          key="Decomissions"
           color="white"
-          title="Accepted Decommissions by Month"
+          title=" Decommissions by Month"
           description="This metric reflects the number of decommissioning proposals accepted each month. It helps track the decommissioning trend over time, providing insights into the equipment lifecycle."
           chart={{
             type: "line",
