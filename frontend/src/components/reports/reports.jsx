@@ -240,12 +240,21 @@ export function Reports() {
             const response = await api(
                 `/Equipment/Equipment_With_More_Than_Three_Maintenances_In_Last_Year?PageNumber=1&PageSize=99999`,
             );
-            const data = await response.json();
-            setColumnWidths([50, 100, 100, 100, 100,100,100,100,100]);
-            setReportData(data.items);
-            console.log(data.items)
+            const dataResponse = await response.json();
+            console.log(dataResponse.items)
+            const data = dataResponse.items.map((item) => ({
+                Id: item.id,
+                Name: item.name,
+                Type: item.type,
+                AcqDate: item.dateOfadquisition.split('T')[0],
+                Department: item.departmentName,
+                Section: item.sectionName,
+            }));
+            setColumnWidths([30, 100, 100, 100, 100]);
+            setReportData(data);
+            console.log(data)
         } catch (error) {
-            console.error("Error fetching technician evaluations:", error);
+            console.error("Error fetching equipment to be replaced:", error);
         }
     };
 
