@@ -12,7 +12,7 @@ export function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(0);
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchData();
@@ -53,7 +53,11 @@ export function Home() {
     // Agregando el nuevo estado 'Inactive'
     return [
       { name: "Active", value: statusCount.Active || 0, color: "#4A90E2" },
-      { name: "Maintenance", value: statusCount.UnderMaintenance || 0, color: "#FFBB28" },
+      {
+        name: "Maintenance",
+        value: statusCount.UnderMaintenance || 0,
+        color: "#FFBB28",
+      },
       { name: "Inactive", value: statusCount.Inactive || 0, color: "#E94E77" }, // Nuevo estado
     ];
   };
@@ -73,7 +77,7 @@ export function Home() {
           color="gray"
           title="Equipment:"
           value={total}
-          icon={<CubeIcon className="h-6 w-6"/>}
+          icon={<CubeIcon className="h-6 w-6" />}
           footer={<Typography>Total Equipment</Typography>}
         />
         <StatisticsCard
@@ -83,7 +87,7 @@ export function Home() {
         />
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-2">
         {/* Pie Chart Component */}
         <div>
           <Card className="p-4">
@@ -94,6 +98,12 @@ export function Home() {
               data={inventoryData}
               colors={["#4A90E2", "#FFBB28", "#E94E77"]} // Añadiendo el nuevo color
             />
+            <footer>
+              This chart represents the distribution of the equipment. The
+              categories are: Active, Maintenance, and Inactive. Each segment of
+              the pie chart shows the percentage of equipment in each of these
+              states.
+            </footer>
           </Card>
         </div>
       </div>
