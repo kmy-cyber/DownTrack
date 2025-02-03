@@ -222,12 +222,15 @@ export function Reports() {
                 `/Transfer/Get_Transfer_Between_Sections?PageNumber=1&PageSize=10000&sectionId1=${selectedSection1}&sectionId2=${selectedSection2}`,
             );
             const dataResponse = await response.json();
+            console.log(dataResponse.items);
             const data = dataResponse.items.map((item) => ({
+                EId: item.equipmentId,
+                EName: item.equipmentName,
                 Receptor: item.equipmentReceptorUserName,
                 Supervisor: item.shippingSupervisorName,
                 Date: item.date.split('T')[0]
             }));
-            setColumnWidths([100,100,100])
+            setColumnWidths([100,100,100,100,100])
             setReportData(data);
         } catch (error) {
             console.error("Error fetching transfers between sections:", error);
