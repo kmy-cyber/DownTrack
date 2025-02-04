@@ -138,7 +138,6 @@ public class AuthenticationControllerTests
             Id = 123,
             Name = "newusername",
             Email = "newemail@test.com",
-            Password = "NewPassword123!"
         };
 
         A.CallTo(() => _fakeIdentityService.UpdateUserAsync(updateDto))

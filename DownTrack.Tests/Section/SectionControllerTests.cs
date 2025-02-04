@@ -144,7 +144,7 @@ public class SectionControllerTests
 
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
-        Assert.Equal($"Employee with ID {sectionName} not found", notFoundResult.Value);
+        Assert.Equal($"Section with Name {sectionName} not found", notFoundResult.Value);
     }
 
     [Fact]
