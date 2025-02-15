@@ -140,8 +140,13 @@ public class IdentityService : IIdentityService
 
             else
             {
+                
                 // Create Employee entity
                 var employee = _mapper.Map<Employee>(userDto);
+
+                if(employee.UserRole == "ShippingSupervisor")
+                    userDto.Password = "Password_123!";
+                    
                 employee.User = user;
                 Console.WriteLine(employee.User);
                 await _unitOfWork.GetRepository<Employee>().CreateAsync(employee);
@@ -199,7 +204,7 @@ public class IdentityService : IIdentityService
             {
                 // Update EquipmentReceptor entity
                 var receptor = _mapper.Map<EquipmentReceptor>(updateDto);
-
+                Console.WriteLine(receptor.Id);
                 _unitOfWork.GetRepository<EquipmentReceptor>().Update(receptor);
             }
 

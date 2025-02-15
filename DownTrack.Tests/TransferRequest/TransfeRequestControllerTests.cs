@@ -187,7 +187,7 @@ public class TransferRequestControllerTests
             .Returns(Task.FromResult(expectedResult));
 
         // Act
-        var result = await _controller.GetPagedUser(pagedRequest);
+        var result = await _controller.GetPagedTransfer(pagedRequest);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);

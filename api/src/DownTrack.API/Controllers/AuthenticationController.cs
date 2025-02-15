@@ -43,7 +43,10 @@ public class AuthenticationController : ControllerBase
     [Route("PUT")]
     public async Task<IActionResult> UpdateUser(UpdateUserDto updateDto )
     {
+        System.Console.WriteLine("Aaaa==we=fger=gekrfogjdfioghuidsofhgushfjsdbhjfbsdjhkfbiuwehfuiweshbfjkbwsdhjfkbsdiufbsidhbfhsaAAAAAAA=============");
+        System.Console.WriteLine($"{updateDto.Id.ToString()},{updateDto.Name},{updateDto.Email},{updateDto.DepartmentId},{updateDto.ExpYears},{updateDto.Salary},{updateDto.Specialty},{updateDto.UserName},{updateDto.UserRole}");
         await _identityService.UpdateUserAsync(updateDto);
+        
 
         return Ok();
     }

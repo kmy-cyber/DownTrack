@@ -90,7 +90,6 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 userRole: userData.userRole,
                 email: userData.email,
                 departamentId: data.departmentId,
-                sectionId: data.sectionId,
                 userName: userData.userName,
                 specialty: formData.specialty
 
@@ -104,6 +103,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
     };
 
     const handleChange = (e) => {
+        console.log(e);
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     }; 
@@ -127,10 +127,11 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
             'specialty': formData.specialty,
             'salary': formData.salary,
             'expYears': formData.expYears,
-            'departamentId': formData.departamentId,
+            'departmentId': formData.departamentId,
             'userName': formData.userName,
         })
         });
+        console.log(formData);
         if (!response.ok) {
             throw new Error('Failed to edit user');
         }
@@ -214,7 +215,7 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     type="text"
                     id="email"
                     name="email"
-                    value={userData.email}
+                    value={formData.email}
                     onChange={handleChange}
                     placeholder="Enter identification number"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -223,7 +224,8 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                 </div>
 
 
-                {userData.userRole === "EquipmentReceptor" ? (
+
+                {userData.userRole.toLowerCase() === "equipmentreceptor" ? (
                 <>
                     <div>
                     <label htmlFor="department" className="block text-sm font-medium text-gray-700">
@@ -242,21 +244,6 @@ export const EditUserForm = ({ userData, onSave, onCancel }) => {
                     />
                     </div>
 
-                    <div>
-                    <label htmlFor="section" className="block text-sm font-medium text-gray-700">
-                        Section
-                    </label>
-                    <input
-                        type="text"
-                        id="section"
-                        name="section"
-                        value={formData.sectionId}
-                        placeholder=""
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                        disabled
-                    />
-                    </div>
                 </>
                 ) : null}
 

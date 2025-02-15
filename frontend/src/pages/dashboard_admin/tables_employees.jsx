@@ -86,9 +86,10 @@ export function Tables() {
     const handleSave = (updatedUser) => {
         const index = currentItems.findIndex(user => user.id === updatedUser.id);
         currentItems[index] = updatedUser;
+
         setCurrentItems([...currentItems]);
         setUserData({
-            id:id,
+            id:currentItems[index].id,
             name: "",
             email:"",
             userName: "",
