@@ -42,8 +42,12 @@ public static class DependencyInjection
         services.AddAuth(configuration);
 
         // Identity configuration
-        services.AddIdentity<User,Role>()
-               //.AddRoles<IdentityRole>() // Adds support for roles
+        services.AddIdentity<User,Role>(options=>
+                {
+                    options.User.RequireUniqueEmail = true;
+
+                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; 
+                })
                .AddEntityFrameworkStores<DownTrackContext>() // Configures EF for Identity
                .AddDefaultTokenProviders(); // Adds default token providers for things like password reset
 

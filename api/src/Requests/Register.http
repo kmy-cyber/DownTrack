@@ -6,10 +6,9 @@ Content-Type:  application/json
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwiZ2l2ZW5fbmFtZSI6InVzZXJuYW1lXzUiLCJqdGkiOiI1ZjYxMzVlOC0yZjQ2LTQzOWItOTI4YS1hNTEzODA3NDhhM2YiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzM3OTIwNDU3LCJpc3MiOiJEb3duVHJhY2siLCJhdWQiOiJEb3duVHJhY2sifQ.afk6cbRMIyYX4MJhvf5rpENU3CaEaPcbRsGCIKx2Cfw
 
 {
-  "id":3390,
-  "name": "User_333",
-  "userName": "username_3390",
-  "email": "example3@gmail.com",
+  "name": "User_334",
+  "userName": "username_3394",
+  "email": "jabelalsjdkajk928122@gmail.mx",
   "password": "Password_333!",
   "userRole": "Technician",
   "specialty": "mechanic",
