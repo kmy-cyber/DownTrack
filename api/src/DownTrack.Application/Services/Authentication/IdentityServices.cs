@@ -85,21 +85,21 @@ public class IdentityService : IIdentityService
             var user = _mapper.Map<User>(userDto);
 
             // Handle different user roles
-            if (userDto.UserRole == UserRole.ShippingSupervisor.ToString())
-            {
-                // Create Shipping Supervisor entity
-                var supervisor = _mapper.Map<Employee>(userDto);
+            // if (userDto.UserRole == UserRole.ShippingSupervisor.ToString())
+            // {
+            //     // Create Shipping Supervisor entity
+            //     var supervisor = _mapper.Map<Employee>(userDto);
 
-                await _unitOfWork.GetRepository<Employee>().CreateAsync(supervisor);
+            //     await _unitOfWork.GetRepository<Employee>().CreateAsync(supervisor);
 
-                await _unitOfWork.CompleteAsync(); // Save changes to database
+            //     await _unitOfWork.CompleteAsync(); // Save changes to database
 
-                return "Not token for this user"; // Return placeholder response
+            //     return "Not token for this user"; // Return placeholder response
 
 
-            }
+            // }
 
-            else if (userDto.UserRole == UserRole.Technician.ToString())
+            if (userDto.UserRole == UserRole.Technician.ToString())
             {
                 // Create Technician entity
                 var technician = _mapper.Map<Technician>(userDto);
