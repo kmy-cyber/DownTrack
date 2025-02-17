@@ -1,43 +1,43 @@
  
 <h1 style="text-align: center;">
-  Gestión de Bajas Técnicas
-  <br>
-  <img src="./logo.jpg" alt="Gestión de Bajas Técnicas" style="display: block; margin: 0 auto; width: 200px;">
+  Technical Withdrawals Management  
+  <br>  
+  <img src="./logo.jpg" alt="Technical Withdrawals Management" style="margin: 0 auto; display: block; width: 200px;">
 </h1>
 
-## Descripción del Proyecto
+## Description
 
-Este repositorio contiene el desarrollo de una aplicación web diseñada para gestionar las bajas técnicas en una empresa de infocomunicaciones. El sistema busca automatizar procesos como el manejo de inventarios, bajas, traslados y mantenimientos de equipos, ofreciendo una solución eficiente y centralizada.
+This repository contains the development of a web application designed to manage technical withdrawals in an infocommunications company. The system aims to automate processes such as inventory management, cancellations, transfers, and equipment maintenance, providing an efficient and centralized solution.
 
-## Arquitectura
+## Architecture
 
-El proyecto está desarrollado siguiendo la **Arquitectura Clean**, lo que garantiza un diseño desacoplado, extensible y mantenible.
+The project follows **Clean Architecture** approach , ensuring a decoupled, scalable and maintainable design.
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 - **Backend**:  
-  - **.NET 8.0**: Framework principal para el desarrollo del backend.  
-  - **Entity Framework Core**: ORM para la gestión de la base de datos.
+  - **.NET 8.0**: Main framework for backend development.  
+  - **Entity Framework Core**: ORM for database management.
 
 - **Frontend**:  
-  - **React.js**: Biblioteca para construir interfaces de usuario dinámicas.
+  - **React.js**: Library to build dynamic user interfaces.
 
-- **Base de Datos**:  
-  - **MySQL**: Sistema de gestión de base de datos relacional.
+- **Database**:  
+  - **MySQL**: Relational database management system.
 
-## Funcionalidades Principales
+## Main Features
 
-1. Gestión del inventario de equipos.
-2. Registro y consulta de mantenimientos técnicos.
-3. Control de bajas técnicas con detalles de causa y destino.
-4. Gestión de traslados entre secciones y unidades.
-5. Generación de reportes en formatos visuales y exportables a PDF.
-6. Evaluación del rendimiento de los técnicos con base en su historial de intervenciones y valoraciones.
+1. Equipment inventory management.
+2. Registration and consultation of technical maintenance.
+3. Control of technical casualties with details of cause and destination.
+4. Management of transfers between sections and units.
+5. Generation of reports in visual formats and exportable to PDF.
+6. Technician performance evaluation based on their intervention history and assessments.
 
-## Requisitos del Sistema
+## System Requirements
 
 - **Backend**: .NET 8.0  
 - **Frontend**: Node.js 16+  
-- **Base de Datos**: MySQL 8.0+  
+- **Database**: MySQL 8.0+  
 
 ---
