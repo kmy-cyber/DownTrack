@@ -1,9 +1,10 @@
  
 <h1 style="text-align: center;">
   Technical Withdrawals Management  
-  <br>  
-  <img src="./logo.jpg" alt="Technical Withdrawals Management" style="margin: 0 auto; display: block; width: 200px;">
 </h1>
+<div style="text-align: center;">
+  <img src="./logo.jpg" alt="Technical Withdrawals Management" style="width: 200px;">
+</div>
 
 ## Description
 
