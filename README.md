@@ -1,10 +1,10 @@
  
-<h1 style="text-align: center;">
-  Technical Withdrawals Management  
-</h1>
+# DownTrack
+
 <div style="text-align: center;">
-  <img src="./logo.jpg" alt="Technical Withdrawals Management" style="width: 200px;">
+  <img src="./logo.jpg" alt="DownTrack Logo" style="width: 200px;">
 </div>
+
 
 ## Description
 
